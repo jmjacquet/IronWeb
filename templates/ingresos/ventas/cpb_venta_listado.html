@@ -128,7 +128,7 @@
                                              {% endif %}
                                             {% endif %} 
                                             {% if 'cpb_ventas_cobrar' in permisos_grupo %}
-                                                {% if cpb.saldo > 0 %}
+                                                {% if cpb.saldo > 0 and cpb.cpb_tipo.usa_forma_pago %}
                                                     <li><a onclick="return abrir_modal('/ingresos/cobranza/comprobantes/?id_cpb={{cpb.id|safe}}');"><i class=" icon-wallet"></i> Recibo Cobranza</a></li>
                                                 {% endif %}
                                             {% endif %}

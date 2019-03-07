@@ -31,6 +31,10 @@
                         <a class="left" href="{% url 'cpb_venta_listado' %}"><i class="icon-note"></i>Comprobantes de Venta</a>
                         <a class="acceso_menu" href="{% url 'cpb_venta_nuevo' %}">+</a>
                       </li>
+                      <li>                         
+                        <a class="left" href="{% url 'cpb_liqprod_nuevo' %}"><i class="icon-note"></i>Comprobantes Liq.Prod.</a>
+                        <a class="acceso_menu" href="{% url 'cpb_liqprod_nuevo' %}">+</a>
+                      </li>
                       {% endif %}
                       {% if 'cpb_cobranzas' in permisos_grupo %}
                       <li>

@@ -29,6 +29,6 @@ urlpatterns = patterns('egresos.views',
     url(r'^cpb_pago/nuevo_pago/$', CPBPagarCreateView.as_view(), name="cpb_rec_pago_nuevo_pago"),    
     url(r'^pagos/comprobantes/$',  CPBPagosSeleccionarView,name="cpb_pago_comprobantes"), 
   
-    
+   
       
     )

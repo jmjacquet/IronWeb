@@ -1762,5 +1762,165 @@ def CPBCobrosSeleccionarView(request):
         variables = RequestContext(request, {'comprobantes':comprobantes,'total':total})        
         return render_to_response("ingresos/ventas/detalle_cpbs.html", variables)
 
+#############################################################
+#   LIQ PROD
+#############################################################
+
+class CPBLiqProdCreateView(VariablesMixin,CreateView):
+    form_class = CPBLiqProdForm
+    template_name = 'ingresos/liqprod/cpb_liqprod_form.html' 
+    model = cpb_comprobante
+    
+    @method_decorator(login_required)
+    def dispatch(self, *args, **kwargs):            
+        if not tiene_permiso(self.request,'cpb_ventas_abm'):
+            return redirect(reverse('principal'))
+        return super(CPBLiqProdCreateView, self).dispatch(*args, **kwargs)
+    
+    def get_initial(self):    
+        initial = super(CPBLiqProdCreateView, self).get_initial()        
+        initial['tipo_form'] = 'ALTA'
+        initial['titulo'] = 'Nuevo Comprobante'
+        initial['request'] = self.request
+        return initial   
+
+    def get_form_kwargs(self):
+        kwargs = super(CPBLiqProdCreateView, self).get_form_kwargs()
+        kwargs['request'] = self.request
+        return kwargs
+
+    def get(self, request, *args, **kwargs):
+        self.object = None
+        form_class = self.get_form_class()
+        form = self.get_form(form_class)       
+        CPBDetalleFormSet.form = staticmethod(curry(CPBLiqProdDetalleForm,request=request))
+        CPBPIFormSet.form = staticmethod(curry(CPBLiqProdPercImpForm,request=request))        
+        liqprod_detalle = CPBDetalleFormSet(prefix='formDetalle')
+        liqprod_pi = CPBPIFormSet(prefix='formDetallePI')        
+        return self.render_to_response(self.get_context_data(form=form,liqprod_detalle = liqprod_detalle,liqprod_pi=liqprod_pi))
+
+    def post(self, request, *args, **kwargs):
+        self.object = None
+        form_class = self.get_form_class()
+        form = self.get_form(form_class)       
+        CPBDetalleFormSet.form = staticmethod(curry(CPBLiqProdDetalleForm,request=request))
+        CPBPIFormSet.form = staticmethod(curry(CPBLiqProdPercImpForm,request=request))        
+        liqprod_detalle = CPBDetalleFormSet(self.request.POST,prefix='formDetalle')
+        liqprod_pi = CPBPIFormSet(self.request.POST,prefix='formDetallePI')                
+        if form.is_valid() and liqprod_detalle.is_valid() and liqprod_pi.is_valid():
+            return self.form_valid(form, liqprod_detalle,liqprod_pi)
+        else:
+            return self.form_invalid(form, liqprod_detalle,liqprod_pi)        
+
+    def form_valid(self, form, liqprod_detalle,liqprod_pi):
+        self.object = form.save(commit=False)        
+        estado=cpb_estado.objects.get(pk=1)
+        self.object.estado=estado   
+        self.object.empresa = empresa_actual(self.request)
+        self.object.usuario = usuario_actual(self.request)
+        if not self.object.fecha_vto:
+            self.object.fecha_vto=self.object.fecha_cpb
+        self.object.condic_pago = 1
+        self.object.save()
+        liqprod_detalle.instance = self.object
+        liqprod_detalle.cpb_comprobante = self.object.id        
+        liqprod_detalle.save()
+        if liqprod_pi:
+            liqprod_pi.instance = self.object
+            liqprod_pi.cpb_comprobante = self.object.id 
+            liqprod_pi.save() 
+        
+        recalcular_saldo_cpb(self.object.pk)             
+        messages.success(self.request, u'Los datos se guardaron con éxito!')
+
+        return HttpResponseRedirect(reverse('cpb_venta_listado'))
+
+    def form_invalid(self, form,liqprod_detalle,liqprod_pi):                                                       
+        return self.render_to_response(self.get_context_data(form=form,liqprod_detalle = liqprod_detalle,liqprod_pi=liqprod_pi))
+
+class CPBLiqProdEditView(VariablesMixin,SuccessMessageMixin,UpdateView):
+    form_class = CPBLiqProdForm
+    template_name = 'ingresos/liqprod/cpb_liqprod_form.html' 
+    model = cpb_comprobante
+    pk_url_kwarg = 'id'      
+    success_message = "CPB was created successfully"
+
+    @method_decorator(login_required)
+    def dispatch(self, *args, **kwargs):            
+        if not tiene_permiso(self.request,'cpb_ventas_abm'):
+            return redirect(reverse('principal'))
+        if not puedeEditarCPB(self.get_object().pk):
+            messages.error(self.request, u'¡No puede editar un Comprobante con Pagos/Saldado!')
+            return redirect(reverse('cpb_ventas_listado'))
+        return super(CPBLiqProdEditView, self).dispatch(*args, **kwargs)
+
+    def get_form_kwargs(self):
+        kwargs = super(CPBLiqProdEditView, self).get_form_kwargs()
+        kwargs['request'] = self.request
+        return kwargs
+     
+    def get_initial(self):    
+        initial = super(CPBLiqProdEditView, self).get_initial()        
+        initial['tipo_form'] = 'EDICION'        
+        initial['titulo'] = 'Editar Comprobante '+str(self.get_object())
+        initial['request'] = self.request
+        return initial 
+
+    def get(self, request, *args, **kwargs):
+        self.object = self.get_object()
+        form_class = self.get_form_class()
+        form = self.get_form(form_class)      
+        form.fields['entidad'].widget.attrs['disabled'] = True       
+        form.fields['cpb_tipo'].widget.attrs['disabled'] = True                
+        form.fields['cliente_categ_fiscal'].initial = self.object.entidad.fact_categFiscal
+        form.fields['cliente_descuento'].initial = self.object.entidad.dcto_general
+        CPBDetalleFormSet.form = staticmethod(curry(CPBLiqProdDetalleForm,request=request))
+        CPBPIFormSet.form = staticmethod(curry(CPBLiqProdPercImpForm,request=request))        
+        liqprod_detalle = CPBDetalleFormSet(instance=self.object,prefix='formDetalle')
+        liqprod_pi = CPBPIFormSet(instance=self.object,prefix='formDetallePI')        
+        return self.render_to_response(self.get_context_data(form=form,liqprod_detalle = liqprod_detalle,liqprod_pi=liqprod_pi))
+
+    def post(self, request, *args, **kwargs):
+        self.object = self.get_object()
+        form_class = self.get_form_class()
+        form = self.get_form(form_class)        
+        CPBDetalleFormSet.form = staticmethod(curry(CPBLiqProdDetalleForm,request=request))
+        CPBPIFormSet.form = staticmethod(curry(CPBLiqProdPercImpForm,request=request))        
+        liqprod_detalle = CPBDetalleFormSet(self.request.POST,instance=self.object,prefix='formDetalle')        
+        liqprod_pi = CPBPIFormSet(self.request.POST,instance=self.object,prefix='formDetallePI')        
+        if form.is_valid() and liqprod_detalle.is_valid() and liqprod_pi.is_valid():
+            return self.form_valid(form, liqprod_detalle,liqprod_pi)
+        else:
+            return self.form_invalid(form, liqprod_detalle,liqprod_pi) 
+     
+    def form_invalid(self, form,liqprod_detalle,liqprod_pi):                                                       
+        return self.render_to_response(self.get_context_data(form=form,liqprod_detalle = liqprod_detalle,liqprod_pi=liqprod_pi))
+
+    def form_valid(self, form, liqprod_detalle,liqprod_pi):
+        self.object = form.save(commit=False)        
+        if not self.object.fecha_vto:
+            self.object.fecha_vto=self.object.fecha_cpb        
+        self.object.save()
+        liqprod_detalle.instance = self.object
+        liqprod_detalle.cpb_comprobante = self.object.id        
+        liqprod_detalle.save()
+        if liqprod_pi:
+            liqprod_pi.instance = self.object
+            liqprod_pi.cpb_comprobante = self.object.id 
+            liqprod_pi.save()         
+        recalcular_saldo_cpb(self.object.pk) 
+        messages.success(self.request, u'Los datos se guardaron con éxito!')
+        return HttpResponseRedirect(reverse('cpb_venta_listado'))
 
 
+@login_required
+def CPBLiqProdDeleteView(request, id):
+    cpb = get_object_or_404(cpb_comprobante, id=id)
+    if not tiene_permiso(request,'cpb_ventas_abm'):
+            return redirect(reverse('principal'))
+    if not puedeEliminarCPB(id):
+            messages.error(request, u'¡No puede editar un Comprobante Saldado/Facturado!')
+            return redirect(reverse('cpb_venta_listado'))
+    cpb.delete()
+    messages.success(request, u'Los datos se guardaron con éxito!')
+    return redirect('cpb_venta_listado')

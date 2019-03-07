@@ -1,5 +1,4 @@
 # -*- coding: utf-8 -*-
-
 from django.contrib.auth import login as django_login, authenticate, logout as django_logout
 from django.shortcuts import *
 from settings import *
@@ -74,3 +73,7 @@ def volverHome(request):
 #     if not request.user.is_active:
 #       return HttpResponseRedirect(LOGIN_URL)
 #     return HttpResponseRedirect(LOGIN_REDIRECT_URL)
+
+
+def alive(request):
+  return HttpResponse("Vive", status=200)

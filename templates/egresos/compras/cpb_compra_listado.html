@@ -83,7 +83,7 @@
                                                 <li><a href="#" 
                                                 onClick="alerta= alertify.dialog('confirm').set({'labels':{ok:'Aceptar', cancel:'Cancelar'},'message': '¿DESEA ANULAR EL COMPROBANTE ACTUAL?',transition:'fade','onok': function(){ window.location.href = '{% url 'cpb_anular_reactivar' id=cpb.pk estado=3  %}'; },'oncancel': function(){ return true;} }); alerta.setting('modal', true); alerta.setHeader('ANULAR/REACTIVAR COMPROBANTE'); alerta.show(); return true;" ><i class="icon-dislike"></i>Anular</a></li>
                                                {% if 'cpb_compras_pagar' in permisos_grupo %} 
-                                                {% if cpb.saldo > 0 %}
+                                                {% if cpb.saldo > 0 and cpb.cpb_tipo.usa_forma_pago %}
                                                 <li><a onclick="return abrir_modal('/egresos/pagos/comprobantes/?id_cpb={{cpb.id|safe}}');"><i class=" icon-note"></i>Orden de Pago</a></li>
                                                 {% endif %}
                                                {% endif %} 

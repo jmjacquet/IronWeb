@@ -4,7 +4,7 @@ from django.conf import settings
 from django.conf.urls.static import static
 from django.contrib.staticfiles.urls import staticfiles_urlpatterns
 from usuarios.views import *
-from .views import login,logout,volverHome
+from .views import login,logout,volverHome,alive
 
 
 urlpatterns = [    
@@ -20,7 +20,7 @@ urlpatterns = [
     url(r'^reportes/', include('reportes.urls')),      
     url(r'^login/$', login,name="login"),
     url(r'^logout/$', logout,name="logout"),
-    
+    url(r'^alive/$', alive,name="alive"),
 
     
 
