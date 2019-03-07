@@ -1,0 +1,3 @@
+
+<a href="{% url 'comprobante_ver' id=cpb.id %}"  title="Ver Detalle" class="modal-detail" data-modal-head="DETALLE {{cpb.cpb_tipo.nombre|upper}} {{cpb}}   Fecha: {{cpb.fecha_cpb|date:'d/m/Y'}}" data-fm-callback="reload">
+	<i class="icon-screen-desktop"></i> Ver Detalle</a>

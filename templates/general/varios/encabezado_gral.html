@@ -1,0 +1,24 @@
+{% load static from staticfiles %}
+{% load humanize %}
+{% load comprobantes_filters %}
+<table width="100%" align="center" >
+  <tr>
+      <td align="center" rowspan="4"   width="30%" valign="middle" class="borde_izq borde_arriba borde_abajo borde_der"  >
+        {% if empresa.ruta_logo|existe_img %} <img src="/media/{{empresa.ruta_logo|existe_img}}" alt="logo" class="logo_reporte" /> {% else %}
+        <h2 class="empresa">{{empresa.nombre}}</h2>
+        <h3>{{empresa.domicilio}}</h3>
+        <h3>{{empresa.email}} {{empresa.telefono}}</h3>
+        {% endif %} </td>
+      <td  colspan="2" width="70%" class="empresa borde_arriba borde_der">{{empresa.nombre}}</td>         
+  </tr>
+  <tr>
+    <td  colspan="2" class="texto_cpb  borde_der">{{empresa.domicilio}}</td>
+  </tr>
+  <tr>
+    <td  colspan="2" class="texto_cpb  borde_der">{{empresa.email}} {{empresa.telefono}}</td>
+  </tr>
+  <tr>
+    <td class="texto_cpb borde_abajo " width="35%">CUIT: {{empresa.cuit}}</td>
+    <td class="texto_cpb borde_abajo borde_der" width="35%">IIBB: {{empresa.iibb}}</td>    
+  </tr>
+</table>

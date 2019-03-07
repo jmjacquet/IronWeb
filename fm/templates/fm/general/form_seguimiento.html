@@ -1,0 +1,13 @@
+{% load i18n %}
+{% load static from staticfiles %}
+{% load crispy_forms_tags %}
+{% load bootstrap3 %}
+{% load i18n %}
+
+<div id="form-container">
+    <form role="form" class="form " method="POST" action="" id="form-alta" enctype="multipart/form-data">
+     {% csrf_token %}         
+        {{ form.media }}
+        <div class="col-xs-12">{% bootstrap_field form.seguimiento %}</div>
+    </form>
+</div>

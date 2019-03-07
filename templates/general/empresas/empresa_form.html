@@ -1,0 +1,209 @@
+{% extends "index.html" %}
+{% load static from staticfiles %}
+{% load bootstrap3 %}
+{% load i18n %}
+{% load crispy_forms_tags %}
+{% load humanize %}
+
+{% block extra_css %}
+ 	<link rel="stylesheet" href="{% static 'css/abms.css'%}?{% now "Ymd"%}" type="text/css" >  
+{% endblock %}
+{% block extra_js %}        
+ <script src="{% static 'js/scripts/scripts_configuracion.js'%}?{% now "Ymd"%}" type="text/javascript"></script>
+{% endblock %}
+
+
+{% block main %}
+<div class="col-md-12 col-xs-12">
+      	<div class="row">     
+	        <div class="col-xs-12" >  
+	          <div class="portlet box toolbar_blue panel_centrado">
+                <div class="portlet-title">
+                    <div class="caption bold">
+                                <i class="icon-settings"></i>CONFIGURACIÓN DE MI EMPRESA
+                    </div>                    
+                </div>             
+              	<div class="portlet-body">
+		           <div class="col-sm-12">	
+		            
+				    <form role="form" class="form cpb form-horizontal " method="POST" action="" id="form-alta" enctype="multipart/form-data">
+				     {% csrf_token %}         
+				        {{ form.media }}
+				        {{ form.errors }}
+				         <div class="row">
+					         <div class="col-xs-12">
+						        <div class="row ">							       	
+								       	<div class="col-xs-12">
+								       	  <div class="row">										       	
+										       		<fieldset>
+										       		<legend>DATOS GENERALES</legend>
+												       <div class="col-xs-12">
+										                <div class="row cerca">
+													       	<div class="col-sm-3">{% bootstrap_field form.cuit %}</div>
+													       	<div class="col-sm-4">{% bootstrap_field form.nombre %}</div>							       	
+													       	<div class="col-sm-5">{% bootstrap_field form.nombre_fantasia %}</div>													       	
+													     </div>
+														 <div class="row cerca">
+													       	<div class="col-sm-5">{% bootstrap_field form.domicilio %}</div>
+													       	<div class="col-sm-1">{% bootstrap_field form.cod_postal %}</div>	
+													       	<div class="col-sm-3">{% bootstrap_field form.localidad %}</div>
+													       	<div class="col-sm-3">{% bootstrap_field form.provincia %}</div>
+													     </div>
+													     <div class="row cerca">
+													       	<div class="col-sm-4">{% bootstrap_field form.email %}</div>
+													       	<div class="col-sm-4">{% bootstrap_field form.telefono %}</div>		
+													       	<div class="col-sm-4">{% bootstrap_field form.celular %}</div>	
+													     </div>
+										               </div>                                       						         
+										       		</fieldset>										       	
+									      </div>
+									   
+					                      								       
+								          <div class="row">
+								          	<div class="col-sm-6">										       	
+									       		<fieldset>
+									       		<legend>CONFIGURACIÓN TRIBUTARIA/FACTURACIÓN</legend>										       		
+										       		<div class="col-xs-12">
+										       			<div class="row cerca">
+													       	<div class="col-sm-4">{% bootstrap_field form.fecha_inicio_activ %}</div>
+													       	<div class="col-sm-8">{% bootstrap_field form.categ_fiscal %}</div>
+													    </div>
+													    <div class="row cerca">
+													       	<div class="col-sm-6">{% bootstrap_field form.iibb %}</div>					
+													       	<div class="col-sm-6">{% bootstrap_field form.afip_categoria %}</div>
+													    </div>
+													       
+										       											       	
+														<div class="row cerca">
+									       		   			<label class="control-label col-sm-6">Nombre Archivo CRT:</label>
+															<div class="col-sm-6">{% bootstrap_field form.fe_crt show_label=False  %}</div>																		
+															<label class="control-label col-sm-6">Nombre Archivo KEY:</label>
+															<div class="col-sm-6">{% bootstrap_field form.fe_key show_label=False  %}</div>
+														</div>
+													    <div class="row cerca">
+													    	<div class="col-sm-6"></div>
+															<div class="col-sm-6">{% bootstrap_field form.homologacion  %}</div>		
+														</div>														
+													</div>
+												
+												</fieldset>		
+
+									       	</div>
+									       	<div class="col-sm-6">
+									       		<fieldset>
+									       		<legend>CONFIGURACIÓN GENERAL SISTEMA</legend>                        						
+									       		   <div class="col-xs-12">
+									       		   	<div class="row cerca">
+									       		   		<div class="col-sm-6">
+										       		   		<div class="row cerca">
+										       		   			<label class="control-label col-sm-8">Días Venc. CPBs:</label>
+																<div class="col-sm-4">{% bootstrap_field form.dias_vencimiento_cpbs show_label=False  %}</div>		
+															</div>
+															<div class="row cerca">
+																<label class="control-label col-sm-8">Meses atrás Búsquedas:</label>
+																<div class="col-sm-4">{% bootstrap_field form.barra_busq_meses_atras show_label=False  %}</div>		
+															</div>
+															
+														</div>
+														<div class="col-sm-6">
+															<div class="row cerca">
+																<div class="col-sm-12">{% bootstrap_field form.pprincipal_panel_cpbs  %}</div>
+															</div>
+															<div class="row cerca">
+																<div class="col-sm-12">{% bootstrap_field form.pprincipal_aviso_tareas  %}</div>
+															</div>
+															<div class="row cerca">
+																<div class="col-sm-12">{% bootstrap_field form.pprincipal_estadisticas  %}</div>
+															</div>
+															<div class="row cerca">
+																<div class="col-sm-12">{% bootstrap_field form.fp_facturas  %}</div>
+															</div>			
+														</div>
+															<div class="row cerca">
+																<label class="control-label col-sm-6">Pto. Venta x Defecto:</label>
+																<div class="col-sm-6">{% bootstrap_field form.pto_vta_defecto show_label=False  %}</div>		
+															</div>																
+															<div class="row cerca">
+																<label class="control-label col-sm-6">Tipo Logo en Factura:</label>
+																<div class="col-sm-6">{% bootstrap_field form.tipo_logo_factura show_label=False  %}</div>		
+															</div>
+															{% if settings.DEBUG %}
+																<div class="row cerca">
+																	<label class="control-label col-sm-4">ID:</label>
+																	<div class="col-sm-4">{{settings.ENTIDAD_ID}}</div>		
+																</div>
+																<div class="row cerca">
+																	<label class="control-label col-sm-4">BASE:</label>
+																	<div class="col-sm-4">{{settings.ENTIDAD_DB}}</div>		
+																</div>
+																<div class="row cerca">
+																	<label class="control-label col-sm-4">DIR:</label>
+																	<div class="col-sm-4">{{settings.ENTIDAD_DIR}}</div>		
+																</div>
+															{% endif %}		
+													</div>
+									       		   	
+									       		   </div>
+									       		</fieldset>	
+									       		<fieldset>
+									       		<legend>CONFIGURACIÓN CORREO</legend>                        						
+									       		   <div class="col-xs-12">
+										       		   	<div class="row cerca">									       		   		
+											       		   		<div class="col-sm-10">{% bootstrap_field form.mail_servidor %}</div>
+											       		   		<div class="col-sm-2">{% bootstrap_field form.mail_puerto %}</div>										       		   		
+														</div>
+														<div class="row cerca">									       		   		
+											       		   		<div class="col-sm-6">{% bootstrap_field form.mail_usuario %}</div>
+											       		   		<div class="col-sm-6">{% bootstrap_field form.mail_password %}</div>										       		   		
+														</div>
+														<div class="row cerca">									       		   		
+											       		   		<div class="col-sm-12">{% bootstrap_field form.mail_cuerpo %}</div>										       		   		
+														</div>
+									       		   </div>
+									       		</fieldset>	
+									       										       	
+								          </div> 
+						              </div>  
+								</div>
+
+						{% if form.non_field_errors  %}
+					     	<script type="text/javascript">
+					     	alertify.errorAlert("{% for err in form.non_field_errors %}{{ err }}{% endfor %}");
+					     	</script>
+					    {% endif %}       
+				        {% for hidden in form.hidden_fields %} {{ hidden }} {% endfor %}
+				     	<br>		                 
+	                    
+	                    <div class="row">
+		                    <div class="col-xs-12">                                                        
+		                     <a href="{% url 'principal' %}" class="btn pull-left btn red-flamingo"><i class="fa fa-times"></i> Cancelar </a>
+		                     <button id="Guardar" type="submit" class="btn pull-right blue-steel"><i class="fa fa-check"></i> Guardar </button>
+		                    </div>
+	                   </div>
+				    </form>
+
+				  </div>
+	          </div>
+	         </div>
+	     	</div>                        
+	    </div>
+</div>	
+<script type="text/javascript">
+  $.fn.datepicker.dates['es'] = {
+    days: ["Domingo", "Lunes", "Martes", "Miércoles", "Jueves", "Viernes", "Sábado", "Domingo"],
+    daysShort: ["Dom", "Lun", "Mar", "Mié", "Jue", "Vie", "Sáb", "Dom"],
+    daysMin: ["Do", "Lu", "Ma", "Mi", "Ju", "Vi", "Sa", "Do"],
+    months: ["Enero", "Febrero", "Marzo", "Abril", "Mayo", "Junio", "Julio", "Agosto", "Septiembre", "Octubre", "Noviembre", "Diciembre"],
+    monthsShort: ["Ene", "Feb", "Mar", "Abr", "May", "Jun", "Jul", "Ago", "Sep", "Oct", "Nov", "Dic"],
+    today: "Hoy"
+  };
+  
+  $('.datepicker').datepicker({
+          format: "dd/mm/yyyy",
+          language: "es",
+          autoclose: true,
+          todayHighlight: true
+    });
+
+</script>
+{% endblock %}

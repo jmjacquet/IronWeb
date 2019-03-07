@@ -1,0 +1,33 @@
+<div class="table-responsive">
+<table class="table table-striped table-responsive table-hover table-no-bordered tabla_nueva nowrap">
+    <thead>
+        <tr>
+            <th style="width: 5%;">F.Creación</th>
+            <th style="width: 5%;">F.Programada</th>
+            <th style="width: 10%;">Creador</th>
+            <th style="width: 10%;">Asignado</th>
+            <th style="width: 20%;">Título</th>                                
+            <th style="width: 50%;">Detalle</th>    
+        </tr>
+    </thead>
+    <tbody>
+        {% for t in tareas %}
+        <tr {% if t.color %} class={{t.color}} {% endif %}>
+            <td><strong>{{t.fecha_creacion|date:'d/m/Y'}}</strong></td>
+            <td><strong>{{t.fecha|date:'d/m/Y'}}</strong></td>
+            <td>{{t.usuario_creador|default_if_none:''}}</td>
+            <td><strong>{{t.usuario_asignado|default_if_none:'Todos'}}</strong></td>
+            <td>{{t.title|default_if_none:''}} </td>
+            <td>
+               {{t.detalle|default_if_none:''}}                                                                            
+            </td>
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>
+</div>
+
+
+
+
+ 

@@ -1,0 +1,307 @@
+{% extends "index.html" %}
+{% load static from staticfiles %}
+{% load i18n %}
+{% load bootstrap3 %}
+{% load humanize %}
+{% block extra_js %}
+<script src="{% static 'js/highcharts.js' %}" type="text/javascript"></script>
+<script src="{% static 'js/exporting.js' %}" type="text/javascript"></script>
+{% endblock extra_js %}
+{% block main %} 
+    
+
+          <div class="col-md-12">   
+            
+            <div class="portlet box toolbar_blue">
+                <div class="portlet-title">
+                    <div class="caption bold">
+                                <i class="icon-pie"></i>REPORTE DISTRIBUCIÓN VENTAS/COMPRAS
+                    </div>
+                    <div class="actions">
+                            <button tittle="Búsqueda Avanzada" data-toggle="collapse" aria-expanded="true"  class="btn btn-circle active" data-target="#barra_busqueda" aria-controls="barra_busqueda"><i class="glyphicon glyphicon-search"></i></button>                          
+                    </div>
+
+                </div> 
+            </div>                 
+             <div class="row collapse" id="barra_busqueda">
+                        <div class="col-md-12">
+                         <form class="form" accept-charset="UTF-8" role="form" action="" method="post">
+                            {% csrf_token %} 
+                            <div class="barra_busqueda col-sm-12">                                                                                                                                  
+                                    <div class="col-sm-1">{% bootstrap_field form.pto_vta  %}</div>
+                                    <div class="col-sm-1">{% bootstrap_field form.fdesde  %}</div>                                
+                                    <div class="col-sm-1">{% bootstrap_field form.fhasta  %}</div>                                    
+                                    <div class="col-sm-1"><button class="btn btn-sm blue-hoki text-center" type="submit">Buscar</button></div>
+                            </div>     
+                            </form>         
+                        </div>
+                    </div>                                                      
+            <div class="row">  
+                <div class="col-sm-6">
+                   <div class="portlet box">
+                        <div class="portlet-title encabezado toolbar_blue">
+                            <div class="caption">
+                                <i class="icon-bar-chart "></i>
+                                <span class="caption-subject bold uppercase">DISTRIBUCIÓN VENTA PRODUCTOS</span>
+                                <span class="caption-helper">{{fdesde|date:'d/m/Y'}} - {{fhasta|date:'d/m/Y'}}</span>
+                            </div>                                        
+                        </div>
+                        <div class="portlet-body">
+                           <div class="row">                                 
+                                <div class="col-sm-12">                                
+                                                <div class="portlet-body">
+                                                   <div class="chart" style="padding: 0px; position: relative;"> 
+                                                                <div id="productos_ventas" style="width: 100%; height: 100%; margin: 0 auto"></div>
+                                                    </div>  
+                                                </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div> 
+                </div>                                          
+                <div class="col-sm-6">
+                   <div class="portlet box">
+                        <div class="portlet-title encabezado toolbar_blue">
+                            <div class="caption">
+                                <i class="icon-bar-chart "></i>
+                                <span class="caption-subject bold uppercase">DISTRIBUCIÓN COMPRA PRODUCTOS</span>
+                                <span class="caption-helper">{{fdesde|date:'d/m/Y'}} - {{fhasta|date:'d/m/Y'}}</span>
+                            </div>                                        
+                        </div>
+                        <div class="portlet-body">
+                           <div class="row">                                 
+                                <div class="col-sm-12">                                
+                                                <div class="portlet-body">
+                                                   <div class="chart" style="padding: 0px; position: relative;"> 
+                                                                <div id="productos_compras" style="width: 100%; height: 100%; margin: 0 auto"></div>
+                                                    </div>  
+                                                </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div> 
+                </div>
+                <div class="col-sm-6">
+                   <div class="portlet box">
+                        <div class="portlet-title encabezado toolbar_blue">
+                            <div class="caption">
+                                <i class="icon-bar-chart "></i>
+                                <span class="caption-subject bold uppercase">RANKING CLIENTES</span>
+                                <span class="caption-helper">{{fdesde|date:'d/m/Y'}} - {{fhasta|date:'d/m/Y'}}</span>
+                            </div>                                        
+                        </div>
+                        <div class="portlet-body">
+                           <div class="row">                                 
+                                <div class="col-sm-12">                                
+                                        <div class="portlet-body">
+                                           <div class="chart" style="padding: 0px; position: relative;"> 
+                                                        <div id="clientes_ventas" style="width: 100%; height: 100%; margin: 0 auto"></div>
+                                            </div>  
+                                        </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div> 
+                </div>                                          
+                <div class="col-sm-6">
+                   <div class="portlet box">
+                        <div class="portlet-title encabezado toolbar_blue">
+                            <div class="caption">
+                                <i class="icon-bar-chart "></i>
+                                <span class="caption-subject bold uppercase">RANKING PROVEEDORES</span>
+                                <span class="caption-helper">{{fdesde|date:'d/m/Y'}} - {{fhasta|date:'d/m/Y'}}</span>
+                            </div>                                        
+                        </div>
+                        <div class="portlet-body">
+                           <div class="row">                                 
+                                <div class="col-sm-12">                                
+                                        <div class="portlet-body">
+                                           <div class="chart" style="padding: 0px; position: relative;"> 
+                                                        <div id="proveedores_compras" style="width: 100%; height: 100%; margin: 0 auto"></div>
+                                            </div>  
+                                        </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div> 
+                </div>            
+                <div class="col-sm-6">
+                   <div class="portlet box">
+                        <div class="portlet-title encabezado toolbar_blue">
+                            <div class="caption">
+                                <i class="icon-bar-chart "></i>
+                                <span class="caption-subject bold uppercase">DISTRIBUCIÓN VENDEDORES</span>
+                                <span class="caption-helper">{{fdesde|date:'d/m/Y'}} - {{fhasta|date:'d/m/Y'}}</span>
+                            </div>                                        
+                        </div>
+                        <div class="portlet-body">
+                           <div class="row">                                 
+                                <div class="col-sm-12">                                
+                                                <div class="portlet-body">
+                                                   <div class="chart" style="padding: 0px; position: relative;"> 
+                                                                <div id="vendedores" style="width: 100%; height: 100%; margin: 0 auto"></div>
+                                                    </div>  
+                                                </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div> 
+                </div>       
+                                            
+            </div>
+                     
+        </div>
+<script type="text/javascript">
+  $.fn.datepicker.dates['es'] = {
+    days: ["Domingo", "Lunes", "Martes", "Miércoles", "Jueves", "Viernes", "Sábado", "Domingo"],
+    daysShort: ["Dom", "Lun", "Mar", "Mié", "Jue", "Vie", "Sáb", "Dom"],
+    daysMin: ["Do", "Lu", "Ma", "Mi", "Ju", "Vi", "Sa", "Do"],
+    months: ["Enero", "Febrero", "Marzo", "Abril", "Mayo", "Junio", "Julio", "Agosto", "Septiembre", "Octubre", "Noviembre", "Diciembre"],
+    monthsShort: ["Ene", "Feb", "Mar", "Abr", "May", "Jun", "Jul", "Ago", "Sep", "Oct", "Nov", "Dic"],
+    today: "Hoy"
+  };
+  
+  $('.datepicker').datepicker({
+          format: "dd/mm/yyyy",
+          language: "es",
+          autoclose: true,
+          todayHighlight: true
+    });
+
+
+jQuery(document).ready(function($) {          
+      
+    Highcharts.setOptions({
+    spacingBottom: 5,
+    spacingTop: 0,
+    spacingLeft: 0,
+    spacingRight: 0,    
+    colors: Highcharts.map(Highcharts.getOptions().colors, function (color) {
+        return {
+            radialGradient: {
+                cx: 0.5,
+                cy: 0.3,
+                r: 0.7
+            },
+            stops: [
+                [0, color],
+                [1, Highcharts.Color(color).brighten(-0.3).get('rgb')] // darken
+            ]
+        };
+    }),
+    chart: {
+        plotBackgroundColor: null,
+        plotBorderWidth: null,
+        plotShadow: false,
+        type: 'pie'
+    },   
+    tooltip: {
+        pointFormat: '{series.name}: <b>$ {point.y:.2f}</b>'
+    },
+    credits: {
+                  enabled: false
+                },
+    title: {
+            text : null,
+          },
+    plotOptions: {
+        pie: {
+            allowPointSelect: true,
+            cursor: 'pointer',
+            dataLabels: {
+                enabled: true,
+                format: '<b>{point.name}</b>: {point.percentage:.2f} %',
+                style: {
+                    color: (Highcharts.theme && Highcharts.theme.contrastTextColor) || 'black',
+                    fontSize: "8px",
+                },
+                connectorColor: 'silver',                 
+            }
+        }
+    },
+
+});
+
+    // Build the chart
+    Highcharts.chart('productos_ventas', {
+        
+        series: [{
+            name: 'Vendido',
+            data: [
+                {% for p in productos_vendidos %}
+                    { name: '{{p.producto__nombre|safe|truncatechars:50}}', y: {{p.tot|safe}}
+                    {% if forloop.first%}  ,sliced: true,  selected: true {% endif %} },           
+                {% endfor %}
+            ]
+        }]
+    });
+
+    Highcharts.chart('productos_compras', {
+        series: [{
+            name: 'Comprado',
+            data: [
+                {% for p in productos_comprados %}
+                    { name: '{{p.producto__nombre|default_if_none:"S/E"|truncatechars:50}}', y: {{p.tot|safe}} 
+                {% if forloop.first%}  ,sliced: true,  selected: true {% endif %}},           
+                {% endfor %}
+            ]
+        }]
+    });
+
+    Highcharts.chart('vendedores', {
+        tooltip: {
+            pointFormat: '{series.name}: <b>$ {point.y:.2f}</b>'
+        },
+        series: [{
+            name: 'Total Vendido',
+            data: [
+                {% for v in ranking_vendedores %}
+                    { name: '{{v.vendedor__apellido_y_nombre|default_if_none:"S/E"|truncatechars:50}}', y: {{v.tot|safe}} 
+                {% if forloop.first%}  ,sliced: true,  selected: true {% endif %}},           
+                {% endfor %}
+            ]
+        }]
+    });
+
+    Highcharts.chart('clientes_ventas', {
+        
+        tooltip: {
+            pointFormat: '{series.name}: <b>$ {point.y:.2f}</b>'
+        },
+        series: [{
+            name: 'Total',
+            data: [
+                {% for v in ranking_clientes %}
+                    { name: '{{v.entidad__apellido_y_nombre|default_if_none:"S/E"|truncatechars:50}}', y: {{v.tot|safe}} 
+                {% if forloop.first%}  ,sliced: true,  selected: true {% endif %}},           
+                {% endfor %}
+            ]
+        }]
+    });
+
+    Highcharts.chart('proveedores_compras', {
+        tooltip: {
+            pointFormat: '{series.name}: <b>$ {point.y:.2f}</b>'
+        },
+        series: [{
+            name: 'Total',
+            data: [
+                {% for v in ranking_proveedores %}
+                    { name: '{{v.entidad__apellido_y_nombre|default_if_none:"S/E"|truncatechars:50}}', y: {{v.tot|safe}} 
+                {% if forloop.first%}  ,sliced: true,  selected: true {% endif %}},           
+                {% endfor %}
+            ]
+        }]
+    });
+
+
+});
+
+</script>
+
+{% endblock main %}
+
+
+
+
+

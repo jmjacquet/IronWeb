@@ -1,0 +1,54 @@
+{% extends "base.html" %}
+{% load static from staticfiles %}
+
+{% block extra_css %}
+	<link rel="stylesheet" href="{% static 'css/login.css'%}?{% now "Ymd"%}" type="text/css" />
+{% endblock %}
+
+{% block principal %}	
+<body class="login">
+
+
+	<!-- END LOGO -->
+	<!-- BEGIN LOGIN -->
+	<div class="content">
+		<!-- BEGIN LOGIN FORM -->
+		<div>
+				<img  src="{% static 'images/login.png' %}?{% now "Ymd"%}"  class="logo_login" >				
+		
+		</div>
+		
+		<form class="login-form" accept-charset="UTF-8" role="form" action="/login/" method="post">
+	       {% csrf_token %}
+
+			<div class="form-group">
+				<!--ie8, ie9 does not support html5 placeholder, so we just show field title for that-->
+				<label class="control-label visible-ie8 visible-ie9">Usuario</label>
+				<input class="form-control form-control-solid placeholder-no-fix" type="text" required autofocus autocomplete="off" placeholder="Usuario" name="username"/>
+			</div>
+			<div class="form-group">
+				<label class="control-label visible-ie8 visible-ie9">Contraseña</label>
+				<input class="form-control form-control-solid placeholder-no-fix" type="password" required placeholder="Contraseña" name="password"/>
+			</div>
+			{% if messages %}
+              {% for message in messages %}
+                 <div class="alert alert-danger alert-dismissible" role="alert">
+                   <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button><strong>{{ message }}</strong>
+                 </div>
+              {% endfor %}
+           {% endif %}
+			<div class="form-actions">
+				<input type="submit" name="login"/ class="btn grey-gallery uppercase" value="Ingresar">				
+			</div>		
+
+		</form>
+		<!-- END LOGIN FORM -->
+		<!-- BEGIN FORGOT PASSWORD FORM -->
+		
+		<!-- END FORGOT PASSWORD FORM -->
+		
+	</div>
+</body>	
+
+
+{% endblock principal %}

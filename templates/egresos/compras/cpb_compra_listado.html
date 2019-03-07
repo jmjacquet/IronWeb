@@ -1,0 +1,153 @@
+{% extends "index.html" %}
+{% load static from staticfiles %}
+{% load i18n l10n %}
+{% load bootstrap3 %}
+{% load humanize %}
+{% block extra_js %}        
+    <script src="{% static 'js/scripts/scripts_listado_compras.js'%}?{% now "Ymd"%}" type="text/javascript"></script>
+{% endblock %}
+
+
+{% block main %} 
+          <div id="cargando" class="cargando text-center" >
+                        <span class="cargando-txt">CARGANDO...</span>
+                        <img class="cargando-img" src="{% static 'img/loading-bars.svg' %}">
+                    </div>    
+ 
+          <div class="col-md-12">                      
+            <div class="portlet box">
+                <div class="portlet-title encabezado toolbar_blue">
+                    <div class="caption bold">
+                                <i class="icon-note"></i>COMPROBANTES DE COMPRA <small>carga e impresión</small>
+                    </div>
+                    <div class="actions">
+                            <button tittle="Búsqueda Avanzada" data-toggle="collapse" aria-expanded="true"  class="btn btn-circle active" data-target="#barra_busqueda" aria-controls="barra_busqueda"><i class="glyphicon glyphicon-search"></i></button>
+                    </div>
+                </div>                 
+            </div>
+                    {% include "general/varios/barra_busqueda_compras.html" %}
+                    <div class="btn-group" style="float:left;margin-right:20px;margin-bottom:10px;"> 
+                    <a class="btn btn-sm blue-steel" style="float:left;margin-right:10px;" href="{% url 'cpb_compra_nuevo' %}">Nueva Compra</a>
+                    <button class="btn btn-sm blue-steel" id="btnPago" style="float:left;margin-right:10px;" >Pagar</button>                                                           
+                    <button class="btn btn-sm red-flamingo" value="" style="margin-right:10px;"  id="btnAnular">Anular</button>
+
+                    <button class="btn btn-sm blue-steel" value="" id="btnImprimirDetalles">Listado Detalles</button>                                       
+                     </div>
+                    <table id="dataTables-cpb_compra" style="display:none;"  class="table table-striped compact table-hover table-no-bordered tabla_nueva nowrap">         
+                        <thead>
+                            <tr>
+                                <th class="no-sort text-center" data-priority="1"></th>
+                                <th class="no-sort text-center" data-priority="2"></th>
+                                <th class="no-sort text-center" data-priority="3"></th>
+                                <th class="text-center" data-priority="6">Estado</th>
+                                <th class="text-center" data-priority="4">Fecha CPB</th>
+                                <th class="text-center" data-priority="8">Tipo</th>
+                                <th data-priority="5">Nº CPB</th>
+                                <th data-priority="9">Proveedor</th>
+                                <th class="text-right" data-priority="7">Saldo</th> 
+                                <th class="text-right" data-priority="10">Total</th>                               
+                                <th class="text-right" >Importe</th>
+                                <th class="text-right" data-priority="11">IVA</th>
+                                <th class="text-right">Perc./Imp.</th>                                
+                                <th>Descripción</th>                                
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for cpb in comprobantes %}
+                            <tr>
+                                <td></td>                                
+                                <td><div class="btn-group">
+                                      <button type="button" title="{{ cpb.pk|safe}}" class="btn btn-xs color_barra" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                        <i class="icon-settings"> </i> <span class="caret"></span>
+                                      </button>
+                                      <ul class="dropdown-menu dropdown-menu-default">
+                                        <li>{% include "general/varios/cpb_ver_dropdown.html" %}</li>
+                                        <li><a target="_blank" href="{% url 'imprimirFactura' id=cpb.pk %}"><i class=" icon-printer"></i> Imprimir</a></li>
+                                        <li><a href="{% url 'mandarEmail' id=cpb.pk %}"><i class="icon-envelope-open"></i> Enviar por Email</a></li>
+                                            <li role="separator" class="divider"></li>
+                                        <li><a href="{% url 'cpb_compra_editar' id=cpb.pk %}"  title="Editar" data-fm-callback="reload" ><i class="icon-note"></i> Editar</a></li>
+                                        <li><a href="{% url 'cpb_compra_clonar' id=cpb.pk %}"  title="Clonar" data-fm-callback="reload" ><i class="icon-book-open"></i> Clonar</a></li>
+                                            {% if cpb.estado.pk = 3 %}
+                                                {% if cpb.saldo > 0 %}
+                                                    <li><a href="#" 
+                                                    onClick="alerta= alertify.dialog('confirm').set({'labels':{ok:'Aceptar', cancel:'Cancelar'},'message': '¿DESEA REACTIVAR EL COMPROBANTE ACTUAL?',transition:'fade','onok': function(){ window.location.href = '{% url 'cpb_anular_reactivar' id=cpb.pk estado=1 %}'; },'oncancel': function(){ return true;} }); alerta.setting('modal', true); alerta.setHeader('ANULAR/REACTIVAR COMPROBANTE'); alerta.show(); return true;"><i class="icon-like"></i>Restablecer</a></li>
+                                                {% else %}
+                                                    <li><a href="#" 
+                                                    onClick="alerta= alertify.dialog('confirm').set({'labels':{ok:'Aceptar', cancel:'Cancelar'},'message': '¿DESEA REACTIVAR EL COMPROBANTE ACTUAL?',transition:'fade','onok': function(){ window.location.href = '{% url 'cpb_anular_reactivar' id=cpb.pk estado=2 %}'; },'oncancel': function(){ return true;} }); alerta.setting('modal', true); alerta.setHeader('ANULAR/REACTIVAR COMPROBANTE'); alerta.show(); return true;"><i class="icon-like"></i>Restablecer</a></li>
+                                                {% endif %}   
+
+                                            {% elif cpb.estado.pk < 3 %}
+                                                
+                                                <li><a href="#" 
+                                                onClick="alerta= alertify.dialog('confirm').set({'labels':{ok:'Aceptar', cancel:'Cancelar'},'message': '¿DESEA ANULAR EL COMPROBANTE ACTUAL?',transition:'fade','onok': function(){ window.location.href = '{% url 'cpb_anular_reactivar' id=cpb.pk estado=3  %}'; },'oncancel': function(){ return true;} }); alerta.setting('modal', true); alerta.setHeader('ANULAR/REACTIVAR COMPROBANTE'); alerta.show(); return true;" ><i class="icon-dislike"></i>Anular</a></li>
+                                                
+                                                {% if cpb.saldo > 0 %}
+                                                <li><a onclick="return abrir_modal('/egresos/pagos/comprobantes/?id_cpb={{cpb.id|safe}}');"><i class=" icon-note"></i>Orden de Pago</a></li>
+                                                {% endif %}
+                                                
+                                                                                            
+                                            {% endif %}
+                                            <li role="separator" class="divider"></li>
+                                            <li><a href="{% url 'cpb_editar_seguimiento' id=cpb.pk %}"  class="fm-update" data-fm-head="EDITAR SEGUIMIENTO"  title="Editar Seguimiento" data-fm-target="#object-{{ item.pk }}" data-fm-callback="reload" ><i class="icon-speech"></i>Seguimiento</a></li>
+                                            
+                                                 <li><a href="#" 
+                                                    onClick="alerta= alertify.dialog('confirm').set({'labels':{ok:'Aceptar', cancel:'Cancelar'},'message': '¿DESEA ELIMINAR LA COMPRA SELECCIONADA?',transition:'fade','onok': function(){ window.location.href = '{% url 'cpb_compra_eliminar' id=cpb.pk %}'; },'oncancel': function(){ return true;} }); alerta.setting('modal', true); alerta.setHeader('ELIMINAR COMPROBANTE'); alerta.show(); return true;"><i class="icon-trash"></i>Eliminar</a>
+                                                </li>      
+                                                                                  
+                                        
+
+                                      </ul>
+                                    </div>                              
+                                    {% if cpb.seguimiento %}  <i title="{{cpb.seguimiento}}" class="icon-speech icono_seguimiento"></i> {% endif %} 
+                                    {% if cpb.anulacion_motivo %}  <i title="{{cpb.anulacion_motivo}}" class="glyphicon glyphicon-exclamation-sign text-danger"></i> {% endif %} 
+                                    {% if cpb.fecha_envio_mail %}  <i title="Email enviado el {{cpb.fecha_envio_mail|date:'d/m/Y'}}" class="fa fa-envelope-o icono_seguimiento"></i> {% endif %}
+                                </td> 
+                                <td>{% if cpb.seleccionable %}
+                                    <input type="checkbox" class='tildado' id="chk_{{forloop.counter0}}" value="{{ cpb.pk|safe }}"/>
+                                    {% endif %}
+                                </td>
+                                <td class="listado_estado {{cpb.estado.color}}">{{cpb.estado}}</td>
+                                <td class="text-center" title="Fecha Creación: {{cpb.fecha_creacion|date:'d/m/Y H:i'}}">{{cpb.fecha_cpb|date:'d/m/Y'}}</td>
+                                <td class="text-center" title="{{ cpb.cpb_tipo|default_if_none:'' }}">{{ cpb.cpb_tipo.codigo|default_if_none:'' }}</td>
+                                <td>{{ cpb}}</td>                                
+                                <td  title="{{ cpb.entidad}}" >{% include "entidades/proveedor_ver.html" %}</td>                               
+                                <td class="importe">${{cpb.get_saldo|default_if_none:0|floatformat:2}}</td>                                
+                                <td class="importe">${{cpb.get_importe_total|default_if_none:0|floatformat:2}}</td>
+                                <td class="importe">${{cpb.get_importe_subtotal|default_if_none:0|floatformat:2}}<input class="hidden" value="{{ item.importe_total }}" 
+                                            id="importe_chk_{{forloop.counter0}}"/></td> 
+                                <td class="importe">${{cpb.get_importe_iva|default_if_none:0|floatformat:2}}</td>
+                                <td class="importe">${{cpb.get_importe_perc_imp|default_if_none:0|floatformat:2}}</td>
+                                <td  title="{{ cpb.descripcion}}">{{ cpb.descripcion|default_if_none:''|truncatechars:60 }}</td>                                
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                        <tfoot>
+                            <tr>
+                                <th></th>
+                                <th></th> 
+                                <th></th>                                 
+                                <th></th>
+                                <th></th>
+                                <th></th>
+                                <th></th>
+                                <th></th>                                                                
+                                <th class="importe"></th>                                
+                                <th class="importe"></th> 
+                                <th class="importe"></th> 
+                                <th class="importe"></th> 
+                                <th class="importe"></th>                                 
+                                <th></th>                                                                
+                            </tr>
+                        </tfoot>
+                    </table>                             
+            </div>
+
+    
+<div id="popup" class="modal fade " role="dialog"  data-backdrop="static"  data-keyboard="false"></div>   
+
+{% endblock main %}
+
+
+
+
+

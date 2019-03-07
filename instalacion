@@ -1,0 +1,267 @@
+Requirement already satisfied: Django==1.8.5 in /home/grupogua1/lib/python2.7 (from -r reqs.txt (line 1))
+Requirement already satisfied: Dozer==0.5 in /home/grupogua1/lib/python2.7 (from -r reqs.txt (line 2))
+Requirement already satisfied: Mako==1.0.3 in /home/grupogua1/lib/python2.7 (from -r reqs.txt (line 3))
+Requirement already satisfied: MarkupSafe==0.23 in /home/grupogua1/lib/python2.7 (from -r reqs.txt (line 4))
+Requirement already satisfied: Pillow==2.9.0 in /home/grupogua1/lib/python2.7 (from -r reqs.txt (line 5))
+Requirement already satisfied: PyJWT==1.0.0 in /home/grupogua1/lib/python2.7 (from -r reqs.txt (line 6))
+Requirement already satisfied: PyPDF2==1.25 in /home/grupogua1/lib/python2.7 (from -r reqs.txt (line 7))
+Requirement already satisfied: PySimpleSOAP==1.16 in /home/grupogua1/lib/python2.7 (from -r reqs.txt (line 8))
+Requirement already satisfied: Pyphen==0.9.1 in /home/grupogua1/lib/python2.7 (from -r reqs.txt (line 9))
+Requirement already satisfied: Unidecode==0.04.19 in /home/grupogua1/lib/python2.7 (from -r reqs.txt (line 10))
+Requirement already satisfied: WebOb==1.5.1 in /home/grupogua1/lib/python2.7 (from -r reqs.txt (line 11))
+Requirement already satisfied: app-version==0.2.1 in /home/grupogua1/lib/python2.7 (from -r reqs.txt (line 12))
+Requirement already satisfied: appdirs==1.4.3 in /home/grupogua1/lib/python2.7 (from -r reqs.txt (line 13))
+Requirement already satisfied: cached-property==1.3.1 in /home/grupogua1/lib/python2.7 (from -r reqs.txt (line 14))
+Requirement already satisfied: cffi==1.1.2 in /home/grupogua1/lib/python2.7 (from -r reqs.txt (line 15))
+Requirement already satisfied: characteristic==14.3.0 in /home/grupogua1/lib/python2.7 (from -r reqs.txt (line 16))
+Requirement already satisfied: colorama==0.3.3 in /home/grupogua1/lib/python2.7 (from -r reqs.txt (line 18))
+Collecting cryptography==1.0.1 (from -r reqs.txt (line 19))
+  Using cached cryptography-1.0.1.tar.gz
+Collecting cssselect==0.9.1 (from -r reqs.txt (line 20))
+  Using cached cssselect-0.9.1.tar.gz
+Collecting defusedxml==0.5.0 (from -r reqs.txt (line 21))
+  Using cached defusedxml-0.5.0-py2.py3-none-any.whl
+Collecting django-ajax-selects==1.5.0 (from -r reqs.txt (line 22))
+  Using cached django-ajax-selects-1.5.0.tar.gz
+Collecting django-appconf==1.0.2 (from -r reqs.txt (line 23))
+  Using cached django_appconf-1.0.2-py2.py3-none-any.whl
+Collecting django-bootstrap3==6.2.1 (from -r reqs.txt (line 24))
+  Using cached django-bootstrap3-6.2.1.tar.gz
+Collecting django-chosen==0.1 (from -r reqs.txt (line 25))
+  Using cached django-chosen-0.1.tar.gz
+Collecting django-crispy-forms==1.5.0 (from -r reqs.txt (line 26))
+  Using cached django_crispy_forms-1.5.0-py2-none-any.whl
+Collecting django-debug-toolbar==1.3.2 (from -r reqs.txt (line 27))
+  Using cached django_debug_toolbar-1.3.2-py2.py3-none-any.whl
+Collecting django-dowser==0.1.4 (from -r reqs.txt (line 28))
+  Using cached django-dowser-0.1.4.tar.gz
+Collecting django-easy-pdf==0.1.0 (from -r reqs.txt (line 29))
+  Using cached django-easy-pdf-0.1.0.zip
+Collecting django-extensions==1.6.1 (from -r reqs.txt (line 30))
+  Using cached django_extensions-1.6.1-py2.py3-none-any.whl
+Collecting django-extra-views==0.7.1 (from -r reqs.txt (line 31))
+  Using cached django_extra_views-0.7.1-py2.py3-none-any.whl
+Collecting django-firebird==1.8 (from -r reqs.txt (line 32))
+  Using cached django_firebird-1.8-py2.py3-none-any.whl
+Collecting django-fm==0.2.5 (from -r reqs.txt (line 33))
+  Using cached django-fm-0.2.5.tar.gz
+Collecting django-localflavor==1.5.2 (from -r reqs.txt (line 34))
+  Using cached django-localflavor-1.5.2.tar.gz
+Collecting django-material==0.8.0 (from -r reqs.txt (line 35))
+  Using cached django_material-0.8.0-py2.py3-none-any.whl
+Collecting django-suit==0.2.18 (from -r reqs.txt (line 36))
+  Using cached django-suit-0.2.18.tar.gz
+Collecting django-widget-tweaks==1.4.1 (from -r reqs.txt (line 37))
+  Using cached django_widget_tweaks-1.4.1-py2.py3-none-any.whl
+Collecting docopt==0.6.2 (from -r reqs.txt (line 38))
+  Using cached docopt-0.6.2.tar.gz
+Requirement already satisfied: enum34==1.1.4 in /home/grupogua1/lib/python2.7 (from -r reqs.txt (line 39))
+Collecting fdb==1.6 (from -r reqs.txt (line 40))
+  Using cached fdb-1.6.tar.gz
+Collecting firebirdsql==0.9.12 (from -r reqs.txt (line 41))
+  Using cached firebirdsql-0.9.12.tar.gz
+Collecting fpdf==1.7.2 (from -r reqs.txt (line 42))
+  Using cached fpdf-1.7.2.tar.gz
+Collecting html5lib==0.999999 (from -r reqs.txt (line 43))
+  Using cached html5lib-0.999999.tar.gz
+Requirement already satisfied: idna==2.1 in /home/grupogua1/lib/python2.7 (from -r reqs.txt (line 44))
+Requirement already satisfied: ipaddress==1.0.16 in /home/grupogua1/lib/python2.7 (from -r reqs.txt (line 45))
+Collecting isodate==0.5.4 (from -r reqs.txt (line 46))
+  Using cached isodate-0.5.4.tar.gz
+Collecting lxml==3.4.4 (from -r reqs.txt (line 47))
+  Using cached lxml-3.4.4.tar.gz
+Collecting mysqlclient==1.3.7 (from -r reqs.txt (line 48))
+  Using cached mysqlclient-1.3.7.tar.gz
+Collecting pipreqs==0.4.2 (from -r reqs.txt (line 49))
+  Using cached pipreqs-0.4.2-py2.py3-none-any.whl
+Requirement already satisfied: pyasn1==0.1.9 in /home/grupogua1/lib/python2.7 (from -r reqs.txt (line 50))
+Requirement already satisfied: pycparser==2.14 in /home/grupogua1/lib/python2.7 (from -r reqs.txt (line 51))
+Collecting python-dateutil==2.5.3 (from -r reqs.txt (line 52))
+  Using cached python_dateutil-2.5.3-py2.py3-none-any.whl
+Collecting python-slugify==1.2.0 (from -r reqs.txt (line 53))
+  Using cached python-slugify-1.2.0.tar.gz
+Collecting pytz==2017.2 (from -r reqs.txt (line 54))
+  Using cached pytz-2017.2-py2.py3-none-any.whl
+Collecting reportlab==3.2.0 (from -r reqs.txt (line 55))
+  Using cached reportlab-3.2.0.tar.gz
+Collecting requests==2.10.0 (from -r reqs.txt (line 56))
+  Using cached requests-2.10.0-py2.py3-none-any.whl
+Collecting requests-toolbelt==0.8.0 (from -r reqs.txt (line 57))
+  Using cached requests_toolbelt-0.8.0-py2.py3-none-any.whl
+Requirement already satisfied: six==1.10.0 in /home/grupogua1/lib/python2.7 (from -r reqs.txt (line 58))
+Requirement already satisfied: soap2py==1.16 in /home/grupogua1/lib/python2.7 (from -r reqs.txt (line 59))
+Collecting sqlparse==0.1.19 (from -r reqs.txt (line 60))
+  Using cached sqlparse-0.1.19.tar.gz
+Collecting suds==0.4 (from -r reqs.txt (line 61))
+  Using cached suds-0.4.tar.gz
+Collecting tinycss==0.3 (from -r reqs.txt (line 62))
+  Using cached tinycss-0.3.tar.gz
+Requirement already satisfied: tolerance==0.1.2 in /home/grupogua1/lib/python2.7 (from -r reqs.txt (line 63))
+Collecting virtualenv==13.1.0 (from -r reqs.txt (line 64))
+  Using cached virtualenv-13.1.0-py2.py3-none-any.whl
+Collecting xhtml2pdf==0.0.6 (from -r reqs.txt (line 65))
+  Using cached xhtml2pdf-0.0.6.zip
+Collecting xlrd==0.9.4 (from -r reqs.txt (line 66))
+  Using cached xlrd-0.9.4.tar.gz
+Requirement already satisfied: xlutils in /home/grupogua1/lib/python2.7 (from -r reqs.txt (line 67))
+Collecting xlwt==1.0.0 (from -r reqs.txt (line 68))
+  Using cached xlwt-1.0.0-py2.py3-none-any.whl
+Collecting yarg==0.1.9 (from -r reqs.txt (line 69))
+  Using cached yarg-0.1.9-py2.py3-none-any.whl
+Collecting zeep==2.4.0 (from -r reqs.txt (line 70))
+  Using cached zeep-2.4.0-py2.py3-none-any.whl
+Collecting chardet==2.3.0 (from -r reqs.txt (line 71))
+  Using cached chardet-2.3.0-py2.py3-none-any.whl
+Requirement already satisfied: setuptools in /usr/lib/python2.7/site-packages (from cryptography==1.0.1->-r reqs.txt (line 19))
+Requirement already satisfied: pip>=1.4.1 in /home/grupogua1/lib/python2.7/pip-9.0.1-py2.7.egg (from reportlab==3.2.0->-r reqs.txt (line 55))
+Installing collected packages: cryptography, cssselect, defusedxml, django-ajax-selects, django-appconf, django-bootstrap3, django-chosen, django-crispy-forms, sqlparse, django-debug-toolbar, django-dowser, django-easy-pdf, django-extensions, django-extra-views, django-firebird, django-fm, django-localflavor, django-material, django-suit, django-widget-tweaks, docopt, fdb, firebirdsql, fpdf, html5lib, isodate, lxml, mysqlclient, requests, yarg, pipreqs, python-dateutil, python-slugify, pytz, reportlab, requests-toolbelt, suds, tinycss, virtualenv, xhtml2pdf, xlrd, xlwt, zeep, chardet
+  Running setup.py install for cryptography: started
+    Running setup.py install for cryptography: finished with status 'error'
+    Complete output from command /usr/bin/python -u -c "import setuptools, tokenize;__file__='/tmp/pip-build-P65JHp/cryptography/setup.py';f=getattr(tokenize, 'open', open)(__file__);code=f.read().replace('\r\n', '\n');f.close();exec(compile(code, __file__, 'exec'))" install --record /tmp/pip-bjpROp-record/install-record.txt --single-version-externally-managed --compile:
+    running install
+    running build
+    running build_py
+    creating build
+    creating build/lib.linux-x86_64-2.7
+    creating build/lib.linux-x86_64-2.7/cryptography
+    copying src/cryptography/__about__.py -> build/lib.linux-x86_64-2.7/cryptography
+    copying src/cryptography/exceptions.py -> build/lib.linux-x86_64-2.7/cryptography
+    copying src/cryptography/utils.py -> build/lib.linux-x86_64-2.7/cryptography
+    copying src/cryptography/__init__.py -> build/lib.linux-x86_64-2.7/cryptography
+    copying src/cryptography/fernet.py -> build/lib.linux-x86_64-2.7/cryptography
+    creating build/lib.linux-x86_64-2.7/cryptography/x509
+    copying src/cryptography/x509/general_name.py -> build/lib.linux-x86_64-2.7/cryptography/x509
+    copying src/cryptography/x509/extensions.py -> build/lib.linux-x86_64-2.7/cryptography/x509
+    copying src/cryptography/x509/base.py -> build/lib.linux-x86_64-2.7/cryptography/x509
+    copying src/cryptography/x509/name.py -> build/lib.linux-x86_64-2.7/cryptography/x509
+    copying src/cryptography/x509/__init__.py -> build/lib.linux-x86_64-2.7/cryptography/x509
+    copying src/cryptography/x509/oid.py -> build/lib.linux-x86_64-2.7/cryptography/x509
+    creating build/lib.linux-x86_64-2.7/cryptography/hazmat
+    copying src/cryptography/hazmat/__init__.py -> build/lib.linux-x86_64-2.7/cryptography/hazmat
+    creating build/lib.linux-x86_64-2.7/cryptography/hazmat/primitives
+    copying src/cryptography/hazmat/primitives/constant_time.py -> build/lib.linux-x86_64-2.7/cryptography/hazmat/primitives
+    copying src/cryptography/hazmat/primitives/hmac.py -> build/lib.linux-x86_64-2.7/cryptography/hazmat/primitives
+    copying src/cryptography/hazmat/primitives/cmac.py -> build/lib.linux-x86_64-2.7/cryptography/hazmat/primitives
+    copying src/cryptography/hazmat/primitives/padding.py -> build/lib.linux-x86_64-2.7/cryptography/hazmat/primitives
+    copying src/cryptography/hazmat/primitives/serialization.py -> build/lib.linux-x86_64-2.7/cryptography/hazmat/primitives
+    copying src/cryptography/hazmat/primitives/__init__.py -> build/lib.linux-x86_64-2.7/cryptography/hazmat/primitives
+    copying src/cryptography/hazmat/primitives/hashes.py -> build/lib.linux-x86_64-2.7/cryptography/hazmat/primitives
+    creating build/lib.linux-x86_64-2.7/cryptography/hazmat/bindings
+    copying src/cryptography/hazmat/bindings/__init__.py -> build/lib.linux-x86_64-2.7/cryptography/hazmat/bindings
+    creating build/lib.linux-x86_64-2.7/cryptography/hazmat/backends
+    copying src/cryptography/hazmat/backends/interfaces.py -> build/lib.linux-x86_64-2.7/cryptography/hazmat/backends
+    copying src/cryptography/hazmat/backends/multibackend.py -> build/lib.linux-x86_64-2.7/cryptography/hazmat/backends
+    copying src/cryptography/hazmat/backends/__init__.py -> build/lib.linux-x86_64-2.7/cryptography/hazmat/backends
+    creating build/lib.linux-x86_64-2.7/cryptography/hazmat/primitives/interfaces
+    copying src/cryptography/hazmat/primitives/interfaces/__init__.py -> build/lib.linux-x86_64-2.7/cryptography/hazmat/primitives/interfaces
+    creating build/lib.linux-x86_64-2.7/cryptography/hazmat/primitives/twofactor
+    copying src/cryptography/hazmat/primitives/twofactor/hotp.py -> build/lib.linux-x86_64-2.7/cryptography/hazmat/primitives/twofactor
+    copying src/cryptography/hazmat/primitives/twofactor/utils.py -> build/lib.linux-x86_64-2.7/cryptography/hazmat/primitives/twofactor
+    copying src/cryptography/hazmat/primitives/twofactor/__init__.py -> build/lib.linux-x86_64-2.7/cryptography/hazmat/primitives/twofactor
+    copying src/cryptography/hazmat/primitives/twofactor/totp.py -> build/lib.linux-x86_64-2.7/cryptography/hazmat/primitives/twofactor
+    creating build/lib.linux-x86_64-2.7/cryptography/hazmat/primitives/asymmetric
+    copying src/cryptography/hazmat/primitives/asymmetric/rsa.py -> build/lib.linux-x86_64-2.7/cryptography/hazmat/primitives/asymmetric
+    copying src/cryptography/hazmat/primitives/asymmetric/utils.py -> build/lib.linux-x86_64-2.7/cryptography/hazmat/primitives/asymmetric
+    copying src/cryptography/hazmat/primitives/asymmetric/padding.py -> build/lib.linux-x86_64-2.7/cryptography/hazmat/primitives/asymmetric
+    copying src/cryptography/hazmat/primitives/asymmetric/dh.py -> build/lib.linux-x86_64-2.7/cryptography/hazmat/primitives/asymmetric
+    copying src/cryptography/hazmat/primitives/asymmetric/__init__.py -> build/lib.linux-x86_64-2.7/cryptography/hazmat/primitives/asymmetric
+    copying src/cryptography/hazmat/primitives/asymmetric/dsa.py -> build/lib.linux-x86_64-2.7/cryptography/hazmat/primitives/asymmetric
+    copying src/cryptography/hazmat/primitives/asymmetric/ec.py -> build/lib.linux-x86_64-2.7/cryptography/hazmat/primitives/asymmetric
+    creating build/lib.linux-x86_64-2.7/cryptography/hazmat/primitives/ciphers
+    copying src/cryptography/hazmat/primitives/ciphers/algorithms.py -> build/lib.linux-x86_64-2.7/cryptography/hazmat/primitives/ciphers
+    copying src/cryptography/hazmat/primitives/ciphers/base.py -> build/lib.linux-x86_64-2.7/cryptography/hazmat/primitives/ciphers
+    copying src/cryptography/hazmat/primitives/ciphers/__init__.py -> build/lib.linux-x86_64-2.7/cryptography/hazmat/primitives/ciphers
+    copying src/cryptography/hazmat/primitives/ciphers/modes.py -> build/lib.linux-x86_64-2.7/cryptography/hazmat/primitives/ciphers
+    creating build/lib.linux-x86_64-2.7/cryptography/hazmat/primitives/kdf
+    copying src/cryptography/hazmat/primitives/kdf/hkdf.py -> build/lib.linux-x86_64-2.7/cryptography/hazmat/primitives/kdf
+    copying src/cryptography/hazmat/primitives/kdf/pbkdf2.py -> build/lib.linux-x86_64-2.7/cryptography/hazmat/primitives/kdf
+    copying src/cryptography/hazmat/primitives/kdf/__init__.py -> build/lib.linux-x86_64-2.7/cryptography/hazmat/primitives/kdf
+    copying src/cryptography/hazmat/primitives/kdf/concatkdf.py -> build/lib.linux-x86_64-2.7/cryptography/hazmat/primitives/kdf
+    creating build/lib.linux-x86_64-2.7/cryptography/hazmat/bindings/openssl
+    copying src/cryptography/hazmat/bindings/openssl/binding.py -> build/lib.linux-x86_64-2.7/cryptography/hazmat/bindings/openssl
+    copying src/cryptography/hazmat/bindings/openssl/__init__.py -> build/lib.linux-x86_64-2.7/cryptography/hazmat/bindings/openssl
+    copying src/cryptography/hazmat/bindings/openssl/_conditional.py -> build/lib.linux-x86_64-2.7/cryptography/hazmat/bindings/openssl
+    creating build/lib.linux-x86_64-2.7/cryptography/hazmat/bindings/commoncrypto
+    copying src/cryptography/hazmat/bindings/commoncrypto/binding.py -> build/lib.linux-x86_64-2.7/cryptography/hazmat/bindings/commoncrypto
+    copying src/cryptography/hazmat/bindings/commoncrypto/__init__.py -> build/lib.linux-x86_64-2.7/cryptography/hazmat/bindings/commoncrypto
+    creating build/lib.linux-x86_64-2.7/cryptography/hazmat/backends/openssl
+    copying src/cryptography/hazmat/backends/openssl/rsa.py -> build/lib.linux-x86_64-2.7/cryptography/hazmat/backends/openssl
+    copying src/cryptography/hazmat/backends/openssl/backend.py -> build/lib.linux-x86_64-2.7/cryptography/hazmat/backends/openssl
+    copying src/cryptography/hazmat/backends/openssl/utils.py -> build/lib.linux-x86_64-2.7/cryptography/hazmat/backends/openssl
+    copying src/cryptography/hazmat/backends/openssl/x509.py -> build/lib.linux-x86_64-2.7/cryptography/hazmat/backends/openssl
+    copying src/cryptography/hazmat/backends/openssl/hmac.py -> build/lib.linux-x86_64-2.7/cryptography/hazmat/backends/openssl
+    copying src/cryptography/hazmat/backends/openssl/cmac.py -> build/lib.linux-x86_64-2.7/cryptography/hazmat/backends/openssl
+    copying src/cryptography/hazmat/backends/openssl/ciphers.py -> build/lib.linux-x86_64-2.7/cryptography/hazmat/backends/openssl
+    copying src/cryptography/hazmat/backends/openssl/__init__.py -> build/lib.linux-x86_64-2.7/cryptography/hazmat/backends/openssl
+    copying src/cryptography/hazmat/backends/openssl/hashes.py -> build/lib.linux-x86_64-2.7/cryptography/hazmat/backends/openssl
+    copying src/cryptography/hazmat/backends/openssl/dsa.py -> build/lib.linux-x86_64-2.7/cryptography/hazmat/backends/openssl
+    copying src/cryptography/hazmat/backends/openssl/ec.py -> build/lib.linux-x86_64-2.7/cryptography/hazmat/backends/openssl
+    creating build/lib.linux-x86_64-2.7/cryptography/hazmat/backends/commoncrypto
+    copying src/cryptography/hazmat/backends/commoncrypto/backend.py -> build/lib.linux-x86_64-2.7/cryptography/hazmat/backends/commoncrypto
+    copying src/cryptography/hazmat/backends/commoncrypto/hmac.py -> build/lib.linux-x86_64-2.7/cryptography/hazmat/backends/commoncrypto
+    copying src/cryptography/hazmat/backends/commoncrypto/ciphers.py -> build/lib.linux-x86_64-2.7/cryptography/hazmat/backends/commoncrypto
+    copying src/cryptography/hazmat/backends/commoncrypto/__init__.py -> build/lib.linux-x86_64-2.7/cryptography/hazmat/backends/commoncrypto
+    copying src/cryptography/hazmat/backends/commoncrypto/hashes.py -> build/lib.linux-x86_64-2.7/cryptography/hazmat/backends/commoncrypto
+    running egg_info
+    writing requirements to src/cryptography.egg-info/requires.txt
+    writing src/cryptography.egg-info/PKG-INFO
+    writing top-level names to src/cryptography.egg-info/top_level.txt
+    writing dependency_links to src/cryptography.egg-info/dependency_links.txt
+    writing entry points to src/cryptography.egg-info/entry_points.txt
+    warning: manifest_maker: standard file '-c' not found
+    
+    reading manifest file 'src/cryptography.egg-info/SOURCES.txt'
+    reading manifest template 'MANIFEST.in'
+    no previously-included directories found matching 'docs/_build'
+    warning: no previously-included files matching '*' found under directory 'vectors'
+    writing manifest file 'src/cryptography.egg-info/SOURCES.txt'
+    running build_ext
+    generating cffi module 'build/temp.linux-x86_64-2.7/_padding.c'
+    creating build/temp.linux-x86_64-2.7
+    generating cffi module 'build/temp.linux-x86_64-2.7/_constant_time.c'
+    generating cffi module 'build/temp.linux-x86_64-2.7/_openssl.c'
+    building '_openssl' extension
+    creating build/temp.linux-x86_64-2.7/build
+    creating build/temp.linux-x86_64-2.7/build/temp.linux-x86_64-2.7
+    gcc -pthread -fno-strict-aliasing -O2 -g -pipe -Wall -Wp,-D_FORTIFY_SOURCE=2 -fexceptions -fstack-protector-strong --param=ssp-buffer-size=4 -grecord-gcc-switches -m64 -mtune=generic -D_GNU_SOURCE -fPIC -fwrapv -DNDEBUG -O2 -g -pipe -Wall -Wp,-D_FORTIFY_SOURCE=2 -fexceptions -fstack-protector-strong --param=ssp-buffer-size=4 -grecord-gcc-switches -m64 -mtune=generic -D_GNU_SOURCE -fPIC -fwrapv -fPIC -I/usr/include/python2.7 -c build/temp.linux-x86_64-2.7/_openssl.c -o build/temp.linux-x86_64-2.7/build/temp.linux-x86_64-2.7/_openssl.o
+    build/temp.linux-x86_64-2.7/_openssl.c:686:6: error: conflicting types for ‘BIO_new_mem_buf’
+     BIO *BIO_new_mem_buf(void *, int);
+          ^
+    In file included from /usr/include/openssl/asn1.h:65:0,
+                     from build/temp.linux-x86_64-2.7/_openssl.c:402:
+    /usr/include/openssl/bio.h:692:6: note: previous declaration of ‘BIO_new_mem_buf’ was here
+     BIO *BIO_new_mem_buf(const void *buf, int len);
+          ^
+    build/temp.linux-x86_64-2.7/_openssl.c:2064:15: error: ‘SSLv2_method’ redeclared as different kind of symbol
+     SSL_METHOD* (*SSLv2_method)(void) = NULL;
+                   ^
+    In file included from build/temp.linux-x86_64-2.7/_openssl.c:491:0:
+    /usr/include/openssl/ssl.h:2282:19: note: previous declaration of ‘SSLv2_method’ was here
+     const SSL_METHOD *SSLv2_method(void); /* SSLv2 */
+                       ^
+    build/temp.linux-x86_64-2.7/_openssl.c:2065:15: error: ‘SSLv2_client_method’ redeclared as different kind of symbol
+     SSL_METHOD* (*SSLv2_client_method)(void) = NULL;
+                   ^
+    In file included from build/temp.linux-x86_64-2.7/_openssl.c:491:0:
+    /usr/include/openssl/ssl.h:2284:19: note: previous declaration of ‘SSLv2_client_method’ was here
+     const SSL_METHOD *SSLv2_client_method(void); /* SSLv2 */
+                       ^
+    build/temp.linux-x86_64-2.7/_openssl.c:2066:15: error: ‘SSLv2_server_method’ redeclared as different kind of symbol
+     SSL_METHOD* (*SSLv2_server_method)(void) = NULL;
+                   ^
+    In file included from build/temp.linux-x86_64-2.7/_openssl.c:491:0:
+    /usr/include/openssl/ssl.h:2283:19: note: previous declaration of ‘SSLv2_server_method’ was here
+     const SSL_METHOD *SSLv2_server_method(void); /* SSLv2 */
+                       ^
+    build/temp.linux-x86_64-2.7/_openssl.c: In function ‘_cffi_d_EC_GFp_nistp224_method’:
+    build/temp.linux-x86_64-2.7/_openssl.c:24763:3: warning: implicit declaration of function ‘EC_GFp_nistp224_method’ [-Wimplicit-function-declaration]
+       return EC_GFp_nistp224_method();
+       ^
+    build/temp.linux-x86_64-2.7/_openssl.c:24763:3: warning: return makes pointer from integer without a cast [enabled by default]
+    build/temp.linux-x86_64-2.7/_openssl.c: In function ‘_cffi_f_EC_GFp_nistp224_method’:
+    build/temp.linux-x86_64-2.7/_openssl.c:24773:12: warning: assignment makes pointer from integer without a cast [enabled by default]
+       { result = EC_GFp_nistp224_method(); }
+                ^
+    error: command 'gcc' failed with exit status 1
+    
+    ----------------------------------------

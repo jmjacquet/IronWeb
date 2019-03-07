@@ -1,0 +1,87 @@
+{% load static from staticfiles %}
+{% load bootstrap3 %}
+{% load crispy_forms_tags %}
+{% block main %}    
+
+<table width="100%"  class="table table-striped compact table-hover table-no-bordered tabla_nueva nowrap">
+  <tr>
+    <td width="10%" class=" borde_izq texto_der">Entidad/Institución:</td>
+    <td class="texto_izq" width="63%">{% if cpb.entidad.fact_razon_social %}{{cpb.entidad.fact_razon_social|upper}}{% else %}{{cpb.entidad.apellido_y_nombre|upper}}{% endif %}</td>
+    <td width="9%" class="texto_der">Localidad:</td>
+    <td width="18%" class="texto_izq borde_der">{{cpb.entidad.localidad|default_if_none:''|upper}}</td>
+  </tr>
+  <tr>
+    <td class="texto_der borde_izq">Dirección:</td>
+    <td class="texto_izq">{{cpb.entidad.domicilio|default_if_none:''|upper}}</td>
+    <td class="texto_der">Provincia:</td>
+    <td class="texto_izq borde_der">{{cpb.entidad.get_provincia_display|default_if_none:''|upper}}</td>
+  </tr>
+  
+  <tr>
+    <td class="texto_der borde_izq borde_abajo">I.V.A.:</td>
+    <td class="texto_izq borde_abajo">{{cpb.entidad.get_fact_categFiscal_display|default_if_none:''|upper}}</td>
+    <td class="texto_der borde_abajo">CUIT:</td>
+    <td class="texto_izq borde_der borde_abajo">{{cpb.entidad.fact_cuit|default_if_none:''|upper}}</td>
+  </tr> 
+  {% if cpb.cae %}
+   <tr>
+    <td class="texto_der borde_izq borde_abajo">CAE:</td>
+    <td class="texto_izq borde_abajo">{{cpb.cae|default_if_none:'No'|upper}}</td>
+    <td class="texto_der borde_abajo">Vto.CAE:</td>
+    <td class="texto_izq borde_der borde_abajo">{{cpb.cae_vto|default_if_none:''|upper}}</td>
+  </tr> 
+ {% endif %}
+  
+</table>
+<table width="100%" class="table table-striped compact table-hover table-no-bordered tabla_nueva nowrap">
+  <thead>
+    <th class="borde_izq borde_arriba borde_abajo tabla_header" width="10%">Cantidad</th>     
+    <th class="borde_arriba borde_abajo tabla_header" width="55%">Descripción</th>         
+    <th class="  borde_arriba borde_abajo tabla_header" width="10%">Precio Unit.</th>    
+    <th class="  borde_arriba borde_abajo tabla_header" width="10%">IVA</th>    
+    <th class="listado_der borde_der  borde_arriba borde_abajo tabla_header" width="15%">Total</th>
+  </thead>
+  <tbody>
+  {% for item in detalle_comprobante %}
+    <tr>
+      <td class="listado_der borde_izq">{{item.cantidad|default_if_none:0|floatformat:2}} {{item.producto.get_unidad_display}}</td>
+      <td class="listado_izq borde_izq">{{item.producto}} {% if item.detalle %} - {{item.detalle}}{% endif %}</td>    
+      <td class="listado_der borde_izq">${{item.importe_unitario|default_if_none:0|floatformat:2}}</td>      
+      <td class="listado_der borde_izq">{{item.tasa_iva|default_if_none:''}}</td>
+      <td class="listado_der borde_der borde_izq">${{item.importe_total|default_if_none:0|floatformat:2}}</td>
+    </tr>       
+  {% endfor detalle_comprobante %}
+  </tbody>
+  <tfoot>
+     <tr>
+       <th colspan="3"></th>
+       <th class="texto_der">Total:</th>
+       <th>${{cpb.importe_total|default_if_none:0|floatformat:2}}</th>
+     </tr>
+    </tfoot>   
+ </table>
+ {% if cpb.cpb_tipo.usa_ctacte %}
+ <table width="100%" class="table table-striped compact table-hover table-no-bordered tabla_nueva nowrap">
+  <thead>
+    <th class="tabla_header" width="80%">Forma de Pago</th>         
+    <th class="tabla_header text-right" width="20%">Saldo</th>         
+  </thead> 
+  <tbody>  
+    <tr>      
+      <td class="listado_izq borde_izq">
+        {% if cobranzas %}
+           {% for p in cobranzas %}
+            {{p}}&nbsp;
+           {% endfor cobranzas %}
+         {% else %}CUENTA CORRIENTE 
+         {% endif %}      
+       </td>     
+       <td class="text-right borde_der borde_izq"><strong>${{cpb.saldo|default_if_none:0|floatformat:2}}</strong></td>
+    </tr> 
+  </tbody>
+  </table> 
+  {% endif %}
+
+<button data-dismiss="modal" class="btn pull-left btn red-flamingo" type="button"><i class="fa fa-times"></i>Cancelar</button>
+<a class="btn pull-right blue-steel" target="_blank" href="{% url 'imprimirFactura' id=cpb.pk %}">Imprimir</a>
+{% endblock main %}      

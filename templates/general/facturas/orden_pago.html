@@ -1,0 +1,127 @@
+{% load static from staticfiles %}
+{% load humanize %}
+{% load comprobantes_filters %}
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<title>{{cpb|upper}}</title>
+
+<style type="text/css">
+@import url("{% static 'css/reportes_factura.css'%}");
+
+ @page {
+         margin: 0.5cm 0.5cm 0.5cm 0.5cm;
+         padding: 0;         
+         @frame footer {
+                        -pdf-frame-content: page-footer;
+                        bottom: 0.5cm;
+                        height: 3cm;
+                        margin-right: 0.5cm;                        
+                        margin-left: 0.5cm;                        
+                        width: 100%;
+                    }
+         @frame header {
+                        -pdf-frame-content: page-header;
+                        margin-top: 0cm;
+                        margin-right: 1cm;                        
+                        margin-left: 1cm;
+                        margin-bottom: 1cm;
+                        height: 2cm;                      
+                    }
+         }
+</style>
+</head>
+
+<body>  
+{% include 'general/facturas/encabezado.html'%}
+<table width="100%" >
+  <tr>
+    <td width="10%" class=" borde_izq texto_der">Señor/es:</td>
+    <td class="texto_izq" width="63%">{% if cpb.entidad.fact_razon_social %}{{cpb.entidad.fact_razon_social|upper}}{% else %}{{cpb.entidad.apellido_y_nombre|upper}}{% endif %}</td>
+    <td width="9%" class="texto_der">Localidad:</td>
+    <td width="18%" class="texto_izq borde_der">{{cpb.entidad.localidad|default_if_none:''|upper}}</td>
+  </tr>
+  <tr>
+    <td class="texto_der borde_izq">Dirección:</td>
+    <td class="texto_izq">{% if cpb.entidad.fact_direccion %}{{cpb.entidad.fact_direccion|default_if_none:''|upper}}{% else %}{{cpb.entidad.domicilio|default_if_none:''|upper}}{% endif %}</td>
+    <td class="texto_der">Provincia:</td>
+    <td class="texto_izq borde_der">{{cpb.entidad.get_provincia_display|upper}}</td>
+  </tr>
+  <tr>
+    <td class="texto_der borde_izq borde_abajo">I.V.A.:</td>
+    <td class="texto_izq borde_abajo">{{cpb.entidad.get_fact_categFiscal_display|default_if_none:''|upper}}</td>
+    <td class="texto_der borde_abajo">CUIT:</td>
+    <td class="texto_izq borde_der borde_abajo">{{cpb.entidad.fact_cuit|default_if_none:''}}</td>
+  </tr> 
+  <tr>
+    <td class="texto_der borde_izq">Observaciones:</span></td>
+    <td colspan="3" rowspan="2" valign="top" class="texto_izq borde_der borde_abajo">{{cpb.observacion|default_if_none:''}}</td>
+  </tr>
+  <tr>
+    <td class="texto_der borde_abajo borde_izq">&nbsp;</td>
+  </tr> 
+</table>
+<br>
+<h3>Valores Entregados </h4>
+<table width="100%" class="tabla">
+  <thead>      
+    <th class="borde_izq borde_arriba borde_abajo tabla_header" width="20%">Tipo</th>
+    <th class="borde_arriba borde_abajo tabla_header" width="22%">Cuenta</th>
+    <th class="borde_arriba borde_abajo tabla_header" width="15%">Detalle</th>
+    <th class="borde_arriba borde_abajo tabla_header" width="8%">Fecha</th>
+    <th class="borde_arriba borde_abajo tabla_header" width="18%">Banco</th>
+    <th class="borde_arriba borde_abajo tabla_header" width="10%">Nº Cheque</th>
+    <th class="borde_der  borde_arriba borde_abajo tabla_header" width="10%">Importe</th>
+  </thead>
+  {% for item in pagos %}
+    <tr>
+      <td class="listado_izq borde_izq">{{item.tipo_forma_pago|default_if_none:''}}</td>
+      <td class="listado_izq borde_izq">{{item.cta_egreso|default_if_none:''}}</td>
+      <td class="listado_izq borde_izq"><small>{{item.detalle|default_if_none:''}}</small></td>
+      <td class="listado_der borde_izq">{{item.mdcp_fecha|date:'d/m/Y'}}</td>
+      <td class="listado_izq borde_izq"><small>{{item.mdcp_banco|default_if_none:''}}</small></td>
+      <td class="listado_der borde_izq">{{item.mdcp_cheque|default_if_none:''}}</td>
+      <td class="listado_der borde_der borde_izq">${{item.importe|default_if_none:0|floatformat:2|intcomma}}</td>
+    </tr>       
+  {% endfor detalle_comprobante %}  
+  <tr class="borde_izq borde_der borde_arriba borde_abajo ">
+    <td colspan="7" class="tabla_footer">Subtotal: ${{cpb.importe_total|default_if_none:0|floatformat:2|intcomma}}</td>
+  </tr>
+</table>
+{% if cobranzas %}
+<br>
+<h3>En concepto de cancelación de documentos y adelantos </h3>
+<table width="100%" class="tabla">
+  <thead>      
+    <th class="borde_izq borde_arriba borde_abajo tabla_header" width="60%">Tipo</th>
+    <th class="borde_arriba borde_abajo tabla_header" width="10%">Fecha</th>    
+    <th class="borde_arriba borde_abajo tabla_header" width="20%">Número</th>
+    <th class="borde_der borde_arriba borde_abajo tabla_header" width="20%">Importe</th>
+  </thead>
+  {% for c in cobranzas %}
+    <tr>
+      <td class="listado_izq borde_izq">{{c.cpb_factura.get_cpb_tipo|default_if_none:''}}</td>
+      <td class="listado_izq borde_izq">{{c.cpb_factura.fecha_cpb|date:'d/m/Y'}}</td>
+      <td class="listado_izq borde_izq">{{c.cpb_factura.get_numero|default_if_none:''}}</td>      
+      <td class="listado_der borde_der borde_izq">${{c.importe_total|default_if_none:0|floatformat:2|intcomma}}</td>
+    </tr>       
+  {% endfor detalle_comprobante %}  
+  <tr class="borde_izq borde_der borde_arriba borde_abajo ">
+    <td colspan="4" class="tabla_footer">Subtotal: ${{cpb.importe_total|default_if_none:0|floatformat:2|intcomma}}</td>
+  </tr>
+</table>
+{% endif %}
+<div id="page-footer">
+  <table width="100%" align="center" >    
+    <tr>
+      <td width="90%" class="listado_final borde_izq borde_arriba borde_abajo tabla_footer">TOTAL:</td>
+      <td width="10%" class="listado_final borde_der borde_arriba borde_abajo tabla_footer">$ {{cpb.importe_total|default_if_none:0|floatformat:2|intcomma}}</td>
+    </tr>
+      
+  </table>
+</div>
+
+</body>
+</html>

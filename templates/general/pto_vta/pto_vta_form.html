@@ -1,0 +1,122 @@
+{% extends "index.html" %}
+{% load static from staticfiles %}
+{% load bootstrap3 %}
+{% load i18n %}
+{% load crispy_forms_tags %}
+{% load humanize %}
+
+{% block extra_css %}
+ 	<link rel="stylesheet" href="{% static 'css/abms.css'%}?{% now "Ymd"%}" type="text/css" >  
+{% endblock %}
+{% block extra_js %}        
+ <script src="{% static 'js/scripts/scripts_pto_venta.js'%}?{% now "Ymd"%}" type="text/javascript"></script>
+{% endblock %}
+
+
+{% block main %}
+<div class="col-md-12 col-xs-12">
+      	<div class="row">     
+	        <div class="col-xs-12" >  
+	          <div class="portlet box toolbar_blue panel_centrado">
+                <div class="portlet-title">
+                    <div class="caption bold">
+                                <i class="fa fa-asterisk"></i>CONFIGURACIÓN PUNTO DE VENTA {% if nro %}{{nro|safe}} {% endif %}
+                    </div>                    
+                </div>             
+              	<div class="portlet-body">
+		           <div class="col-sm-12">	
+		            
+				    <form role="form" class="form cpb form-horizontal " method="POST" action="" id="form-alta" enctype="multipart/form-data">
+				     {% csrf_token %}         
+				        {{ form.media }}
+				         <div class="row">
+					         <div class="col-xs-12">
+						        <div class="row ">							       	
+								       	<div class="col-xs-12">
+								       	  <div class="row">										       	
+										       		<fieldset>
+										       		<legend>DATOS GENERALES</legend>												      
+												    <div class="col-xs-12">
+										                <div class="row cerca">
+													       	{% if not nro %}<div class="col-sm-1">{% bootstrap_field form.numero %}</div>{% endif %}
+													       	<div class="col-sm-3">{% bootstrap_field form.cuit %}</div>
+													       	<div class="col-sm-3">{% bootstrap_field form.nombre %}</div>							       	
+													       	{% if not nro %}<div class="col-sm-5">{% else %}<div class="col-sm-6">{% endif %}{% bootstrap_field form.nombre_fantasia %}</div>													       	
+													     </div>
+														 <div class="row cerca">
+													       	<div class="col-sm-5">{% bootstrap_field form.domicilio %}</div>
+													       	<div class="col-sm-1">{% bootstrap_field form.cod_postal %}</div>	
+													       	<div class="col-sm-3">{% bootstrap_field form.localidad %}</div>
+													       	<div class="col-sm-3">{% bootstrap_field form.provincia %}</div>
+													     </div>
+													     <div class="row cerca">
+													       	<div class="col-sm-3">{% bootstrap_field form.email %}</div>
+													       	<div class="col-sm-3">{% bootstrap_field form.telefono %}</div>		
+													       	<div class="col-sm-3">{% bootstrap_field form.celular %}</div>	
+													       	<div class="col-sm-3">{% bootstrap_field form.es_sucursal %}</div>						
+													     </div>
+										            </div>                                       						         
+										       		</fieldset>										       	
+									      </div>
+									   
+					                      								       
+								          <div class="row">
+								          	<div class="col-sm-12">										       	
+									       		<fieldset>
+									       		<legend>CONFIGURACIÓN TRIBUTARIA/FACTURACIÓN</legend>										       		
+										       		<div class="col-sm-6">
+										       			<div class="row cerca">
+													       	<div class="col-sm-3">{% bootstrap_field form.fecha_inicio_activ %}</div>
+													       	<div class="col-sm-5">{% bootstrap_field form.categ_fiscal %}</div>
+													       	<div class="col-sm-4">{% bootstrap_field form.iibb %}</div>
+													    </div>
+													    <div class="row cerca">
+													    	<div class="col-sm-6">{% bootstrap_field form.fe_electronica %}</div>
+															
+														</div>
+													</div>
+													<div class="col-sm-6">    
+														
+														<div class="row cerca">
+									       		   			<label class="control-label col-sm-6">Nombre Archivo CRT:</label>
+															<div class="col-sm-6">{% bootstrap_field form.fe_crt show_label=False  %}</div>														
+														</div>
+													    <div class="row cerca">				
+															<label class="control-label col-sm-6">Nombre Archivo KEY:</label>
+															<div class="col-sm-6">{% bootstrap_field form.fe_key show_label=False  %}</div>
+														</div>													    
+														<div class="row cerca">
+																<label class="control-label col-sm-6">Tipo Logo en Factura:</label>
+																<div class="col-sm-6">{% bootstrap_field form.tipo_logo_factura show_label=False  %}</div>		
+														</div>																	
+
+													</div>
+												</fieldset>		
+									       	</div>
+						              </div>  
+								</div>
+
+						{% if form.non_field_errors  %}
+					     	<script type="text/javascript">
+					     	alertify.errorAlert("{% for err in form.non_field_errors %}{{ err }}{% endfor %}");
+					     	</script>
+					    {% endif %}       
+				        {% for hidden in form.hidden_fields %} {{ hidden }} {% endfor %}
+				     	<br>		                 
+	                    
+	                    <div class="row">
+		                    <div class="col-xs-12">                                                        
+		                     <a href="{% url 'pto_vta_listado' %}" class="btn pull-left btn red-flamingo"><i class="fa fa-times"></i> Cancelar </a>
+		                     <button id="Guardar" type="submit" class="btn pull-right blue-steel"><i class="fa fa-check"></i> Guardar </button>
+		                    </div>
+	                   </div>
+				    </form>
+
+				  </div>
+	          </div>
+	         </div>
+	     	</div>                        
+	    </div>
+</div>	
+
+{% endblock %}

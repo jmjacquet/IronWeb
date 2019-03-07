@@ -1,0 +1,19 @@
+{% load i18n %}
+{% load static from staticfiles %}
+{% load crispy_forms_tags %}
+{% load bootstrap3 %}
+
+<div id="form-container">
+    <form role="form" class="form " method="POST" action="" id="form-alta" enctype="multipart/form-data">
+     {% csrf_token %}         
+        {{ form.media }}
+	         <div class="col-xs-12">
+		         <div class="row">										
+					<div class="col-sm-3">{% bootstrap_field form.precio_costo %}</div>																		  
+					<div class="col-sm-3">{% bootstrap_field form.precio_cimp %}</div>																		  
+					<div class="col-sm-3">{% bootstrap_field form.coef_ganancia %}</div>																		  
+					<div class="col-sm-3">{% bootstrap_field form.precio_venta %}</div>		
+			  	</div>	
+			</div>
+    </form>
+</div>

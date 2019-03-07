@@ -1,0 +1,101 @@
+{% load static from staticfiles %}
+{% load humanize %} 
+{% load comprobantes_filters %}
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<title>{{cpb|upper}}</title>
+
+<style type="text/css">
+@import url("{% static 'css/reportes_factura.css'%}");
+
+
+
+ @page {
+         margin: 0.5cm 0.5cm 1cm 0.5cm;
+         padding: 0;         
+         @frame footer {
+                        -pdf-frame-content: page-footer;
+                        bottom: 0cm;
+                        height: 1 cm;
+                        margin-right: 0.5cm;                        
+                        margin-left: 0.5cm;                        
+                        width: 100%;
+                    }
+        
+         }
+          @frame header_frame  {
+                        -pdf-frame-content: page-header;
+                        margin-top: 0cm;
+                        margin-right: 1cm;                        
+                        margin-left: 1cm;
+                        margin-bottom: 1cm;
+                        height: 4cm;                      
+                    }
+</style>
+</head>
+
+<body>  
+<div id="page-header">
+{% include 'general/varios/encabezado_gral.html'%}
+<h2 class="nombre_cpb">DETALLE COMPROBANTES</h2>
+</div>
+<table class="tabla" width="100%" border="0" cellspacing="0" >
+  
+  {% regroup cpbs_detalles by cpb_comprobante as lista_cpbs %}
+  {% for cpb in lista_cpbs %}
+    <tr class="" >
+     <td class="tabla_header texto_cen borde_izq borde_arriba">{{cpb.grouper}}</td>
+     <td class="tabla_header texto_izq borde_arriba">Señor/es: {{cpb.grouper.entidad|default_if_none:''|upper}}</td> 
+     <td class="tabla_header texto_der borde_arriba">Fecha:</td><td class="tabla_header texto_izq borde_der borde_arriba">{{cpb.grouper.fecha_cpb|date:'d/m/Y'}}</td>
+    </tr>
+     <tr class="" >
+     <td class="tabla_header texto_cen borde_izq {% if not cpb.grouper.cae %}borde_abajo{% endif %}">{{cpb.grouper.cpb_tipo.nombre|upper}}</td>
+     <td class="tabla_header texto_izq {% if not cpb.grouper.cae %}borde_abajo{% endif %}">Dirección: {% if cpb.grouper.entidad.fact_direccion %}{{cpb.grouper.entidad.fact_direccion|default_if_none:''|upper}}{% else %}{{cpb.grouper.entidad.domicilio|default_if_none:''|upper}}{% endif %} - {{cpb.grouper.entidad.localidad|default_if_none:''|upper}}</td> 
+     <td class="tabla_header texto_der {% if not cpb.grouper.cae %}borde_abajo{% endif %}">Vencimiento:</td><td class="tabla_header texto_izq {% if not cpb.grouper.cae %}borde_abajo{% endif %} borde_der">{{cpb.grouper.fecha_vto|date:'d/m/Y'}}</td>
+    </tr>
+    {% if cpb.grouper.cae %}
+    <tr class="" >
+     <td class="tabla_header texto_cen borde_izq borde_abajo"></td>
+     <td class="tabla_header texto_izq borde_abajo">CAE: {{cpb.grouper.cae}}</td> 
+     <td class="tabla_header texto_der borde_abajo">Vto. CAE:</td>
+     <td class="tabla_header texto_izq borde_abajo borde_der">{{cpb.grouper.cae_vto|date:'d/m/Y'}}</td>
+    </tr>
+    {% endif %}
+     
+          {% for item in cpb.list %}
+          <tr class="">
+            <td width="20%"></td>
+            <td width="50%" class="borde_der borde_izq borde_abajo">{{item.producto}}{% if item.detalle %} ({{item.detalle}}){% endif %} </td>
+            <td width="15%" class="listado_der borde_der borde_izq borde_abajo">{{item.cantidad}}{{item.producto.get_unidad_display}}</td>
+            <td width="15%" class="listado_der borde_der borde_abajo">$ {{item.importe_total|default_if_none:0|intcomma}}</td>
+          </tr>
+          {% endfor %}
+    
+    <tr>
+      <td colspan="2"></td>
+      <td class="borde_izq borde_abajo borde_der tabla_footer">TOTAL</td><td width="15%" class="tabla_footer borde_abajo borde_der" >${{cpb.grouper.importe_total}}</td>
+    </tr>
+    {% if cpb.grouper.saldo > 0 %}
+    <tr>
+      <td colspan="2"></td>
+      <td class="borde_izq borde_abajo borde_der tabla_footer">SALDO</td><td width="15%" class="tabla_footer borde_abajo borde_der" >${{cpb.grouper.saldo}}</td>
+    </tr>
+    {% endif%}
+    <tr><td></td></tr>
+  {% endfor %}
+</table>
+
+<div id="page-footer">
+  <table class="tabla" width="100%" border="0" cellspacing="0">
+    <tr>
+      <td width="90%" class="pie_sistema"><img alt="" class="pie_logo" src="{% static 'images/logo_iron.png' %}"/>&nbsp;&nbsp;IRONweb Gestión & Facturación - {{fecha|date:'d/m/Y'}} </td>
+      <td width="10%" class="pie_texto"><pdf:pagenumber /> de <pdf:pagecount/> </td>
+    </tr>
+  </table>    
+</div>
+
+</body>
+</html>

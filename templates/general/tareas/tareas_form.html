@@ -1,0 +1,92 @@
+{% extends "index.html" %}
+{% load static from staticfiles %}
+{% load bootstrap3 %}
+{% load i18n %}
+{% load crispy_forms_tags %}
+{% load humanize %}
+
+{% block extra_css %}
+ 	<link rel="stylesheet" href="{% static 'css/comprobantes.css'%}?{% now "Ymd"%}" type="text/css" >  
+{% endblock %}
+{% block extra_js %}        
+
+    {% block modales_js %} 
+    {% endblock %}
+
+{% endblock %}
+
+
+{% block main %}
+<div class="col-md-12 col-xs-12">
+      	<div class="row">     
+	        <div class="col-xs-12" >  
+	          <div class="portlet box toolbar_red panel_centrado">
+                <div class="portlet-title">
+                    <div class="caption bold">
+                                <i class="fa fa-exclamation-triangle"></i>ASIGNACIóN - CARGA DE TAREAS
+                    </div>
+                </div>             
+              	<div class="portlet-body">
+		           <div class="col-sm-12">	
+		             <form role="form" class="form form-horizontal cpb" method="POST" action="" id="form-alta">
+					     {% csrf_token %}   	           
+					     {{ form.non_field_errors }}					     
+					     {{ form.non_form_errors  }}
+					     <div class="row">
+						    <div class="col-sm-8"> 							     							        
+								{% bootstrap_field form.title show_label=True%}					         					         								
+						    </div>
+						    <div class="col-sm-2"> 							     							        
+						     	{% bootstrap_field form.usuario_asignado show_label=True %}
+						 	</div>
+						    <div class="col-sm-2"> 							     							        
+						     	{% bootstrap_field form.fecha show_label=True %}
+						 	</div>
+		     		    </div>	
+					    <div class="row">
+						      <div class="col-sm-12"> 							     
+							             		{% bootstrap_field form.detalle show_label=True%}					         					         								
+						     </div>
+		     		    </div>	
+		     		   
+	    		        {% if form.non_field_errors  %}
+					     	<script type="text/javascript">
+					     	alertify.errorAlert("{% for err in form.non_field_errors %}{{ err }}{% endfor %}");
+					     	</script>
+					    {% endif %}       
+				        {% for hidden in form.hidden_fields %} {{ hidden }} {% endfor %}
+				     	<br>		                 
+	                    
+	                    <div class="row">
+		                    <div class="col-xs-12">                                                        
+		                     <a href="{% url 'tareas_listado' %}" class="btn pull-left btn red-flamingo"><i class="fa fa-times"></i> Cancelar </a>
+		                     <button id="Guardar" type="submit" class="btn pull-right red-sunglo"><i class="fa fa-check"></i> Guardar </button>
+		                    </div>
+	                   </div>
+		               
+				    </form>
+				  </div>
+	          </div>
+	         </div>
+	     	</div>                        
+	    </div>
+</div>	
+<script type="text/javascript">
+  $.fn.datepicker.dates['es'] = {
+    days: ["Domingo", "Lunes", "Martes", "Miércoles", "Jueves", "Viernes", "Sábado", "Domingo"],
+    daysShort: ["Dom", "Lun", "Mar", "Mié", "Jue", "Vie", "Sáb", "Dom"],
+    daysMin: ["Do", "Lu", "Ma", "Mi", "Ju", "Vi", "Sa", "Do"],
+    months: ["Enero", "Febrero", "Marzo", "Abril", "Mayo", "Junio", "Julio", "Agosto", "Septiembre", "Octubre", "Noviembre", "Diciembre"],
+    monthsShort: ["Ene", "Feb", "Mar", "Abr", "May", "Jun", "Jul", "Ago", "Sep", "Oct", "Nov", "Dic"],
+    today: "Hoy"
+  };
+  
+  $('.datepicker').datepicker({
+          format: "dd/mm/yyyy",
+          language: "es",
+          autoclose: true,
+          todayHighlight: true
+    });
+
+</script>
+{% endblock %}

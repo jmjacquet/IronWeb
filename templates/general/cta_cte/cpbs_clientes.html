@@ -1,0 +1,230 @@
+{% extends "index.html" %}
+{% load static from staticfiles %}
+{% load i18n %}
+{% load bootstrap3 %}
+{% load humanize %}
+{% block main %} 
+    
+        <div class="row">
+          <div class="col-md-12">   
+            <div class="portlet box blue-hoki">
+                <div class="portlet-title">
+                    <div class="caption">
+                                <i class="icon-user"></i>COMPROBANTES CLIENTES 
+
+                    </div>
+                </div> 
+            </div>                    
+                    <div class="row">
+                        <div class="col-sm-12">
+                            <form class="form" accept-charset="UTF-8" role="form" action="" method="post">
+                            {% csrf_token %} 
+                            <div class="barra_busqueda col-sm-12">                                                                                       
+                                 <div class="col-sm-5">{% bootstrap_field form.entidad  %}</div> 
+                                <div class="col-sm-1"><button class="btn btn-sm blue-hoki" type="submit">Buscar</button></div>
+                            </div>     
+                            </form>                    
+                        </div>
+                    </div>
+                    
+                    <table id="dataTables-cpb_venta" class="table table-striped compact table-hover table-no-bordered tabla_nueva nowrap">         
+                        <thead>
+                            <tr>
+                                <th class="text-center ">Cliente</th>                                
+                                <th class="text-center">Fecha</th>  
+                                <th class="text-center">Vencimiento</th>
+                                <th class="text-center">Comprobante</th>                              
+                                <th class="text-center">Tipo</th>                                
+                                <th class="text-right">Saldo</th>                                                                                                                             
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for cpb in cpbs %}
+                            <tr>                                
+                                <td  title="{{ cpb.entidad}}" >{% include "entidades/cliente_ver.html" %}{{ cpb.entidad|truncatechars:60 }}</td> 
+                                <td class="text-center">{{cpb.fecha_cpb|date:'d/m/Y'}}</td>
+                                <td class="text-center">{{cpb.fecha_vto|date:'d/m/Y'}}</td>
+                                <td>{% include "general/varios/cpb_ver.html" %}{{ cpb}}</td>                   
+                                <td class="text-center">{{ cpb.cpb_tipo|default_if_none:'' }}</td>                                
+                                <td class="importe">${{cpb.saldo|default_if_none:0|floatformat:2}}</td>                                 
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                        <tfoot>
+                            <tr>
+                                <th></th>
+                                <th></th> 
+                                <th></th> 
+                                <th></th>                                 
+                                <th></th>
+                                <th class="importe"></th>                                 
+                            </tr>
+                        </tfoot>
+                    </table>                                                 
+                
+            </div>
+           </div>
+        </div>
+      </div>
+
+
+<script type="text/javascript">
+
+$(document).ready(function() { 
+ $("#id_entidad").chosen({
+          no_results_text: "Cliente inexistente...",
+          placeholder_text_single:"Seleccione un Cliente",
+          allow_single_deselect: true,
+      });       
+moment.locale('es');
+$.fn.dataTable.moment('DD/MM/YYYY'); 
+var tabla = $('#dataTables-cpb_venta').DataTable({
+            "language": {
+                "decimal": ",",
+                "thousands": ".",                
+                "sProcessing": "Procesando...",
+                "sLengthMenu": "Mostrar _MENU_ registros",
+                "sZeroRecords": "No se encontraron resultados",
+                "sEmptyTable": "No hay registros en esta tabla",
+                "sInfo": "Mostrando registros del _START_ al _END_ de un total de _TOTAL_ registros",
+                "sInfoEmpty": "Mostrando registros del 0 al 0 de un total de 0 registros",
+                "sInfoFiltered": "(filtrado de un total de _MAX_ registros)",
+                "sInfoPostFix": "",
+                "sSearch": "Buscar:",
+                "sUrl": "",
+                "sInfoThousands": ",",
+                "sLoadingRecords": "Cargando...",
+                "oPaginate": {
+                    "sFirst": "Primero",
+                    "sLast": "Ãšltimo",
+                    "sNext": "Siguiente",
+                    "sPrevious": "Anterior"
+                },
+                "oAria": {
+                    "sSortAscending": ": Activar para ordenar la columna de manera ascendente",
+                    "sSortDescending": ": Activar para ordenar la columna de manera descendente"
+                },
+                      
+            },                      
+           "columnDefs": [ {
+                  "targets"  : 'no-sort',
+                  "orderable": false,
+                }],          
+           "paging":   true,
+           "lengthMenu": [[25, 50, -1], [25, 50, "Todos"]],
+           "autoWidth": false,
+           "order": [],
+           "colReorder": true,
+           "searching": true,
+            fixedHeader: {
+              header: true,
+              footer: false
+              },
+            responsive: true,
+            dom: 'Bfrtlip',
+            buttons: [
+                {
+                    extend:    'colvis',
+                    text:      '<i class="fa fa-list"></i>',
+                    titleAttr: 'Ver/Ocultar',
+                    className: 'btnToolbar',                    
+                },
+                {
+                    extend:    'copyHtml5',
+                    text:      '<i class="fa fa-files-o"></i>',
+                    titleAttr: 'Copiar',
+                    exportOptions: { columns: ':visible' },
+                    className: 'btnToolbar',                    
+                },
+                {
+                    extend:    'excel',
+                    text:      '<i class="fa fa-file-excel-o"></i>',
+                    titleAttr: 'Excel',
+                    exportOptions: { columns: ':visible', },
+
+                    className: 'btnToolbar',                    
+                },
+               
+                {
+                    extend:    'pdfHtml5',
+                    text:      '<i class="fa fa-file-pdf-o"></i>',
+                    titleAttr: 'PDF',
+                    exportOptions: { columns: ':visible'},
+                    orientation: 'landscape',
+                    className: 'btnToolbar',                    
+                },
+                {
+                    extend: 'print',
+                    text:      '<i class="fa fa-print"></i>',
+                    titleAttr: 'Imprimir',
+                    exportOptions: { columns: ':visible' },
+                    className: 'btnToolbar',                    
+                },
+            ],
+            "footerCallback": function ( row, data, start, end, display ) {
+            var api = this.api(), data;
+            var floatVal = function (i) {
+                if (typeof i === "number") {
+                    return i;
+                } else if (typeof i === "string") {
+                    i = i.replace("$", "")
+                    i = i.replace(",", "")
+                    i = i.replace(".", "")
+                    var result = parseFloat(i)/100;
+                    // console.log(result);
+                    if (isNaN(result)) {
+                        try {
+                            var result = $jq(i).text();
+                            result = parseFloat(result);
+                            if (isNaN(result)) { result = 0 };
+                            return result * 1;
+                        } catch (error) {
+                            return 0;
+                        }
+                    } else {
+                        return result * 1;
+                    }
+                } else {
+                    alert("Unhandled type for totals [" + (typeof i) + "]");
+                    return 0
+                }
+            };
+                        
+            
+            pageTotal = api.column(5, { page: 'current'} ).data().reduce( function (a, b) {return floatVal(a) + floatVal(b);}, 0 );            
+            $( api.column(5).footer() ).html('$'+pageTotal.toFixed(2));
+           
+            },
+            initComplete: function () {
+               // this.api().columns().every( function () {[0, 1, 9]
+                this.api().columns([4]).every( function () {
+                    var column = this;
+                    var select = $('<select class="form-control"><option value=""></option></select>')
+                        .appendTo( $(column.footer()).empty() )
+                        .on( 'change', function () {
+                            var val = $.fn.dataTable.util.escapeRegex(
+                                $(this).val()
+                            );
+     
+                            column
+                                .search( val ? '^'+val+'$' : '', true, false )
+                                .draw();
+                        } );
+     
+                     column.data().unique().sort().each( function ( d, j ) {
+                    //column.cells('', column[0]).render('display').sort().unique().each( function ( d, j ){
+                        select.append( '<option value="'+d+'">'+d+'</option>' )
+                    } );
+                } );
+            }            
+        });
+
+});
+
+</script>
+{% endblock main %}
+
+
+
+
+

@@ -1,0 +1,159 @@
+{% extends "index.html" %}
+{% load static from staticfiles %}
+{% load bootstrap3 %}
+{% load i18n %}
+{% load crispy_forms_tags %}
+{% load humanize %}
+
+{% block extra_css %}
+ 	<link rel="stylesheet" href="{% static 'css/comprobantes.css'%}?{% now "Ymd"%}" type="text/css" >  
+{% endblock %}
+{% block extra_js %}        
+    <script src="{% static 'js/jquery.formset.js' %}" type="text/javascript"></script>
+    <script src="{% static 'js/scripts/scripts_op.js'%}?{% now "Ymd"%}" type="text/javascript"></script>
+    {% block modales_js %} 
+    {% endblock %}
+
+{% endblock %}
+
+
+{% block main %}
+<div class="row ">
+<div class="col-sm-12 col-md-12 col-xs-12">
+      	<div class="row ">     
+	        <div class="col-xs-12" >  
+	          <div class="portlet box toolbar_violet">
+                <div class="portlet-title">
+                    <div class="caption bold uppercase">
+                                <i class="icon-notebook"></i>{% if object %}Orden de Colocación Nº {{object}}{% else %}Nueva Orden de Colocación{%endif%}
+                    </div>
+                </div>             
+              	<div class="portlet-body">
+		             <div class="col-xs-12" >
+		             <form role="form" class="form form-horizontal cpb" method="POST" action="" id="form-alta">
+					     {% csrf_token %}                 
+					     
+					   
+				       	<div class="row">
+							<div class="col-sm-6">
+							  <div class="row">
+								<label class="control-label col-sm-3">Entidad/Institución:</label>
+								<div class="col-sm-9 col-xs-12">{% if trabajo.orden_pedido.cliente.fact_razon_social %}{{trabajo.orden_pedido.cliente.fact_razon_social|upper}}{% else %}{{trabajo.orden_pedido.cliente.apellido_y_nombre|upper}}{% endif %}</div>										
+							  </div>
+							  <div class="row">
+								<label class="control-label col-sm-3">Dirección:</label>
+								<div class="col-sm-9 col-xs-12">{{trabajo.orden_pedido.cliente.domicilio|default_if_none:''|upper}}</div>										
+						  		</div>	
+						  		<div class="row">
+							       <label class="control-label col-sm-3" for="id_fecha_cpb">I.V.A.:</label>
+							       <div class="col-sm-4">{{trabajo.orden_pedido.cliente.get_fact_categFiscal_display|default_if_none:''|upper}}</div>							      
+							     </div>								  
+							</div>
+							<div class="col-sm-6">
+								<div class="row">
+							       <label class="control-label col-sm-3" for="id_fecha_cpb">Localidad:</label>
+							       <div class="col-sm-4">{{trabajo.orden_pedido.cliente.localidad|default_if_none:''|upper}}</div>							      
+							     </div>	
+								<div class="row">
+							       <label class="control-label col-sm-3" for="id_fecha_cpb">Provincia:</label>
+							       <div class="col-sm-4">{{trabajo.orden_pedido.cliente.get_provincia_display|default_if_none:''|upper}}</div>							      
+							     </div>
+							    
+								<div class="row">
+							       <label class="control-label col-sm-3" for="id_fecha_cpb">CUIT:</label>
+							       <div class="col-sm-4">{{trabajo.orden_pedido.cliente.fact_cuit|default_if_none:''|upper}}</div>							      
+							     </div>																														
+							  								
+
+							</div>
+						</div>
+				       	<div class="row">
+							<div class="col-sm-6">
+							  <div class="row">
+								<label class="control-label col-sm-3">Colocador:</label>
+								<div class="col-sm-9 col-xs-12">{% bootstrap_field form.colocador show_label=False %}</div>										
+							  </div>
+							  <div class="row">
+								<label class="control-label col-sm-3">Vendedor:</label>
+								<div class="col-sm-9 col-xs-12">{% bootstrap_field form.vendedor show_label=False %}</div>										
+						  		</div>								  
+							</div>
+							<div class="col-sm-6">
+								<div class="row">
+							        <label class="control-label col-sm-3" for="id_fecha_cpb">Fecha y Hora:</label>
+							        <div class="col-sm-2">	{% bootstrap_field form.fecha_colocacion show_label=False %}</div>		
+									<div class="col-sm-2">{% bootstrap_field form.hora_colocacion show_label=False %}</div>
+																      
+							     </div>	
+								<div class="row">
+							       <label class="control-label col-sm-3" for="id_fecha_cpb">Vencimiento:</label>
+							       <div class="col-sm-4">	{% bootstrap_field form.fecha_vto show_label=False %}</div>							      
+							     </div>																													
+							  	<div class="row">						        								       
+							        <label class="control-label col-sm-3">Número:</label>									
+									<div class="col-xs-4">{% bootstrap_field form.numero show_label=False %}</div>									   
+								</div>										
+
+							</div>
+						</div>
+							
+					   					    
+					    <br>
+					     <div class="row">
+					         <div class="col-sm-12">                          						                
+					                <table width="100%" class="table table-striped compact table-hover table-no-bordered tabla_nueva nowrap">
+									  <thead>
+									    <th class="borde_izq borde_arriba borde_abajo tabla_header" width="10%">Cantidad</th>     
+									    <th class="borde_arriba borde_abajo tabla_header">Descripción</th>                 
+									  </thead>
+									  <tbody>
+									  {% for item in pedido_detalles %}
+									    <tr>
+									      <td class="listado_der borde_izq">{{item.cantidad|default_if_none:0|floatformat:2}} {{item.producto.get_unidad_display}}</td>
+									      <td class="listado_izq borde_izq">{{item.producto}} {% if item.detalle %} ({{item.detalle}}) {% endif %}</td>                   
+									    </tr>       
+									  {% endfor pedido_detalles %}
+									  </tbody>
+									</table>           
+					         </div>                						         
+					     </div>
+					     <br>
+					     <div class="row">
+						     <div class="col-xs-12"> 
+							        	<fieldset>
+							         		<legend>OTROS DETALLES:</legend>
+							         		<div class="col-sm-12">
+														{% bootstrap_field form.detalle show_label=False%}																					
+								            </div>
+								        </fieldset>
+						     </div>
+		     		     </div>					     
+					     
+					     
+		     		    
+					    {% if form.non_field_errors  %}
+					     	<script type="text/javascript">
+					     	alertify.errorAlert("{% for err in form.non_field_errors %}{{ err }}{% endfor %}");
+					     	</script>
+					    {% endif %}       
+				        {% for hidden in form.hidden_fields %} {{ hidden }} {% endfor %}
+				     	<br>		                 
+	                    
+	                    <div class="row">
+		                    <div class="col-xs-12">                                                        
+		                     <a href="{% url 'orden_pedido_listado' %}" class="btn pull-left btn red-flamingo"><i class="fa fa-times"></i> Cancelar </a>
+		                     <button id="Guardar" type="button" class="btn pull-right purple-plum"><i class="fa fa-check"></i> Guardar </button>
+
+		                    </div>
+	                   </div>
+		               
+				    </form>
+					</div>
+	          </div>
+	         </div>
+	     	</div>                        
+	    </div>
+</div>	
+</div>
+
+{% endblock %}

@@ -1,0 +1,196 @@
+{% extends "index.html" %}
+{% load static from staticfiles %}
+{% load i18n %}
+{% load humanize %}
+{% block main %} 
+
+          <div class="col-md-12">
+            <div class="portlet box toolbar_blue">
+                <div class="portlet-title">
+                    <div class="caption bold">
+                                <i class="fa fa-cubes"></i>LISTADO DEPÓSITOS/UBICACIÓN
+                    </div>
+
+                </div> 
+            </div>  
+                    <a class="btn btn-sm blue-hoki fm-create" style="float:left;margin-right:20px;" href="{% url 'depositos_nuevo' %}" data-fm-head="AGREGAR DEPÓSITO" data-fm-callback="reload">Nuevo Depósito</a>
+                    <table width="100%" id="dataTables-primary" class="table table-striped compact table-hover table-no-bordered tabla_nueva nowrap">         
+                        <thead>
+                            <tr>
+                                <th width="5%" ></th>
+                                <th width="5%" class="text-right">Id</th>
+                                <th>Nombre</th>               
+                                <th width="5%" class="text-left">Por Defecto</th>                
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for d in depositos %}
+                            <tr{% if d.baja %}
+                                class='danger'
+                             {% endif %}>
+                                
+                                <td><div class="btn-group">
+                                       <button type="button" class="btn btn-xs color_barra" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                        <i class="icon-settings"> </i> <span class="caret"></span>
+                                      </button>                                    
+                                       <ul class="dropdown-menu dropdown-menu-default">                                        
+                                        <li><a href="{% url 'depositos_editar' id=d.pk %}"  class="fm-update " title="Editar" data-fm-callback="reload" data-fm-head="EDITAR DEPÓSITO"data-fm-target="#object-{{ d.pk }}"><i class="icon-note"></i> Editar</a></li>
+                                        <li><a href="#" 
+                                            onClick="alerta= alertify.dialog('confirm').set({'labels':{ok:'Aceptar', cancel:'Cancelar'},'message': '¿DESEA DAR DE BAJA/REACTIVAR EL REGISTRO ACTUAL?',transition:'fade','onok': function(){ window.location.href = '{% url 'deposito_baja_reactivar' id=d.pk  %}'; },'oncancel': function(){ return true;} }); alerta.setting('modal', true); alerta.setHeader('BAJA/REACTIVAR'); alerta.show(); return true;" ><i class="icon-dislike"></i><i class="icon-like"></i>Baja/Reactivar</a>
+                                        </li>      
+                                                                        
+                                      </ul>      
+                                    </div>
+                                </td>
+                                <td class="text-right">{{ d.id|default_if_none:'' }}</td>
+                                <td>{{ d.nombre|default_if_none:'' }}</td>
+                                <td class="text-left">{{ d.default|yesno:"Si,No,No"}}</td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                        <tfoot>
+                            <tr>
+                                <th></th> 
+                                <th></th> 
+                                <th></th>                                
+                                <th></th>        
+                            </tr>
+                        </tfoot>
+                    </table>                   
+          </div>  
+                    
+           
+
+<script type="text/javascript">
+
+$(document).ready(function() { 
+  
+moment.locale('es');
+$.fn.dataTable.moment('DD/MM/YYYY'); 
+var tabla = $('#dataTables-primary').DataTable({
+            "language": {
+                "decimal": ",",
+                "thousands": ".",                
+                "sProcessing": "Procesando...",
+                "sLengthMenu": "Mostrar _MENU_ registros",
+                "sZeroRecords": "No se encontraron resultados",
+                "sEmptyTable": "No hay registros en esta tabla",
+                "sInfo": "Mostrando registros del _START_ al _END_ de un total de _TOTAL_ registros",
+                "sInfoEmpty": "Mostrando registros del 0 al 0 de un total de 0 registros",
+                "sInfoFiltered": "(filtrado de un total de _MAX_ registros)",
+                "sInfoPostFix": "",
+                "sSearch": "Buscar:",
+                "sUrl": "",
+                "sInfoThousands": ",",
+                "sLoadingRecords": "Cargando...",
+                "oPaginate": {
+                    "sFirst": "Primero",
+                    "sLast": "Ãšltimo",
+                    "sNext": "Siguiente",
+                    "sPrevious": "Anterior"
+                },
+                "oAria": {
+                    "sSortAscending": ": Activar para ordenar la columna de manera ascendente",
+                    "sSortDescending": ": Activar para ordenar la columna de manera descendente"
+                },
+                "decimal": ",",
+                "thousands": ".",                
+            },                      
+           
+           "bPaginate": false,
+           "autoWidth": false,
+           "order": [],
+           "colReorder": true,
+           "searching": true,
+            fixedHeader: {
+              header: true,
+              footer: false
+              },
+           responsive: true,
+           dom: 'Bfrtip',
+            buttons: [
+                {
+                    extend:    'colvis',
+                    text:      '<i class="fa fa-list"></i>',
+                    titleAttr: 'Ver/Ocultar',
+                    className: 'btnToolbar',                    
+                },
+                {
+                    extend:    'copyHtml5',
+                    text:      '<i class="fa fa-files-o"></i>',
+                    titleAttr: 'Copiar',
+                    exportOptions: { columns: ':visible' },
+                    className: 'btnToolbar',                    
+                },
+                {
+                    extend:    'excel',
+                    text:      '<i class="fa fa-file-excel-o"></i>',
+                    titleAttr: 'Excel',
+                    filename: 'DEPOSITOS',                    
+                    exportOptions: {  modifier: {
+                                        page: 'current'
+                                    }, 
+                                      columns: ':visible',
+                                      format: {
+                                      body: function(data, row, column, node) {
+                                        var floatVal = function (i) {
+                                            if (typeof i === "number") {
+                                                return i;
+                                            } else if (typeof i === "string") {
+                                                i = i.replace("$", "")
+                                                i = i.replace(",", "")
+                                                i = i.replace(".", "")
+                                                var result = parseFloat(i)/100;
+                                                // console.log(result);
+                                                if (isNaN(result)) {
+                                                    try {
+                                                        var result = $jq(i).text();
+                                                        result = parseFloat(result);
+                                                        if (isNaN(result)) { result = 0 };
+                                                        return result * 1;
+                                                    } catch (error) {
+                                                        return 0;
+                                                    }
+                                                } else {
+                                                    return result * 1;
+                                                }
+                                            } else {
+                                                alert("Unhandled type for totals [" + (typeof i) + "]");
+                                                return 0
+                                            }
+                                        };
+                                          data = $('<p>' + data + '</p>').text();
+                                          return (node.className=='importe') ? floatVal(data)  : data;
+                                      }
+                                    }},
+                    className: 'btnToolbar',     
+                },
+               
+                {
+                    extend:    'pdfHtml5',
+                    text:      '<i class="fa fa-file-pdf-o"></i>',
+                    titleAttr: 'PDF',footer: true,
+                    exportOptions: { columns: ':visible' },
+                    className: 'btnToolbar',                    
+                },
+                {
+                    extend: 'print',
+                    text:      '<i class="fa fa-print"></i>',
+                    titleAttr: 'Imprimir',
+                    exportOptions: { columns: ':visible' },
+                    className: 'btnToolbar',                    
+                },
+            ],
+        });
+
+
+
+
+});
+</script> 
+{% endblock main %}
+
+
+
+
+

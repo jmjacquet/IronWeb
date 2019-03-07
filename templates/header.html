@@ -1,0 +1,66 @@
+{% load static from staticfiles %}
+<div class="page-header -i navbar navbar-fixed-top">
+  <!-- BEGIN HEADER INNER -->
+  <div class="page-header-inner">
+    
+    <a href="javascript:;" class="menu-toggler responsive-toggler" data-toggle="collapse" data-target=".navbar-collapse"> <img   src="{% static 'images/iron_barra.png' %}"/>
+    </a>
+    {% include "menues.html" %}
+    <!-- BEGIN RESPONSIVE MENU TOGGLER -->
+    
+    <!-- END RESPONSIVE MENU TOGGLER -->
+    <!-- BEGIN TOP NAVIGATION MENU -->      
+    <div class="hor-menu  pull-right">
+
+      <ul class="nav navbar-nav pull-right">         
+
+        <li class="mega-menu-dropdown">
+          <a href="javascript:;" class="dropdown-toggle usuario_barra"  data-hover="dropdown" data-close-others="true" >            
+          <img alt="logo" class="img-circle logo_empresa" src="{{ MEDIA_URL }}empresa/{{ENTIDAD_DIR}}/logo_empresa.png">                    
+          <span class="username"><strong>{{empresa.nombre}}  {% if homologacion %} (HOMO/PRUEBA){% endif%}</strong></span>
+          <i class="fa fa-angle-down"></i>
+          </a>
+          <ul class="dropdown-menu">
+            <div class="mega-menu-content">
+                <div class="row">                  
+                  <div class="col-sm-12">
+                    <ul class="mega-menu-submenu">
+                    {% if 'gral_configuracion' in permisos_grupo %} 
+                    <li>
+                      <a href="{% url 'empresa_editar' id=empresa.id %}"><i class="icon-settings"></i>Configurar Empresa</a>
+                    </li>           
+                    <li>
+                      <a href="{% url 'usuarios' %}"><i class="icon-users"></i>Configurar Usuarios</a>
+                    </li>
+                    <li>
+                      <a id="cambiar_passwd" href="#"><i class="icon-key"></i>Cambiar Contraseña</a>                      
+                    </li>    
+                    {% endif %} 
+                    {% if 'gral_tareas' in permisos_grupo %} 
+                    <li>
+                      <a href="{% url 'tareas_listado' %}"><i class="fa fa-exclamation-triangle"></i> Tareas/Problemas </a>
+                    </li>
+                    <li class="divider">
+                    </li> 
+                    {% endif %}  
+                    <li>
+                      <a href="{% url 'logout' %}"><i class="icon-logout"></i> Salir</a>
+                    </li>
+                  </ul>
+                  </div>
+                </div>
+              </div>
+          </ul>
+        </li>
+
+        
+      </ul>
+    </div>
+
+
+       
+        
+    <!-- END TOP NAVIGATION MENU -->
+  </div>
+  <!-- END HEADER INNER -->
+</div>

@@ -1,0 +1,5 @@
+__title__ = 'modal'
+__version__ = '0.2'
+__author__ = 'lx'
+__license__ = 'MIT'
+__copyright__ = ''

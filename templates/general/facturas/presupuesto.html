@@ -1,0 +1,148 @@
+{% load static from staticfiles %}
+{% load humanize %}
+{% load comprobantes_filters %}
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<title>{{cpb|upper}}</title>
+
+<style type="text/css">
+@import url("{% static 'css/reportes_factura.css'%}");
+
+ @page {
+         margin: 0.5cm 0.5cm 0.5cm 0.5cm;         
+         padding: 0;         
+         @frame footer {
+                        -pdf-frame-content: page-footer;                        
+                        height: 2cm;
+                        margin-right: 0.5cm;                        
+                        margin-left: 0.5cm;                        
+                        width: 100%;                       
+                        bottom: 0.5cm;
+                    }
+         @frame footer {
+                        -pdf-frame-content: page-footer2;                       
+                        
+                        margin-right: 0.5cm;                        
+                        margin-left: 0.5cm; 
+                        height: 0.5cm;
+                        bottom:0.2cm;                        
+                        width: 100%;
+                        
+                       
+                    }         
+         }
+</style>
+</head>
+
+<body>  
+{% include 'general/facturas/encabezado.html'%}
+<table width="100%" >
+  <tr>
+    <td width="10%" class=" borde_izq texto_der">Señor/es:</td>
+    <td class="texto_izq" width="63%">{% if cpb.entidad.fact_razon_social %}{{cpb.entidad.fact_razon_social|upper}}{% else %}{{cpb.entidad.apellido_y_nombre|upper}}{% endif %}</td>
+    <td width="9%" class="texto_der">Localidad:</td>
+    <td width="18%" class="texto_izq borde_der">{{cpb.entidad.localidad|default_if_none:''|upper}}</td>
+  </tr>
+  <tr>
+    <td class="texto_der borde_izq">Dirección:</td>
+    <td class="texto_izq">{% if cpb.entidad.fact_direccion %}{{cpb.entidad.fact_direccion|default_if_none:''|upper}}{% else %}{{cpb.entidad.domicilio|default_if_none:''|upper}}{% endif %}</td>
+    <td class="texto_der">Provincia:</td>
+    <td class="texto_izq borde_der">{{cpb.entidad.get_provincia_display|default_if_none:''|upper}}</td>
+  </tr>
+  <tr>
+    <td class="texto_der borde_izq borde_abajo">I.V.A.:</td>
+    <td class="texto_izq borde_abajo">{{cpb.entidad.get_fact_categFiscal_display|default_if_none:''|upper}}</td>
+    <td class="texto_der borde_abajo">CUIT:</td>
+    <td class="texto_izq borde_der borde_abajo">{{cpb.entidad.fact_cuit|default_if_none:''}}</td>
+  </tr> 
+  
+  <tr>
+      <td colspan="2" class="listado_izq borde_izq ">Fecha Vencimiento: <strong>{{cpb.fecha_vto|date:'d/m/Y'}}</strong></td>
+      <td colspan="2" class="listado_izq  borde_der">Estado: <strong>{{cpb.presup_aprobacion|default_if_none:''}}</strong></td>
+    </tr> 
+</table>
+<table width="100%" class="tabla">
+  <thead>
+    <th class="borde_izq borde_arriba borde_abajo tabla_header" width="15%">Cantidad</th>     
+    <th class="borde_arriba borde_abajo tabla_header" {% if not discrimina_iva %}colspan="2"{% endif %}>Descripción</th>         
+    <th class="  borde_arriba borde_abajo tabla_header" width="20%">Precio Unit.</th>
+    {%if discrimina_iva %}
+      <th class="  borde_arriba borde_abajo tabla_header" width="10%">IVA</th>
+    {% endif %}
+    <th class="borde_der  borde_arriba borde_abajo tabla_header" width="25%">Subtotal</th>
+  </thead>
+  {% for item in detalle_comprobante %}
+    <tr>
+      <td class="listado_der borde_izq">{{item.cantidad|default_if_none:0|floatformat:2|intcomma}} {{item.producto.get_unidad_display}}</td>
+      <td class="listado_izq borde_izq"  {% if not discrimina_iva %}colspan="2"{% endif %}>{{item.producto}} {% if item.detalle %} ({{item.detalle}}) {% endif %}</td>
+      {%if discrimina_iva %}
+        <td class="listado_der borde_izq">${{item.importe_unitario|default_if_none:0|floatformat:2|intcomma}}</td>      
+        <td class="listado_der borde_izq">{{item.tasa_iva|default_if_none:''}}</td>
+        <td class="listado_der borde_der borde_izq">${{item.importe_subtotal|default_if_none:0|floatformat:2|intcomma}}</td>
+      {% else %}
+        <td class="listado_der borde_izq">${{item.importe_unitario|default_if_none:0|floatformat:2|intcomma}}</td>      
+        <td class="listado_der borde_der borde_izq">${{item.importe_total|default_if_none:0|floatformat:2|intcomma}}</td>
+      {% endif %}      
+    </tr>       
+  {% endfor detalle_comprobante %}
+  {% for i in renglones %}  
+    <tr>
+      <td class="listado_der borde_izq">&nbsp;</td>
+      <td {% if not discrimina_iva %}colspan="2"{% endif %} class="listado_izq borde_izq"></td>
+      <td class="listado_der borde_izq"></td>
+      {%if discrimina_iva %}<td class="listado_der borde_izq"></td> {% endif %}
+      <td class="listado_der borde_der borde_izq"></td>
+    </tr>     
+  {% endfor %}
+  
+ <tr class="borde_izq borde_der borde_arriba borde_abajo ">
+    <td colspan="5" class="tabla_footer">Subtotal: ${{subtotal|default_if_none:0|floatformat:2|intcomma}}</td>
+  </tr>
+</table>
+<br>
+<table width="100%" align="center" >    
+    {%if cpb.observacion %}
+    <tr>
+      <td class="listado_izq borde_arriba borde_izq borde_abajo borde_der">Observaciones: <strong>{{cpb.observacion|default_if_none:''}}</strong></span></td>      
+    </tr> 
+    {% endif %}
+    {%if cpb.presup_tiempo_entrega %}
+    <tr>
+      <td class="listado_izq borde_arriba borde_izq borde_abajo borde_der"> Tiempo Estimado de Entrega: <strong>{{cpb.presup_tiempo_entrega|default_if_none:''}}</strong></td>     
+    </tr>
+    {% endif %}
+    {%if cpb.presup_forma_pago %}
+    <tr>
+      <td class="listado_izq borde_arriba borde_izq borde_abajo borde_der">Forma de Pago: <strong>{{cpb.presup_forma_pago|default_if_none:''}}</strong></td>
+    </tr>
+    {% endif %}
+</table>
+<div id="page-footer">
+  <hr/>
+  <table width="100%" align="center" >        
+    <tr>
+      <td width="50%" class="listado_izq  "></td>
+      <td width="25%" class="listado_final ">{%if discrimina_iva %}Importe Neto Gravado:{%endif%}</td>
+      <td width="25%" class="listado_final">{%if discrimina_iva %}$ {{cpb.importe_gravado|default_if_none:0|floatformat:2|intcomma}}{%endif%}</td>
+    </tr>
+    <tr>
+      <td class="listado_izq "></td>
+      <td class="listado_final ">{%if discrimina_iva %} Importe IVA:{% endif %}</td>
+      <td class="listado_final ">{%if discrimina_iva %}$ {{cpb.importe_iva|default_if_none:0|floatformat:2|intcomma}}{%endif%}</td>
+    </tr>    
+    <tr>
+      <td class="listado_final "></td>
+      <td class="listado_final borde_der borde_arriba borde_abajo borde_izq">Importe TOTAL</td>
+      <td class="listado_final borde_der borde_arriba borde_abajo tabla_footer">$ {{cpb.importe_total|default_if_none:0|floatformat:2|intcomma}}</td>
+    </tr>
+  </table>
+  <div id="page-footer2" class="pie_sistema">
+  <img alt="" class="pie_logo" src="{% static 'images/logo_iron.png' %}"/>&nbsp;&nbsp;IRONweb Gestión & Facturación
+</div>
+</div>
+
+</body>
+</html>

@@ -1,0 +1,249 @@
+{% extends "index.html" %}
+{% load static from staticfiles %}
+{% load bootstrap3 %}
+{% load i18n %}
+{% load crispy_forms_tags %}
+{% load humanize %}
+
+{% block extra_css %}
+ 	<link rel="stylesheet" href="{% static 'css/comprobantes.css'%}?{% now "Ymd"%}" type="text/css" >  
+{% endblock %}
+{% block extra_js %}        
+    <script src="{% static 'js/jquery.formset.js' %}" type="text/javascript"></script>
+    <script src="{% static 'js/scripts/scripts_op.js'%}?{% now "Ymd"%}" type="text/javascript"></script>
+    {% block modales_js %} 
+    {% endblock %}
+
+{% endblock %}
+
+
+{% block main %}
+<div class="row ">    
+<div class="col-sm-12 col-md-12 col-xs-12">
+      	<div class="row ">     
+	        <div class="col-xs-12" >  
+	          <div class="portlet box toolbar_violet panel_centrado">
+                <div class="portlet-title">
+                    <div class="caption bold uppercase">
+                                <i class="icon-notebook"></i>{% if object %}Orden de Pedido Nº {{object}}{% else %}Nueva Orden de Pedido{%endif%}
+                    </div>
+                </div>             
+              	<div class="portlet-body">
+		             <div class="col-xs-12" > 
+		             <form role="form" class="form form-horizontal cpb" method="POST" action="" id="form-alta">
+					     {% csrf_token %}                 
+					     
+					   
+				       	<div class="row">
+								<div class="col-sm-8 col-xs-12">
+								  <div class="row">
+										<label class="control-label col-sm-2 col-xs-3">Cliente:</label>
+										<div class="col-sm-9 col-xs-9">
+											{% bootstrap_field form.cliente show_label=False  %}												
+										</div>						
+										<div class="col-sm-1 col-xs-1 hidden-xs">
+						                  <a id="recargarClientes" href="#" class="recargarDatos" type="button" data-toggle="tooltip" data-placement="top" title="Recargar Clientes">
+											<i class="fa fa-refresh"></i></a>
+						                </div>        				
+								  </div>
+								 
+								  <div class="row">
+										<label class="control-label col-sm-2 col-xs-3">Vendedor:</label>
+										<div class="col-sm-9 col-xs-9">{% bootstrap_field form.vendedor show_label=False %}</div>										
+										<div class="col-sm-1 col-xs-1 hidden-xs">
+						                  <a id="recargarVendedores" href="#" class="recargarDatos" type="button" data-toggle="tooltip" data-placement="top" title="Recargar Vendedores">
+											<i class="fa fa-refresh"></i></a>
+						                </div>   
+								  </div>							  
+								  <div class="row">
+										<label class="control-label col-sm-2 col-xs-3" for="id_fecha_cpb">Ubicación:</label>
+							       		<div class="col-sm-4 col-xs-9">{% bootstrap_field form.origen_destino show_label=False %}</div>																			  
+								       	<label class="control-label col-sm-2 col-xs-3" for="id_fecha_cpb">Lista Precios:</label>
+								       	<div class="col-sm-3 col-xs-9">{% bootstrap_field form.lista_precios show_label=False %}</div>	
+							     </div>
+							</div>
+							<div class="col-sm-4 col-xs-12">
+								<div class="row">
+								       <label class="control-label col-sm-3 col-xs-3" for="id_fecha_cpb">Fecha:</label>
+								       <div class="col-sm-4 col-xs-9">	{% bootstrap_field form.fecha show_label=False %}</div>							      
+								     </div>	
+									<div class="row">
+								       <label class="control-label col-sm-3 col-xs-3" for="id_fecha_cpb">Vencimiento:</label>
+								       <div class="col-sm-4 col-xs-9">	{% bootstrap_field form.fecha_vto show_label=False %}</div>							      
+								     </div>																											
+							  	<div class="row">						        								       
+							        <label class="control-label col-sm-3 col-xs-3">Número:</label>									
+									<div class="col-xs-4">{% bootstrap_field form.numero show_label=False %}</div>									   
+								</div>										
+
+							</div>
+						</div>	
+					   
+					    <div class="row cerca">
+						         <div class="col-sm-2 col-xs-12 cerca ">
+						         	<fieldset>
+						         		<legend>PEDIDO:</legend>
+								       	<div class="col-xs-12">
+								       		<div class="col-xs-12">
+			   								  {% bootstrap_field form.ped_mostrador show_label=False  %}
+			   								  {% bootstrap_field form.ped_webface show_label=False  %}
+			   								  {% bootstrap_field form.ped_comercial show_label=False  %}
+			   								  {% bootstrap_field form.ped_email show_label=False  %}
+			   								 </div>
+										</div>
+										
+								    </fieldset>	
+						         </div>
+						         <div class="col-sm-5 col-xs-6 cerca">
+						         	<fieldset>
+						         		<legend>TIPO DE IMPRESIÓN:</legend>
+
+										       	<div class="col-xs-12">
+					   								  <div class="col-sm-4">
+					   								  		{% bootstrap_field form.impres_laser show_label=False  %}
+					   								  		{% bootstrap_field form.impres_latex show_label=False  %}
+					   								  		{% bootstrap_field form.impres_rotulado show_label=False  %}
+					   								  		{% bootstrap_field form.impres_offset show_label=False  %}
+					   								  </div>										
+					   								  <div class="col-sm-4">
+					   								  		{% bootstrap_field form.impres_corporeo show_label=False  %}
+					   								  		{% bootstrap_field form.impres_disenio show_label=False  %}
+					   								  		{% bootstrap_field form.impres_ploteo_papel show_label=False  %}
+					   								  		{% bootstrap_field form.impres_facturero show_label=False  %}
+					   								  </div>																			
+					   								  <div class="col-sm-4">
+					   								  		{% bootstrap_field form.impres_sellos show_label=False  %}					   								  		
+					   								  		{% bootstrap_field form.impres_imprbyn show_label=False  %}
+					   								  </div>	
+												</div>					  
+										
+								    </fieldset>	
+						         </div>
+						         <div class="col-sm-5 col-xs-6 cerca">
+						         	<fieldset>
+						         		<legend>TERMINACIÓN:</legend>
+										       	<div class="col-xs-12">
+					   								  <div class="col-sm-4">
+					   								  		{% bootstrap_field form.term_cortado show_label=False  %}
+					   								  		{% bootstrap_field form.term_troquelado show_label=False  %}					   								  		
+					   								  		{% bootstrap_field form.term_abrochado show_label=False  %}
+					   								  		{% bootstrap_field form.term_engomado show_label=False  %}					   								  		
+					   								  </div>										
+					   								  <div class="col-sm-4 ">
+					   								  		{% bootstrap_field form.term_plegado show_label=False  %}
+					   								  		{% bootstrap_field form.term_arandelas show_label=False  %}					   								  		
+					   								  		{% bootstrap_field form.term_bolsillos show_label=False  %}
+					   								  		{% bootstrap_field form.term_plastificado show_label=False  %}					   								  
+					   								  </div>																			
+					   								  <div class="col-sm-4">
+					   								  		{% bootstrap_field form.term_imp_corte show_label=False  %}
+					   								  		{% bootstrap_field form.term_anillado show_label=False  %}
+					   								  </div>
+												</div>					  
+										
+								    </fieldset>	
+						         </div>
+						</div>
+					    
+					     <div class="row">
+					         <div class="col-xs-12">                          						                
+					                <table id="id_forms_table" width="100%" class="table tabla table-condensed tabla_listado">
+					                    <thead>
+					                          <tr>		
+					                              <th style="width: 35%;">Producto/Servicio
+									                    	<a id="recargarProductos" href="#" class="recargarDatos" type="button" data-toggle="tooltip" data-placement="top" 
+									                    	title="Recargar listados de Productos"><i class="fa fa-refresh"></i></a>
+									              </th>								
+					                              <th style="width: 30%;">Detalle</th>
+					                              <th style="width: 8%;">Cantidad</th>
+					                              <th style="width: 5%;"></th>
+					                              <th style="width: 12%">Precio</th>
+					                              <th style="width: 15%;">Total</th>
+					                              <th style="width: 10px;" class="remove-sorting"></th>
+					                          </tr>
+					                    </thead>					                    
+	  			                        <tbody class='form-detalles'>       											                    	
+					                    	{{ op_detalle.management_form }}
+					                    	{{ op_detalle.non_form_errors  }}
+					                    	{% for form2 in op_detalle.forms %}					                      								                      	
+						                      	{{ form2.non_field_errors }}					                      								                      	
+						                      	{{form2.errors}}
+						                      	<tr class="{{ op_detalle.prefix }}">           			
+						                      		<td>{% bootstrap_field form2.producto show_label=False%}</td>
+							                      	<td>{% bootstrap_field form2.detalle show_label=False%}</td>
+							                      	<td>{% bootstrap_field form2.cantidad show_label=False%}</td>
+							                      	<td class="unidades">{% bootstrap_field form2.unidad show_label=False%}</td>
+							                      	<td>{% bootstrap_field form2.importe_unitario show_label=False%}</td>						                      	
+							                      	<td>{% bootstrap_field form2.importe_total show_label=False%}</td>
+							                      	<td>{{form2.DELETE}}
+							                      	 <a class="btn btn-danger delete-row1" title="Eliminar">
+							                      			<i class="fa fa-times" aria-hidden="true"></i></a>		 
+							                      	</td>
+							                      	{% for hidden in form2.hidden_fields %} {{ hidden }} {% endfor %}
+							                    </tr>								                    
+					                     	{% endfor %}							                     	
+					                    </tbody>
+					                </table>                        
+					         </div>                						         
+					     </div>					     
+					      <div class="row">
+					      	<div class="col-xs-12"> 
+						         							     
+							         <div class="col-sm-7 col-xs-12"> 
+							             		{% bootstrap_field form.detalle show_label=True%}					         					         								
+							         </div>
+							        <div class="col-sm-5 col-xs-12">						    
+
+							        	<div class="col-xs-12">
+							         		<div class="col-sm-8 col-xs-7"><span class="totales_comprobante">Importe Total</span></div> <div class="col-sm-4 col-xs-5">{% bootstrap_field form.importe_total show_label=False%}</div> 
+							         	</div>	  								         	
+							         	 
+							        </div>
+						    
+						     </div>
+						     
+						 </div>	
+					     <div class="row">
+						     <div class="col-xs-12"> 
+						         								     		         					         								
+							        	<fieldset>
+							         		<legend>OTROS DETALLES:</legend>
+							         		<div class="col-sm-12">
+							         			<div class="row">													
+												   <div class="col-sm-5 col-xs-12">{% bootstrap_field form.muestra_enviada show_label=True  %}</div>										
+											       <div class="col-sm-2">	{% bootstrap_field form.fecha_entrega show_label=True %}</div>													       
+											       <div class="col-sm-1">	{% bootstrap_field form.hora_entrega show_label=True %}</div>		
+											       <div class="col-sm-4">	{% bootstrap_field form.archivo_enviado show_label=True %}</div>													       
+											    </div>
+								            </div>								            
+								            <div class="col-sm-10"></div><div class="col-sm-2 chk_vertical">	{% bootstrap_field form.firma_conformidad show_label=True %}</div>
+								        </fieldset>
+						     </div>
+		     		     </div>
+		     		    
+					    {% if form.non_field_errors  %}
+					     	<script type="text/javascript">
+					     	alertify.errorAlert("{% for err in form.non_field_errors %}{{ err }}{% endfor %}");
+					     	</script>
+					    {% endif %}       
+				        {% for hidden in form.hidden_fields %} {{ hidden }} {% endfor %}
+				     	<br>		                 
+	                    
+	                    <div class="row">
+		                    <div class="col-xs-12">                                                        
+		                     <a href="{% url 'orden_pedido_listado' %}" class="btn pull-left btn red-flamingo"><i class="fa fa-times"></i> Cancelar </a>
+		                     <button id="Guardar" type="button" class="btn pull-right purple-plum"><i class="fa fa-check"></i> Guardar </button>
+
+		                    </div>
+	                   </div>
+		               
+				    </form>
+				   </div> 
+	          </div>
+	         </div>
+	     	</div>                        
+	    </div>
+	   </div> 
+</div>	
+
+{% endblock %}

@@ -1,0 +1,18 @@
+{% load i18n %}
+{% load static from staticfiles %}
+{% load crispy_forms_tags %}
+{% load bootstrap3 %}
+{% load i18n %}
+
+<div id="form-container">
+    <form role="form" class="form " method="POST" action="" id="form-alta" enctype="multipart/form-data">
+     {% csrf_token %}         
+        {{ form.media }}
+        <div class="col-xs-12">
+	         	<div class="row">										
+					<div class="col-sm-5">{% bootstrap_field form.nombre %}</div>																		  
+					<div class="col-sm-7">{% bootstrap_field form.descripcion %}</div>																		  
+			  	</div>								
+		</div>
+    </form>
+</div>

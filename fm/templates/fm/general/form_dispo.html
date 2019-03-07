@@ -1,0 +1,38 @@
+{% load i18n %}
+{% load static from staticfiles %}
+{% load crispy_forms_tags %}
+{% load bootstrap3 %}
+
+<div id="form-container">
+    <form role="form" class="form " method="POST" action="" id="form-alta" enctype="multipart/form-data">
+     {% csrf_token %}         
+        {{ form.media }}
+	         <div class="col-xs-12">
+				 <div class="row cerca">										
+					<div class="col-sm-3">{% bootstrap_field form.codigo %}</div>
+					<div class="col-sm-5">{% bootstrap_field form.nombre %}</div>
+					<div class="col-sm-4">{% bootstrap_field form.tipo %}</div>														
+				 </div>
+				 <div class="row cerca">
+					<div class="col-sm-4">{% bootstrap_label  form.tipo_forma_pago.label %}
+						<i class="glyphicon glyphicon-question-sign ayuda_tooltip" data-toggle="tooltip" data-html="true" title="Se cargará por defecto al seleccionar la cuenta"></i>
+						{% bootstrap_field form.tipo_forma_pago show_label=False%}</div>
+			       	<div class="col-sm-4">{% bootstrap_label  form.nro_cuenta_bancaria.label %}
+						<i class="glyphicon glyphicon-question-sign ayuda_tooltip" data-toggle="tooltip" data-html="true" title="Se cargará por defecto al seleccionar la cuenta"></i>
+						{% bootstrap_field form.nro_cuenta_bancaria show_label=False%}</div>
+					<div class="col-sm-4">{% bootstrap_label  form.banco.label %}						
+						<i class="glyphicon glyphicon-question-sign ayuda_tooltip" data-toggle="tooltip" data-html="true" data-toggle="tooltip" data-placement="top" title="" data-original-title="Se cargará por defecto al seleccionar la cuenta"></i>
+						{% bootstrap_field form.banco show_label=False%}</div>
+			     </div> 
+			     
+			</div>			
+    </form>
+</div>
+{% block extra_js %}
+<script type="text/javascript">
+$(document).ready(function() {
+     $('[data-toggle=tooltip]').tooltip();       
+});
+</script>
+{% endblock %}
+

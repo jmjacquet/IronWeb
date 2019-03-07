@@ -1,0 +1,32 @@
+{% load static from staticfiles %}
+{% load bootstrap3 %}
+{% load humanize %}
+
+{% block main %}    
+<div class="col-xs-12"> 
+  <table class="table table-user-information">
+    <tbody>
+      <tr>
+        <td>Nombre:</td><td><strong>{{producto.nombre|default_if_none:''}}</strong></td><td></td><td></td>
+      </tr>
+      <tr>
+        <td>Código:</td><td><strong>{{producto.codigo|default_if_none:''}}</strong></td><td></td><td></td>
+      </tr>
+      <tr>
+        <td>Categoría:</td><td><strong>{{producto.categoria|default_if_none:'' }}</strong></td><td></td><td></td>
+      </tr>
+      <tr>
+        <td>Tipo Producto:</td><td><strong>{{producto.get_tipo_producto_display|default_if_none:'' }}</strong></td><td></td><td></td>
+      </tr>
+      <tr>
+       <td>Tasa IVA:</td><td><strong>{{ producto.tasa_iva|default_if_none:'' }}</strong></td><td>Unidad:</td><td><strong>{{ producto.get_unidad_display|default_if_none:'' }}</strong></td>
+      </tr>     
+      <tr>
+        <td>Descripción:</td><td colspan="3"><strong>{{producto.descripcion|default_if_none:'' }}</strong></td>
+      </tr>
+    </tbody>
+  </table>
+</div>                
+{% endblock main %}        
+
+                               

@@ -1,0 +1,170 @@
+<div class="container text-center tiles">
+    {% if 'cpb_ventas' in permisos_grupo %}
+    <div class="tile btn btn-sm blue-steel">
+        <a href="{% url 'cpb_venta_nuevo' %}">
+            <div class="tile-body">
+            <i class="icon-note"></i>
+        </div>
+        <div class="tile-object">
+            <div class="name">
+                 NUEVA VENTA
+            </div>
+            <div class="number">
+            </div>
+        </div>
+        </a>
+    </div>
+    {% endif %}
+    {% if 'cpb_cobranzas' in permisos_grupo %}
+    <div class="tile btn btn-sm green-jungle">
+        <a href="{% url 'cpb_rec_cobranza_nuevo' %}">
+            <div class="tile-body">
+            <i class="icon-wallet"></i>
+        </div>
+        <div class="tile-object">
+            <div class="name">
+                 NUEVA COBRANZA
+            </div>
+            <div class="number">
+                
+            </div>
+        </div>
+        </a>
+    </div>
+    {% endif %}
+    {% if 'cpb_compras' in permisos_grupo %}
+    <div class="tile btn btn-sm blue-steel">
+        <a href="{% url 'cpb_compra_nuevo' %}">
+            <div class="tile-body">
+            <i class="icon-note"></i>
+        </div>
+        <div class="tile-object">
+            <div class="name">
+                 NUEVA COMPRA
+            </div>
+            <div class="number">
+            </div>
+        </div>
+    </a>
+    </div>
+    {% endif %}
+    {% if 'cpb_pagos' in permisos_grupo %}
+    <div class="tile btn btn-sm green-jungle">
+        <a href="{% url 'cpb_pago_nuevo' %}">
+            <div class="tile-body">
+            <i class="icon-wallet"></i>
+        </div>
+        <div class="tile-object">
+            <div class="name">
+                 NUEVO PAGO
+            </div>
+            <div class="number">
+                
+            </div>
+        </div>
+        </a>
+    </div>
+    {% endif %}
+    {% if 'cpb_presupuestos' in permisos_grupo %}
+    <div class="tile btn btn-sm purple-plum">
+        <a href="{% url 'cpb_presup_nuevo' %}">
+            <div class="tile-body">
+            <i class="icon-briefcase"></i>
+        </div>
+        <div class="tile-object">
+            <div class="name">
+                 NUEVO PRESUPUESTO
+            </div>
+            <div class="number">
+                
+            </div>
+        </div>
+        </a>
+    </div>
+    {% endif %}                                             
+     
+    {% if 'rep_cta_cte_clientes' in permisos_grupo %}  
+    <div class="tile btn btn-sm blue-hoki">
+        <a href="{% url 'cta_cte_clientes' %}">
+            <div class="tile-body">
+            <i class="icon-users"></i>
+        </div>
+            <div class="tile-object">
+                <div class="name">
+                     CTA. CTE. CLIENTES
+                </div>
+                <div class="number">
+                </div>
+            </div>
+        </a>
+    </div>
+    {% endif %} 
+    {% if 'rep_cta_cte_prov' in permisos_grupo %} 
+    <div class="tile btn btn-sm blue-hoki">
+        <a href="{% url 'cta_cte_proveedores' %}">
+            <div class="tile-body">
+            <i class="icon-users"></i>
+        </div>
+        <div class="tile-object">
+            <div class="name">
+                 CTA. CTE. PROVEEDORES
+            </div>
+            <div class="number">
+            </div>
+        </div>
+        </a>
+   </div>
+   {% endif %} 
+   {% if 'cpb_movimientos' in permisos_grupo %}             
+    <div class="tile btn btn-sm red-sunglo">
+        <a href="{% url 'movimientos_listado' %}">
+            <div class="tile-body">
+            <i class="icon-shuffle"></i>
+        </div>
+        <div class="tile-object">
+            <div class="name">
+                 MOVIMIENTOS CUENTAS
+            </div>
+            <div class="number">
+                
+            </div>
+        </div>
+        </a>
+    </div> 
+   {% endif %}   
+   {% if 'prod_productos_abm' in permisos_grupo %}   
+   <div class="tile bbtn btn-sm green-meadow">
+        <a href="{% url 'prod_precios_listado' %}">
+            <div class="tile-body">
+            <i class="icon-tag"></i>
+        </div>
+        <div class="tile-object">
+            <div class="name">
+                 ACTUALIZAR PRECIOS
+            </div>
+            <div class="number">
+            </div>
+        </div>
+    </a>
+    </div>
+   {% endif %} 
+   {% if 'prod_productos_abm' in permisos_grupo %}   
+    <div class="tile btn btn-sm green-meadow">
+        <a href="{% url 'prod_stock_listado' %}">
+            <div class="tile-body">
+            <i class="fa fa-cubes"></i>
+        </div>
+        <div class="tile-object">
+            <div class="name">
+                 ACTUALIZAR STOCK
+            </div>
+            <div class="number">
+                
+            </div>
+        </div>
+        </a>
+    </div>
+   {% endif %} 
+                                      
+  
+</div>

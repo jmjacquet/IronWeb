@@ -1,0 +1,36 @@
+<div class="row">                           
+  <div class="col-sm-12"> 
+   <div class="portlet box">                                           
+        <div class="portlet-body">
+         <div class="row">                  
+            <div class="col-sm-12">                                
+                   <div class="col-sm-12 tile_count">                                        
+                    <div class="col-sm-3 tile_stats_count cerca">
+                    <span class="count_top">Ventas {{hoy|date:'F'}} {{hoy|date:'Y'}}</span>
+                    <div class="count">${{total_ventas_mensual|default_if_none:0|floatformat:2}}</div>
+                    <span class="count_bottom" title="${{deuda_cobrar_mensual|default_if_none:0|floatformat:2}} por cobrar ({{porc_cobrar_mensual|default_if_none:0|floatformat:2}}%)"><i class="text-success">${{deuda_cobrar_mensual|default_if_none:0|floatformat:2}}</i> por cobrar ({{porc_cobrar_mensual|default_if_none:0|floatformat:2}}%)</span>
+                    </div>                                          
+                    <div class="col-sm-3 tile_stats_count cerca">
+                    <span class="count_top">Compras {{hoy|date:'F'}} {{hoy|date:'Y'}}</span>
+                    <div class="count">${{total_compras_mensual|default_if_none:0|floatformat:2}}</div>
+                    <span class="count_bottom" title="${{deuda_pagar_mensual|default_if_none:0|floatformat:2}} por pagar ({{porc_pagar_mensual|default_if_none:0|floatformat:2}}%)"><i class="text-danger">${{deuda_pagar_mensual|default_if_none:0|floatformat:2}}</i> por pagar ({{porc_pagar_mensual|default_if_none:0|floatformat:2}}%)</span>
+                    </div>                                          
+                    <div class="col-sm-3 tile_stats_count cerca">
+                    <span class="count_top">Total Ventas último año</span>
+                    <div class="count">${{total_ventas|default_if_none:0|floatformat:2}}</div>
+                    <span class="count_bottom" title="${{deuda_cobrar_total|default_if_none:0|floatformat:2}} por cobrar ({{porc_cobrar_total|default_if_none:0|floatformat:2}}%)"><i class="text-success">${{deuda_cobrar_total|default_if_none:0|floatformat:2}}</i> por cobrar ({{porc_cobrar_total|default_if_none:0|floatformat:2}}%)</span>
+                    </div>                                          
+                    <div class="col-sm-3 tile_stats_count cerca">
+                    <span class="count_top">Total Compras último año</span>
+                    <div class="count">${{total_compras|default_if_none:0|floatformat:2}}</div>
+                    <span class="count_bottom" title="${{deuda_pagar_total|default_if_none:0|floatformat:2}} por pagar ({{porc_pagar_total|default_if_none:0|floatformat:2}}%)"><i class="text-danger">${{deuda_pagar_total|default_if_none:0|floatformat:2}}</i> por pagar ({{porc_pagar_total|default_if_none:0|floatformat:2}}%)</span>
+                    </div>                                          
+                   </div>    
+                  </div>              
+            </div> 
+         
+        </div>
+    </div>
+  </div> 
+
+</div>

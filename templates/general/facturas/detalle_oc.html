@@ -1,0 +1,50 @@
+{% load static from staticfiles %}
+{% load bootstrap3 %}
+{% load crispy_forms_tags %}
+
+{% block main %}    
+
+<table width="100%"  class="table table-striped compact table-hover table-no-bordered tabla_nueva nowrap">
+  <tr>
+    <td width="10%" class=" borde_izq texto_der">Entidad/Institución:</td>
+    <td class="texto_izq" width="60%">{% if colocacion.orden_trabajo.orden_pedido.cliente.fact_razon_social %}{{colocacion.orden_trabajo.orden_pedido.cliente.fact_razon_social|upper}}{% else %}{{colocacion.orden_trabajo.orden_pedido.cliente.apellido_y_nombre|upper}}{% endif %}</td>
+    <td width="15%" class="texto_der">Localidad:</td>
+    <td width="15%" class="texto_izq borde_der">{{colocacion.orden_trabajo.orden_pedido.cliente.localidad|default_if_none:''|upper}}</td>
+  </tr>
+  <tr>
+    <td class="texto_der borde_izq">Dirección:</td>
+    <td class="texto_izq">{{colocacion.orden_trabajo.orden_pedido.cliente.domicilio|default_if_none:''|upper}}</td>
+    <td class="texto_der">Provincia:</td>
+    <td class="texto_izq borde_der">{{colocacion.orden_trabajo.orden_pedido.cliente.get_provincia_display|default_if_none:''|upper}}</td>
+  </tr>
+  <tr>
+    <td class="texto_der borde_izq borde_abajo">I.V.A.:</td>
+    <td class="texto_izq borde_abajo">{{colocacion.orden_trabajo.orden_pedido.cliente.get_fact_categFiscal_display|default_if_none:''|upper}}</td>
+    <td class="texto_der borde_abajo">CUIT:</td>
+    <td class="texto_izq borde_der borde_abajo">{{colocacion.orden_trabajo.orden_pedido.cliente.fact_cuit|default_if_none:''|upper}}</td>
+  </tr>   
+  <tr>
+    <td class="texto_der borde_izq borde_abajo">Colocador:</td>
+    <td class="texto_izq borde_abajo">{{colocacion.colocador|default_if_none:''|upper}}</td>
+    <td class="texto_der borde_abajo">Fecha Colocación:</td>
+    <td class="texto_izq borde_der borde_abajo">{{colocacion.fecha_colocacion|date:'d/m/Y'}} {{colocacion.hora_colocacion|time:'HH:mm'}}</td>
+  </tr>   
+</table>
+<table width="100%" class="table table-striped compact table-hover table-no-bordered tabla_nueva nowrap">
+  <thead>
+    <th class="borde_izq borde_arriba borde_abajo tabla_header" width="10%">Cantidad</th>     
+    <th class="borde_arriba borde_abajo tabla_header">Descripción</th>                 
+  </thead>
+  <tbody>
+  {% for item in orden_pedido_detalle %}
+    <tr>
+      <td class="listado_der borde_izq">{{item.cantidad|default_if_none:0|floatformat:2}} {{item.producto.get_unidad_display}}</td>
+      <td class="listado_izq borde_izq">{{item.producto}} {% if item.detalle %} ({{item.detalle}}) {% endif %}</td>                   
+    </tr>       
+  {% endfor detalle_comprobante %}
+  </tbody>
+</table>     
+
+<button data-dismiss="modal" class="btn pull-left btn red-flamingo" type="button"><i class="fa fa-times"></i>Cancelar</button>
+<a  class="btn pull-right blue-steel" target="_blank" href="{% url 'imprimirOrdenColocacion' id=colocacion.pk %}">Imprimir</a>
+{% endblock main %}      

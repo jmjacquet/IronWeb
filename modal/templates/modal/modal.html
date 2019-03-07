@@ -1,0 +1,32 @@
+{% load i18n %}
+{% load static %}
+
+<div tabindex="-1" role="dialog" aria-hidden="true" id="modal-modal" class="modal-modal modal" >
+    <div class="modal-loader" style="display: none;">
+        <img class="modal-loader-img" src="{% static "modal/img/loading-bars.svg" %}">
+    </div>
+    <div class="modal-dialog modal-content cabecera">        
+        
+        <div class="ancho-modal">
+            <div class="row">
+                    <div class="modal-wrapper" style="display: none;">
+                        <div data-dismiss="modal" class="close-modal">
+                          <button type="button" class="close" data-dismiss="modal" aria-hidden="true">x</button>        
+                        </div>
+                        <div class="modal-head"> <button type="button" class="close" data-dismiss="modal" aria-hidden="true">x</button></div>
+                        <div class="modal-body"></div>
+                                                   
+                        
+                    </div>
+                </div>
+        </div>
+    </div>
+</div>
+
+{% block extra_js %}
+<script type="text/javascript">
+$(document).ready(function() {
+     $('[data-toggle=tooltip]').tooltip();         
+});
+</script>
+{% endblock %}

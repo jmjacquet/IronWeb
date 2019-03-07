@@ -1,0 +1,122 @@
+{% load static from staticfiles %}
+{% load bootstrap3 %}
+{% load i18n %}
+{% load humanize %}
+
+{% block extra_css %}
+        <link rel="stylesheet" href="{% static 'css/comprobantes.css'%}?{% now "Ymd"%}" type="text/css" >  
+{% endblock %}
+<div class="modal-dialog fm-modal">
+        <div class="modal-content">
+               <div class="row">
+                 <div data-dismiss="modal" class="close-modal">
+                          <button type="button" class="close" data-dismiss="modal" aria-hidden="true">x</button>        
+                        </div>
+                 <div class="modal-head">                        
+                        COBRANZA/DEPOSITO - SELECCIONE LA CUENTA DESTINO 
+                </div>
+               
+                <div class="modal-body">
+                        <div class="row">
+                              <div class=" col-sm-12 ">                                                                       
+                                 <form role="form" class="form cpb" method="POST" action="" id="selecc_cheques">
+                                {% csrf_token %}     
+                                 <div class="row">
+                                  <div class="col-sm-12 col-xs-12">                 
+                                    <div class="row">
+                                         <label class="control-label col-sm-2 col-xs-3" for="id_fecha_cpb">Fecha:</label>
+                                          <div class="col-sm-2 col-xs-3">{% bootstrap_field formCheques.fecha_cpb show_label=False %}</div>
+                                    </div>  
+                                  </div>                
+                                </div>  
+                                 <table width="100%" class="table tabla table-condensed compact tabla_listado">
+                                    <thead>
+                                          <tr>
+                                              <th style="width: 80%;">Cuenta</th>
+                                              <th class="text-right" style="width: 20%;">Importe Total</th>                                             
+                                          </tr>
+                                    </thead>                                                        
+                                    <tbody class='form-cpbs'>                                        
+                                        <tr class="{{ comprobantes.prefix }}">                                                                          
+                                                <td>{% bootstrap_field formCheques.cuenta show_label=False%}</td>                                                
+                                                <td class="text-right importe total_seleccionados">$ {{total_cheques|default_if_none:0|floatformat:2}}</td>                                                       
+                                        </tr>                                                                                                                                                              
+                                    </tbody>                                   
+                                </table>                                                                       
+                              </div> 
+                        </div>
+                </div>
+                <div class="modal-buttons">
+                        <div class="row">
+                              <div class="col-xs-6">
+                                  <button data-dismiss="modal" class="btn pull-left btn red-flamingo" type="button"><i class="fa fa-times"></i>Cancelar</button>
+                              </div>
+                              <div class="col-xs-6">
+                                  <button id="AceptarSeleccionCheque" data-dismiss="modal" type="button" class="btn pull-right blue-steel"><i class="fa fa-check"></i>Aceptar</button>                                
+                              </div>
+                        </div>
+                </div>
+                </form>
+            </div>  
+        </div>
+
+ <script type="text/javascript">          
+
+  $.fn.datepicker.dates['es'] = {
+    days: ["Domingo", "Lunes", "Martes", "Miércoles", "Jueves", "Viernes", "Sábado", "Domingo"],
+    daysShort: ["Dom", "Lun", "Mar", "Mié", "Jue", "Vie", "Sáb", "Dom"],
+    daysMin: ["Do", "Lu", "Ma", "Mi", "Ju", "Vi", "Sa", "Do"],
+    months: ["Enero", "Febrero", "Marzo", "Abril", "Mayo", "Junio", "Julio", "Agosto", "Septiembre", "Octubre", "Noviembre", "Diciembre"],
+    monthsShort: ["Ene", "Feb", "Mar", "Abr", "May", "Jun", "Jul", "Ago", "Sep", "Oct", "Nov", "Dic"],
+    today: "Hoy"
+  };
+  
+   $('.datepicker').datepicker({
+          format: "dd/mm/yyyy",
+          language: "es",
+          autoclose: true,
+          todayHighlight: true
+    });
+   var cheques = [];
+   function cargarCheques() {                
+        $("input[class='selecc']").each(function(index,checkbox){
+         if(checkbox.checked){               
+             id_fp = document.getElementById(checkbox.id+"_id_fp").value.replace('.', '');                        
+             cheques.push(id_fp);                         
+          };         
+        });   
+    };
+
+    $( "#AceptarSeleccionCheque" ).click(function(e) {
+      // csrfmiddlewaretoken = $("#selecc_cpbs").find("input[name='csrfmiddlewaretoken']" ).val();
+      if ($("#btnCobro").val()){
+        e.preventDefault();        
+        cargarCheques();
+        formData = $('#selecc_cheques').serialize()+'&'+$("#btnCobro").val();           
+        console.log(formData);
+        $.ajax({
+            url : "{% url 'cobrar_depositar_cheques' %}" ,
+            data : formData,
+            type: "POST",
+            // contentType: "application/json;charset=utf-8",
+            dataType : "json",
+           success: function(data) {            
+              console.log(data);
+              if(data[0]['estado']==0){                                      
+                location.reload();                
+
+               }else{
+                alertify.errorAlert(data[0]['msj']);
+               }
+          },
+          error: function(data) {            
+              console.log(data);}
+          });
+        
+        };
+      });
+           
+
+   
+</script>
+</div>

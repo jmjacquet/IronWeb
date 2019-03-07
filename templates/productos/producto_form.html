@@ -1,0 +1,159 @@
+{% extends "index.html" %}
+{% load static from staticfiles %}
+{% load bootstrap3 %}
+{% load i18n %}
+{% load crispy_forms_tags %}
+{% load humanize %}
+
+{% block extra_css %}
+ 	<link rel="stylesheet" href="{% static 'css/abms.css'%}?{% now "Ymd"%}" type="text/css" >  
+{% endblock %}
+{% block extra_js %}        
+    <script src="{% static 'js/jquery.formset.js' %}" type="text/javascript"></script>
+    <script src="{% static 'js/scripts/scripts_producto.js'%}?{% now "Ymd"%}" type="text/javascript"></script>
+    {% block modales_js %} 
+    {% endblock %}
+
+{% endblock %}
+
+
+{% block main %}
+<div class="col-sm-12 col-md-12 col-xs-12">
+      	<div class="row ">     
+	        <div class="col-xs-12" >  
+	          <div class="portlet box toolbar_blue panel_centrado">
+                <div class="portlet-title">
+                    <div class="caption bold uppercase">
+                                <i class="fa fa-cubes"></i>{% if object %}Editar {{object}}{% else %}Nuevo Producto/Servicio{%endif%}
+                    </div>
+                </div>             
+              	<div class="portlet-body">
+		            <div class="col-xs-12">
+		             <form role="form" class="form abm" method="POST" action="" id="form-alta">
+					     {% csrf_token %}                 
+					       	<div class="row">
+   								<div class="col-xs-12">
+	   								  <div class="row ">
+											<div class="col-sm-2">{% bootstrap_field form.codigo %}</div>									
+											<div class="col-sm-6">{% bootstrap_field form.nombre %}</div>
+											<div class="col-sm-4">{% bootstrap_field form.codigo_barras %}</div>																		  
+									  </div>
+									  <div class="row ">
+								       	<div class="col-sm-3">{% bootstrap_field form.categoria %}</div>
+								       	<div class="col-sm-3">{% bootstrap_field form.tipo_producto %}</div>										     
+								       	<div class="col-sm-2">{% bootstrap_field form.mostrar_en %}</div>
+								       	<div class="col-sm-2">{% bootstrap_field form.tasa_iva %}</div>		
+								       	<div class="col-sm-2">{% bootstrap_field form.unidad %}</div>		
+								     </div>
+
+								     <div class="row ">							       	
+								       	<div class="col-sm-8 col-xs-12">
+									       	<div class="row">										       	
+										       		<fieldset>
+										       		<legend>Ubicación/Stock</legend>                        						
+										       		   <div class="col-sm-3 col-xs-12">
+										       		    {% bootstrap_field form.llevar_stock show_label=False %}						
+												       	{% bootstrap_field form.stock_negativo show_label=False %}
+												       </div>
+												       <div class="col-sm-9 col-xs-12">
+										                <div class="row ">
+													       	{% if form.tipo_form.value == 'ALTA' %}
+										                	<div class="col-sm-8">{% bootstrap_field form.ubicacion %}</div>
+													       	<div class="col-sm-4">{% bootstrap_field form.stock %}</div>
+											                {% else %}
+											                <div class="col-sm-12"><h4>El Stock ya está inicializado</h4></div>
+											                {% endif %}		
+													     </div>
+
+										               </div>                                       						         
+										       		</fieldset>										       	
+									        </div>
+									       <div class="row">
+										       		<fieldset>
+										       		<legend>Precios/Listas</legend>                      						                
+												                <table id="id_forms_table2" width="100%" class="table tabla table-condensed tabla_listado">
+												                    <thead>
+												                          <tr>
+												                              <th style="width: 40%;">Lista</th>						                          						
+												                              <th style="width: 15%;" title="Precio de Costo" >Costo</th>											                             
+												                              <th style="width: 20%;" title="Precio de Costo con Impuestos" >Costo c/Imp.</th>											                             
+												                              <th style="width: 5%;" title="Coeficiente de Ganancia (1=100%)" >Coef.Gan.</th>											                             
+												                              <th style="width: 20%;" title="Precio de Venta (Costo c/Imp * Coef.Gan.)" >Venta</th>
+												                              <th class="remove-sorting"></th>
+												                          </tr>
+												                    </thead>					                    
+								  			                        <tbody class='form-detallesPrecios'>       											                    	
+												                    	{{ prod_precios.management_form }}
+												                    	{{ prod_precios.non_form_errors  }}
+												                    	{% for l in prod_precios.forms %}					               	
+													                      	{{ l.non_field_errors }}					
+													                      	<tr class="{{ prod_precios.prefix }}">           			
+													                      		<td>{% bootstrap_field l.lista_precios show_label=False%}</td>
+														                      	<td>{% bootstrap_field l.precio_costo show_label=False%}</td>													
+														                      	<td>{% bootstrap_field l.precio_cimp show_label=False%}</td>
+														                      	<td>{% bootstrap_field l.coef_ganancia show_label=False%}</td>	
+														                      	<td>{% bootstrap_field l.precio_venta show_label=False%}</td>
+														                      	<td>{{l.DELETE}}
+														                      	 <a class="btn btn-danger delete-row2" title="Eliminar">
+														                      			<i class="fa fa-times" aria-hidden="true"></i></a>		 
+														                      	</td>
+														                      	{% for hidden in l.hidden_fields %} {{ hidden }} {% endfor %}
+														                    </tr>								                    
+												                     	{% endfor %}							                     	
+												                    </tbody>
+												                </table>                                      						  			     
+										       	</fieldset>										       
+									       </div>
+								       </div>
+								       <div class="col-sm-4 col-xs-12">
+								       	 <div class="row cerca">	                
+						                      <div class="row">										       	
+										       		<fieldset>
+										       		<legend>Agrupamiento/Cuentas</legend>                        						
+										       		   <div class="col-sm-12 col-xs-12">{% bootstrap_field form.cta_ingreso %}</div>
+										       		   <div class="col-sm-12 col-xs-12">{% bootstrap_field form.cta_egreso %}</div>
+										       		</fieldset>										       	
+									        </div>
+						                </div>						                
+								       </div>
+									</div>
+									<div class="row">
+											<div class="col-xs-12">
+									       		{% bootstrap_field form.descripcion show_label=True %}	
+									        </div>							       	
+								       	
+								       
+									</div>
+								</div>
+							</div>
+
+							
+				    
+					     
+		     		     
+
+					  
+					     {% if form.non_field_errors  %}
+					     	<script type="text/javascript">
+					     	alertify.errorAlert("{% for err in form.non_field_errors %}{{ err }}{% endfor %}");
+					     	</script>
+					    {% endif %}       
+				        {% for hidden in form.hidden_fields %} {{ hidden }} {% endfor %}
+				     	<br>		                 
+	                    
+	                    <div class="row">
+		                    <div class="col-xs-12">                                                        
+		                     <a href="{% url 'productos_listado' %}" class="btn pull-left btn red-flamingo"><i class="fa fa-times"></i> Cancelar </a>
+		                     <button id="Guardar" type="button" class="btn pull-right blue-steel"><i class="fa fa-check"></i> Guardar </button>
+
+		                    </div>
+	                   </div>
+		               
+				    </form>
+	          </div>
+	         </div>
+	     	</div>                        
+	    </div>
+</div>	
+
+{% endblock %}

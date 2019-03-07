@@ -1,0 +1,58 @@
+{% load static from staticfiles %}
+{% load bootstrap3 %}
+{% load crispy_forms_tags %}
+{% block main %}    
+  
+<div class=" col-sm-12 "> 
+  <table class="table table-striped table-hover table-condensed table-no-bordered">
+    <tbody>
+    <tr>
+      <td  class="titulo">Apellido y Nombre:</td><td colspan="3">{{entidad.apellido_y_nombre|default_if_none:''}}</td>
+    </tr>
+    <tr>
+      <td class="titulo">Razón Social:</td><td colspan="3">{{entidad.fact_razon_social|default_if_none:''}}</td>
+    </tr>
+    <tr>
+      <td class="titulo">Documento:</td><td>{{entidad.get_tipo_doc_display|default_if_none:''}} {{entidad.nro_doc|default_if_none:''}}</td>
+      <td class="titulo">CUIT/CUIL:</td><td>{{entidad.fact_cuit|default_if_none:''}}</td>
+    </tr>
+    <tr>
+      
+    </tr>
+    <tr>
+      <td class="titulo">Condic.IVA:</td><td>{{entidad.get_fact_categFiscal_display|default_if_none:''}}</td>
+      <td class="titulo">Domicilio:</td><td>{{ entidad.domicilio|default_if_none:'' }} - {{ entidad.cod_postal|default_if_none:'' }} - {{ entidad.localidad|default_if_none:'' }} - {{ entidad.get_provincia_display|default_if_none:'' }}</td>
+    </tr>
+    <tr>
+      <td class="titulo">Teléfono/Celular:</td><td>{{entidad.telefono|default_if_none:''}} / {{ entidad.celular|default_if_none:'' }}</td>      
+      <td class="titulo">E-mail Principal:</td><td>{{ entidad.email|default_if_none:'' }}</td>
+    </tr>
+
+    <tr>
+      <td class="titulo">Contacto 1:</td><td colspan="3">{{entidad.contacto1_nombre|default_if_none:''}} {{ entidad.contacto1_email|default_if_none:'' }} {{ entidad.contacto1_tel|default_if_none:'' }} </td>            
+    </tr>
+    <tr>
+      <td class="titulo">Contacto 2:</td><td colspan="3">{{entidad.contacto2_nombre|default_if_none:''}} {{ entidad.contacto2_email|default_if_none:'' }} {{ entidad.contacto2_tel|default_if_none:'' }} </td>            
+    </tr>
+    <tr>
+      <td class="titulo">Contacto 3:</td><td colspan="3">{{entidad.contacto3_nombre|default_if_none:''}} {{ entidad.contacto3_email|default_if_none:'' }} {{ entidad.contacto3_tel|default_if_none:'' }} </td>            
+    </tr>
+    <tr>
+      <td class="titulo">Contacto 4:</td><td colspan="3">{{entidad.contacto4_nombre|default_if_none:''}} {{ entidad.contacto4_email|default_if_none:'' }} {{ entidad.contacto4_tel|default_if_none:'' }} </td>            
+    </tr>
+    <tr>
+      <td class="titulo">Contacto 5:</td><td colspan="3">{{entidad.contacto5_nombre|default_if_none:''}} {{ entidad.contacto5_email|default_if_none:'' }} {{ entidad.contacto5_tel|default_if_none:'' }} </td>            
+    </tr>
+    <tr>
+      <td class="titulo">Detalle/Observaciones:</td><td colspan="3">{{entidad.observaciones|default_if_none:''}} </td>            
+    </tr>
+
+    </tbody>
+  </table>
+</div>                                 
+
+          
+       
+{% endblock main %}        
+
+                               

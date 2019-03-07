@@ -1,0 +1,177 @@
+
+{% extends "index.html" %}
+{% load static from staticfiles %}
+{% load bootstrap3 %}
+{% load i18n %}
+{% load crispy_forms_tags %}
+{% load humanize %}
+
+{% block extra_css %}
+ 	<link rel="stylesheet" href="{% static 'css/comprobantes.css'%}?{% now "Ymd"%}" type="text/css" >  
+{% endblock %}
+{% block extra_js %}        
+    <script src="{% static 'js/jquery.formset.js' %}" type="text/javascript"></script>
+    <script src="{% static 'js/scripts/scripts_ot.js'%}?{% now "Ymd"%}" type="text/javascript"></script>
+    {% block modales_js %} 
+    {% endblock %}
+
+{% endblock %}
+
+
+{% block main %}
+<div class="col-sm-12 col-md-12 col-xs-12">
+      	<div class="row ">     
+	        <div class="col-xs-12" >  
+	          <div class="portlet box toolbar_violet panel_centrado">
+                <div class="portlet-title">
+                    <div class="caption bold uppercase">
+                                <i class="icon-notebook"></i>{% if object %}Orden de Trabajo Nº {{object}}{% else %}Nueva Orden de Trabajo{%endif%}
+                    </div>
+                </div>             
+              	<div class="portlet-body">
+		             <form role="form" class="form form-horizontal cpb" method="POST" action="" id="form-alta">
+					     {% csrf_token %}                 
+					     
+					   
+				       	<div class="row">
+							<div class="col-sm-6">
+								<div class="row">
+									<label class="control-label col-sm-2">Responsable:</label>
+									<div class="col-sm-10 col-xs-12">{% bootstrap_field form.responsable show_label=False %}</div>										
+								</div>								  
+							
+								<div class="row">
+							       <label class="control-label col-sm-2" for="id_fecha_cpb">Fecha:</label>
+							       <div class="col-sm-3">	{% bootstrap_field form.fecha show_label=False %}</div>							      
+							     
+							       <label class="control-label col-sm-3" for="id_fecha_cpb">Fecha Estimada:</label>
+							       <div class="col-sm-4">	{% bootstrap_field form.fecha_estimada show_label=False %}</div>							      
+							     </div>																													
+							  	<div class="row">						        								       
+							        <label class="control-label col-sm-2">Número:</label>									
+									<div class="col-xs-3">{% bootstrap_field form.numero show_label=False %}</div>									   
+								
+										<label class="control-label col-sm-3" for="id_fecha_cpb">Ubicación:</label>
+							       		<div class="col-sm-4 col-xs-12">{% bootstrap_field form.origen_destino show_label=False %}</div>							 
+							    </div>										
+
+							</div>
+							{% if pedido %}
+								<div class="col-sm-6">
+   								  <div class="portlet box blue-hoki">
+					                <div class="portlet-title2">
+					                    <div class="caption">
+					                               Datos Orden de Pedido Nº: {{pedido}}					                               
+					                    </div>
+					                </div>             
+					              	<div class="portlet-body">
+										<div class="row">						        								       
+									        <label class="control-label col-sm-1">Cliente:</label>									
+											<div class="col-sm-9"><label class="control-label">{{pedido.cliente}}</label></div>									   
+										</div>	
+										<div class="row">						        								       
+									        <label class="control-label col-sm-1">Fecha:</label>									
+											<div class="col-xs-2"><label class="control-label">{{pedido.fecha|date:'d/m/Y'}}</label></div>									   
+											<label class="control-label col-sm-3">Fecha Entrega:</label>									
+											<div class="col-xs-2"><label class="control-label">{{pedido.fecha_entrega|date:'d/m/Y'}}</label></div>									   
+										</div>
+										<div class="row">
+											<div class="col-sm-12">
+												<table id="id_forms_table" width="100%" class="table tabla table-condensed">
+			  			                         <thead>
+                            						<tr>
+                            							<th width="10%">Cantidad</th>								                      			
+									                    <th width="40%">Producto</th>								                      			
+									                    <th width="40%">Detalle</th>								                      			
+									                </tr>
+									             </thead>
+									                
+			  			                         <tbody class='form-cpbs'>       											                    	              
+							                    	{% for det in pedido_detalles %}					                      								                      						
+								                      	
+								                      	<tr>           					                      	
+									                      	<td width="10%">{{det.cantidad}} {{det.producto.get_unidad_display}}</td>								                      			
+									                      	<td width="40%">{{det.producto}}</td>								                      			
+									                      	<td width="40%">{{det.detalle}}</td>								                      			                      		
+									                    </tr>								                    
+							                     	{% endfor %}							                     	
+							                     </tbody>
+							                	</table>                     									
+							                </div>
+									    </div>					            									
+								    </div>								  								 
+								  </div>
+								 </div>
+											   
+							{% endif %}
+						</div>
+							
+					
+					    <div class="row">
+					        <div class="col-sm-12">                          						                
+					                <table id="id_forms_table" width="100%" class="table tabla table-condensed tabla_listado">
+					                    <thead>
+					                          <tr>
+					                              <th style="width: 40%;">Producto/Servicio  <a id="recargarProductos" href="#" class="recargarDatos" type="button" data-toggle="tooltip" data-placement="top" title="Recargar listados de Productos"><i class="fa fa-refresh"></i></a></th>					                              
+					                              <th style="width: 40%;">Detalle</th>
+					                              <th style="width: 10%;">Cantidad</th>
+					                              <th style="width: 5%;"></th>
+					                              <th style="width: 10px;" class="remove-sorting"></th>
+					                          </tr>
+					                    </thead>					                    
+	  			                        <tbody class='form-detalles'>       											                    	
+					                    	{{ ot_detalle.management_form }}
+					                    	{{ ot_detalle.non_form_errors  }}
+					                    	{% for form2 in ot_detalle.forms %}					                      					
+						                      	{{ form2.non_field_errors }}					                      					
+						                      	<tr class="{{ ot_detalle.prefix }}">           			
+						                      		<td>{% bootstrap_field form2.producto show_label=False%}</td>						                      		
+							                      	<td>{% bootstrap_field form2.detalle show_label=False%}</td>
+							                      	<td>{% bootstrap_field form2.cantidad show_label=False%}</td>						
+							                      	<td class="unidades">{% bootstrap_field form2.unidad show_label=False%}</td>
+							                      	<td>{{form2.DELETE}}
+							                      	 <a class="btn btn-danger delete-row1" title="Eliminar">
+							                      			<i class="fa fa-times" aria-hidden="true"></i></a>		 
+							                      	</td>
+							                      	{% for hidden in form2.hidden_fields %} {{ hidden }} {% endfor %}
+							                    </tr>								                    
+					                     	{% endfor %}							                     	
+					                    </tbody>
+					                </table>                        
+					    	</div>                						         
+					    </div>					     					    
+					     <div class="row">
+						     <div class="col-xs-12"> 
+							        	<fieldset>
+							         		<legend>OTROS DETALLES:</legend>
+							         		<div class="col-sm-12">
+														{% bootstrap_field form.detalle show_label=False%}																					
+								            </div>
+								        </fieldset>
+						     </div>
+		     		     </div>
+		     		    
+					    {% if form.non_field_errors  %}
+					     	<script type="text/javascript">
+					     	alertify.errorAlert("{% for err in form.non_field_errors %}{{ err }}{% endfor %}");
+					     	</script>
+					    {% endif %}       
+				        {% for hidden in form.hidden_fields %} {{ hidden }} {% endfor %}
+				     	<br>		                 
+	                    
+	                    <div class="row">
+		                    <div class="col-xs-12">                                                        
+		                     <a href="{% url 'orden_trabajo_listado' %}" class="btn pull-left btn red-flamingo"><i class="fa fa-times"></i> Cancelar </a>
+		                     <button id="Guardar" type="button" class="btn pull-right purple-plum"><i class="fa fa-check"></i> Guardar </button>
+
+		                    </div>
+	                   </div>
+		               
+				    </form>
+	          </div>
+	         </div>
+	     	</div>                        
+	    </div>
+</div>	
+
+{% endblock %}

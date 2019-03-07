@@ -1,0 +1,141 @@
+{% load static from staticfiles %}
+{% load humanize %}
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<title>{{pedido|upper}}</title>
+
+<style type="text/css">
+@import url("{% static 'css/reportes_factura.css'%}");
+
+ @page {
+         margin: 1cm 0.5cm 1cm 0.5cm;
+         padding: 0;         
+         @frame footer {
+                        -pdf-frame-content: page-footer;
+                        bottom: 0.5cm;
+                        height: 4cm;
+                        margin-right: 0.5cm;                        
+                        margin-left: 0.5cm;                        
+                        width: 100%;
+                    }
+         @frame header {
+                        -pdf-frame-content: page-header;
+                        margin-top: 1cm;
+                        margin-right: 1cm;                        
+                        margin-left: 1cm;
+                        margin-bottom: 1cm;
+                        height: 2cm;                      
+                    }
+         }
+</style>
+</head>
+
+<body>
+
+<table width="100%" class="tabla" >
+  <tr>
+    <td rowspan="2" width="80%" class="borde_arriba borde_abajo borde_izq borde_der titulo_reporte">ORDEN DE TRABAJO</td>
+    <td class="borde_arriba nombre_cpb borde_der borde_abajo" width="20%">Nº {{trabajo.numero}}</td>
+  </tr>
+  <tr>
+    <td class="nombre_cpb borde_der borde_abajo">{{trabajo.fecha|date:'d/m/Y'}}</td>
+  </tr>
+</table>
+<br/>
+<table width="100%" class="tabla">
+  <tr>
+    <td width="10%" class="borde_arriba borde_izq texto_der">Cliente:</td>
+    <td class="texto_izq borde_arriba" width="50%">{% if trabajo.orden_pedido.cliente.fact_razon_social %}{{trabajo.orden_pedido.cliente.fact_razon_social|upper}}{% else %}{{trabajo.orden_pedido.cliente.apellido_y_nombre|upper}}{% endif %}</td>
+    <td width="15%" class="texto_der borde_arriba">Localidad:</td>
+    <td width="25%" class="texto_izq borde_der borde_arriba">{{trabajo.orden_pedido.cliente.localidad|default_if_none:''|upper}}</td>
+  </tr>
+  <tr>
+    <td class="texto_der borde_izq">Dirección:</td>
+    <td class="texto_izq">{% if trabajo.orden_pedido.cliente.fact_direccion %}{{trabajo.orden_pedido.cliente.fact_direccion|default_if_none:''|upper}}{% else %}{{trabajo.orden_pedido.cliente.domicilio|default_if_none:''|upper}}{% endif %}</td>
+    <td class="texto_der">Provincia:</td>
+    <td class="texto_izq borde_der">{{trabajo.orden_pedido.cliente.get_provincia_display|default_if_none:''|upper}}</td>
+  </tr>
+  <tr>
+    <td class="texto_der borde_izq borde_abajo">Tel./Cel.:</td>
+    <td class="texto_izq borde_abajo">{{trabajo.orden_pedido.cliente.fact_telefono|default_if_none:''|upper}}</td>
+    <td class="texto_der borde_abajo">CUIT:</td>
+    <td class="texto_izq borde_der borde_abajo">{{trabajo.orden_pedido.cliente.fact_cuit|default_if_none:''}}</td>
+  </tr> 
+  <tr>
+    <td class="texto_der borde_izq borde_abajo">Responsable:</td>
+    <td class="texto_izq borde_abajo">{{trabajo.responsable|default_if_none:''|upper}}</td>
+    <td class="texto_der borde_abajo">Fecha Estimada:</td>
+    <td class="texto_izq borde_der borde_abajo">{{trabajo.fecha_estimada|date:'d/m/Y'}}</td>
+  </tr>
+ 
+  
+ 
+</table>
+
+
+<br/>
+<table width="100%" class="tabla">
+  <tr>
+    <td colspan="3" class="nombre_cpb borde_izq borde_der borde_arriba">Nº PEDIDO {{pedido.numero}}</td>    
+  </tr>  
+  <thead>
+    <tr><th width="20%" class="borde_izq borde_arriba borde_abajo tabla_header">Pedido</th>
+    <th width="40%" class="borde_izq  borde_arriba borde_abajo tabla_header">Tipo Impresión</th>
+    <th width="40%" class="borde_izq borde_der  borde_arriba borde_abajo tabla_header">Terminación</th>    
+  </thead>
+
+    <tr>      
+      <td class="borde_izq listado_centro borde_abajo">
+        {% if pedido.ped_mostrador %}MOSTRADOR&nbsp;{% endif %}{% if pedido.ped_webface %}WEB/FACEB&nbsp;{% endif %}
+        {% if pedido.ped_comercial %}COMERCIAL&nbsp;{% endif %}{% if pedido.ped_email %}E-MAIL{% endif %}      </td>
+      <td class="borde_izq listado_centro borde_abajo">
+        {% if pedido.ped_mostrador %}LASER&nbsp;{% endif %}{% if pedido.ped_webface %}LATEX&nbsp;{% endif %}{% if pedido.ped_comercial %}ROTULADO{% endif %}
+     
+        {% if pedido.impres_offset %}OFFSET&nbsp;{% endif %}{% if pedido.impres_corporeo %}CORPÓREO&nbsp;{% endif %}{% if pedido.impres_disenio %}DISEÑO{% endif %}
+      
+        {% if pedido.impres_ploteo_papel %}PLOTEO PAPEL&nbsp;{% endif %}{% if pedido.impres_facturero %}FACTURERO&nbsp;{% endif %}{% if pedido.impres_sellos %}SELLOS&nbsp;{% endif %}{% if pedido.impres_imprbyn %}IMPR.B/N{% endif %}
+      </td>
+      <td class="borde_izq listado_centro borde_abajo borde_der">
+        {% if pedido.term_cortado %}CORTADO&nbsp;{% endif %}{% if pedido.term_troquelado %} TROQUELADO&nbsp;{% endif %}{% if pedido.term_abrochado %}ABROCHADO&nbsp;{% endif %}
+     
+        {% if pedido.term_engomado %}ENGOMADO&nbsp;{% endif %}{% if pedido.term_plegado %} PLEGADO&nbsp;{% endif %}{% if pedido.term_arandelas %}ARANDELAS&nbsp;{% endif %}
+      
+        {% if pedido.term_bolsillos %}BOLSILLOS&nbsp;{% endif %}{% if pedido.term_plastificado %}PLASTIFICADO&nbsp;{% endif %}{% if pedido.term_imp_corte %}IMPyCORTE{% endif %}{% if pedido.term_anillado %}ANILLADO{% endif %}
+      </td>
+    </tr>       
+
+</table>
+<br/>
+
+<table width="100%" class="tabla">
+   <tr>
+    <td colspan="2" class="nombre_cpb borde_izq borde_der borde_arriba">DETALLES TRABAJO</td>    
+  </tr>  
+  <thead>
+  <th class="borde_izq borde_arriba borde_abajo tabla_header" width="20%">Cantidad</th>
+  <th class="borde_der  borde_arriba borde_abajo tabla_header">Detalle</th>  
+  </thead>
+  {% for item in detalle_trabajo %}
+    <tr>      
+      <td class="listado_der borde_izq borde_abajo">{{item.cantidad|default_if_none:0|floatformat:2|intcomma}} {{item.producto.get_unidad_display}}</td>
+      <td class="listado_izq borde_der borde_abajo borde_izq">{{item.producto}} {% if item.detalle %} ({{item.detalle}}) {% endif %}</td>      
+    </tr>       
+  {% endfor detalle_trabajo %}   
+</table>
+
+<div id="page-footer">
+ {% if trabajo.detalle %}
+ <table width="100%" class="tabla">
+  <tr>
+    <td class="listado_der borde_izq borde_abajo borde_arriba" width="20%">Observaciones:</span></td>
+    <td  valign="top" class="texto_izq borde_izq borde_der borde_arriba borde_abajo">{{trabajo.detalle|default_if_none:''}}</td>
+  </tr>
+</table>
+{% endif %}
+</div>
+
+</body>
+</html>

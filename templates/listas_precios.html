@@ -1,0 +1,63 @@
+{% extends "index.html" %}
+
+
+{% block main %}
+<div class="col-xs-12 ">
+
+    <div class="list-group2">
+        <a href="#" class="list-group-item active">
+            <b>Listado Completo de Padrones del Estudio {{estudio.denominacion}}</b>         
+        </a>
+        </div>
+    <div class="datagrid">
+    <table>
+    <thead>
+        <tr class="info">
+            <th>Nº Padrón/Partida</th>
+            <th>Tributo</th>
+            <th>Responsable</th>
+            <th>Porcentaje Pago</th>
+            <th>Cuotas Impagas</th>
+            <th>Deuda sin Punitorios</th>
+            <th>Ver Cuotas</th>            
+        </tr>
+    </thead>
+    <tbody>
+        {% for item in padr %}
+        <tr>
+            <td>{{ item.padron }}</td>
+            <td>{{ item.tipoTributo }}</td>
+            <td>{{ item.nombreResp }}</td>
+            <td>
+                <div class="progress">
+                    
+                    <div class="progress-bar progress-bar-success" role="progressbar" aria-valuenow="{% widthratio item.CantPagos item.TotalCuotas 100 %}" aria-valuemin="0"  aria-valuemax="100" style="width: {% widthratio item.CantPagos item.TotalCuotas 100 %}%;">
+                    <span>{% widthratio item.CantPagos item.TotalCuotas 100 %}% </span>
+                    </div>
+                  
+                </div>
+            </td>            
+            <td> {{ item.CantDeuda }} cuotas</td>
+            <td>$ {{ item.Deuda|default_if_none:0}}</td>
+            <td><a  href="{% url 'ver_cuotas' item.id_padron %}" title="Ver Cuotas del Padrón {{item.padron}}"><span class="glyphicon glyphicon-search iconosTabla"></span> </a>
+            {% if user.is_superuser %} 
+                    <a  href="{% url 'drei_ddjja_list' item.id_padron %}" title="DDJJ Anual del Padrón {{item.padron}}"><span class="glyphicon glyphicon-list-alt iconosTabla"></span> </a>
+            {% endif %}
+             </td> 
+            
+        </tr>
+        {% endfor %}
+
+    </tbody>
+    </table>
+    </div>
+                <div class="listado-pie">
+                  <b>{{padr|length}}</b> padrones encontrados.
+                </div>
+</div>
+{% endblock main %}
+
+
+
+
+

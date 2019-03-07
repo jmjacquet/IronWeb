@@ -1,0 +1,294 @@
+{% extends "index.html" %}
+{% load static from staticfiles %}
+{% load i18n l10n %}
+{% load humanize %}
+{% block extra_js %}            
+    <script src="{% static 'js/scripts/scripts_general.js'%}?{% now "Ymd"%}" type="text/javascript"></script>    
+{% endblock %}
+{% block main %} 
+    
+
+        <div class="col-md-12">   
+            <div class="portlet box toolbar_green">
+                <div class="portlet-title">
+                    <div class="caption bold">
+                                <i class="icon-wallet"></i>ORDENES DE PAGO <small>carga e impresión</small>
+                    </div>
+                    <div class="actions">
+                            <button tittle="Búsqueda Avanzada" data-toggle="collapse" aria-expanded="true"  class="btn btn-circle active" data-target="#barra_busqueda" aria-controls="barra_busqueda"><i class="glyphicon glyphicon-search"></i></button>
+                    </div>
+
+                </div> 
+            </div>
+
+                    {% include "general/varios/barra_busqueda_compras.html" %}          
+                    <a class="btn btn-sm green-jungle" style="float:left;margin-right:20px;" href="{% url 'cpb_pago_nuevo' %}">Nuevo Pago</a>
+                    <table width="100%" id="dataTables-pagos" class="table table-striped compact table-hover table-no-bordered tabla_nueva nowrap">         
+                        <thead>
+                            <tr>
+                                <th class="no-sort"></th>                                 
+                                <th class="text-center">Fecha Emisión</th>
+                                <th>Nº Orden Pago</th>
+                                <th>Proveedor</th>
+                                <th class="text-right">Total</th>
+                                <th>Comprobantes</th>                                 
+                                <th>Descripción</th>                                
+                                
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for cpb in comprobantes %}
+                            <tr {% if cpb.estado.pk = 3 %}class="{{cpb.estado.color}}"{% endif %}>                                                        
+                                <td><div class="btn-group">
+                                      <button type="button" title="{{ cpb.pk|safe}}" class="btn btn-xs color_barra" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                        <i class="icon-settings"> </i> <span class="caret"></span>
+                                      </button>
+                                      <ul class="dropdown-menu dropdown-menu-default">
+                                         <li><a href="{% url 'recibo_ver' id=cpb.id %}"  title="VER" class="modal-detail" data-modal-head="DETALLE {{cpb.cpb_tipo.nombre|upper}} {{cpb}}   Fecha: {{cpb.fecha_cpb|date:'d/m/Y'}}" data-fm-callback="reload"><i class="icon-screen-desktop"></i> Vista Previa</a></li>
+                                        <li><a target="_blank" href="{% url 'imprimirPago' id=cpb.pk %}"><i class=" icon-printer"></i> Imprimir</a></li>
+                                        <li><a href="{% url 'mandarEmail' id=cpb.pk %}"><i class="icon-envelope-open"></i> Enviar por Email</a></li>
+                                            <li role="separator" class="divider"></li>  
+                                        <li><a href="{% url 'cpb_pago_editar' id=cpb.pk %}"  title="Editar" data-fm-callback="reload" ><i class="icon-note"></i> Editar</a></li>
+                                         
+                                        {% if cpb.estado.pk = 3 %}
+                                                    <li><a href="#" 
+                                                    onClick="alerta= alertify.dialog('confirm').set({'labels':{ok:'Aceptar', cancel:'Cancelar'},'message': '¿DESEA REACTIVAR EL COMPROBANTE ACTUAL?',transition:'fade','onok': function(){ window.location.href = '{% url 'cpb_anular_reactivar' id=cpb.pk estado=2 %}'; },'oncancel': function(){ return true;} }); alerta.setting('modal', true); alerta.setHeader('ANULAR/REACTIVAR COMPROBANTE'); alerta.show(); return true;"><i class="icon-like"></i>Restablecer</a></li>
+                                        {% elif cpb.estado.pk < 3 %}
+                                            <li><a href="#" 
+                                            onClick="alerta= alertify.dialog('confirm').set({'labels':{ok:'Aceptar', cancel:'Cancelar'},'message': '¿DESEA ANULAR EL COMPROBANTE ACTUAL?',transition:'fade','onok': function(){ window.location.href = '{% url 'cpb_anular_reactivar' id=cpb.pk estado=3  %}'; },'oncancel': function(){ return true;} }); alerta.setting('modal', true); alerta.setHeader('ANULAR/REACTIVAR COMPROBANTE'); alerta.show(); return true;" ><i class="icon-dislike"></i>Anular</a></li>                                                
+                                        {% endif %}
+                                        <li><a href="#" 
+                                                onClick="alerta= alertify.dialog('confirm').set({'labels':{ok:'Aceptar', cancel:'Cancelar'},'message': '¿DESEA ELIMINAR LA COMPRA SELECCIONADA?',transition:'fade','onok': function(){ window.location.href = '{% url 'cpb_pago_eliminar' id=cpb.pk %}'; },'oncancel': function(){ return true;} }); alerta.setting('modal', true); alerta.setHeader('ELIMINAR COMPROBANTE'); alerta.show(); return true;"><i class="icon-trash"></i>Eliminar</a>
+                                        </li>      
+                                        <li role="separator" class="divider"></li>
+                                        <li><a href="{% url 'cpb_editar_seguimiento' id=cpb.pk %}"  class="fm-update" data-fm-head="EDITAR SEGUIMIENTO"  title="Editar Seguimiento" data-fm-target="#object-{{ item.pk }}" data-fm-callback="reload" ><i class="icon-note"></i>Seguimiento</a></li>                                               
+                                      </ul>
+                                    </div>
+                                    {% if cpb.seguimiento %}  <i title="{{cpb.seguimiento}}" class="icon-speech icono_seguimiento"></i> {% endif %}                               
+                                    {% if cpb.fecha_envio_mail %}  <i title="Email enviado el {{cpb.fecha_envio_mail|date:'d/m/Y'}}" class="fa fa-envelope-o icono_seguimiento"></i> {% endif %}
+                                </td>                                
+                                <td class="text-center">{{cpb.fecha_cpb|date:'d/m/Y'}}</td>                                
+                                <td>{{ cpb }}</td>                                
+                                <td  title="{{ cpb.entidad}}" >{% include "entidades/proveedor_ver.html" %}</td>
+                                <td class="importe">${{cpb.importe_total|default_if_none:0|floatformat:2}}</td>
+                                <td class="wrap">
+                                    {% for cc in cpb.get_cobranzas %}                                   
+                                    {% include "general/varios/cpb_span_ver.html" %}&nbsp;                                    
+                                    {% endfor %}
+                                </td>
+                                <td>{{ cpb.descripcion|default_if_none:'' }}</td>
+                                
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                        <tfoot>
+                            <tr>
+                                <th></th>                                 
+                                <th></th> 
+                                <th></th>                                 
+                                <th></th>
+                                <th class="importe"></th>
+                                <th></th> 
+                                <th></th>                               
+                            </tr>
+                        </tfoot>
+                    </table>                             
+                   
+            </div>
+
+
+    
+ 
+<script type="text/javascript">
+
+$(document).ready(function() { 
+
+$.fn.datepicker.dates['es'] = {
+    days: ["Domingo", "Lunes", "Martes", "Miércoles", "Jueves", "Viernes", "Sábado", "Domingo"],
+    daysShort: ["Dom", "Lun", "Mar", "Mié", "Jue", "Vie", "Sáb", "Dom"],
+    daysMin: ["Do", "Lu", "Ma", "Mi", "Ju", "Vi", "Sa", "Do"],
+    months: ["Enero", "Febrero", "Marzo", "Abril", "Mayo", "Junio", "Julio", "Agosto", "Septiembre", "Octubre", "Noviembre", "Diciembre"],
+    monthsShort: ["Ene", "Feb", "Mar", "Abr", "May", "Jun", "Jul", "Ago", "Sep", "Oct", "Nov", "Dic"],
+    today: "Hoy"
+  };
+  
+   $('.datepicker').datepicker({
+          format: "dd/mm/yyyy",
+          language: "es",
+          autoclose: true,
+          todayHighlight: true
+    }); 
+    
+moment.locale('es');
+$.fn.dataTable.moment('DD/MM/YYYY'); 
+var tabla = $('#dataTables-pagos').DataTable({
+            "language": {
+                "decimal": ",",
+                "thousands": ".",                 
+                "sProcessing": "Procesando...",
+                "sLengthMenu": "Mostrar _MENU_ registros",
+                "sZeroRecords": "No se encontraron resultados",
+                "sEmptyTable": "No hay registros en esta tabla",
+                "sInfo": "Mostrando registros del _START_ al _END_ de un total de _TOTAL_ registros",
+                "sInfoEmpty": "Mostrando registros del 0 al 0 de un total de 0 registros",
+                "sInfoFiltered": "(filtrado de un total de _MAX_ registros)",
+                "sInfoPostFix": "",
+                "sSearch": "Buscar:",
+                "sUrl": "",
+                "sInfoThousands": ",",
+                "sLoadingRecords": "Cargando...",
+                "oPaginate": {
+                    "sFirst": "Primero",
+                    "sLast": "Ãšltimo",
+                    "sNext": "Siguiente",
+                    "sPrevious": "Anterior"
+                },
+                "oAria": {
+                    "sSortAscending": ": Activar para ordenar la columna de manera ascendente",
+                    "sSortDescending": ": Activar para ordenar la columna de manera descendente"
+                },
+                              
+            },                      
+            "columnDefs": [ {
+                  "targets"  : 'no-sort',
+                  "orderable": false,
+                }],          
+           "paging":   true,
+           "lengthMenu": [[20, 50, -1], [20, 50, "Todos"]],
+           "autoWidth": false,
+           "order": [],
+           "colReorder": true,
+           "searching": true,
+            fixedHeader: {
+              header: true,
+              footer: false
+              },
+            responsive: true,
+            dom: 'Bfrtlip',
+            buttons: [
+                {
+                    extend:    'colvis',
+                    text:      '<i class="fa fa-list"></i>',
+                    titleAttr: 'Ver/Ocultar',
+                    className: 'btnToolbar',                    
+                },
+                {
+                    extend:    'copyHtml5',
+                    text:      '<i class="fa fa-files-o"></i>',
+                    titleAttr: 'Copiar',
+                    exportOptions: { columns: ':visible' },
+                    className: 'btnToolbar',                    
+                },
+                {
+                    extend:    'excel',
+                    text:      '<i class="fa fa-file-excel-o"></i>',
+                    titleAttr: 'Excel',
+                    filename: 'ORDENES_PAGO',                    
+                    exportOptions: {  modifier: {
+                                        page: 'current'
+                                    }, 
+                                      columns: ':visible',
+                                      format: {
+                                      body: function(data, row, column, node) {
+                                        var floatVal = function (i) {
+                                            if (typeof i === "number") {
+                                                return i;
+                                            } else if (typeof i === "string") {
+                                                i = i.replace("$", "")
+                                                i = i.replace(",", "")
+                                                i = i.replace(".", "")
+                                                var result = parseFloat(i)/100;
+                                                // console.log(result);
+                                                if (isNaN(result)) {
+                                                    try {
+                                                        var result = $jq(i).text();
+                                                        result = parseFloat(result);
+                                                        if (isNaN(result)) { result = 0 };
+                                                        return result * 1;
+                                                    } catch (error) {
+                                                        return 0;
+                                                    }
+                                                } else {
+                                                    return result * 1;
+                                                }
+                                            } else {
+                                                alert("Unhandled type for totals [" + (typeof i) + "]");
+                                                return 0
+                                            }
+                                        };
+                                          data = $('<p>' + data + '</p>').text();
+                                          return (node.className=='importe') ? floatVal(data)  : data;
+                                      }
+                                    }},
+                    className: 'btnToolbar',     
+                },
+               
+                {
+                    extend:    'pdfHtml5',
+                    text:      '<i class="fa fa-file-pdf-o"></i>',
+                    titleAttr: 'PDF',footer: true,
+                    exportOptions: { columns: ':visible'},
+                    orientation: 'landscape',
+                    className: 'btnToolbar',                    
+                },
+                {
+                    extend: 'print',
+                    text:      '<i class="fa fa-print"></i>',
+                    titleAttr: 'Imprimir',
+                    exportOptions: { columns: ':visible' },
+                    className: 'btnToolbar',                    
+                },
+            ],
+             PreDrawCallback:function(){
+            $("#cargando").show();
+            },
+            initComplete: function () {
+              $("#dataTables-pagos").show();
+                  this.fnAdjustColumnSizing();
+                $("#cargando").hide();
+
+            },
+            "footerCallback": function ( row, data, start, end, display ) {
+            var api = this.api(), data;
+            var floatVal = function (i) {
+                if (typeof i === "number") {
+                    return i;
+                } else if (typeof i === "string") {
+                    i = i.replace("$", "")
+                    i = i.replace(",", "")
+                    i = i.replace(".", "")
+                    var result = parseFloat(i)/100;
+                    // console.log(result);
+                    if (isNaN(result)) {
+                        try {
+                            var result = $jq(i).text();
+                            result = parseFloat(result);
+                            if (isNaN(result)) { result = 0 };
+                            return result * 1;
+                        } catch (error) {
+                            return 0;
+                        }
+                    } else {
+                        return result * 1;
+                    }
+                } else {
+                    alert("Unhandled type for totals [" + (typeof i) + "]");
+                    return 0
+                }
+            };
+            pageTotal = api.column(4, { page: 'current'} ).data().reduce( function (a, b) {return floatVal(a) + floatVal(b);}, 0 );            
+            $( api.column(4).footer() ).html('$'+pageTotal.toFixed(2));
+        }
+        });
+
+
+
+
+});
+</script>
+{% endblock main %}
+
+
+
+
+

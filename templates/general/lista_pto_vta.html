@@ -1,0 +1,324 @@
+{% extends "index.html" %}
+{% load static from staticfiles %}
+{% load i18n %}
+{% load humanize %}
+{% block extra_css %}
+    <link rel="stylesheet" href="{% static 'css/comprobantes.css'%}?{% now "Ymd"%}" type="text/css" >  
+{% endblock %}
+{% block main %} 
+
+        <div class="col-md-12">
+            <div class="portlet box toolbar_blue">
+                <div class="portlet-title">
+                    <div class="caption bold">
+                                <i class="fa fa-asterisk"></i>LISTADO PUNTOS DE VENTA y NUMERACIÓN DE COMPROBANTES
+                    </div>
+
+                </div> 
+            </div>  
+                  <div class="row cerca">
+                    <div class="col-sm-7">
+                        <a class="btn btn-sm blue-hoki fm-create" style="float:left;margin-right:20px;" href="{% url 'pto_vta_nuevo' %}" data-fm-head="AGREGAR PUNTO DE VENTA" data-fm-callback="reload">Nuevo Punto de Venta</a>
+                        <table width="100%" id="dataTables-primary" class="table table-striped table-hover table-condensed table-no-bordered tabla_nueva">         
+                            <thead>
+                                <tr>
+                                    <th width="5%" ></th>
+                                    <th>Número</th>
+                                    <th>Nombre</th>
+                                    <th>Sucursal</th>
+                                    <th>Dirección</th>
+                                    <th>Factura Electrónica</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for p in pto_vta %}
+                                <tr {% if p.baja %}
+                                    class='danger'
+                                 {% endif %}>
+                                    <td>{% if not p.interno %}
+                                        <div class="btn-group">
+                                           <button type="button" class="btn btn-xs color_barra" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                            <i class="icon-settings"> </i> <span class="caret"></span>
+                                          </button>                                    
+                                           <ul class="dropdown-menu dropdown-menu-default">
+                                            <li><a href="{% url 'pto_vta_editar' id=p.pk %}"  class="fm-update " title="Editar" data-fm-callback="reload" data-fm-head="EDITAR PUNTO DE VENTA"data-fm-target="#object-{{ p.pk }}"><i class="icon-note"></i> Editar</a></li>
+                                            <li><a href="#" 
+                                                onClick="alerta= alertify.dialog('confirm').set({'labels':{ok:'Aceptar', cancel:'Cancelar'},'message': '¿DESEA DAR DE BAJA/REACTIVAR EL REGISTRO ACTUAL?',transition:'fade','onok': function(){ window.location.href = '{% url 'pto_vta_baja_reactivar' id=p.pk  %}'; },'oncancel': function(){ return true;} }); alerta.setting('modal', true); alerta.setHeader('BAJA/REACTIVAR'); alerta.show(); return true;" ><i class="icon-dislike"></i><i class="icon-like"></i>Baja/Reactivar</a>
+                                            </li>                                            
+                                          </ul>      
+                                        </div>
+                                         {% endif %}
+                                    </td>
+                                    <td>{{p.numero|default_if_none:''}}</td>
+                                    <td>{{p.nombre|default_if_none:'' }}</td>                                
+                                    <td class="text-center">{% if p.es_sucursal %}<i class="fa fa-check text-success"></i>{% endif %}</td>                                    
+                                    <td>{{p.domicilio|default_if_none:'' }} {{ p.cod_postal|default_if_none:'' }} {{ p.localidad|default_if_none:'' }} 
+                                    {{ p.get_provincia_display|default_if_none:'' }}</td>
+                                    <td class="text-center">{% if p.fe_electronica %}<i class="fa fa-check text-success"></i>{% endif %}</td>                                    
+                                </tr>
+                                {% endfor %}
+                            </tbody>
+                            <tfoot>
+                                <tr>                                
+                                    <th></th> 
+                                    <th></th>                                
+                                    <th></th>        
+                                    <th></th>                                
+                                    <th></th>  
+                                    <th></th>
+                                </tr>
+                            </tfoot>
+                        </table>
+                    </div>                   
+                    <div class="col-sm-4">                        
+                        <table width="100%" id="dataTables-numeros" class="table table-striped table-hover table-condensed table-no-bordered tabla_nueva nowrap">         
+                            <thead>
+                                <tr>
+                                    <th>Pto.Vta.</th>
+                                    <th>Tipo</th>
+                                    <th>Letra</th>
+                                    <th class="text-right">Último Nº</th>
+                                    <th class="no-sort text-right" ></th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for n in numeros %}
+                                <tr name="detalle_{{n.id|safe}}" value="{{n.ultimo_nro|safe}}">
+                                    <td>{{n.cpb_pto_vta.numero|default_if_none:''}}</td>
+                                    <td>{{n.cpb_tipo|default_if_none:''}}</td>                                
+                                    <td>{{n.letra|default_if_none:''}}</td>
+                                    <td class="text-right">{{n.ultimo_nro|default_if_none:'0'}}</td>
+                                    <td class="text-right">
+                                     <div class="btn-group">                                
+                                        <button type="button" class="btn btn-xs color_barra" aria-haspopup="true" aria-expanded="false" onClick="alertify.prompt('Modificar Último  Número', 
+                                           '{{n.cpb_tipo|default_if_none:''}}-{{n.cpb_pto_vta.numero|default_if_none:''}}-{{n.letra|default_if_none:''}}<br>Ingrese el último Número generado:',{{n.ultimo_nro|safe}},function(evt, value) {var nro = value;window.location.href = '/comprobantes/pto_vta/pto_vta_numero_cambiar/{{n.id|safe}}/'+ nro;},function(){return true; } ).set('labels', {ok:'Aceptar', cancel:'Cancelar'}).set('type', 'number');" class="btnToolbar btn-primary" title="Cambiar Último Número"><i class="icon-refresh"> </i>
+                                        </button>  
+                                     </div>   
+                                    </td>
+                                </tr>
+                                {% endfor %}
+                            </tbody>
+                            <tfoot>
+                                <tr>                                
+                                    <th></th> 
+                                    <th></th>                                
+                                    <th></th>        
+                                    <th></th>                                
+                                    <th></th>  
+                                </tr>
+                            </tfoot>
+                        </table>
+                    </div> 
+                 </div>
+        </div>
+      
+
+<script type="text/javascript">
+
+$(document).ready(function() {       
+    moment.locale('es');
+    $.fn.dataTable.moment('DD/MM/YYYY'); 
+    var tabla = $('#dataTables-primary').DataTable({
+                "language": {
+                    "decimal": ",",
+                    "thousands": ".",                
+                    "sProcessing": "Procesando...",
+                    "sLengthMenu": "Mostrar _MENU_ registros",
+                    "sZeroRecords": "No se encontraron resultados",
+                    "sEmptyTable": "No hay registros en esta tabla",
+                    "sInfo": "Mostrando registros del _START_ al _END_ de un total de _TOTAL_ registros",
+                    "sInfoEmpty": "Mostrando registros del 0 al 0 de un total de 0 registros",
+                    "sInfoFiltered": "(filtrado de un total de _MAX_ registros)",
+                    "sInfoPostFix": "",
+                    "sSearch": "Buscar:",
+                    "sUrl": "",
+                    "sInfoThousands": ",",
+                    "sLoadingRecords": "Cargando...",
+                    "oPaginate": {
+                        "sFirst": "Primero",
+                        "sLast": "Ãšltimo",
+                        "sNext": "Siguiente",
+                        "sPrevious": "Anterior"
+                    },
+                    "oAria": {
+                        "sSortAscending": ": Activar para ordenar la columna de manera ascendente",
+                        "sSortDescending": ": Activar para ordenar la columna de manera descendente"
+                    },
+                    "decimal": ",",
+                    "thousands": ".",                
+                },                      
+               
+               "bPaginate": false,
+               "autoWidth": false,
+               "order": [],
+               "colReorder": true,
+               "searching": true,
+                fixedHeader: {
+                  header: true,
+                  footer: false
+                  },
+               responsive: true,
+               dom: 'Bfrtip',
+                buttons: [
+                    {
+                        extend:    'colvis',
+                        text:      '<i class="fa fa-list"></i>',
+                        titleAttr: 'Ver/Ocultar',
+                        className: 'btnToolbar',                    
+                    },
+                    {
+                        extend:    'copyHtml5',
+                        text:      '<i class="fa fa-files-o"></i>',
+                        titleAttr: 'Copiar',
+                        exportOptions: { columns: ':visible' },
+                        className: 'btnToolbar',                    
+                    },
+                    {
+                    extend:    'excel',
+                    text:      '<i class="fa fa-file-excel-o"></i>',
+                    titleAttr: 'Excel',
+                    filename: 'PUNTOS_VENTA',                    
+                    exportOptions: {  modifier: {
+                                        page: 'current'
+                                    }, 
+                                      columns: ':visible',
+                                      format: {
+                                      body: function(data, row, column, node) {
+                                        var floatVal = function (i) {
+                                            if (typeof i === "number") {
+                                                return i;
+                                            } else if (typeof i === "string") {
+                                                i = i.replace("$", "")
+                                                i = i.replace(",", "")
+                                                i = i.replace(".", "")
+                                                var result = parseFloat(i)/100;
+                                                // console.log(result);
+                                                if (isNaN(result)) {
+                                                    try {
+                                                        var result = $jq(i).text();
+                                                        result = parseFloat(result);
+                                                        if (isNaN(result)) { result = 0 };
+                                                        return result * 1;
+                                                    } catch (error) {
+                                                        return 0;
+                                                    }
+                                                } else {
+                                                    return result * 1;
+                                                }
+                                            } else {
+                                                alert("Unhandled type for totals [" + (typeof i) + "]");
+                                                return 0
+                                            }
+                                        };
+                                          data = $('<p>' + data + '</p>').text();
+                                          return (node.className=='importe') ? floatVal(data)  : data;
+                                      }
+                                    }},
+                    className: 'btnToolbar',     
+                },
+                   
+                    {
+                        extend:    'pdfHtml5',
+                        text:      '<i class="fa fa-file-pdf-o"></i>',
+                        titleAttr: 'PDF',footer: true,
+                        exportOptions: { columns: ':visible' },
+                        className: 'btnToolbar',                    
+                    },
+                    {
+                        extend: 'print',
+                        text:      '<i class="fa fa-print"></i>',
+                        titleAttr: 'Imprimir',
+                        exportOptions: { columns: ':visible' },
+                        className: 'btnToolbar',                    
+                    },
+                ],
+
+            });
+
+    var tabla2 = $('#dataTables-numeros').DataTable({
+                "language": {
+                    "decimal": ",",
+                    "thousands": ".",                
+                    "sProcessing": "Procesando...",
+                    "sLengthMenu": "Mostrar _MENU_ registros",
+                    "sZeroRecords": "No se encontraron resultados",
+                    "sEmptyTable": "No hay registros en esta tabla",
+                    "sInfo": "Mostrando registros del _START_ al _END_ de un total de _TOTAL_ registros",
+                    "sInfoEmpty": "Mostrando registros del 0 al 0 de un total de 0 registros",
+                    "sInfoFiltered": "(filtrado de un total de _MAX_ registros)",
+                    "sInfoPostFix": "",
+                    "sSearch": "Buscar:",
+                    "sUrl": "",
+                    "sInfoThousands": ",",
+                    "sLoadingRecords": "Cargando...",
+                    "oPaginate": {
+                        "sFirst": "Primero",
+                        "sLast": "Ãšltimo",
+                        "sNext": "Siguiente",
+                        "sPrevious": "Anterior"
+                    },
+                    "oAria": {
+                        "sSortAscending": ": Activar para ordenar la columna de manera ascendente",
+                        "sSortDescending": ": Activar para ordenar la columna de manera descendente"
+                    },
+                    "decimal": ",",
+                    "thousands": ".",                
+                },                      
+               
+               "bPaginate": false,
+               "autoWidth": false,
+               "order": [],
+               "colReorder": true,
+               "searching": true,
+                
+               responsive: false,
+               dom: 'Bfrtip',
+                buttons: [
+                    {
+                        extend:    'copyHtml5',
+                        text:      '<i class="fa fa-files-o"></i>',
+                        titleAttr: 'Copiar',
+                        exportOptions: { columns: ':visible' },
+                        className: 'btnToolbar',                    
+                    },
+                    {
+                        extend:    'excelHtml5',
+                        text:      '<i class="fa fa-file-excel-o"></i>',
+                        titleAttr: 'Excel',
+                        exportOptions: { columns: ':visible' },
+                        className: 'btnToolbar',                    
+                    },
+
+                ],
+                initComplete: function () {
+               // this.api().columns().every( function () {[0, 1, 9]
+                this.api().columns([0,1,2]).every( function () {
+                    var column = this;
+                    var select = $('<select class="form-control"><option value=""></option></select>')
+                        .appendTo( $(column.footer()).empty() )
+                        .on( 'change', function () {
+                            var val = $.fn.dataTable.util.escapeRegex(
+                                $(this).val()
+                            );
+     
+                            column
+                                .search( val ? '^'+val+'$' : '', true, false )
+                                .draw();
+                        } );
+     
+                     column.data().unique().sort().each( function ( d, j ) {
+                    //column.cells('', column[0]).render('display').sort().unique().each( function ( d, j ){
+                        select.append( '<option value="'+d+'">'+d+'</option>' )
+                    } );
+                } );
+
+            },
+            });
+    });
+</script> 
+{% endblock main %}
+
+
+
+
+

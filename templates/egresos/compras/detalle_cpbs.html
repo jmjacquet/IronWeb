@@ -1,0 +1,125 @@
+{% load static from staticfiles %}
+{% load bootstrap3 %}
+{% load i18n %}
+{% load humanize %}
+{% block extra_css %}
+        <link rel="stylesheet" href="{% static 'css/comprobantes.css'%}?{% now "Ymd"%}" type="text/css" >  
+{% endblock %}
+<div class="modal-dialog fm-modal">
+        <div class="modal-content">
+               <div class="row">
+                 <div data-dismiss="modal" class="close-modal">
+                          <button type="button" class="close" data-dismiss="modal" aria-hidden="true">x</button>        
+                        </div>
+                 <div class="modal-head">                        
+                        COMPROBANTES SELECCIONADOS
+                </div>
+               
+                <div class="modal-body">
+                        <div class="row">
+                               <div class=" col-sm-12 ">                                                                       
+                                 <form role="form" class="form form-horizontal cpb" method="POST" action="" id="selecc_cpbs">
+                                {% csrf_token %}     
+                                <table width="100%" class="table tabla table-condensed table-striped compact tabla_listado">
+                                    <thead>
+                                          <tr>
+                                              <th style="width: 40%;">Comprobante</th>                                                                                                                  
+                                              <th style="width: 20%;">Saldo</th>
+                                              <th style="width: 20%;">Importe a Cancelar</th>                                             
+                                          </tr>
+                                    </thead>                                                        
+                                    <tbody class='form-cpbs'>                                                                                                                       
+                                         {{ comprobantes.management_form }}                                          
+                                        {% for form1 in comprobantes.forms %}                                                                                                   
+                                                {{ form1.non_field_errors }}
+                                                {{ form1.non_form_errors  }}                                                                                                               
+                                                {{form1.errors}}
+                                                <tr class="{{ comprobantes.prefix }}">                                                                          
+                                                        <td>{% bootstrap_field form1.detalle_cpb show_label=False%}</td>
+                                                        <td>{% bootstrap_field form1.saldo show_label=False%}</td>
+                                                        <td>{% bootstrap_field form1.importe_total show_label=False%}</td>                                                       
+                                                        {% for hidden in form1.hidden_fields %} {{ hidden }} {% endfor %}
+                                                    </tr>                                                                                   
+                                        {% endfor %}                                                                            
+                                    </tbody>
+                                    <tfoot>
+                                          <tr style="">
+                                              <th style="padding-right:5px;"class="text-right"></th>                                                                                                                  
+                                              <th style="width: 20%;border-top: solid;padding-top:2px;  border-width: 1px 0;">
+                                                <span id="tot_cpb" class="total_comprobante pull-right">$ <span id="totSaldos">{{total}}</span></span>                                                
+                                              </th>
+                                              <th style="width: 20%;border-top: solid;  border-width: 1px 0;">
+                                                <span id="tot_cpb" class="total_comprobante pull-right">$ <span id="totCpbs">{{total}}</span></span>                                                
+                                              </th>                                             
+                                          </tr>
+                                    </tfoot>      
+                                </table> 
+                                                     
+                         </div> 
+                        </div>
+                </div>
+                <div class="modal-buttons">
+                        <div class="row">
+                              <div class="col-xs-6">
+                                  <button data-dismiss="modal" class="btn pull-left btn red-flamingo" type="button">
+                                      <i class="fa fa-times"></i>
+                                      Cancelar
+                                  </button>
+                                </div>
+                                <div class="col-xs-6">
+                                  <button id="AceptarSeleccionCPBS" type="button" class="btn pull-right blue-steel"><i class="fa fa-check"></i>Aceptar</button>
+                                </div>
+                              </div>
+                </div>
+                </form>
+            </div>  
+        </div>
+    <script type="text/javascript">
+             
+            $( "#AceptarSeleccionCPBS" ).click(function() {
+            // csrfmiddlewaretoken = $("#selecc_cpbs").find("input[name='csrfmiddlewaretoken']" ).val();
+            formData = $('#selecc_cpbs').serialize();
+            // console.log(formData);
+            $.ajax({
+                url : "{% url 'cpb_pago_comprobantes' %}" ,
+                data : formData,
+                type: "POST",
+                // contentType: "application/json;charset=utf-8",
+                dataType : "json",
+               success: function(data) {            
+                  console.log(data);
+                  if(data.status == 1){                  
+                    window.location.href ="{% url 'cpb_rec_pago_nuevo_pago' %}";
+                   }else{
+                    alertify.errorAlert(data.message);
+                   }
+              },
+              error: function(data) {            
+                  console.log(data);                  }
+              });
+            });
+            function recalcular(){
+              var saldo = 0;
+              var importe = 0;
+              $('.form-cpbs tr').each(function(j) {                  
+                  if ($(this).is(':visible'))
+                  {
+                    saldo = saldo + parseFloat($("input[name='comprobantes-"+j+"-saldo']").val())|| 0;               
+                    importe = importe + parseFloat($("input[name='comprobantes-"+j+"-importe_total']").val())|| 0; 
+                  }
+                });
+                
+                $("#totSaldos").text(saldo.toFixed(2));
+                $("#totCpbs").text(importe.toFixed(2));
+            };
+            $('.form-cpbs tr').each(function(j) {
+              $("input[name='comprobantes-"+j+"-importe_total']").change(function(){
+                recalcular();          
+              });
+           });
+                 
+
+       
+    </script>
+
+</div>

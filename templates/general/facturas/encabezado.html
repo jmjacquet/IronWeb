@@ -1,0 +1,66 @@
+{% load static from staticfiles %}
+{% load humanize %}
+{% load comprobantes_filters %}
+<table width="100%" align="center" >
+  <tr>
+    {% if tipo_logo_factura == 3 %} 
+       <td align="center" rowspan="5" width="20%" valign="middle" class="borde_izq borde_arriba borde_abajo">
+           {% if ruta_logo|existe_img %} 
+          <img src="/media/{{ruta_logo|existe_img}}" alt="logo" class="logo_factura" /> 
+          {% endif %} 
+      </td>
+      <td align="center" rowspan="5" width="26%" valign="middle" class="borde_arriba borde_abajo">       
+          <h1 class="empresa">{{nombre_fantasia}}</h1>          
+          <h3>{{domicilio}}</h3>
+          <h3>{{email}}</h3>
+          <h3>{{telefono}} {{celular}}</h3>        
+      </td>
+
+    {% elif tipo_logo_factura == 2 %}
+      <td align="center" rowspan="5" width="46%" valign="middle" class="borde_izq borde_arriba borde_abajo">
+        {% if ruta_logo|existe_img %} 
+          <img src="/media/{{ruta_logo|existe_img}}" alt="logo" class="logo_factura" /> {% else %}
+          <h1 class="empresa">{{nombre_fantasia}}</h1>          
+          <h3>{{domicilio}}</h3>
+          <h3>{{email}}</h3>
+          <h3>{{telefono}} {{celular}}</h3>  
+        {% endif %} 
+      </td>
+
+    {% else %}
+    <td align="center" rowspan="5" width="46%" valign="middle" class="borde_izq borde_arriba borde_abajo">     
+        <h1 class="empresa">{{nombre_fantasia}}</h1>          
+        <h3>{{domicilio}}</h3>
+        <h3>{{email}}</h3>
+        <h3>{{telefono}} {{celular}}</h3>     
+    </td>
+
+    {% endif %}
+    <td colspan="2" align="center" valign="center" class="borde letra_cpb">
+      <span class="letra_cpb">{{cpb.letra|upper}}</span><p class="letra_cod">{% if tipo %}{{tipo}}{% else %}COD.{{codigo_letra}}{% endif %}</p>
+    </td>
+    <td colspan="2" class="nombre_cpb borde_arriba borde_der">{% if tipo_cpb %}{{tipo_cpb|upper}}{% else %}{{cpb.cpb_tipo.nombre|upper}}{% endif %}<p class="letra_cod">{{leyenda}}</p>
+  </tr>
+  <tr>
+    <td width="5%" align="center" class="">&nbsp;</td>
+    <td width="5%" align="center " class="borde_izq">&nbsp;</td>
+    <td width="22%" class="texto_cpb">Nº: {{cpb.get_numero}}</td>
+    <td width="22%" class="texto_cpb borde_der">Fecha: {{cpb.fecha_cpb|date:'d/m/Y'}}</td>
+  </tr>
+  <tr>
+    <td class="borde_der" >&nbsp;</td>
+    <td class="borde_izq" >&nbsp;</td>
+    <td class="texto_cpb"><span class="texto_cpb ">CUIT: {{cuit}}</span></td>
+    <td class="texto_cpb borde_der">IIBB: {{iibb}}</td>
+  </tr>
+  <tr>
+    <td class="borde_der">&nbsp;</td>
+    <td class="borde_izq">&nbsp;</td>
+    <td colspan="2" class="texto_cpb borde_der">{{get_categ_fiscal_display|upper}}</td>
+  </tr>
+  <tr>
+    <td class="borde_der borde_abajo"></td>
+    <td class="borde_abajo"></td>
+    <td colspan="2" class="borde_abajo texto_cpb borde_der">Inicio de Actividades: {{fecha_inicio_activ|date:'d/m/Y'}}</td>
+  </tr>
+</table>

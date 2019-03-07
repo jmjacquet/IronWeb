@@ -1,0 +1,131 @@
+{% extends "base.html" %}
+{% load static from staticfiles %}
+{% load i18n %}
+{% load humanize %}
+
+{% block principal %}
+
+                                       
+<body class="page-header-fixed page-full-width">
+     
+    {% include "header.html" %}
+    <div class="clearfix"></div>
+
+    <div class="page-container">
+	          <!-- BEGIN SIDEBAR -->
+            
+            {% include "menues_mobile.html" %}   
+			
+			<!-- END SIDEBAR -->
+			<!-- BEGIN CONTENT -->
+			<div class="page-content-wrapper">
+				<div class="page-content ">
+        {% if messages %}
+              {% for message in messages %}
+                  <script type="text/javascript">                               
+                          toastr.{{ message.tags }}('{{ message }}');                      
+                  </script>                     
+              {% endfor %}
+        {% endif %} 
+					{% block main %}       {% if not sitio_mobile %}   
+						                      <div class="col-sm-10">                                        
+                                      
+                                      {% include "barra_totales.html" %}
+                                  {% else %}
+                                   <div class="col-sm-12">
+                                  {% endif %}  
+                                    {% if tipo_usr == 0 or empresa.pprincipal_panel_cpbs %}
+                                    <div class="row">                           
+                                            <div class="col-sm-12">                                               
+                                              
+                                               {% include "ultimos_cpbs.html" %}                      
+                                                                
+                                            </div>
+                                            
+                                    </div>
+                                    {% endif %} 
+                                    
+                                    {% if tareas and empresa.pprincipal_aviso_tareas and not sitio_mobile %}
+                                      <div class="row">  
+                                          <div class="col-xs-12">
+                                             <div class="portlet box">
+                                                  <div class="portlet-title encabezado toolbar_blue">
+                                                      <div class="caption">
+                                                          <i class="icon-share"></i>
+                                                          <span class="caption-subject bold uppercase">TAREAS</span>
+                                                          <span class="caption-helper">Tareas asignadas...</span>
+                                                      </div>                                        
+                                                  </div>
+                                                  <div class="portlet-body">
+                                                     {% include "tareas.html" %}
+                                                  </div>
+                                              </div> 
+                                          </div>                            
+                                                                      
+                                      </div> 
+                                    {% endif %}
+                                    {% if tipo_usr == 0 or empresa.pprincipal_estadisticas %}
+                                      {% include "graficos.html" %}                                          
+                                    {% endif %} 
+
+                            </div>
+                            {% if not sitio_mobile %}  
+                            <div class="col-sm-2 cerca">
+                              <div class="row cerca">
+                               <div class="col-sm-12"> 
+                                {% include "accesos_rapidos2.html" %}   
+                               </div>
+                             </div>     
+                            </div>
+                            {% endif %} 
+                                           
+                     
+           {% if empresa.pprincipal_aviso_tareas and tareas  %}
+            <div class="modal fade" id="modalTareas" role="dialog">
+              <div class="ancho-modal">
+              <div class="row">  
+                <div class="modal-dialog">
+
+                  <!-- Modal content-->
+                  <div class="modal-content mo">
+                    <div class="modal-header">
+                      <button type="button" class="close" data-dismiss="modal">&times;</button>
+                      TAREAS ASIGNADAS 
+                    </div>
+                    <div class="modal-body">
+                       {% include "tareas.html" %} 
+                    </div>
+                    <div class="modal-footer">
+                      <button data-dismiss="modal" class="btn pull-left btn red-flamingo" type="button">
+                                      <i class="fa fa-times"></i>
+                                      {% trans 'Cancelar' %}
+                                  </button>     
+                    </div>
+                  </div>
+
+                </div>
+              </div>
+            </div>
+            </div>
+            <script type="text/javascript">
+             $('#modalTareas').modal('show');
+            </script>
+            {% endif %}              
+                           
+                        
+					{% endblock main %}
+                    <div id="popup" class="modal fade " role="dialog"  data-backdrop="static"  data-keyboard="false"></div>   
+  				</div>
+  			</div>
+  			<!-- END CONTENT -->
+    			
+    	</div>		       
+      
+    </div>
+</body>
+  
+
+{% endblock principal %}
+
+
+		 

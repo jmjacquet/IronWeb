@@ -1,0 +1,129 @@
+{% load i18n %}
+{% load static from staticfiles %}
+{% load crispy_forms_tags %}
+{% load bootstrap3 %}
+{% load i18n %}
+
+<div id="form-container">
+	<form class="form-horizontal">
+		<div class="form-group">
+			<div class="col-sm-6">
+				<input type="text" class="form-control" id="q" placeholder="Buscar productos" onkeyup="load(1)">
+			</div>
+			<button type="button" class="btn btn-default" onclick="load(1)"><span class="glyphicon glyphicon-search"></span> Buscar</button>
+		</div>
+	</form>
+	<div id="loader" style="position: absolute; text-align: center; top: 55px; width: 100%;"></div>
+	<div class="outer_div"> <div class="table-responsive">
+		<table class="table">
+			<tbody><tr class="warning">
+				<th>Código</th>
+				<th>Producto</th>
+				<th>Fabricante</th>
+				<th class="text-center">Stock</th>
+				<th><span class="pull-right">Cant.</span></th>
+				<th><span class="pull-right">Precio</span></th>
+				<th style="width: 36px;"></th>
+			</tr>
+			<tr>
+				<td>0008</td>
+				<td> Asus Taichi Ultrabooks delayed</td>
+				<td>Asus</td>
+				<td class="text-center">0</td>
+				<td class="col-xs-1">
+					<div class="pull-right">
+						<input type="number" class="form-control" style="text-align:right" id="cantidad_8" value="1">
+					</div>
+				</td>
+				<td class="col-xs-2">
+					<div class="input-group pull-right">
+						<div class="input-group-addon">&amp;pou</div>
+						<input type="text" class="form-control" style="text-align:right" id="precio_venta_8" value="45.16">
+					</div>
+				</td>
+				<td><span class="pull-right"><a href="#" onclick="agregar('8')"><i class="glyphicon glyphicon-shopping-cart " style="font-size:24px;color: #5CB85C;"></i></a></span></td>
+			</tr>
+			<tr>
+				<td>0009</td>
+				<td>Acer Aspire V5-471G Notebook</td>
+				<td>Acer</td>
+				<td class="text-center">340</td>
+				<td class="col-xs-1">
+					<div class="pull-right">
+						<input type="number" class="form-control" style="text-align:right" id="cantidad_9" value="1">
+					</div>
+				</td>
+				<td class="col-xs-2">
+					<div class="input-group pull-right">
+						<div class="input-group-addon">&amp;pou</div>
+						<input type="text" class="form-control" style="text-align:right" id="precio_venta_9" value="737.88">
+					</div>
+				</td>
+				<td><span class="pull-right"><a href="#" onclick="agregar('9')"><i class="glyphicon glyphicon-shopping-cart " style="font-size:24px;color: #5CB85C;"></i></a></span></td>
+			</tr>
+			<tr>
+				<td>0005</td>
+				<td>HP Pavilion 15-p151ng Notebook</td>
+				<td>HP</td>
+				<td class="text-center">920</td>
+				<td class="col-xs-1">
+					<div class="pull-right">
+						<input type="number" class="form-control" style="text-align:right" id="cantidad_5" value="1">
+					</div>
+				</td>
+				<td class="col-xs-2">
+					<div class="input-group pull-right">
+						<div class="input-group-addon">&amp;pou</div>
+						<input type="text" class="form-control" style="text-align:right" id="precio_venta_5" value="50621.06">
+					</div>
+				</td>
+				<td><span class="pull-right"><a href="#" onclick="agregar('5')"><i class="glyphicon glyphicon-shopping-cart " style="font-size:24px;color: #5CB85C;"></i></a></span></td>
+			</tr>
+			<tr>
+				<td>0010</td>
+				<td>iMac con pantalla Retina 4K de 21.5 pulgadas</td>
+				<td>Apple</td>
+				<td class="text-center">974</td>
+				<td class="col-xs-1">
+					<div class="pull-right">
+						<input type="number" class="form-control" style="text-align:right" id="cantidad_10" value="1">
+					</div>
+				</td>
+				<td class="col-xs-2">
+					<div class="input-group pull-right">
+						<div class="input-group-addon">&amp;pou</div>
+						<input type="text" class="form-control" style="text-align:right" id="precio_venta_10" value="98000.00">
+					</div>
+				</td>
+				<td><span class="pull-right"><a href="#" onclick="agregar('10')"><i class="glyphicon glyphicon-shopping-cart " style="font-size:24px;color: #5CB85C;"></i></a></span></td>
+			</tr>
+			<tr>
+				<td>0006</td>
+				<td>Laptops 15.6 Windows 8</td>
+				<td>Gateway</td>
+				<td class="text-center">0</td>
+				<td class="col-xs-1">
+					<div class="pull-right">
+						<input type="number" class="form-control" style="text-align:right" id="cantidad_6" value="1">
+					</div>
+				</td>
+				<td class="col-xs-2">
+					<div class="input-group pull-right">
+						<div class="input-group-addon">&amp;pou</div>
+						<input type="text" class="form-control" style="text-align:right" id="precio_venta_6" value="14929.92">
+					</div>
+				</td>
+				<td><span class="pull-right"><a href="#" onclick="agregar('6')"><i class="glyphicon glyphicon-shopping-cart " style="font-size:24px;color: #5CB85C;"></i></a></span></td>
+			</tr>
+			<tr>
+				<td colspan="7"><span class="pull-right"><ul class="pagination pagination-sm no-margin pull-right"><li class="disabled"><span><a>‹ Anterior</a></span></li><li class="active"><a>1</a></li><li><a href="javascript:void(0);" onclick="load(2)">2</a></li><li><span><a href="javascript:void(0);" onclick="load(2)">Siguiente ›</a></span></li></ul></span>
+				</td>
+			</tr>
+		</tbody></table>
+	</div>
+</div>
+</div>
+
+ <script type="text/javascript">
+
+ </script>

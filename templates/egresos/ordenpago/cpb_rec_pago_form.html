@@ -1,0 +1,239 @@
+{% extends "index.html" %}
+{% load static from staticfiles %}
+{% load bootstrap3 %}
+{% load i18n %}
+{% load crispy_forms_tags %}
+{% load humanize %}
+
+{% block extra_css %}
+ 	<link rel="stylesheet" href="{% static 'css/comprobantes.css'%}?{% now "Ymd"%}" type="text/css" >  
+{% endblock %}
+{% block extra_js %}        
+    <script src="{% static 'js/jquery.formset.js' %}" type="text/javascript"></script>
+    <script src="{% static 'js/scripts/scripts_cpb_rec_pago.js'%}?{% now "Ymd"%}" type="text/javascript"></script>
+    {% block modales_js %} 
+    {% endblock %}
+
+{% endblock %}
+
+
+{% block main %}
+<div class="row ">
+<div class="col-md-12 col-xs-12">
+      	<div class="row">     
+	        <div class="col-xs-12" >  
+	          <div class="portlet box toolbar_green panel_centrado">
+                <div class="portlet-title bold uppercase">
+                    <div class="caption">
+                                <i class="icon-wallet"></i>Recibo X de Pago
+                    </div>
+                </div>             
+              	<div class="portlet-body">
+		             <div class="col-xs-12" >
+		             <form role="form" class="form form-horizontal cpb" method="POST" action="" id="form-alta">
+					     {% csrf_token %}   
+		           
+					     {{ form.non_field_errors }}					     
+					     {{ form.non_form_errors  }}
+					  
+					       	<div class="row">
+   								<div class="col-sm-7 col-xs-12">
+   								  <div class="row">
+										<label class="control-label col-sm-3 col-xs-3">Proveedor:</label>
+										<div class="col-sm-8 col-xs-9">
+											{% bootstrap_field form.entidad show_label=False  %}												
+										</div>
+										{% if not cpbs %}
+										<div class="col-sm-1 col-xs-1 hidden-xs">
+						                  <a id="recargarProveedores" href="#" class="recargarDatos" type="button" data-toggle="tooltip" data-placement="top" title="Recargar Proveedores">
+											<i class="fa fa-refresh"></i></a>
+						                </div> 		
+						                {% endif %}				
+								  </div>												  								 
+								  
+									<div class="row">
+								       <label class="control-label col-sm-3 col-xs-3" for="id_fecha_cpb">Fecha Pago:</label>
+								       <div class="col-sm-3 col-xs-3">	{% bootstrap_field form.fecha_cpb show_label=False %}</div>							      
+								       <label class="control-label col-sm-3 col-xs-3">Pto.Venta:</label>	
+									   <div class="col-xs-2 col-sm-2">{% bootstrap_field form.pto_vta show_label=False %}</div>										
+									</div>						
+
+								</div>
+								{% if cpbs %}
+								<div class="col-sm-5 col-xs-12">
+   								  <div class="portlet box blue-hoki">
+					                <div class="portlet-title2">
+					                    <div class="caption">
+					                               Comprobantes a Pagar
+					                    </div>
+					                </div>             
+					              	<div class="portlet-body">
+										<table id="id_forms_table" width="100%" class="table tabla table-condensed tabla_listado">
+		  			                        <tbody class='form-cpbs'>       											                    	
+						                    	 {{ cpbs.management_form }}						                    	
+						                    	{% for form1 in cpbs.forms %}					                      								                      	
+							                      	{{ form1.non_field_errors }}
+							                      	{{ form1.non_form_errors  }}					                      								                      	
+							                      	<tr class="{{ cpbs.prefix }}">           					                      	
+								                      	<td width="70%">{% bootstrap_field form1.detalle_cpb show_label=False%}</td>								                      							
+								                      	<td>{% bootstrap_field form1.importe_total show_label=False%}</td>								                      							
+								                      	{% for hidden in form1.hidden_fields %} {{ hidden }} {% endfor %}
+								                    </tr>								                    
+						                     	{% endfor %}							                     	
+						                    </tbody>
+						                </table>                     									
+								    </div>								  								 
+								  </div>
+								 </div>
+											   
+							{% endif %}
+							</div>					   
+					   		<div class="row">
+						         <div class="col-sm-12 col-xs-12">  
+						         	<div class="btn-group " style="float:left;margin-right:20px;margin-bottom:10px;">
+	                                    <button class="btn btn-xs green-jungle" value="" id="btnBuscarCheque">Utilizar Cheque en Cartera</button>
+                                  	</div>			    
+                                  </div>
+                             </div>
+						     <div class="row">
+						         <div class="col-sm-12 col-xs-12">                          
+						                
+						                <table id="id_forms_table" width="100%" class="table tabla table-condensed tabla_listado">
+						                    <thead>
+						                          <tr>
+						                              
+						                              <th style="width: 20%;">Cuenta</th>
+						                              <th style="width: 20%;">Tipo</th>	                             
+						                              <th style="width: 10%;">Detalle</th>
+						                              <th style="width: 8%;">Fecha</th>
+						                              <th style="width: 20%;">Banco</th>
+						                              <th style="width: 10%;">Nº Cheque</th>
+						                              <th style="width: 20%;">Importe</th>						                              
+						                              <th style="width: 10%;" class="remove-sorting"></th>
+						                          </tr>
+						                    </thead>					                    
+		  			                        <tbody class='form-detalles'>       											                    	
+						                    	 {{ cpb_fp.management_form }}						                    	
+						                    	{% for form2 in cpb_fp.forms %}					                      								                      								
+							                      	<tr class="{{ cpb_fp.prefix }}">           					                      	
+								                      	<td>{% bootstrap_field form2.cta_egreso show_label=False%}</td>
+								                      	<td>{% bootstrap_field form2.tipo_forma_pago show_label=False%}</td>
+								                      	
+								                      	<td>{% bootstrap_field form2.detalle show_label=False%}</td>
+								                      	<td>{% bootstrap_field form2.mdcp_fecha show_label=False%}</td>
+								                      	<td>{% bootstrap_field form2.mdcp_banco show_label=False%}</td>
+								                      	<td>{% bootstrap_field form2.mdcp_cheque show_label=False%}</td>							                      	
+								                      	<td>{% bootstrap_field form2.importe show_label=False%}</td>
+								                      	<td>{{form2.DELETE}}
+								                      	 <a class="btn btn-danger delete-row1" title="Eliminar">
+								                      			<i class="fa fa-times" aria-hidden="true"></i></a>		 
+								                      	</td>
+								                      	{% if form2.non_field_errors  %}
+												     	<script type="text/javascript">					     						     	
+												     	alertify.errorAlert("{% for err in form2.non_field_errors %}{{ err }}{% endfor %}");
+												     	</script>
+												     	{% endif %}  
+								                      	{% for hidden in form2.hidden_fields %} {{ hidden }} {% endfor %}
+								                    </tr>								                    
+						                     	{% endfor %}							                     	
+						                    </tbody>
+						                </table>                        
+						         </div>                						         
+						     </div>
+					     
+					     <div class="row">
+						          <div class="col-xs-12"> 
+						         								     
+							         <div class="col-sm-7 col-xs-12"> 
+							             		{% bootstrap_field form.observacion show_label=True%}					         					         								
+							         </div>
+							        <div class="col-sm-5 col-xs-12"> 	
+							          			    
+
+							        	<div class="col-xs-12">
+							         		<div class="col-sm-8 col-xs-7"><span class="totales_comprobante">Total Comprobantes</span></div> <div class="col-sm-4 col-xs-5">{% bootstrap_field form.importe_cpbs show_label=False%}</div> 
+							         	</div>	 
+							        
+							         	<div class="col-xs-12">
+							         		<div class="col-sm-8 col-xs-7"><span class="totales_comprobante">Total Bruto</span></div> <div class="col-sm-4 col-xs-5">{% bootstrap_field form.importe_subtotal show_label=False%}</div> 
+							         	</div>
+							         	<div class="col-xs-12"> 
+							         		<div class="col-sm-8 col-xs-7"><span class="totales_comprobante">Total Impuestos</span></div> <div class="col-sm-4 col-xs-5">{% bootstrap_field form.importe_imp_perc show_label=False%}</div> 
+							         	</div>
+							         	<div class="col-xs-12"> 
+							         		<div class="col-sm-8 col-xs-7"><span class="totales_comprobante">Total Pago</span></div> <div class="col-sm-4 col-xs-5">{% bootstrap_field form.importe_total show_label=False%}</div> 
+							         	</div>
+							        </div>
+						    
+						     </div>
+		     		     </div>		     		     
+					     {% if form.non_field_errors  %}
+					     	<script type="text/javascript">
+					     	alertify.errorAlert("{% for err in form.non_field_errors %}{{ err }}{% endfor %}");
+					     	</script>
+					    {% endif %}       
+				        {% for hidden in form.hidden_fields %} {{ hidden }} {% endfor %}
+				        <input type="hidden" id="cheques_lst" value="">
+				     	<br>		                 
+	                    
+	                    <div class="row">
+		                    <div class="col-xs-12">                                                        
+		                     <a href="{% url 'cpb_pago_listado' %}" class="btn pull-left btn red-flamingo"><i class="fa fa-times"></i> Cancelar </a>
+		                     <button id="GuardarRec" type="button" class="btn pull-right green-jungle"><i class="fa fa-check"></i> Guardar </button>
+		                    </div>
+	                   </div>
+		               
+				    </form>
+	          		</div>
+	         	</div>
+	     	</div>                        
+	    </div>
+	    </div>                        
+</div>	
+</div>
+
+<div id="popup" class="modal fade " role="dialog"  data-backdrop="static"  data-keyboard="false"></div>   
+<script type="text/javascript">
+
+
+function abrir_modal(url)
+{        $('#popup').load(url, function()
+        {        $(this).modal('show');
+        });
+        return false;};
+
+function cerrar_modal()
+{        $('#popup').modal('hide');
+        return false;};
+
+function lista_cheques(){
+   $("#cheques_lst").val('');
+   str2 = '';
+
+   $('.form-detalles tr').each(function(j) {
+     id=$("[name='formFP-"+j+"-origen']").val();
+     
+     if (id){           
+       if (str2!=''){
+         str2= str2+'&id_ch='+id;
+       }else{
+         str2= str2+'id_ch='+id;
+       };                              
+     };
+     
+    }); 
+    $("#cheques_lst").val(str2); 
+              
+  };
+
+$('#btnBuscarCheque').click(function(){       
+    {     
+  	  lista_cheques();
+      lst_cheques='';
+      if ($("#cheques_lst").val()!=''){lst_cheques='?';};
+      lst_cheques =lst_cheques+ $("#cheques_lst").val();
+      return abrir_modal("/comprobantes/seleccionar_cheques"+lst_cheques);
+    }
+});
+</script>
+{% endblock %}
