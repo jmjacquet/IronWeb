@@ -35,7 +35,6 @@ class CPBSVentasList(VariablesMixin,ListView):
     template_name = 'ingresos/ventas/cpb_venta_listado.html'
     context_object_name = 'comprobantes'    
 
-
     @method_decorator(login_required)
     def dispatch(self, *args, **kwargs):         
         limpiar_sesion(self.request)        
@@ -50,7 +49,7 @@ class CPBSVentasList(VariablesMixin,ListView):
         except gral_empresa.DoesNotExist:
             empresa = None 
         form = ConsultaCpbs(self.request.POST or None,empresa=empresa,request=self.request)   
-        comprobantes = cpb_comprobante.objects.filter(cpb_tipo__tipo__in=[1,2,3,9],cpb_tipo__compra_venta='V',estado__in=[1,2],empresa=empresa,pto_vta__in=pto_vta_habilitados_list(self.request))
+        comprobantes = cpb_comprobante.objects.filter(cpb_tipo__tipo__in=[1,2,3,9,14],cpb_tipo__compra_venta='V',estado__in=[1,2],empresa=empresa,pto_vta__in=pto_vta_habilitados_list(self.request))
         if form.is_valid():                                
             entidad = form.cleaned_data['entidad']                                                              
             fdesde = form.cleaned_data['fdesde']   
@@ -61,10 +60,11 @@ class CPBSVentasList(VariablesMixin,ListView):
             letra = form.cleaned_data['letra']
             cae = form.cleaned_data['cae']
 
+            
             if int(estado) == 1:                
-                comprobantes = cpb_comprobante.objects.filter(cpb_tipo__tipo__in=[1,2,3,9],cpb_tipo__compra_venta='V',estado__in=[1,2,3],empresa=empresa)
+                comprobantes = cpb_comprobante.objects.filter(cpb_tipo__compra_venta='V',estado__in=[1,2,3],empresa=empresa)
             elif int(estado) == 2:
-                comprobantes = cpb_comprobante.objects.filter(cpb_tipo__tipo__in=[1,2,3,9],cpb_tipo__compra_venta='V',estado__in=[3],empresa=empresa)
+                comprobantes = cpb_comprobante.objects.filter(cpb_tipo__compra_venta='V',estado__in=[3],empresa=empresa)
 
             if int(cae)!=0:
                 no_tiene = (cae=='2')                
@@ -130,6 +130,9 @@ class CPBVentaCreateView(VariablesMixin,CreateView):
         self.object = None
         form_class = self.get_form_class()
         form = self.get_form(form_class)               
+        if not tiene_permiso(self.request,'cpb_ventas_cobrar'):
+            form.condic_pago=1
+            form.fields['condic_pago'].widget.attrs['disabled'] = True
         CPBDetalleFormSet.form = staticmethod(curry(CPBVentaDetalleForm,request=request))
         CPBPIFormSet.form = staticmethod(curry(CPBVentaPercImpForm,request=request))
         CPBFPFormSet.form = staticmethod(curry(CPBFPForm,request=request))
@@ -876,8 +879,6 @@ def CPBVentaDeleteView(request, id):
     return redirect('cpb_venta_listado')
 
 
-
-
 #*********************************************************************************
 class CPBRemitoDetalleFormSet(BaseInlineFormSet): 
     pass  
@@ -1400,6 +1401,9 @@ class CPBRecCobranzaViewList(VariablesMixin,ListView):
 
             if int(estado) == 1:                
                 comprobantes = cpb_comprobante.objects.filter(cpb_tipo__tipo=4,empresa=empresa,estado__in=[1,2,3]).order_by('-fecha_cpb','-id').select_related('estado','cpb_tipo','entidad')
+            elif int(estado) == 2:                
+                comprobantes = cpb_comprobante.objects.filter(cpb_tipo__tipo=4,empresa=empresa,estado__in=[3]).order_by('-fecha_cpb','-id').select_related('estado','cpb_tipo','entidad')                
+
             if fdesde:
                 comprobantes= comprobantes.filter(Q(fecha_cpb__gte=fdesde))
             if fhasta:
@@ -1588,9 +1592,11 @@ def CPBRecCobranzaDeleteView(request, id):
     if not tiene_permiso(request,'cpb_cobranzas_abm'):
             return redirect(reverse('principal'))
     try:                
-        if (cpb.tiene_cobranzasREC_OP()):
-            messages.error(request, u'¡El Comprobante posee movimientos de cobro/pago asociados!.Verifique')
-            return HttpResponseRedirect(cpb.get_listado())
+        fps = cpb_comprobante_fp.objects.filter(cpb_comprobante=cpb,mdcp_salida__isnull=False).values_list('mdcp_salida',flat=True)
+    
+        if (len(fps)>0):
+            messages.error(request, u'¡El Comprobante posee movimientos de cobranza/depósito de Cheques asociados!. Verifique')
+            return HttpResponseRedirect(cpb.get_listado())    
             
         else:
             #traigo los fps de los recibos asociados        

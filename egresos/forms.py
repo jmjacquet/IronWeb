@@ -32,7 +32,7 @@ class CPBCompraForm(forms.ModelForm):
 	importe_iva = forms.DecimalField(label='',widget=PrependWidget(attrs={'class':'form-control','readonly':'readonly'},base_widget=NumberInput, data='$'),initial=0.00,decimal_places=2)
 	importe_cobrado = forms.DecimalField(label='',widget=PrependWidget(attrs={'class':'form-control','readonly':'readonly'},base_widget=NumberInput, data='$'),initial=0.00,decimal_places=2,required = False)
 	letra = forms.ChoiceField(label='Letra',choices=COMPROB_FISCAL,required=False,initial=1)	
-	cpb_tipo = forms.ModelChoiceField(label='Tipo CPB',queryset=cpb_tipo.objects.filter(compra_venta='C',baja=False,tipo__in=[1,2,3,9]),required = True,empty_label=None)
+	cpb_tipo = forms.ModelChoiceField(label='Tipo CPB',queryset=cpb_tipo.objects.filter(baja=False,tipo__in=[1,2,3,9,14]).filter(Q(compra_venta='C')or Q(tipo=14)),required = True,empty_label=None)
 	condic_pago = forms.ChoiceField(label=u'Condición Pago',choices=CONDICION_PAGO,required=False,initial=1)
 	tipo_form = forms.CharField(widget = forms.HiddenInput(), required = False)	
 	cliente_categ_fiscal = forms.IntegerField(widget = forms.HiddenInput(), required = False,initial=5)	
@@ -53,16 +53,19 @@ class CPBCompraForm(forms.ModelForm):
 	def __init__(self, *args, **kwargs):
 		request = kwargs.pop('request', None)
 		super(CPBCompraForm, self).__init__(*args, **kwargs)
+		
 		try:
 			empresa = empresa_actual(request)
 			letras = tipo_comprob_fiscal(empresa.categ_fiscal)
 			self.fields['letra'].choices = letras						
-			self.fields['lista_precios'].queryset = prod_lista_precios.objects.filter(baja=False,empresa=empresa).order_by('default')
-			self.fields['origen_destino'].queryset = prod_ubicacion.objects.filter(baja=False,empresa=empresa).order_by('default')			
+			self.fields['lista_precios'].queryset = prod_lista_precios.objects.filter(baja=False,empresa__id__in=empresas_habilitadas(request)).order_by('default')
+			self.fields['origen_destino'].queryset = prod_ubicacion.objects.filter(baja=False,empresa__id__in=empresas_habilitadas(request)).order_by('default')			
 			self.fields['numero'].initial= 1
 			self.fields['pto_vta'].initial= 1
-			self.fields['entidad'].queryset = egr_entidad.objects.filter(tipo_entidad=2,baja=False,empresa=empresa).order_by('apellido_y_nombre')
+			self.fields['entidad'].queryset = egr_entidad.objects.filter(tipo_entidad=2,baja=False,empresa__id__in=empresas_habilitadas(request)).order_by('apellido_y_nombre')
 			self.fields['fecha_vto'].initial = hoy()+timedelta(days=empresa.get_dias_venc())
+			self.fields['cpb_tipo'].queryset = cpb_tipo.objects.filter(Q(baja=False)&Q(tipo__in=get_compra_venta())&(Q(compra_venta='C')|Q(tipo=14)))
+
 
 		except:
 			empresa = None  
@@ -91,8 +94,6 @@ class CPBCompraForm(forms.ModelForm):
 		
 		return self.cleaned_data
 
-
-
 class CPBCompraDetalleForm(forms.ModelForm):
 	producto = chosenforms.ChosenModelChoiceField(queryset=prod_productos.objects.filter(baja=False,mostrar_en__in=(2,3)),required = True)	
 	porc_dcto = forms.DecimalField(initial=0,decimal_places=2)	
@@ -119,9 +120,9 @@ class CPBCompraDetalleForm(forms.ModelForm):
 		self.fields['cantidad'].initial = 1	
 		try:
 			empresa = empresa_actual(request)
-			self.fields['producto'].queryset = prod_productos.objects.filter(baja=False,mostrar_en__in=(2,3),empresa=empresa).order_by('nombre')			
-			self.fields['lista_precios'].queryset = prod_lista_precios.objects.filter(baja=False,empresa=empresa)		
-			self.fields['origen_destino'].queryset = prod_ubicacion.objects.filter(baja=False,empresa=empresa)		
+			self.fields['producto'].queryset = prod_productos.objects.filter(baja=False,mostrar_en__in=(2,3),empresa__id__in=empresas_habilitadas(request)).order_by('nombre')			
+			self.fields['lista_precios'].queryset = prod_lista_precios.objects.filter(baja=False,empresa__id__in=empresas_habilitadas(request))		
+			self.fields['origen_destino'].queryset = prod_ubicacion.objects.filter(baja=False,empresa__id__in=empresas_habilitadas(request))		
 		except:
 			empresa = None			
 
@@ -139,7 +140,7 @@ class CPBCompraPercImpForm(forms.ModelForm):
 		super(CPBCompraPercImpForm, self).__init__(*args, **kwargs)
 		try:
 			empresa = empresa_actual(request)
-			self.fields['perc_imp'].queryset = cpb_perc_imp.objects.filter(empresa=empresa)			
+			self.fields['perc_imp'].queryset = cpb_perc_imp.objects.filter(empresa__id__in=empresas_habilitadas(request))			
 		except:
 			empresa = None			
 
@@ -166,9 +167,9 @@ class CPBFPForm(forms.ModelForm):
 		super(CPBFPForm, self).__init__(*args, **kwargs)
 		try:
 			empresa = empresa_actual(request)
-			self.fields['tipo_forma_pago'].queryset = cpb_tipo_forma_pago.objects.filter(empresa=empresa,baja=False)			
-			self.fields['mdcp_banco'].queryset = cpb_banco.objects.filter(empresa=empresa,baja=False)			
-			self.fields['cta_egreso'].queryset = cpb_cuenta.objects.filter(empresa=empresa,baja=False,tipo__in=[0,1,2])			
+			self.fields['tipo_forma_pago'].queryset = cpb_tipo_forma_pago.objects.filter(empresa__id__in=empresas_habilitadas(request),baja=False)			
+			self.fields['mdcp_banco'].queryset = cpb_banco.objects.filter(empresa__id__in=empresas_habilitadas(request),baja=False)			
+			self.fields['cta_egreso'].queryset = cpb_cuenta.objects.filter(empresa__id__in=empresas_habilitadas(request),baja=False,tipo__in=[0,1,2])			
 		except:
 			empresa = None	
 
@@ -212,7 +213,7 @@ class CPBRemitoForm(forms.ModelForm):
 			empresa = empresa_actual(request)
 			letras = tipo_comprob_fiscal(empresa.categ_fiscal)
 			self.fields['letra'].choices = COMPROB_FISCAL_X						
-			self.fields['entidad'].queryset = egr_entidad.objects.filter(tipo_entidad=2,baja=False,empresa=empresa).order_by('apellido_y_nombre')
+			self.fields['entidad'].queryset = egr_entidad.objects.filter(tipo_entidad=2,baja=False,empresa__id__in=empresas_habilitadas(request)).order_by('apellido_y_nombre')
 		except:
 			empresa = None   
 
@@ -244,9 +245,9 @@ class CPBRemitoDetalleForm(forms.ModelForm):
 		super(CPBRemitoDetalleForm, self).__init__(*args, **kwargs)
 		try:
 			empresa = empresa_actual(request)
-			self.fields['producto'].queryset = prod_productos.objects.filter(baja=False,mostrar_en__in=(2,3),empresa=empresa).order_by('nombre')			
-			self.fields['lista_precios'].queryset = prod_lista_precios.objects.filter(baja=False,empresa=empresa)		
-			self.fields['origen_destino'].queryset = prod_ubicacion.objects.filter(baja=False,empresa=empresa)		
+			self.fields['producto'].queryset = prod_productos.objects.filter(baja=False,mostrar_en__in=(2,3),empresa__id__in=empresas_habilitadas(request)).order_by('nombre')			
+			self.fields['lista_precios'].queryset = prod_lista_precios.objects.filter(baja=False,empresa__id__in=empresas_habilitadas(request))		
+			self.fields['origen_destino'].queryset = prod_ubicacion.objects.filter(baja=False,empresa__id__in=empresas_habilitadas(request))		
 		except:
 			empresa = None			
 
@@ -284,7 +285,7 @@ class CPBPagoForm(forms.ModelForm):
 		try:
 			empresa = empresa_actual(request)
 			self.fields['pto_vta'].initial = 1
-			self.fields['entidad'].queryset = egr_entidad.objects.filter(tipo_entidad=2,baja=False,empresa=empresa).order_by('apellido_y_nombre')
+			self.fields['entidad'].queryset = egr_entidad.objects.filter(tipo_entidad=2,baja=False,empresa__id__in=empresas_habilitadas(request)).order_by('apellido_y_nombre')
 		except:
 			empresa = None   
 

@@ -27,7 +27,7 @@ class ConsultaCtaCteCliente(forms.Form):
 		empresa = kwargs.pop('empresa', None)  		
 		id = kwargs.pop('id', None)
 		super(ConsultaCtaCteCliente, self).__init__(*args, **kwargs)
-		self.fields['entidad'].queryset = egr_entidad.objects.filter(tipo_entidad=1,baja=False,empresa=empresa).order_by('apellido_y_nombre')
+		self.fields['entidad'].queryset = egr_entidad.objects.filter(tipo_entidad=1,baja=False,empresa__id__in=empresas_habilitadas(request)).order_by('apellido_y_nombre')
 		if id:
 			self.fields['entidad'].initial = id
 			self.fields['estado'].initial = 0
@@ -38,7 +38,7 @@ class ConsultaSaldosClientes(forms.Form):
     def __init__(self, *args, **kwargs):
 		empresa = kwargs.pop('empresa', None)  
 		super(ConsultaSaldosClientes, self).__init__(*args, **kwargs)
-		self.fields['entidad'].queryset = egr_entidad.objects.filter(tipo_entidad=1,baja=False,empresa=empresa).order_by('apellido_y_nombre')
+		self.fields['entidad'].queryset = egr_entidad.objects.filter(tipo_entidad=1,baja=False,empresa__id__in=empresas_habilitadas(request)).order_by('apellido_y_nombre')
 		
 
 #############################################################################	
@@ -52,7 +52,7 @@ class ConsultaCtaCteProv(forms.Form):
 		empresa = kwargs.pop('empresa', None)  
 		id = kwargs.pop('id', None)
 		super(ConsultaCtaCteProv, self).__init__(*args, **kwargs)
-		self.fields['entidad'].queryset = egr_entidad.objects.filter(tipo_entidad=2,baja=False,empresa=empresa).order_by('apellido_y_nombre')
+		self.fields['entidad'].queryset = egr_entidad.objects.filter(tipo_entidad=2,baja=False,empresa__id__in=empresas_habilitadas(request)).order_by('apellido_y_nombre')
 		if id:
 			self.fields['entidad'].initial = id
 			self.fields['estado'].initial = 0
@@ -65,7 +65,7 @@ class ConsultaSaldosProv(forms.Form):
     def __init__(self, *args, **kwargs):
 		empresa = kwargs.pop('empresa', None)  
 		super(ConsultaSaldosProv, self).__init__(*args, **kwargs)
-		self.fields['entidad'].queryset = egr_entidad.objects.filter(tipo_entidad=2,baja=False,empresa=empresa).order_by('apellido_y_nombre')
+		self.fields['entidad'].queryset = egr_entidad.objects.filter(tipo_entidad=2,baja=False,empresa__id__in=empresas_habilitadas(request)).order_by('apellido_y_nombre')
 		
 
 
@@ -83,7 +83,7 @@ class ConsultaLibroIVAVentas(forms.Form):
 		empresa = kwargs.pop('empresa', None)  
 		request = kwargs.pop('request', None)  
 		super(ConsultaLibroIVAVentas, self).__init__(*args, **kwargs)
-		self.fields['entidad'].queryset = egr_entidad.objects.filter(tipo_entidad=1,baja=False,empresa=empresa).order_by('apellido_y_nombre')
+		self.fields['entidad'].queryset = egr_entidad.objects.filter(tipo_entidad=1,baja=False,empresa__id__in=empresas_habilitadas(request)).order_by('apellido_y_nombre')
 		pto_vta = pto_vta_buscador(request)
 		self.fields['pto_vta'].choices = pto_vta		
 
@@ -98,7 +98,7 @@ class ConsultaLibroIVACompras(forms.Form):
 		empresa = kwargs.pop('empresa', None) 
 		request = kwargs.pop('request', None)   
 		super(ConsultaLibroIVACompras, self).__init__(*args, **kwargs)
-		self.fields['entidad'].queryset = egr_entidad.objects.filter(tipo_entidad=2,baja=False,empresa=empresa).order_by('apellido_y_nombre')				
+		self.fields['entidad'].queryset = egr_entidad.objects.filter(tipo_entidad=2,baja=False,empresa__id__in=empresas_habilitadas(request)).order_by('apellido_y_nombre')				
 
 
 #############################################################################	
@@ -114,7 +114,7 @@ class ConsultaCajaDiaria(forms.Form):
 		empresa = kwargs.pop('empresa', None)  
 		request = kwargs.pop('request', None) 
 		super(ConsultaCajaDiaria, self).__init__(*args, **kwargs)				
-		cuentas = cpb_cuenta.objects.filter(baja=False,empresa=empresa).order_by('codigo')
+		cuentas = cpb_cuenta.objects.filter(baja=False,empresa__id__in=empresas_habilitadas(request)).order_by('codigo')
 		self.fields['cuenta'].queryset = cuentas		
 #############################################################################	
 
@@ -127,7 +127,7 @@ class ConsultaSaldosCuentas(forms.Form):
 		empresa = kwargs.pop('empresa', None)  
 		request = kwargs.pop('request', None) 
 		super(ConsultaSaldosCuentas, self).__init__(*args, **kwargs)				
-		cuentas = cpb_cuenta.objects.filter(baja=False,empresa=empresa).order_by('codigo')
+		cuentas = cpb_cuenta.objects.filter(baja=False,empresa__id__in=empresas_habilitadas(request)).order_by('codigo')
 		self.fields['cuenta'].queryset = cuentas
 
 #############################################################################	
@@ -146,7 +146,7 @@ class ConsultaVencimientos(forms.Form):
 		empresa = kwargs.pop('empresa', None)  
 		request = kwargs.pop('request', None) 
 		super(ConsultaVencimientos, self).__init__(*args, **kwargs)				
-		self.fields['vendedor'].queryset = egr_entidad.objects.filter(tipo_entidad=3,baja=False,empresa=empresa)		
+		self.fields['vendedor'].queryset = egr_entidad.objects.filter(tipo_entidad=3,baja=False,empresa__id__in=empresas_habilitadas(request))		
 		self.fields['tipo_cpb'].queryset = cpb_tipo.objects.filter(tipo__in=[1,2,3,4,5,6,7,9],baja=False)
 
 

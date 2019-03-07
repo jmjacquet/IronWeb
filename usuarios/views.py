@@ -7,6 +7,16 @@ from fm.views import AjaxDeleteView
 from django.views.generic import TemplateView,ListView,CreateView,UpdateView
 from .forms import *
 
+
+# def ver_permisos(id_app,id_usuario=None):
+#     if id_usuario:
+#         permisos = UsuUsuario.objects.filter(permisos__app__id_app=id_app,id_usuario=id_usuario.pk).values_list('permisos__permiso_name', flat=True).distinct()
+#     else:
+#         permisos = UsuUsuario.objects.filter(permisos__permiso_name__id_app=id_app).values_list('permisos__permiso_name', flat=True).distinct()
+#     return permisos
+
+
+#####################
 @login_required 
 def ver_permisos(request):
     try:

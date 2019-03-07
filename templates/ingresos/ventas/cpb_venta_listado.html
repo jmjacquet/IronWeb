@@ -27,10 +27,16 @@
             </div>
                     {% include "general/varios/barra_busqueda.html" %}  
                     <div class="btn-group btnAccion" style="float:left;margin-right:10px;margin-bottom:10px;"> 
+                    {% if 'cpb_ventas_abm' in permisos_grupo %}
                     <a class="btn btn-sm blue-steel"  style="margin-right:10px;" href="{% url 'cpb_venta_nuevo' %}">Nueva Venta</a>
+                    {% endif %}
+                    {% if 'cpb_ventas_cobrar' in permisos_grupo %}
                     <button class="btn btn-sm blue-steel" value="" style="margin-right:10px;" id="btnCobranza">Cobrar</button>                                       
+                    {% endif %}
+                    {% if 'cpb_ventas_abm' in permisos_grupo %}
                     <button class="btn btn-sm red-flamingo" value="" style="margin-right:10px;" id="btnAnular">Anular</button>                                       
                     <button class="btn btn-sm blue-steel" value="" style="margin-right:10px;" id="btnUnificarVtas">Unificar</button>
+                    {% endif %}
                     <button class="btn btn-sm blue-steel" value="" id="btnImprimirDetalles">Listado Detalles</button>                                       
                     </div>   
                                    
@@ -69,9 +75,12 @@
                                             <li>{% include "general/varios/cpb_ver_dropdown.html" %}</li>
                                             <li><a target="_blank" href="{% url 'imprimirFactura' id=cpb.pk %}"><i class=" icon-printer"></i> Imprimir</a></li>
                                             <li><a href="{% url 'mandarEmail' id=cpb.pk %}"><i class="icon-envelope-open"></i> Enviar por Email</a></li>
-                                            <li role="separator" class="divider"></li>                                            
+                                            <li role="separator" class="divider"></li>
+                                            {% if 'cpb_ventas_abm' in permisos_grupo %}
                                              <li><a href="{% url 'cpb_venta_clonar' id=cpb.pk %}"  title="Clonar" data-fm-callback="reload" ><i class="icon-book-open"></i> Clonar</a></li>
+                                             {% endif %}
                                             {% if not cpb.cae %}                                            
+                                               {% if 'cpb_ventas_abm' in permisos_grupo %}
                                                 <li><a href="{% url 'cpb_venta_editar' id=cpb.pk %}"  title="Editar" data-fm-callback="reload" ><i class="icon-note"></i> Editar</a></li>
 
                                                 {% if cpb.estado.pk = 3 %}
@@ -100,25 +109,32 @@
                                                        
                                                 
                                                     {% endif %}
-                                                                                                
+                                                                                                 
                                                 {% endif %} 
                                                 {% if not cpb.tiene_cobranzas%}
                                                      <li><a href="#" 
                                                         onClick="alerta= alertify.dialog('confirm').set({'labels':{ok:'Aceptar', cancel:'Cancelar'},'message': '¿DESEA ELIMINAR LA VENTA SELECCIONADA?',transition:'fade','onok': function(){ window.location.href = '{% url 'cpb_venta_eliminar' id=cpb.pk %}'; },'oncancel': function(){ return true;} }); alerta.setting('modal', true); alerta.setHeader('ELIMINAR COMPROBANTE'); alerta.show(); return true;"><i class="icon-trash"></i>Eliminar</a>
                                                     </li>                                                 
-                                                {% endif %}                                                                                       
-                                            
+                                                {% endif %}                                                               
+                                               {% endif %}                        
+                                               
                                             {% endif %}
                                                
-                                                <li role="separator" class="divider"></li>
-                                            {% if cpb.cpb_tipo.tipo == 1 %}
+                                                
+                                            {% if 'cpb_ventas_abm' in permisos_grupo %}
+                                             <li role="separator" class="divider"></li>
+                                             {% if cpb.cpb_tipo.tipo == 1 %}
                                                 <li><a href="{% url 'cpb_venta_nc_nuevo' id=cpb.pk %}"  title="Nota de Crédito"><i class="icon-note"></i> Generar Nota de Crédito</a></li>
+                                             {% endif %}
+                                            {% endif %} 
+                                            {% if 'cpb_ventas_cobrar' in permisos_grupo %}
+                                                {% if cpb.saldo > 0 %}
+                                                    <li><a onclick="return abrir_modal('/ingresos/cobranza/comprobantes/?id_cpb={{cpb.id|safe}}');"><i class=" icon-wallet"></i> Recibo Cobranza</a></li>
+                                                {% endif %}
                                             {% endif %}
-                                            {% if cpb.saldo > 0 %}
-                                                <li><a onclick="return abrir_modal('/ingresos/cobranza/comprobantes/?id_cpb={{cpb.id|safe}}');"><i class=" icon-wallet"></i> Recibo Cobranza</a></li>
-                                            {% endif %}
-                                            
+                                            {% if 'cpb_remitos_abm' in permisos_grupo %}
                                             <li><a href="{% url 'cpb_remito_nuevo' id=cpb.pk %}"  title="Generar Remito" ><i class="fa  fa-truck"></i> Generar Remito</a></li>
+                                            {% endif %}
                                             <li role="separator" class="divider"></li>
                                             <li><a href="{% url 'cpb_editar_seguimiento' id=cpb.pk %}"  class="fm-update" data-fm-head="EDITAR SEGUIMIENTO"  title="Editar Seguimiento" data-fm-target="#object-{{ item.pk }}" data-fm-callback="reload" ><i class="icon-speech"></i>Seguimiento</a></li> 
                                                                                        

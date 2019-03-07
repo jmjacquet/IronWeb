@@ -73,7 +73,7 @@ class EntidadesEditForm(forms.ModelForm):
 		fact_categFiscal = self.cleaned_data.get('fact_categFiscal')
 		tipo_doc = self.cleaned_data.get('tipo_doc')
 		fact_cuit = self.cleaned_data.get('fact_cuit')
-		print validar_cuit(fact_cuit)
+		
 		if fact_categFiscal and tipo_doc:
 			if (int(fact_categFiscal)==1)and(int(tipo_doc)==80)and(not validar_cuit(fact_cuit)):
 				self._errors['fact_cuit'] = ''				

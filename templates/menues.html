@@ -161,10 +161,11 @@
                  {% if permisos_rep_ingr_egr %}
                   <div class="col-sm-6">
                     <ul class="mega-menu-submenu">
+                      {% if 'rep_cta_cte_clientes' in permisos_grupo %} 
                       <li>
                         <h3>REPORTES CUENTAS CORRIENTES</h3>
                       </li>
-                      {% if 'rep_cta_cte_clientes' in permisos_grupo %} 
+                      
                       <li>
                         <a href="{% url 'cta_cte_clientes' %}"><i class="icon-bar-chart"></i>Cta.Cte.Clientes</a>
                       </li>
@@ -230,10 +231,12 @@
                       <li>
                         <a href="{% url 'caja_diaria' %}"><i class="icon-bar-chart"></i>Detalle Ingresos/Egresos</a>
                       </li>   
-                      {% endif %} 
+                      {% endif %}
+                      {% if 'rep_seguim_cheques' in permisos_grupo %} 
                       <li>
                         <a href="{% url 'seguimiento_cheques' %}"><i class="icon-bar-chart"></i>Seguimiento Cheques</a>
-                      </li>                
+                      </li>
+                      {% endif %}                 
                     </ul>
                   </div> 
                 {% endif %} 
@@ -262,19 +265,19 @@
                       {% if 'ent_clientes' in permisos_grupo %}
                       <li>
                          <a href="{% url 'clientes_listado' %}"><i class="icon-user"></i>Clientes</a>
-                         <a class="acceso_menu" href="{% url 'cliente_nuevo' %}">+</a>
+                         
                       </li>
                       {% endif %}
                       {% if 'ent_proveedores' in permisos_grupo %}     
                       <li>
                         <a href="{% url 'proveedores_listado' %}"><i class="icon-users"></i>Proveedores</a>
-                        <a class="acceso_menu" href="{% url 'proveedor_nuevo' %}">+</a>
+                        
                       </li>
                       {% endif %}
                       {% if 'ent_vendedores' in permisos_grupo %}     
                       <li>
                         <a href="{% url 'vendedores_listado' %}"><i class="fa fa-users"></i>Empleados/Vendedores</a>
-                        <a class="acceso_menu" href="{% url 'vendedor_nuevo' %}">+</a>
+                        
                       </li>                     
                       {% endif %}
                     </ul>

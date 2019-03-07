@@ -45,8 +45,8 @@ class OPForm(forms.ModelForm):
 		super(OPForm, self).__init__(*args, **kwargs)
 		try:
 			empresa = usr.userprofile.id_usuario.empresa
-			self.fields['lista_precios'].queryset = prod_lista_precios.objects.filter(baja=False,empresa=empresa).order_by('default')
-			self.fields['origen_destino'].queryset = prod_ubicacion.objects.filter(baja=False,empresa=empresa).order_by('default')
+			self.fields['lista_precios'].queryset = prod_lista_precios.objects.filter(baja=False,empresa__id__in=empresas_habilitadas(request)).order_by('default')
+			self.fields['origen_destino'].queryset = prod_ubicacion.objects.filter(baja=False,empresa__id__in=empresas_habilitadas(request)).order_by('default')
 		except gral_empresa.DoesNotExist:
 			empresa = None
 
@@ -74,10 +74,10 @@ class OPDetalleForm(forms.ModelForm):
 		request = kwargs.pop('request', None)
 		super(OPDetalleForm, self).__init__(*args, **kwargs)
 		try:
-			empresa = request.user.userprofile.id_usuario.empresa			
-			self.fields['producto'].queryset = prod_productos.objects.filter(baja=False,mostrar_en__in=(1,3),empresa=empresa).order_by('nombre')			
-			self.fields['lista_precios'].queryset = prod_lista_precios.objects.filter(baja=False,empresa=empresa)		
-			self.fields['origen_destino'].queryset = prod_ubicacion.objects.filter(baja=False,empresa=empresa)		
+			empresa = empresa_actual(request)			
+			self.fields['producto'].queryset = prod_productos.objects.filter(baja=False,mostrar_en__in=(1,3),empresa__id__in=empresas_habilitadas(request)).order_by('nombre')			
+			self.fields['lista_precios'].queryset = prod_lista_precios.objects.filter(baja=False,empresa__id__in=empresas_habilitadas(request))		
+			self.fields['origen_destino'].queryset = prod_ubicacion.objects.filter(baja=False,empresa__id__in=empresas_habilitadas(request))		
 		except gral_empresa.DoesNotExist:
 			empresa = None			
 
@@ -110,7 +110,7 @@ class OTForm(forms.ModelForm):
 		super(OTForm, self).__init__(*args, **kwargs)
 		try:
 			empresa = usr.userprofile.id_usuario.empresa
-			self.fields['origen_destino'].queryset = prod_ubicacion.objects.filter(baja=False,empresa=empresa).order_by('default')
+			self.fields['origen_destino'].queryset = prod_ubicacion.objects.filter(baja=False,empresa__id__in=empresas_habilitadas(request)).order_by('default')
 		except gral_empresa.DoesNotExist:
 			empresa = None
 
@@ -134,8 +134,8 @@ class OTDetalleForm(forms.ModelForm):
 		request = kwargs.pop('request', None)
 		super(OTDetalleForm, self).__init__(*args, **kwargs)
 		try:
-			empresa = request.user.userprofile.id_usuario.empresa			
-			self.fields['producto'].queryset = prod_productos.objects.filter(tipo_producto=1,baja=False,mostrar_en__in=(1,3),empresa=empresa).order_by('nombre')						
+			empresa = empresa_actual(request)			
+			self.fields['producto'].queryset = prod_productos.objects.filter(tipo_producto=1,baja=False,mostrar_en__in=(1,3),empresa__id__in=empresas_habilitadas(request)).order_by('nombre')						
 		except gral_empresa.DoesNotExist:
 			empresa = None		
 

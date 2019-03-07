@@ -14,6 +14,13 @@ function cerrar_modal()
 {        $('#popup').modal('hide');
         return false;}
 
+$("#checkall").click (function () {
+     var checkedStatus = this.checked;
+    $("input[class='tildado stock']").each(function () {
+        $(this).prop("checked", checkedStatus);
+        $(this).change();
+     });
+  });
 
 var lista = [];
 
@@ -54,24 +61,26 @@ $('#btnActualizar').click(function(){
     //console.log(cpbs)
     if (lista.length==0)
       { 
-            alerta = alertify.dialog('confirm').set({
-                'labels': {
-                    ok: 'Aceptar',
-                    cancel: 'Cancelar'
-                },
-                'message': '¿Desea actualizar el stock de todos los productos?',
-                transition: 'fade',
-                'onok': function() {
-                    alerta.close();
-                    return abrir_modal('/productos/prod_stock_actualizar/');                    
-                },
-                'oncancel': function() {
-                    return true;
-                }
-            });
-            alerta.setting('modal', true);
-            alerta.setHeader('ACTUALIZAR STOCK');
-            alerta.show();
+            // alerta = alertify.dialog('confirm').set({
+            //     'labels': {
+            //         ok: 'Aceptar',
+            //         cancel: 'Cancelar'
+            //     },
+            //     'message': '¿Desea actualizar el stock de todos los productos?',
+            //     transition: 'fade',
+            //     'onok': function() {
+            //         alerta.close();
+            //         return abrir_modal('/productos/prod_stock_actualizar/');                    
+            //     },
+            //     'oncancel': function() {
+            //         return true;
+            //     }
+            // });
+            // alerta.setting('modal', true);
+            // alerta.setHeader('ACTUALIZAR STOCK');
+            // alerta.show();
+             alertify.errorAlert("¡Debe seleccionar algún Producto!");
+           return true;
       }
     else
     {

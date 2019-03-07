@@ -375,10 +375,10 @@
       </s:element>
       <s:complexType name="FECAEAResponse">
         <s:sequence>
-          <s:element minOccurs="0" maxOccurs="1" name="Errors" type="tns:ArrayOfErr" />
           <s:element minOccurs="0" maxOccurs="1" name="FeCabResp" type="tns:FECAEACabResponse" />
           <s:element minOccurs="0" maxOccurs="1" name="FeDetResp" type="tns:ArrayOfFECAEADetResponse" />
           <s:element minOccurs="0" maxOccurs="1" name="Events" type="tns:ArrayOfEvt" />
+          <s:element minOccurs="0" maxOccurs="1" name="Errors" type="tns:ArrayOfErr" />
         </s:sequence>
       </s:complexType>
       <s:complexType name="FECAEACabResponse">

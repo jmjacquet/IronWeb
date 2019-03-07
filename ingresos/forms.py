@@ -72,17 +72,18 @@ class CPBVentaForm(forms.ModelForm):
 		request = kwargs.pop('request', None)		
 		super(CPBVentaForm, self).__init__(*args, **kwargs)
 		try:			
-			empresa = request.user.userprofile.id_usuario.empresa
+			empresa = empresa_actual(request)
 			letras = tipo_comprob_fiscal(empresa.categ_fiscal)
 			self.fields['letra'].choices = letras			
 			pto_vta = pto_vta_habilitados(request)
 			self.fields['pto_vta'].choices = [(pto.numero, pto.__unicode__()) for pto in pto_vta]			
 			self.fields['pto_vta'].initial = get_pv_defecto(request)
 			#self.fields['pto_vta'].queryset = pto_vta
-			self.fields['lista_precios'].queryset = prod_lista_precios.objects.filter(baja=False,empresa=empresa).order_by('default')
-			self.fields['origen_destino'].queryset = prod_ubicacion.objects.filter(baja=False,empresa=empresa).order_by('default')
+			self.fields['lista_precios'].queryset = prod_lista_precios.objects.filter(baja=False,empresa__id__in=empresas_habilitadas(request)).order_by('default')
+			self.fields['origen_destino'].queryset = prod_ubicacion.objects.filter(baja=False,empresa__id__in=empresas_habilitadas(request)).order_by('default')
 			self.fields['numero'].initial= ultimoNro(1,pto_vta[0],letras[0][1])
-			self.fields['entidad'].queryset = egr_entidad.objects.filter(tipo_entidad=1,baja=False,empresa=empresa).order_by('apellido_y_nombre')
+			self.fields['entidad'].queryset = egr_entidad.objects.filter(tipo_entidad=1,baja=False,empresa__id__in=empresas_habilitadas(request)).order_by('apellido_y_nombre')
+			self.fields['vendedor'].queryset = egr_entidad.objects.filter(tipo_entidad=3,baja=False,empresa__id__in=empresas_habilitadas(request)).order_by('apellido_y_nombre')
 			self.fields['fecha_vto'].initial = datetime.now()+timedelta(days=empresa.get_dias_venc())
 
 		except gral_empresa.DoesNotExist:
@@ -115,7 +116,7 @@ class CPBVentaForm(forms.ModelForm):
 			raise forms.ValidationError(u"El total de comprobante no puede superar los $1000.00 para Consumidor Final sin que el mismo posea un Documento ó CUIT válidos!.")			
 		
 		
-		id_cpbs=cpb_comprobante.objects.filter(numero=numero,pto_vta=pto_vta,letra=letra,cpb_tipo=cpb_tipo).values_list('id',flat=True)
+		id_cpbs=cpb_comprobante.objects.filter(numero=numero,pto_vta=pto_vta,letra=letra,cpb_tipo=cpb_tipo,empresa=empresa).values_list('id',flat=True)
 		id_cpbs = [int(x) for x in id_cpbs]  
 		cant=len(id_cpbs)
 		id_cpb=self.instance.id
@@ -150,10 +151,10 @@ class CPBVentaDetalleForm(forms.ModelForm):
 		request = kwargs.pop('request', None)
 		super(CPBVentaDetalleForm, self).__init__(*args, **kwargs)
 		try:
-			empresa = request.user.userprofile.id_usuario.empresa			
-			self.fields['producto'].queryset = prod_productos.objects.filter(baja=False,mostrar_en__in=(1,3),empresa=empresa).order_by('nombre')			
-			self.fields['lista_precios'].queryset = prod_lista_precios.objects.filter(baja=False,empresa=empresa)		
-			self.fields['origen_destino'].queryset = prod_ubicacion.objects.filter(baja=False,empresa=empresa)		
+			empresa = empresa_actual(request)			
+			self.fields['producto'].queryset = prod_productos.objects.filter(baja=False,mostrar_en__in=(1,3),empresa__id__in=empresas_habilitadas(request)).order_by('nombre')			
+			self.fields['lista_precios'].queryset = prod_lista_precios.objects.filter(baja=False,empresa__id__in=empresas_habilitadas(request))		
+			self.fields['origen_destino'].queryset = prod_ubicacion.objects.filter(baja=False,empresa__id__in=empresas_habilitadas(request))		
 		except gral_empresa.DoesNotExist:
 			empresa = None			
 
@@ -164,14 +165,17 @@ class CPBVentaDetalleForm(forms.ModelForm):
 		#Si es ALTA
 		if not padre and not comprobante_original:
 			producto = self.cleaned_data.get('producto')
-			cantidad = self.cleaned_data.get('cantidad')
-			origen_destino = self.cleaned_data.get('origen_destino')
-			comprobante_original = self.cleaned_data.get('comprobante_original')
-			if cantidad and producto.llevar_stock:			
-				prod_ubi, created = prod_producto_ubicac.objects.get_or_create(producto=producto,ubicacion=origen_destino)
-				stock = obtener_stock(prod_ubi)			
-				if (stock < cantidad) and  not producto.stock_negativo:
-					self._errors['cantidad'] = [u'Stock insuficiente!']
+			if not producto:
+				self._errors['cantidad'] = [u'Stock insuficiente!']
+			else:
+				cantidad = self.cleaned_data.get('cantidad')
+				origen_destino = self.cleaned_data.get('origen_destino')
+				comprobante_original = self.cleaned_data.get('comprobante_original')
+				if cantidad and producto.llevar_stock:			
+					prod_ubi, created = prod_producto_ubicac.objects.get_or_create(producto=producto,ubicacion=origen_destino)
+					stock = obtener_stock(prod_ubi)			
+					if (stock < cantidad) and  not producto.stock_negativo:
+						self._errors['cantidad'] = [u'Stock insuficiente!']
 			return self.cleaned_data
 
 class CPBVentaPercImpForm(forms.ModelForm):
@@ -186,8 +190,8 @@ class CPBVentaPercImpForm(forms.ModelForm):
 		request = kwargs.pop('request', None)		
 		super(CPBVentaPercImpForm, self).__init__(*args, **kwargs)
 		try:
-			empresa = request.user.userprofile.id_usuario.empresa			
-			self.fields['perc_imp'].queryset = cpb_perc_imp.objects.filter(empresa=empresa)			
+			empresa = empresa_actual(request)			
+			self.fields['perc_imp'].queryset = cpb_perc_imp.objects.filter(empresa__id__in=empresas_habilitadas(request))			
 		except gral_empresa.DoesNotExist:
 			empresa = None			
 
@@ -208,10 +212,10 @@ class CPBFPForm(forms.ModelForm):
 		request = kwargs.pop('request', None)		
 		super(CPBFPForm, self).__init__(*args, **kwargs)
 		try:
-			empresa = request.user.userprofile.id_usuario.empresa			
-			self.fields['tipo_forma_pago'].queryset = cpb_tipo_forma_pago.objects.filter(empresa=empresa,baja=False)			
-			self.fields['mdcp_banco'].queryset = cpb_banco.objects.filter(empresa=empresa,baja=False)			
-			self.fields['cta_ingreso'].queryset = cpb_cuenta.objects.filter(empresa=empresa,baja=False,tipo__in=[0,1,2])			
+			empresa = empresa_actual(request)			
+			self.fields['tipo_forma_pago'].queryset = cpb_tipo_forma_pago.objects.filter(empresa__id__in=empresas_habilitadas(request),baja=False)			
+			self.fields['mdcp_banco'].queryset = cpb_banco.objects.filter(empresa__id__in=empresas_habilitadas(request),baja=False)			
+			self.fields['cta_ingreso'].queryset = cpb_cuenta.objects.filter(empresa__id__in=empresas_habilitadas(request),baja=False,tipo__in=[0,1,2])			
 		except gral_empresa.DoesNotExist:
 			empresa = None	
 
@@ -249,8 +253,8 @@ class CPBRemitoForm(forms.ModelForm):
 		super(CPBRemitoForm, self).__init__(*args, **kwargs)
 		self.fields['letra'].choices = COMPROB_FISCAL_X
 		try:
-			empresa = request.user.userprofile.id_usuario.empresa			
-			self.fields['entidad'].queryset = egr_entidad.objects.filter(tipo_entidad=1,baja=False,empresa=empresa).order_by('apellido_y_nombre')
+			empresa = empresa_actual(request)			
+			self.fields['entidad'].queryset = egr_entidad.objects.filter(tipo_entidad=1,baja=False,empresa__id__in=empresas_habilitadas(request)).order_by('apellido_y_nombre')
 
 		except gral_empresa.DoesNotExist:
 			empresa = None
@@ -272,10 +276,10 @@ class CPBRemitoDetalleForm(forms.ModelForm):
 		request = kwargs.pop('request', None)
 		super(CPBRemitoDetalleForm, self).__init__(*args, **kwargs)
 		try:
-			empresa = request.user.userprofile.id_usuario.empresa			
-			self.fields['producto'].queryset = prod_productos.objects.filter(baja=False,mostrar_en__in=(1,3),empresa=empresa).order_by('nombre')			
-			self.fields['lista_precios'].queryset = prod_lista_precios.objects.filter(baja=False,empresa=empresa)		
-			self.fields['origen_destino'].queryset = prod_ubicacion.objects.filter(baja=False,empresa=empresa)		
+			empresa = empresa_actual(request)			
+			self.fields['producto'].queryset = prod_productos.objects.filter(baja=False,mostrar_en__in=(1,3),empresa__id__in=empresas_habilitadas(request)).order_by('nombre')			
+			self.fields['lista_precios'].queryset = prod_lista_precios.objects.filter(baja=False,empresa__id__in=empresas_habilitadas(request))		
+			self.fields['origen_destino'].queryset = prod_ubicacion.objects.filter(baja=False,empresa__id__in=empresas_habilitadas(request))		
 		except gral_empresa.DoesNotExist:
 			empresa = None			
 
@@ -317,7 +321,7 @@ class CPBPresupForm(forms.ModelForm):
 		request = kwargs.pop('request', None)
 		super(CPBPresupForm, self).__init__(*args, **kwargs)		
 		try:
-			empresa = request.user.userprofile.id_usuario.empresa
+			empresa = empresa_actual(request)
 			letras = tipo_comprob_fiscal(empresa.categ_fiscal)			
 			self.fields['letra'].choices = letras			
 			self.fields['letra'].initial = 'X'
@@ -325,9 +329,9 @@ class CPBPresupForm(forms.ModelForm):
 			pto_vta = pto_vta_habilitados(request)
 			self.fields['pto_vta'].choices = [(pto.numero, pto.__unicode__()) for pto in pto_vta]
 			self.fields['pto_vta'].initial = get_pv_defecto(request)
-			self.fields['lista_precios'].queryset = prod_lista_precios.objects.filter(baja=False,empresa=empresa).order_by('default')
-			self.fields['origen_destino'].queryset = prod_ubicacion.objects.filter(baja=False,empresa=empresa).order_by('default')			
-			self.fields['entidad'].queryset = egr_entidad.objects.filter(tipo_entidad=1,baja=False,empresa=empresa).order_by('apellido_y_nombre')
+			self.fields['lista_precios'].queryset = prod_lista_precios.objects.filter(baja=False,empresa__id__in=empresas_habilitadas(request)).order_by('default')
+			self.fields['origen_destino'].queryset = prod_ubicacion.objects.filter(baja=False,empresa__id__in=empresas_habilitadas(request)).order_by('default')			
+			self.fields['entidad'].queryset = egr_entidad.objects.filter(tipo_entidad=1,baja=False,empresa__id__in=empresas_habilitadas(request)).order_by('apellido_y_nombre')
 			self.fields['fecha_vto'].initial = datetime.now()+timedelta(days=empresa.get_dias_venc())
 
 		except gral_empresa.DoesNotExist:
@@ -386,10 +390,10 @@ class CPBPresupDetalleForm(forms.ModelForm):
 		request = kwargs.pop('request', None)
 		super(CPBPresupDetalleForm, self).__init__(*args, **kwargs)
 		try:
-			empresa = request.user.userprofile.id_usuario.empresa			
-			self.fields['producto'].queryset = prod_productos.objects.filter(baja=False,mostrar_en__in=(1,3),empresa=empresa).order_by('nombre')			
-			self.fields['lista_precios'].queryset = prod_lista_precios.objects.filter(baja=False,empresa=empresa)		
-			self.fields['origen_destino'].queryset = prod_ubicacion.objects.filter(baja=False,empresa=empresa)		
+			empresa = empresa_actual(request)			
+			self.fields['producto'].queryset = prod_productos.objects.filter(baja=False,mostrar_en__in=(1,3),empresa__id__in=empresas_habilitadas(request)).order_by('nombre')			
+			self.fields['lista_precios'].queryset = prod_lista_precios.objects.filter(baja=False,empresa__id__in=empresas_habilitadas(request))		
+			self.fields['origen_destino'].queryset = prod_ubicacion.objects.filter(baja=False,empresa__id__in=empresas_habilitadas(request))		
 		except gral_empresa.DoesNotExist:
 			empresa = None		
 
@@ -420,7 +424,7 @@ class CPBPresupLiteForm(forms.ModelForm):
 		request = kwargs.pop('request', None)
 		super(CPBPresupLiteForm, self).__init__(*args, **kwargs)		
 		try:
-			empresa = request.user.userprofile.id_usuario.empresa
+			empresa = empresa_actual(request)
 			letras = tipo_comprob_fiscal(empresa.categ_fiscal)			
 			self.fields['letra'].choices = letras			
 			self.fields['letra'].initial = 'X'
@@ -428,9 +432,9 @@ class CPBPresupLiteForm(forms.ModelForm):
 			pto_vta = pto_vta_habilitados(request)
 			self.fields['pto_vta'].choices = [(pto.numero, pto.__unicode__()) for pto in pto_vta]
 			self.fields['pto_vta'].initial = get_pv_defecto(request)
-			self.fields['lista_precios'].queryset = prod_lista_precios.objects.filter(baja=False,empresa=empresa).order_by('default')
-			self.fields['origen_destino'].queryset = prod_ubicacion.objects.filter(baja=False,empresa=empresa).order_by('default')
-			self.fields['entidad'].queryset = egr_entidad.objects.filter(tipo_entidad=1,baja=False,empresa=empresa).order_by('apellido_y_nombre')
+			self.fields['lista_precios'].queryset = prod_lista_precios.objects.filter(baja=False,empresa__id__in=empresas_habilitadas(request)).order_by('default')
+			self.fields['origen_destino'].queryset = prod_ubicacion.objects.filter(baja=False,empresa__id__in=empresas_habilitadas(request)).order_by('default')
+			self.fields['entidad'].queryset = egr_entidad.objects.filter(tipo_entidad=1,baja=False,empresa__id__in=empresas_habilitadas(request)).order_by('apellido_y_nombre')
 			self.fields['fecha_vto'].initial = datetime.now()+timedelta(days=empresa.get_dias_venc())
 
 		except gral_empresa.DoesNotExist:
@@ -494,10 +498,10 @@ class CPBPresupLiteDetalleForm(forms.ModelForm):
 		request = kwargs.pop('request', None)
 		super(CPBPresupLiteDetalleForm, self).__init__(*args, **kwargs)
 		try:
-			empresa = request.user.userprofile.id_usuario.empresa			
-			self.fields['producto'].queryset = prod_productos.objects.filter(baja=False,mostrar_en__in=(1,3),empresa=empresa).order_by('nombre')			
-			self.fields['lista_precios'].queryset = prod_lista_precios.objects.filter(baja=False,empresa=empresa)		
-			self.fields['origen_destino'].queryset = prod_ubicacion.objects.filter(baja=False,empresa=empresa)		
+			empresa = empresa_actual(request)			
+			self.fields['producto'].queryset = prod_productos.objects.filter(baja=False,mostrar_en__in=(1,3),empresa__id__in=empresas_habilitadas(request)).order_by('nombre')			
+			self.fields['lista_precios'].queryset = prod_lista_precios.objects.filter(baja=False,empresa__id__in=empresas_habilitadas(request))		
+			self.fields['origen_destino'].queryset = prod_ubicacion.objects.filter(baja=False,empresa__id__in=empresas_habilitadas(request))		
 		except gral_empresa.DoesNotExist:
 			empresa = None		
 #############################################################################
@@ -526,11 +530,11 @@ class CPBRecCobranzaForm(forms.ModelForm):
 		request = kwargs.pop('request', None)
 		super(CPBRecCobranzaForm, self).__init__(*args, **kwargs)
 		try:
-			empresa = request.user.userprofile.id_usuario.empresa
+			empresa = empresa_actual(request)
 			pventa = pto_vta_habilitados(request)
 			self.fields['pto_vta'].choices = [(pto.numero, pto.__unicode__()) for pto in pventa]			
 			self.fields['pto_vta'].initial = get_pv_defecto(request)
-			self.fields['entidad'].queryset = egr_entidad.objects.filter(tipo_entidad=1,baja=False,empresa=empresa).order_by('apellido_y_nombre')
+			self.fields['entidad'].queryset = egr_entidad.objects.filter(tipo_entidad=1,baja=False,empresa__id__in=empresas_habilitadas(request)).order_by('apellido_y_nombre')
 		except gral_empresa.DoesNotExist:
 			empresa = None
 
@@ -577,10 +581,10 @@ class CPBRecFPForm(forms.ModelForm):
 		request = kwargs.pop('request', None)
 		super(CPBRecFPForm, self).__init__(*args, **kwargs)
 		try:
-			empresa = request.user.userprofile.id_usuario.empresa			
-			self.fields['tipo_forma_pago'].queryset = cpb_tipo_forma_pago.objects.filter(empresa=empresa,baja=False)			
-			self.fields['mdcp_banco'].queryset = cpb_banco.objects.filter(empresa=empresa,baja=False)			
-			self.fields['cta_ingreso'].queryset = cpb_cuenta.objects.filter(empresa=empresa,baja=False,tipo__in=[0,1,2])			
+			empresa = empresa_actual(request)			
+			self.fields['tipo_forma_pago'].queryset = cpb_tipo_forma_pago.objects.filter(empresa__id__in=empresas_habilitadas(request),baja=False)			
+			self.fields['mdcp_banco'].queryset = cpb_banco.objects.filter(empresa__id__in=empresas_habilitadas(request),baja=False)			
+			self.fields['cta_ingreso'].queryset = cpb_cuenta.objects.filter(empresa__id__in=empresas_habilitadas(request),baja=False,tipo__in=[0,1,2])			
 		except gral_empresa.DoesNotExist:
 			empresa = None	
 

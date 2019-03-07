@@ -61,7 +61,7 @@ class CPBCompraViewList(VariablesMixin,ListView):
                 comprobantes = cpb_comprobante.objects.filter(cpb_tipo__tipo__in=[1,2,3,9],estado__in=[1,2,3],cpb_tipo__compra_venta='C',empresa=empresa).order_by('-fecha_cpb','-id','-fecha_creacion').select_related('estado','cpb_tipo','entidad','vendedor')
             elif int(estado) == 2:
                 comprobantes = cpb_comprobante.objects.filter(cpb_tipo__tipo__in=[1,2,3,9],estado__in=[3],cpb_tipo__compra_venta='C',empresa=empresa).order_by('-fecha_cpb','-id','-fecha_creacion').select_related('estado','cpb_tipo','entidad','vendedor')
-                
+            print estado    
 
             if fdesde:
                 comprobantes= comprobantes.filter(fecha_cpb__gte=fdesde)
@@ -424,6 +424,8 @@ class CPBPagosViewList(VariablesMixin,ListView):
 
             if int(estado) == 1:                
                 comprobantes = cpb_comprobante.objects.filter(cpb_tipo__tipo=7,empresa=empresa,estado__in=[1,2,3]).order_by('-fecha_cpb','-id').select_related('estado','cpb_tipo','entidad')
+            elif int(estado) == 2:   
+                comprobantes = cpb_comprobante.objects.filter(cpb_tipo__tipo=7,empresa=empresa,estado__in=[3]).order_by('-fecha_cpb','-id').select_related('estado','cpb_tipo','entidad')
 
             if fdesde:
                 comprobantes= comprobantes.filter(Q(fecha_cpb__gte=fdesde))
@@ -628,9 +630,15 @@ def CPBPagoDeleteView(request, id):
             return redirect(reverse('principal'))
     
     try:                
-        if (cpb.tiene_cobranzasREC_OP()):
-            messages.error(request, u'¡El Comprobante posee movimientos de cobro/pago asociados!.Verifique')
-            return HttpResponseRedirect(cpb.get_listado())
+        fps = cpb_comprobante_fp.objects.filter(cpb_comprobante=cpb,mdcp_salida__isnull=False).values_list('mdcp_salida',flat=True)
+    
+        if (len(fps)>0):
+            messages.error(request, u'¡El Comprobante posee movimientos de cobranza/depósito de Cheques asociados!. Verifique')
+            return HttpResponseRedirect(cpb.get_listado())    
+
+        # if (cpb.tiene_cobranzasREC_OP()):
+        #     messages.error(request, u'¡El Comprobante posee movimientos de cobro/pago asociados!.Verifique')
+        #     return HttpResponseRedirect(cpb.get_listado())
             
         else:
             #traigo los fps de los recibos asociados        

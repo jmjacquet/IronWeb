@@ -17,7 +17,7 @@ function cerrar_modal()
 
 var lista = [];
 
-$("#lp_checkall").click (function () {
+$("#checkall").click (function () {
      var checkedStatus = this.checked;
     $("input[class='tildado precios']").each(function () {
         $(this).prop("checked", checkedStatus);
@@ -63,24 +63,26 @@ $('#btnActualizar').click(function(){
     //console.log(cpbs)
     if (lista.length==0)
       { 
-          alerta = alertify.dialog('confirm').set({
-                'labels': {
-                    ok: 'Aceptar',
-                    cancel: 'Cancelar'
-                },
-                'message': '¿Desea actualizar el precio de todos los productos?',
-                transition: 'fade',
-                'onok': function() {
-                    alerta.close();
-                    return abrir_modal('/productos/prod_precios_actualizar/');                    
-                },
-                'oncancel': function() {                   
-                    return true;                    
-                }
-            });
-            alerta.setting('modal', true);
-            alerta.setHeader('ACTUALIZAR PRECIOS');
-            alerta.show();
+          // alerta = alertify.dialog('confirm').set({
+          //       'labels': {
+          //           ok: 'Aceptar',
+          //           cancel: 'Cancelar'
+          //       },
+          //       'message': '¿Desea actualizar el precio de todos los productos?',
+          //       transition: 'fade',
+          //       'onok': function() {
+          //           alerta.close();
+          //           return abrir_modal('/productos/prod_precios_actualizar/');                    
+          //       },
+          //       'oncancel': function() {                   
+          //           return true;                    
+          //       }
+          //   });
+          //   alerta.setting('modal', true);
+          //   alerta.setHeader('ACTUALIZAR PRECIOS');
+          //   alerta.show();
+           alertify.errorAlert("¡Debe seleccionar algún Producto!");
+           return true;
       }
     else
     {

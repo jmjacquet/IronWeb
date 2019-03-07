@@ -102,7 +102,7 @@ class gral_tareas(models.Model):
     usuario_asignado = models.ForeignKey('usuarios.usu_usuario',db_column='usuario_asignado',blank=True, null=True,related_name='usuario_asignado',on_delete=models.SET_NULL)            
     fecha = models.DateTimeField(default=datetime.now)    
     fecha_creacion = models.DateField(auto_now=True)
-    # empresa =  models.ForeignKey('general.gral_empresa',db_column='empresa',blank=True, null=True,on_delete=models.SET_NULL)
+    empresa =  models.ForeignKey('general.gral_empresa',db_column='empresa',blank=True, null=True,on_delete=models.SET_NULL)
     class Meta:
         db_table = 'gral_tareas'
 

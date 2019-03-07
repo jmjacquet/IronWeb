@@ -110,7 +110,7 @@ textarea.form-control{height:auto}
 .tiles .tile a{text-decoration:none;}
 .centrado{float:none;margin:0 auto;display:block;}
 .importe{text-align:right;font-weight:bold;}
-.importe_total{text-align:right;font-weight:bolder;font-size:11px !important}
+.importe_total{text-align:right;font-weight:bolder;font-size:11px !important;}
 .control-label{margin-top:1px;text-align:right;}
 .verdadero{color:#fff;text-shadow:1px 1px 1px #ccc;font-size:1.5em;}
 .has-error .help-block, .has-error .help-inline, .has-error .control-label, .has-error .radio, .has-error .checkbox, .has-error .radio-inline, .has-error .checkbox-inline{color:#a94442;font-size:9px;}

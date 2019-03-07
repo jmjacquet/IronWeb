@@ -1,0 +1,110 @@
+[
+{
+  "fields": {
+    "color": "",
+    "nombre": "PENDIENTE",
+    "tipo": 0
+  },
+  "model": "comprobantes.cpb_estado",
+  "pk": 1
+},
+{
+  "fields": {
+    "color": "info",
+    "nombre": "SALDADO",
+    "tipo": 0
+  },
+  "model": "comprobantes.cpb_estado",
+  "pk": 2
+},
+{
+  "fields": {
+    "color": "danger",
+    "nombre": "ANULADO",
+    "tipo": 0
+  },
+  "model": "comprobantes.cpb_estado",
+  "pk": 3
+},
+{
+  "fields": {
+    "color": "success",
+    "nombre": "FACTURADO",
+    "tipo": 0
+  },
+  "model": "comprobantes.cpb_estado",
+  "pk": 4
+},
+{
+  "fields": {
+    "color": "warning",
+    "nombre": "VENCIDO",
+    "tipo": 6
+  },
+  "model": "comprobantes.cpb_estado",
+  "pk": 11
+},
+{
+  "fields": {
+    "color": "success",
+    "nombre": "APROBADO",
+    "tipo": 6
+  },
+  "model": "comprobantes.cpb_estado",
+  "pk": 12
+},
+{
+  "fields": {
+    "color": "danger",
+    "nombre": "RECHAZADO",
+    "tipo": 6
+  },
+  "model": "comprobantes.cpb_estado",
+  "pk": 13
+},
+{
+  "fields": {
+    "color": "danger",
+    "nombre": "PENDIENTE",
+    "tipo": 10
+  },
+  "model": "comprobantes.cpb_estado",
+  "pk": 100
+},
+{
+  "fields": {
+    "color": "danger",
+    "nombre": "ANULADO",
+    "tipo": 10
+  },
+  "model": "comprobantes.cpb_estado",
+  "pk": 101
+},
+{
+  "fields": {
+    "color": "warning",
+    "nombre": "PRODUCCION",
+    "tipo": 10
+  },
+  "model": "comprobantes.cpb_estado",
+  "pk": 102
+},
+{
+  "fields": {
+    "color": "success",
+    "nombre": "TERMINADO",
+    "tipo": 10
+  },
+  "model": "comprobantes.cpb_estado",
+  "pk": 103
+},
+{
+  "fields": {
+    "color": "info",
+    "nombre": "ENTREGADA/COLOCADA",
+    "tipo": 10
+  },
+  "model": "comprobantes.cpb_estado",
+  "pk": 104
+}
+]

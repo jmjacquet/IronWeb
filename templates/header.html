@@ -17,7 +17,7 @@
         <li class="mega-menu-dropdown">
           <a href="javascript:;" class="dropdown-toggle usuario_barra"  data-hover="dropdown" data-close-others="true" >            
           <img alt="logo" class="img-circle logo_empresa" src="{{ MEDIA_URL }}empresa/{{ENTIDAD_DIR}}/logo_empresa.png">                    
-          <span class="username"><strong>{{empresa.nombre}}  {% if homologacion %} (HOMO/PRUEBA){% endif%}</strong></span>
+          <span class="username"><strong>{{usuario.nombre}} ({{empresa.nombre}})  {% if homologacion %} | HOMO/PRUEBA {% endif%}</strong></span>
           <i class="fa fa-angle-down"></i>
           </a>
           <ul class="dropdown-menu">
@@ -32,10 +32,11 @@
                     <li>
                       <a href="{% url 'usuarios' %}"><i class="icon-users"></i>Configurar Usuarios</a>
                     </li>
+                    {% endif %} 
                     <li>
                       <a id="cambiar_passwd" href="#"><i class="icon-key"></i>Cambiar Contraseña</a>                      
                     </li>    
-                    {% endif %} 
+                    
                     {% if 'gral_tareas' in permisos_grupo %} 
                     <li>
                       <a href="{% url 'tareas_listado' %}"><i class="fa fa-exclamation-triangle"></i> Tareas/Problemas </a>

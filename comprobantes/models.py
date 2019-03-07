@@ -12,7 +12,6 @@ from productos.models import prod_productos,gral_tipo_iva,prod_ubicacion,prod_li
 from django.db.models import Sum
 from decimal import Decimal
 from django.utils import timezone
-from django.db.models.signals import post_save,post_delete
 from django.dispatch import receiver
 
 
@@ -112,6 +111,7 @@ class cpb_pto_vta_numero(models.Model):
     letra = models.CharField(u'Letra',choices=COMPROB_FISCAL,max_length=1,blank=True, null=True)
     cpb_pto_vta = models.ForeignKey('cpb_pto_vta',verbose_name=u'Punto Vta', db_column='cpb_pto_vta',blank=True, null=True,on_delete=models.SET_NULL)
     ultimo_nro = models.PositiveIntegerField(u'Último Nº',default=0,blank=True, null=True)
+    empresa =  models.ForeignKey('general.gral_empresa',db_column='empresa',blank=True, null=True,on_delete=models.SET_NULL)
     class Meta:
         db_table = 'cpb_pto_vta_numero'
     
@@ -172,7 +172,7 @@ class cpb_comprobante(models.Model):
 
     def get_pto_vta(self):
         try:
-            pv= cpb_pto_vta.objects.get(numero=self.pto_vta)  
+            pv= cpb_pto_vta.objects.get(numero=self.pto_vta,empresa=self.empresa)  
         except:
             return None
         return pv
@@ -476,8 +476,9 @@ class cpb_comprobante_fp(models.Model):
             fecha = u' | Vencimiento: %s' % (datetime.strftime(self.mdcp_fecha,"%d/%m/%Y"))    
         except:
             fecha=''        
+        print self.mdcp_banco
         try:            
-            banco = ' | '+self.mdcp_banco
+            banco = ' | '+ str(self.mdcp_banco)
         except:
             banco = ''   
         try:
@@ -505,6 +506,12 @@ class cpb_comprobante_fp(models.Model):
         
         return estado
 
+    def _get_origen(self):        
+        cpb = cpb_comprobante_fp.objects.filter(mdcp_salida__id=self.id)[0]
+        return cpb.cpb_comprobante
+
+    get_origen = property(_get_origen)
+
 
 ######################################################################################################
 
@@ -528,7 +535,7 @@ def recalcular_saldo_cpb(idCpb):# pragma: no cover
         cpb.saldo = 0
         cpb.save()
 
-    elif cpb.cpb_tipo.tipo in [1,2,3,6,9]:
+    elif cpb.cpb_tipo.tipo in [1,2,3,6,9,14]:
         cpb_detalles = cpb_comprobante_detalle.objects.filter(cpb_comprobante=cpb)
         for c in cpb_detalles:
             if c.tasa_iva:
@@ -597,17 +604,16 @@ def recalcular_saldo_cpb(idCpb):# pragma: no cover
             tasa = gral_tipo_iva.objects.get(pk=cc['tasa_iva'])       
             cpb_ti = cpb_comprobante_tot_iva(cpb_comprobante=cpb,tasa_iva=tasa,importe_total=cc['importe_total'],importe_base=cc['importe_base'])
             cpb_ti.save()
-
-         
+    
 
 def ultimoNro(tipoCpb,ptoVenta,letra,entidad=None):    
     try:    
         tipo=cpb_tipo.objects.get(id=tipoCpb)
-        pv = cpb_pto_vta.objects.get(numero=ptoVenta)        
         if tipo.usa_pto_vta == True:            
-            pventa_tipoCpb, created = cpb_pto_vta_numero.objects.get_or_create(cpb_tipo=tipo,letra=letra,cpb_pto_vta=pv)        
+            pv = cpb_pto_vta.objects.get(numero=ptoVenta.numero)
+            pventa_tipoCpb, created = cpb_pto_vta_numero.objects.get_or_create(cpb_tipo=tipo,letra=letra,cpb_pto_vta=pv,empresa=pv.empresa)        
             if created:
-                pventa_tipoCpb.ultimo_nro= 0
+                pventa_tipoCpb.ultimo_nro= 1
                 pventa_tipoCpb.save()
                 return 1                            
             nro = pventa_tipoCpb.ultimo_nro + 1
@@ -615,50 +621,17 @@ def ultimoNro(tipoCpb,ptoVenta,letra,entidad=None):
             nro = 1        
             if entidad:
                 entidad = egr_entidad.objects.get(id=entidad)
-                ult_cpb = cpb_comprobante.objects.filter(entidad=entidad,cpb_tipo=tipo,letra=letra,pto_vta=int(ptoVenta)).order_by('numero').last()        
+                ult_cpb = cpb_comprobante.objects.filter(entidad=entidad,cpb_tipo=tipo,letra=letra,pto_vta=int(ptoVenta),empresa=entidad.empresa).order_by('numero').last()        
                 if ult_cpb:
                         nro = ult_cpb.numero + 1                         
             else:
                 nro = tipo.ultimo_nro + 1            
         return nro
     except:        
+        print 'error ultimo nro'
         tipo=cpb_tipo.objects.get(id=tipoCpb)
         nro = tipo.ultimo_nro
     return nro
-
-
-@receiver(post_save, sender=cpb_comprobante,dispatch_uid="actualizar_ultimo_nro")
-def actualizar_ultimo_nro(sender, instance,created, **kwargs):
-   if created:                         
-       letra = instance.letra
-       tipo=instance.cpb_tipo
-       numero=instance.numero       
-       if tipo.usa_pto_vta == True:
-           pventa = cpb_pto_vta.objects.get(numero=instance.pto_vta)              
-           pventa_tipoCpb, created = cpb_pto_vta_numero.objects.get_or_create(cpb_tipo=tipo,letra=letra,cpb_pto_vta=pventa)
-           pventa_tipoCpb.ultimo_nro+= 1
-           pventa_tipoCpb.save()     
-       else:     
-           if not tipo.facturable:           
-            tipo.ultimo_nro = numero           
-            tipo.save()
-
-@receiver(post_save, sender=cpb_cobranza,dispatch_uid="actualizar_cobranza")
-@receiver(post_delete, sender=cpb_cobranza,dispatch_uid="actualizar_cobranza")
-def actualizar_cobranza(sender, instance, **kwargs):      
-   if instance:  
-    if instance.cpb_factura:
-        recalcular_saldo_cpb(instance.cpb_factura.pk)            
-
-
-# @receiver(post_delete, sender=cpb_comprobante_detalle,dispatch_uid="actualizar_comprobante")
-# @receiver(post_delete, sender=cpb_comprobante_fp,dispatch_uid="actualizar_comprobante")
-# def actualizar_comprobante(sender, instance, **kwargs):      
-#    if instance:
-#     print instance  
-#     if instance.cpb_comprobante:
-#         print instance.cpb_comprobante.pk
-#         recalcular_saldo_cpb(instance.cpb_comprobante.pk) 
 
 def actualizar_stock(request,producto,ubicacion,id_tipo_cpb,cantidad):
     estado=cpb_estado.objects.get(pk=2)
@@ -673,5 +646,42 @@ def actualizar_stock(request,producto,ubicacion,id_tipo_cpb,cantidad):
                 origen_destino=ubicacion,detalle=u'ACTUALIZACIÓN DE STOCK')
     detalle.save()
 
+def actualizar_stock_multiple(request,prods,id_tipo_cpb,cantidad):
+    estado=cpb_estado.objects.get(pk=2)
+    tipo_cpb=cpb_tipo.objects.get(pk=id_tipo_cpb)
+    # pv=cpb_pto_vta.objects.get(pk=-1)
+    pv=0
+    recibo = cpb_comprobante(cpb_tipo=tipo_cpb,estado=estado,pto_vta=pv,letra="X",numero='{0:0{width}}'.format((ultimoNro(id_tipo_cpb,pv,"X")+1),width=8)
+        ,fecha_cpb=hoy(),importe_iva=None,importe_total=None,usuario=usuario_actual(request),fecha_vto=hoy(),empresa = empresa_actual(request))
+    recibo.save()
+
+    for p in prods:
+        detalle = cpb_comprobante_detalle(cpb_comprobante=recibo,producto=p.producto,cantidad=cantidad,tasa_iva=p.producto.tasa_iva,coef_iva=p.producto.tasa_iva.coeficiente,
+                origen_destino=p.ubicacion,detalle=u'ACTUALIZACIÓN DE STOCK')
+        detalle.save()
 
 
+from django.db.models.signals import post_save,post_delete
+
+@receiver(post_save, sender=cpb_comprobante,dispatch_uid="actualizar_ultimo_nro")
+def actualizar_ultimo_nro(sender, instance,created, **kwargs):
+   if created:                         
+       letra = instance.letra
+       tipo=instance.cpb_tipo
+       numero=instance.numero       
+       if tipo.usa_pto_vta == True:
+           pventa = cpb_pto_vta.objects.get(numero=instance.pto_vta,empresa=instance.empresa)              
+           pventa_tipoCpb, created = cpb_pto_vta_numero.objects.get_or_create(cpb_tipo=tipo,letra=letra,cpb_pto_vta=pventa,empresa=instance.empresa)
+           pventa_tipoCpb.ultimo_nro+= 1
+           pventa_tipoCpb.save()     
+       else:     
+           if not tipo.facturable:           
+            tipo.ultimo_nro = numero           
+            tipo.save()
+
+@receiver(post_save, sender=cpb_cobranza,dispatch_uid="actualizar_cobranza")
+@receiver(post_delete, sender=cpb_cobranza,dispatch_uid="actualizar_cobranza")
+def actualizar_cobranza(sender, instance, **kwargs):      
+   if instance:  
+    if instance.cpb_factura:
+        recalcular_saldo_cpb(instance.cpb_factura.pk)   

@@ -56,7 +56,7 @@ def cta_cte_clientes(request,id=None):
     context = {}
     context = getVariablesMixin(request)    
     try:
-        empresa = request.user.userprofile.id_usuario.empresa
+        empresa = empresa_actual(request)
     except gral_empresa.DoesNotExist:
         empresa = None 
 
@@ -198,7 +198,7 @@ def cta_cte_proveedores(request,id=None):
         context = {}
         context = getVariablesMixin(request)    
         try:
-            empresa = request.user.userprofile.id_usuario.empresa
+            empresa = empresa_actual(request)
         except gral_empresa.DoesNotExist:
             empresa = None 
         form = ConsultaCtaCteProv(request.POST or None,empresa=empresa,id=id)   
@@ -496,7 +496,7 @@ def libro_iva_ventas(request):
     context = {}
     context = getVariablesMixin(request)    
     try:
-        empresa = request.user.userprofile.id_usuario.empresa
+        empresa = empresa_actual(request)
     except gral_empresa.DoesNotExist:
         empresa = None 
     form = ConsultaLibroIVAVentas(request.POST or None,empresa=empresa,request=request)            
@@ -513,8 +513,8 @@ def libro_iva_ventas(request):
         total = 0                    
         cpbs = cpb_comprobante.objects.filter(cpb_tipo__libro_iva=True,cpb_tipo__compra_venta='V',empresa=empresa,fecha_imputacion__gte=fdesde,fecha_imputacion__lte=fhasta)\
             .select_related('cpb_tipo','entidad')\
-            .order_by('-fecha_imputacion','-numero','entidad__codigo','entidad__apellido_y_nombre','cpb_tipo__tipo')
-    
+            .order_by('-fecha_imputacion','-id','entidad__codigo','entidad__apellido_y_nombre','cpb_tipo__tipo')
+        print cpbs.query
         if int(estado) == 0:                
             cpbs=cpbs.filter(estado__in=[1,2])                
         elif int(estado) == 2:                
@@ -555,7 +555,7 @@ def libro_iva_compras(request):
     context = {}
     context = getVariablesMixin(request)    
     try:
-        empresa = request.user.userprofile.id_usuario.empresa
+        empresa = empresa_actual(request)
     except gral_empresa.DoesNotExist:
         empresa = None 
     form = ConsultaLibroIVACompras(request.POST or None,empresa=empresa,request=request)            
@@ -570,7 +570,7 @@ def libro_iva_compras(request):
                 
         cpbs = cpb_comprobante.objects.filter(cpb_tipo__libro_iva=True,cpb_tipo__compra_venta='C',empresa=empresa,fecha_imputacion__gte=fdesde,fecha_imputacion__lte=fhasta)\
             .select_related('cpb_tipo','entidad')\
-            .order_by('-fecha_imputacion','-numero','entidad__codigo','entidad__apellido_y_nombre','cpb_tipo__tipo')
+            .order_by('-fecha_imputacion','-id','entidad__codigo','entidad__apellido_y_nombre','cpb_tipo__tipo')
         
         if int(estado) == 0:                
             cpbs=cpbs.filter(estado__in=[1,2])                

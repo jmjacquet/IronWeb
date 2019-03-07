@@ -73,7 +73,8 @@ class ClientesCreateView(VariablesMixin,AjaxCreateView):
         return initial   
 
     def form_invalid(self, form):         
-        return self.render_to_response(self.get_context_data(form=form))
+        return super(ClientesCreateView, self).form_invalid(form)
+
 
 
 class ClientesEditView(VariablesMixin,AjaxUpdateView):
@@ -164,7 +165,8 @@ class ProveedoresCreateView(VariablesMixin,AjaxCreateView):
         return initial    
 
     def form_invalid(self, form):         
-        return self.render_to_response(self.get_context_data(form=form))
+        return super(ProveedoresCreateView, self).form_invalid(form)
+
 
 
 class ProveedoresEditView(VariablesMixin,AjaxUpdateView):
@@ -184,7 +186,7 @@ class ProveedoresEditView(VariablesMixin,AjaxUpdateView):
         return super(ProveedoresEditView, self).form_valid(form)
 
     def form_invalid(self, form):         
-        return self.render_to_response(self.get_context_data(form=form))
+        return super(ProveedoresEditView, self).form_invalid(form)
 
 
     def get_initial(self):    

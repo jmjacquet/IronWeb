@@ -24,7 +24,7 @@ $("#id_entidad").change(function(){
                 type: 'get',
                 cache: true,          
                 success : function(data) {
-                     console.log(data);
+                     
                      if (data!='')
                         {
                           $("#id_cliente_categ_fiscal").val(data[0]['fact_categFiscal']); 
@@ -54,7 +54,7 @@ $("#id_entidad").change(function(){
                 type: 'get',
                 cache: true,          
                 success : function(data) {
-                     console.log(data);
+                     
                      if (data!='')
                         {
                           $("#id_letra").val(data[0]); 
@@ -113,7 +113,7 @@ function recargarProd(i){
             type: 'get',
             cache: true,          
             success : function(data) {
-                 console.log(data);
+                 
                  if (data!='')
                     {                      
                       $("[name='formDetalle-"+i+"-importe_costo']").val(data['precio_costo']); 
@@ -194,7 +194,7 @@ function cargarProd(i){
             type: 'get',
             cache: true,          
             success : function(data) {
-                 console.log(data);
+                 
                  if (data!='')
                     {                      
                       $("[name='formDetalle-"+i+"-importe_costo']").val(data['precio_costo']); 
@@ -255,7 +255,7 @@ function setear_CTA(cta,fp)
           type: 'get',
           cache: true,          
           success : function(data) {
-               console.log(data);
+               
                if (data!='')
                   {
                     cta.val(data[0]);                     
@@ -277,7 +277,7 @@ function setear_FP(cta,fp,banco)
           type: 'get',
           cache: true,          
           success : function(data) {
-               console.log(data);
+               
                if (data!='')
                   {                    
                     fp.val(data[0]);
@@ -553,7 +553,7 @@ function ultimoNumCPB(cpb_tipo,letra,pto_vta){
           type: 'get',
           cache: true,          
           success : function(data) {
-               console.log(data);
+               
                if (data!='')
                   {
                     $("#id_numero").val(("00000000" + data[0]).slice(-8));                    

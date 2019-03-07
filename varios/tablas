@@ -1,0 +1,10 @@
+. Si el pago es al contado no se puede guardar la nota de crédito.
+	
+
+importe_gravado = Suma de todo Todo lo que tiene IVA (subtot de cada detalle)
+importe_iva = Suma de los importe IVA de los prod
+importe_subtotal = Suma de gravado + suma de IVA
+importe_no_gravado = Suma de TiposIVA No Gravados
+importe_exento = Suma de TiposIVA Exentos
+importe_perc_imp = Suma de Percepciones e Impuestos
+importe_total = Suma de todo

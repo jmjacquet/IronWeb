@@ -1,9 +1,18 @@
-.fm-modal .modal-content{max-width:768px;padding-top:0px;padding-bottom:30px;position:relative;z-index:1050;padding:0px 20px 20px 20px;margin-right:auto;margin-left:auto;border-radius:5px;font-size:11px;}
-@media (min-width:768px){.modal-dialog{width:768px;margin:20px auto;}
+
+
+.fm-modal .modal-content{max-width:668px;padding-top:0px;padding-bottom:20px;position:relative;z-index:1050;padding:0px 10px 10px 10px;margin-right:auto;margin-left:auto;border-radius:5px;font-size:11px;}
+@media (min-width:768px){.modal-dialog{width:668px;margin:20px auto;}
 .modal-content{-webkit-box-shadow:0 5px 15px rgba(0, 0, 0, 0.5);box-shadow:0 5px 15px rgba(0, 0, 0, 0.5);}
 .modal-sm{width:300px;}
 }
-.fm-modal .modal-head{border:0px;border-top:5px;font-size:14px;text-align:center;color:#ffffff;min-height:30px;font-weight:bold;font-family:'Open Sans', sans-serif;background-color:#4f5a67;padding:10px 0px 10px 0px;margin-left:-5px;margin-right:-5px}
+.fm-modal .modal-head{border:0px;border-top:5px;font-size:11px;text-align:center;color:#ffffff;min-height:20px;font-weight:bold;font-family:'Ubuntu', sans-serif;
+ 	background: rgb(110, 135, 164);
+    background: -moz-linear-gradient(top, rgba(110, 135, 164, 1) 0%, rgba(57, 79, 103, 1) 100%);
+    background: -webkit-linear-gradient(top, rgba(110, 135, 164, 1) 0%, rgba(57, 79, 103, 1) 100%);
+    /* background: linear-gradient(to bottom, rgba(110, 135, 164, 1) 0%, rgba(57, 79, 103, 1) 100%); */
+    filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#6e87a4', endColorstr='#394f67', GradientType=0);
+    /*background-color:#4f5a67;*/
+    padding:10px 0px 10px 0px;margin-left:5px;margin-right:5px}
 .fm-modal .modal-body{padding:20px;}
 .fm-modal .modal-buttons{text-align:left;margin-left:20px;margin-right:20px;}
 .fm-modal .close-modal{background-color:transparent;cursor:pointer;height:25px;position:absolute;right:10px;top:10px;width:45px;}
