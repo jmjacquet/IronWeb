@@ -20,10 +20,6 @@ MANAGERS = ADMINS
 ENTIDAD_ID = os.environ.get('ENTIDAD_ID')
 ENTIDAD_DB = os.environ.get('ENTIDAD_DB')
 ENTIDAD_DIR = os.environ.get('ENTIDAD_DIR')
-# ENTIDAD_ID = '1'
-# # ENTIDAD_DB = 'gg_contable'
-# ENTIDAD_DB = 'gg_ironweb'
-# ENTIDAD_DIR = 'copyfast'
 
 DB_USER = "gg"
 DB_PASS = "battlehome"
