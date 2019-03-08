@@ -2,3 +2,4 @@
 *.pyc
 *.log
 !generarI25.pyc
+errores.log
