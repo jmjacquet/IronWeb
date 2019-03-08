@@ -81,7 +81,11 @@
                                              {% endif %}
                                             {% if not cpb.cae %}                                            
                                                {% if 'cpb_ventas_abm' in permisos_grupo %}
-                                                <li><a href="{% url 'cpb_venta_editar' id=cpb.pk %}"  title="Editar" data-fm-callback="reload" ><i class="icon-note"></i> Editar</a></li>
+                                                {% if cpb.cpb_tipo.tipo == 14 %}
+                                                    <li><a href="{% url 'cpb_liqprod_editar' id=cpb.pk %}"  title="Editar" data-fm-callback="reload" ><i class="icon-note"></i> Editar</a></li>
+                                                {% else %}
+                                                    <li><a href="{% url 'cpb_venta_editar' id=cpb.pk %}"  title="Editar" data-fm-callback="reload" ><i class="icon-note"></i> Editar</a></li>
+                                                {% endif %}
 
                                                 {% if cpb.estado.pk = 3 %}
                                                     {% if cpb.saldo > 0 %}
