@@ -60,7 +60,7 @@ def cta_cte_clientes(request,id=None):
     except gral_empresa.DoesNotExist:
         empresa = None 
 
-    form = ConsultaCtaCteCliente(request.POST or None,empresa=empresa,id=id)   
+    form = ConsultaCtaCteCliente(request.POST or None,empresa=empresa,id=id,request=request)   
         
     cpbs = None
     total_debe = 0  
@@ -167,7 +167,7 @@ class saldos_clientes(VariablesMixin,ListView):
             empresa = empresa_actual(self.request)
         except gral_empresa.DoesNotExist:
             empresa = None 
-        form = ConsultaSaldosClientes(self.request.POST or None,empresa=empresa)            
+        form = ConsultaSaldosClientes(self.request.POST or None,empresa=empresa,request=self.request)            
         fecha = date.today()
         totales = None
         
@@ -202,7 +202,7 @@ def cta_cte_proveedores(request,id=None):
             empresa = empresa_actual(request)
         except gral_empresa.DoesNotExist:
             empresa = None 
-        form = ConsultaCtaCteProv(request.POST or None,empresa=empresa,id=id)   
+        form = ConsultaCtaCteProv(request.POST or None,empresa=empresa,id=id,request=request)   
         cpbs = None
         total_debe = 0  
         total_haber = 0
@@ -315,7 +315,7 @@ class saldos_proveedores(VariablesMixin,ListView):
         except gral_empresa.DoesNotExist:
             empresa = None 
 
-        form = ConsultaSaldosProv(self.request.POST or None,empresa=empresa)            
+        form = ConsultaSaldosProv(self.request.POST or None,empresa=empresa,request=self.request)            
         fecha = date.today()        
         totales = None
         if form.is_valid():                                
@@ -914,7 +914,7 @@ class seguimiento_cheques(VariablesMixin,ListView):
         
         fecha = hoy()
         
-        form = ConsultaHistStockProd(self.request.POST or None,empresa=empresa)   
+        form = ConsultaHistStockProd(self.request.POST or None,empresa=empresa,request=self.request)   
         
         cheques = cpb_comprobante_fp.objects.filter(cpb_comprobante__empresa=empresa,tipo_forma_pago__cuenta__tipo=2,cpb_comprobante__estado__in=[1,2]).order_by('-fecha_creacion','-mdcp_fecha')\
             .select_related('cpb_comprobante','cta_ingreso','cta_egreso','tipo_forma_pago','mdcp_banco','cpb_comprobante__cpb_tipo','cpb_comprobante__entidad','mdcp_salida__cta_ingreso','mdcp_salida__cpb_comprobante__cpb_tipo')
@@ -964,7 +964,7 @@ class ProdHistoricoView(VariablesMixin,ListView):
             empresa = None 
         fecha = date.today()
         
-        form = ConsultaHistStockProd(self.request.POST or None,empresa=empresa)   
+        form = ConsultaHistStockProd(self.request.POST or None,empresa=empresa,request=self.request)   
 
         movimientos = cpb_comprobante_detalle.objects.none()
         #movimientos = cpb_comprobante_detalle.objects.filter(cpb_comprobante__empresa=empresa,cpb_comprobante__fecha_cpb=hoy()).select_related('producto','cpb_comprobante').order_by('producto')
