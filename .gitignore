@@ -1,3 +1,4 @@
 
 *.pyc
 *.log
+!generarI25.pyc
