@@ -1,0 +1,612 @@
+/* Tabs */
+
+.tabsContainer {
+    zoom: 1;
+}
+
+.tabsContainer_enduser {
+    font-weight: bold;
+    color: #ccc;
+    height: 36px;
+    padding-left: 20px;
+    /*line-height: 36px;*/
+    background: url('/img/toptabs_bg.png') repeat-x top;
+}
+
+.tabsContainer_enduser a {
+    color: #86caff;
+}
+
+.tabsContainer ul {
+    list-style: none;
+}
+
+.tabItem {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    display: block;
+    float: left;
+}
+
+.tabItem a {
+    color: #eee;
+    height: 20px;
+    display: block;
+    float: left;
+    vertical-align: middle;
+    background-repeat: repeat-x;
+    background-position: top;
+    margin-right: 3px;
+    margin-top: 10px;
+    padding-left: 38px;
+    padding-right: 20px;
+    padding-top: 6px;
+    font-size: 0.7em;
+    font-weight: bold;
+    vertical-align: middle;
+    background-repeat: repeat-x;
+    background-position: top;
+    border-radius: 4px 4px 0 0;
+    position: relative;
+    text-shadow: 1px 1px rgba(0, 0, 0, 0.2);
+}
+
+.tabItem a .icon {
+    position: absolute;
+    left: 15px;
+    top: 0;
+    width: 24px;
+    height: 24px;
+    line-height: 24px;
+}
+
+.tabItem a .icon:before {
+    font-family: 'Font Awesome 5 Pro';
+    font-weight: normal;
+    color: rgba(255, 255, 255, 0.4);
+    font-size: 1.2em;
+}
+
+.tabItem_blue a {
+    color: #fff;
+    background-color: #6e87a4;
+    background-image: url('/img/tab-blue.png');
+}
+
+.tabItem_violet a {
+    color: #fff;
+    background-color: #9c7996;
+    background-image: url('/img/tab-violet.png');
+}
+
+.tabItem_black a {
+    color: #fff;
+    background-color: #707070;
+    background-image: url('/img/tab-black.png');
+}
+
+.tabItem_green a {
+    color: #fff;
+    background-color: #799c82;
+    background-image: url('/img/tab-green.png');
+}
+
+.tabItem_blue a:hover {
+    background-image: url('/img/tab-blue-h.png');
+}
+
+.tabItem_green a:hover {
+    background-image: url('/img/tab-green-h.png');
+}
+
+.tabItem_violet a:hover {
+    background-image: url('/img/tab-violet-h.png');
+}
+
+.tabItem_black a:hover {
+    background-image: url('/img/tab-black-h.png');
+}
+
+.tabItem_blue a .icon:before {
+    content: '\f0ca';
+	font-weight: 900;
+}
+
+.tabItem_green a .icon:before {
+    content: '\f1c0';
+	font-weight: 900;
+}
+
+.tabItem_violet a .icon:before {
+    content: '\f200';
+	font-weight: 900;
+}
+
+.tabItem_black a .icon:before {
+    content: '\f013';
+	font-weight: 900;
+}
+
+.tabItemActive a {
+    background-image: none !important;
+}
+
+/* Toolbars */
+
+.toolbarItemFirst,
+.toolbarItemFirst .toolbarItemButton {
+    border-radius: 0 0 0 4px;
+}
+
+.toolbarItemButtonLast {
+    border-radius: 0 0 4px 0;
+}
+
+.toolbar .toolbarItem {
+    height: 70px;
+}
+
+.toolbar {
+    height: 70px;
+    display: none;
+    border-radius: 0 0 6px 6px;
+    box-shadow: 0 1px 3px #333;
+    flex-flow: row nowrap;
+}
+
+.toolbarActive {
+    display: flex;
+}
+
+.toolbarItem {
+    flex: 1 1 0%;
+    max-width: 160px;
+    position: relative;
+}
+
+.toolbar .toolbarItemButton {
+    height: 18px;
+    padding-top: 52px;
+    display: block;
+    color: #eee;
+    font-size: 0.65em;
+    font-weight: bold;
+    text-align: center;
+    -moz-user-select: none;
+    -webkit-user-select: none;
+    background-repeat: no-repeat;
+    background-position: 50% 6px;
+    /* text-shadow: 1px 1px rgba(0, 0, 0, 0.2); */
+}
+
+.toolbar .toolbarItemButton:hover {
+    color: #fff;
+}
+
+.toolbar .gap {
+    width: 1px;
+    height: 70px;
+    background: -moz-linear-gradient(top, rgba(255, 255, 255, 0) 0%, rgba(255, 255, 255, 0.15) 100%);
+    background: -webkit-linear-gradient(top, rgba(255, 255, 255, 0) 0%, rgba(255, 255, 255, 0.15) 100%);
+    background: linear-gradient(to bottom, rgba(255, 255, 255, 0) 0%, rgba(255, 255, 255, 0.15) 100%);
+    filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#00ffffff', endColorstr='#26ffffff', GradientType=0);
+}
+
+.toolbar_blue {
+    background: rgb(110, 135, 164);
+    background: -moz-linear-gradient(top, rgba(110, 135, 164, 1) 0%, rgba(57, 79, 103, 1) 100%);
+    background: -webkit-linear-gradient(top, rgba(110, 135, 164, 1) 0%, rgba(57, 79, 103, 1) 100%);
+    /* background: linear-gradient(to bottom, rgba(110, 135, 164, 1) 0%, rgba(57, 79, 103, 1) 100%); */
+    filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#6e87a4', endColorstr='#394f67', GradientType=0);
+}
+
+.toolbar_green {
+    background: rgb(121, 156, 130);
+    background: -moz-linear-gradient(top, rgba(121, 156, 130, 1) 0%, rgba(65, 95, 73, 1) 100%);
+    background: -webkit-linear-gradient(top, rgba(121, 156, 130, 1) 0%, rgba(65, 95, 73, 1) 100%);
+    background: linear-gradient(to bottom, rgba(121, 156, 130, 1) 0%, rgba(65, 95, 73, 1) 100%);
+    filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#799c82', endColorstr='#415f49', GradientType=0);
+}
+
+.toolbar_black {
+    background: rgb(112, 112, 112);
+    background: -moz-linear-gradient(top, rgba(112, 112, 112, 1) 0%, rgba(65, 65, 65, 1) 100%);
+    background: -webkit-linear-gradient(top, rgba(112, 112, 112, 1) 0%, rgba(65, 65, 65, 1) 100%);
+    background: linear-gradient(to bottom, rgba(112, 112, 112, 1) 0%, rgba(65, 65, 65, 1) 100%);
+    filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#707070', endColorstr='#414141', GradientType=0);
+}
+
+.toolbar_violet {
+    background: rgb(156, 121, 150);
+    background: -moz-linear-gradient(top, rgba(156, 121, 150, 1) 0%, rgba(95, 65, 89, 1) 100%);
+    background: -webkit-linear-gradient(top, rgba(156, 121, 150, 1) 0%, rgba(95, 65, 89, 1) 100%);
+    background: linear-gradient(to bottom, rgba(156, 121, 150, 1) 0%, rgba(95, 65, 89, 1) 100%);
+    filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#9c7996', endColorstr='#5f4159', GradientType=0);
+}
+
+.toolbar_blue .toolbarItemSpecial {
+    background: url('/img/toolbar-blue-b.png') repeat-x top;
+}
+
+.toolbar_blue .toolbarItem:hover {
+    background-color: #6e87a4;
+}
+
+.toolbar_blue .toolbarItemSelected,
+.toolbar_blue .toolbarItemSelected:hover,
+.toolbar_blue .dropDownActive {
+    background-color: #394f67;
+}
+
+.toolbar_black .toolbarItem:hover {
+    background-color: #707070;
+}
+
+.toolbar_black .toolbarItemSelected,
+.toolbar_black .toolbarItemSelected:hover,
+.toolbar_black .dropDownActive {
+    background-color: #404040;
+}
+
+.toolbar_violet .toolbarItem:hover {
+    background-color: #9c7996;
+}
+
+.toolbar_violet .toolbarItemSelected,
+.toolbar_violet .toolbarItemSelected:hover,
+.toolbar_violet .dropDownActive {
+    background-color: #60415b;
+}
+
+.toolbar_green .toolbarItem:hover {
+    background-color: #799c82;
+}
+
+.toolbar_green .toolbarItemSelected,
+.toolbar_green .toolbarItemSelected:hover {
+    background-color: #41604a;
+}
+
+.toolbarItemDrop span {
+    background: url('/img/arrow_down_small.png') no-repeat right;
+    padding-right: 15px;
+}
+
+/* Toolbar icons */
+
+.incident-dashboard .toolbarItemButton {
+    background-image: url('/img/icons/incidents_dashboard.png')
+}
+
+.incident-summary .toolbarItemButton {
+    background-image: url('/img/icons/incidents_summary.png')
+}
+
+.incident-new .toolbarItemButton {
+    background-image: url('/img/icons/incidents-new.png')
+}
+
+.incident-unsolved .toolbarItemButton {
+    background-image: url('/img/icons/incidents_unsolved.png')
+}
+
+.incident-solved .toolbarItemButton {
+    background-image: url('/img/icons/incidents_solved.png')
+}
+
+.incident-closed .toolbarItemButton {
+    background-image: url('/img/icons/incidents_closed.png')
+}
+
+.incident-other .toolbarItemButton {
+    background-image: url('/img/icons/incidents_other.png')
+}
+
+.incident-unassigned .toolbarItemButton {
+    background-image: url('/img/icons/incidents_unassigned.png')
+}
+
+.incident-collaborate .toolbarItemButton {
+    background-image: url('/img/icons/incidents_collaborate.png')
+}
+
+.incident-my .toolbarItemButton {
+    background-image: url('/img/icons/incidents_my.png')
+}
+
+.incident-views .toolbarItemButton {
+    background-image: url('/img/icons/incidents_views.png');
+}
+
+.incident-observed .toolbarItemButton {
+    background-image: url('/img/icons/incidents_observed.png')
+}
+
+.incident-config .toolbarItemButton {
+    background-image: url('/img/icons/incidents_config.png')
+}
+
+.requests-manager .toolbarItemButton {
+    background-image: url('/img/icons/requests_manager.png')
+}
+
+.admin_index .toolbarItemButton {
+    background-image: url('/img/icons/admin_index.png')
+}
+
+.admin_general .toolbarItemButton {
+    background-image: url('/img/icons/admin_general.png')
+}
+
+.admin_structure .toolbarItemButton {
+    background-image: url('/img/icons/admin_structure.png')
+}
+
+.admin_catalog .toolbarItemButton {
+    background-image: url('/img/icons/admin_roles.png')
+}
+
+.admin_users .toolbarItemButton {
+    background-image: url('/img/icons/admin_users.png')
+}
+
+.admin_sla .toolbarItemButton {
+    background-image: url('/img/icons/admin_sla.png')
+}
+
+.admin_bn .toolbarItemButton {
+    background-image: url('/img/icons/admin_bn.png')
+}
+
+.admin_roles .toolbarItemButton {
+    background-image: url('/img/icons/admin_roles.png')
+}
+
+.admin_email .toolbarItemButton {
+    background-image: url('/img/icons/admin_email.png')
+}
+
+.admin_assets .toolbarItemButton {
+    background-image: url('/img/icons/admin_assets.png')
+}
+
+.admin_tickets .toolbarItemButton {
+    background-image: url('/img/icons/admin_tickets.png')
+}
+
+.admin_gamification .toolbarItemButton {
+    background-image: url('/img/icons/admin_gamification.png')
+}
+
+.admin_system .toolbarItemButton {
+    background-image: url('/img/icons/admin_system.png')
+}
+
+.admin_general .toolbarItemButton {
+    background-image: url('/img/icons/admin_general.png')
+}
+
+.admin_approval .toolbarItemButton {
+    background-image: url('/img/icons/admin_approval.png')
+}
+
+.admin_system .toolbarItemButton {
+    background-image: url('/img/icons/admin_system.png')
+}
+
+.kb_home .toolbarItemButton {
+    background-image: url('/img/icons/kb_home.png')
+}
+
+.kb_new .toolbarItemButton {
+    background-image: url('/img/icons/kb_new.png')
+}
+
+.kb_search .toolbarItemButton {
+    background-image: url('/img/icons/kb_search.png')
+}
+
+.kb_favorite .toolbarItemButton {
+    background-image: url('/img/icons/kb_favorite.png')
+}
+
+.kb_responses .toolbarItemButton {
+    background-image: url('/img/icons/kb_responses.png')
+}
+
+.kb_category .toolbarItemButton {
+    background-image: url('/img/icons/kb_category.png')
+}
+
+.kb_recent .toolbarItemButton {
+    background-image: url('/img/icons/kb_recent.png')
+}
+
+.kb_config .toolbarItemButton {
+    background-image: url('/img/icons/kb_config.png')
+}
+
+.reports_tickets .toolbarItemButton {
+    background-image: url('/img/icons/reports_tickets.png')
+}
+
+.reports_sla .toolbarItemButton {
+    background-image: url('/img/icons/reports_sla.png')
+}
+
+.reports_agent .toolbarItemButton {
+    background-image: url('/img/icons/reports_agent.png')
+}
+
+.reports_custom .toolbarItemButton {
+    background-image: url('/img/icons/reports_custom.png')
+}
+
+.reports_saved .toolbarItemButton {
+    background-image: url('/img/icons/reports_saved.png')
+}
+
+.reports_custom_config .toolbarItemButton {
+    background-image: url('/img/icons/reports_custom_config.png')
+}
+
+.reports_new .toolbarItemButton {
+    background-image: url('/img/icons/reports_new.png')
+}
+
+.reports_home .toolbarItemButton {
+    background-image: url('/img/icons/reports_home.png')
+}
+
+.reports_save .toolbarItemButton {
+    background-image: url('/img/icons/reports_save.png')
+}
+
+.incident-reports .toolbarItemButton {
+    background-image: url('/img/icons/incidents-reports.png')
+}
+
+.knowledge-base .toolbarItemButton {
+    background-image: url('/img/icons/knowledge-base.png')
+}
+
+.workflow_admin .toolbarItemButton {
+    background-image: url('/img/icons/workflow_admin.png')
+}
+
+.workflow_unresolved .toolbarItemButton {
+    background-image: url('/img/icons/workflow_unresolved.png')
+}
+
+.workflow_progress .toolbarItemButton {
+    background-image: url('/img/icons/workflow_progress.png')
+}
+
+.workflow_completed .toolbarItemButton {
+    background-image: url('/img/icons/workflow_completed.png')
+}
+
+.workflow_cancelled .toolbarItemButton {
+    background-image: url('/img/icons/workflow_cancelled.png')
+}
+
+.workflow_requested .toolbarItemButton {
+    background-image: url('/img/icons/workflow_requested.png')
+}
+
+.workflow_helpdesks .toolbarItemButton {
+    background-image: url('/img/icons/workflow_helpdesks.png')
+}
+
+.workflow_observed .toolbarItemButton {
+    background-image: url('/img/icons/workflow_observed.png')
+}
+
+.workflow_views .toolbarItemButton {
+    background-image: url('/img/icons/workflow_views.png')
+}
+
+/* Scrollables */
+
+/* Header top bar */
+
+.scrollable_topBar {
+}
+
+.scrollable_tabBarActive {
+    z-index: 400;
+    position: fixed;
+    width: 100%;
+    top: 0;
+    left: 0;
+    background: url('/img/main-bg.png') repeat-x 0 -39px;
+}
+
+.scrollable_tabBar .wrapperSpace {
+    background: url('/img/toptabs_bg.png') repeat-x top;
+}
+
+/* Header toolbars */
+
+.scrollable_toolbar .wrapper {
+    /* zoom:1; */
+}
+
+.scrollable_toolbarActive {
+    width: 100%;
+    left: 0;
+    top: 36px;
+    z-index: 400;
+    position: fixed;
+}
+
+.scrollable_toolbarActive .toolbar,
+.scrollable_toolbarActive .toolbarItem,
+.scrollable_toolbarActive .gap {
+    height: 32px;
+}
+
+.scrollable_toolbarActive .toolbarItemButton {
+    padding: 0;
+    height: 32px;
+    line-height: 32px;
+    background-position: 400px;
+}
+
+.numberCircle {
+    border-right: 0;
+    font-size: .65em;
+    color: #fff;
+    font-weight: bold;
+    padding: 0 6px 0 8px;
+    height: 20px;
+    line-height: 20px;
+    border-radius: 20px 0 0 20px;
+    position: absolute;
+    right: 0;
+    top: 6px;
+    -moz-user-select: none;
+    -webkit-user-select: none;
+    cursor: pointer;
+}
+
+.numberCircle-red {
+    background: #a03b3b;
+}
+
+.numberCircle-blue {
+    background: #326897;
+}
+
+.numberCircle-grey {
+    background: #555;
+}
+
+.numberCircleCompact {
+    text-indent: -9999px;
+    padding: 0 3px;
+    top: 6px;
+}
+
+.mailNotValidated {
+    background: url('/img/eu_homemain_number.png') repeat-x bottom;
+    border: 1px solid #6c2121;
+    box-sizing: border-box;
+    border-right: 0;
+    font-size: .65em;
+    color: #fff;
+    font-weight: bold;
+    padding: 0 6px 0 8px;
+    height: 20px;
+    line-height: 20px;
+    text-align: center;
+    margin-top: -10px;
+    border-radius: 20px 0 0 20px;
+    position: absolute;
+    right: 0;
+    top: 50%;
+    -moz-user-select: none;
+    -webkit-user-select: none;
+    cursor: pointer;
+}
