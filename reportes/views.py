@@ -90,8 +90,9 @@ def cta_cte_clientes(request,id=None):
         cpbs = cuenta_corriente(request,'V',entidad,None,None,estado,empresa)
                 
         try:
-            total_debe = cpbs.exclude(cpb_tipo__id=7).aggregate(sum=Sum(F('importe_total'), output_field=DecimalField()))['sum'] or 0          
-            total_haber = cpbs.filter(cpb_tipo__id=7).aggregate(sum=Sum(F('importe_total'), output_field=DecimalField()))['sum'] or 0             
+            total_debe = cpbs.filter(cpb_tipo__tipo__in=[1,3,9]).aggregate(sum=Sum(F('importe_total'), output_field=DecimalField()))['sum'] or 0
+            total_haber = cpbs.filter(cpb_tipo__tipo__in=[2,4]).aggregate(sum=Sum(F('importe_total'), output_field=DecimalField()))['sum'] or 0
+
         except:
             total_debe = 0  
             total_haber = 0             
@@ -99,8 +100,8 @@ def cta_cte_clientes(request,id=None):
         cpbs = cuenta_corriente(request,'V',entidad,fdesde,fhasta,estado,empresa)
 
         try:
-            total_ctacte_debe = cpbs.exclude(cpb_tipo__id=7).aggregate(sum=Sum(F('importe_total'), output_field=DecimalField()))['sum'] or 0          
-            total_ctacte_haber = cpbs.filter(cpb_tipo__id=7).aggregate(sum=Sum(F('importe_total'), output_field=DecimalField()))['sum'] or 0          
+            total_ctacte_debe = cpbs.filter(cpb_tipo__tipo__in=[1,3,9]).aggregate(sum=Sum(F('importe_total'), output_field=DecimalField()))['sum'] or 0          
+            total_ctacte_haber = cpbs.filter(cpb_tipo__tipo__in=[2,4]).aggregate(sum=Sum(F('importe_total'), output_field=DecimalField()))['sum'] or 0          
         except:
             total_ctacte_debe = 0    
             total_ctacte_haber = 0
@@ -236,8 +237,8 @@ def cta_cte_proveedores(request,id=None):
                 cpbs=cpbs.filter(estado__in=[1,2,3])
 
             try:
-                total_debe = cpbs.filter(cpb_tipo__id=12).aggregate(sum=Sum(F('importe_total'), output_field=DecimalField()))['sum'] or 0          
-                total_haber = cpbs.exclude(cpb_tipo__id=12).aggregate(sum=Sum(F('importe_total'), output_field=DecimalField()))['sum'] or 0             
+                total_debe = cpbs.filter(cpb_tipo__tipo__in=[1,3,9]).aggregate(sum=Sum(F('importe_total'), output_field=DecimalField()))['sum'] or 0          
+                total_haber = cpbs.filter(cpb_tipo__tipo__in=[2,7]).aggregate(sum=Sum(F('importe_total'), output_field=DecimalField()))['sum'] or 0             
             except:
                 total_debe = 0  
                 total_haber = 0  
@@ -245,8 +246,8 @@ def cta_cte_proveedores(request,id=None):
             cpbs = cuenta_corriente(request,'C',entidad,fdesde,fhasta,estado,empresa)          
                         
             try:
-                total_ctacte_debe = cpbs.filter(cpb_tipo__id=12).aggregate(sum=Sum(F('importe_total'), output_field=DecimalField()))['sum'] or 0          
-                total_ctacte_haber = cpbs.exclude(cpb_tipo__id=12).aggregate(sum=Sum(F('importe_total'), output_field=DecimalField()))['sum'] or 0          
+                total_ctacte_debe = cpbs.filter(cpb_tipo__tipo__in=[1,3,9]).aggregate(sum=Sum(F('importe_total'), output_field=DecimalField()))['sum'] or 0          
+                total_ctacte_haber = cpbs.filter(cpb_tipo__tipo__in=[2,7]).aggregate(sum=Sum(F('importe_total'), output_field=DecimalField()))['sum'] or 0
             except:
                 total_ctacte_debe = 0
                 total_ctacte_haber = 0    
