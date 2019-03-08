@@ -1,29 +1,1042 @@
-[07/mar/2019 15:00:31] ERROR [django.request:256] Internal Server Error: /ingresos/cpb_rec_cobranza/nuevo_cobro/
+[05/Dec/2018 19:30:01] ERROR [django.request:256] Internal Server Error: /
 Traceback (most recent call last):
-  File "C:\Python27\lib\site-packages\django\core\handlers\base.py", line 132, in get_response
+  File "/home/grupogua1/lib/python2.7/django/core/handlers/base.py", line 108, in get_response
+    response = middleware_method(request)
+  File "/home/grupogua1/lib/python2.7/django/middleware/locale.py", line 32, in process_request
+    request, check_path=check_path)
+  File "/home/grupogua1/lib/python2.7/django/utils/translation/__init__.py", line 191, in get_language_from_request
+    return _trans.get_language_from_request(request, check_path)
+  File "/home/grupogua1/lib/python2.7/django/utils/translation/trans_real.py", line 500, in get_language_from_request
+    lang_code = request.session.get(LANGUAGE_SESSION_KEY)
+  File "/home/grupogua1/lib/python2.7/django/contrib/sessions/backends/base.py", line 59, in get
+    return self._session.get(key, default)
+  File "/home/grupogua1/lib/python2.7/django/contrib/sessions/backends/base.py", line 181, in _get_session
+    self._session_cache = self.load()
+  File "/home/grupogua1/lib/python2.7/django/contrib/sessions/backends/db.py", line 21, in load
+    expire_date__gt=timezone.now()
+  File "/home/grupogua1/lib/python2.7/django/db/models/manager.py", line 127, in manager_method
+    return getattr(self.get_queryset(), name)(*args, **kwargs)
+  File "/home/grupogua1/lib/python2.7/django/db/models/query.py", line 328, in get
+    num = len(clone)
+  File "/home/grupogua1/lib/python2.7/django/db/models/query.py", line 144, in __len__
+    self._fetch_all()
+  File "/home/grupogua1/lib/python2.7/django/db/models/query.py", line 965, in _fetch_all
+    self._result_cache = list(self.iterator())
+  File "/home/grupogua1/lib/python2.7/django/db/models/query.py", line 238, in iterator
+    results = compiler.execute_sql()
+  File "/home/grupogua1/lib/python2.7/django/db/models/sql/compiler.py", line 840, in execute_sql
+    cursor.execute(sql, params)
+  File "/home/grupogua1/lib/python2.7/django/db/backends/utils.py", line 79, in execute
+    return super(CursorDebugWrapper, self).execute(sql, params)
+  File "/home/grupogua1/lib/python2.7/django/db/backends/utils.py", line 64, in execute
+    return self.cursor.execute(sql, params)
+  File "/home/grupogua1/lib/python2.7/django/db/utils.py", line 97, in __exit__
+    six.reraise(dj_exc_type, dj_exc_value, traceback)
+  File "/home/grupogua1/lib/python2.7/django/db/backends/utils.py", line 64, in execute
+    return self.cursor.execute(sql, params)
+  File "/home/grupogua1/lib/python2.7/django/db/backends/mysql/base.py", line 124, in execute
+    return self.cursor.execute(query, args)
+  File "/home/grupogua1/lib/python2.7/MySQLdb/cursors.py", line 226, in execute
+    self.errorhandler(self, exc, value)
+  File "/home/grupogua1/lib/python2.7/MySQLdb/connections.py", line 36, in defaulterrorhandler
+    raise errorvalue
+OperationalError: (1046, 'No database selected')
+[05/Dec/2018 19:49:23] ERROR [django.request:256] Internal Server Error: /
+Traceback (most recent call last):
+  File "/home/grupogua1/lib/python2.7/django/core/handlers/base.py", line 132, in get_response
     response = wrapped_callback(request, *callback_args, **callback_kwargs)
-  File "C:\Python27\lib\site-packages\django\views\generic\base.py", line 71, in view
+  File "/home/grupogua1/lib/python2.7/django/views/generic/base.py", line 71, in view
     return self.dispatch(request, *args, **kwargs)
-  File "C:\Python27\lib\site-packages\django\utils\decorators.py", line 34, in _wrapper
+  File "/home/grupogua1/lib/python2.7/django/utils/decorators.py", line 34, in _wrapper
     return bound_func(*args, **kwargs)
-  File "C:\Python27\lib\site-packages\django\contrib\auth\decorators.py", line 22, in _wrapped_view
+  File "/home/grupogua1/lib/python2.7/django/contrib/auth/decorators.py", line 22, in _wrapped_view
     return view_func(request, *args, **kwargs)
-  File "C:\Python27\lib\site-packages\django\utils\decorators.py", line 30, in bound_func
+  File "/home/grupogua1/lib/python2.7/django/utils/decorators.py", line 30, in bound_func
     return func.__get__(self, type(self))(*args2, **kwargs2)
-  File "D:\Repo\ironweb\ingresos\views.py", line 1628, in dispatch
-    return super(CPBCobrarCreateView, self).dispatch(*args, **kwargs)
-  File "C:\Python27\lib\site-packages\django\views\generic\base.py", line 89, in dispatch
+  File "/home/grupogua1/webapps/iron_demo/ggcontable/general/views.py", line 160, in dispatch
+    return super(PrincipalView, self).dispatch(*args, **kwargs)
+  File "/home/grupogua1/lib/python2.7/django/views/generic/base.py", line 89, in dispatch
     return handler(request, *args, **kwargs)
-  File "D:\Repo\ironweb\ingresos\views.py", line 1644, in get
-    form = self.get_form(form_class)
-  File "C:\Python27\lib\site-packages\django\views\generic\edit.py", line 74, in get_form
-    return form_class(**self.get_form_kwargs())
-  File "D:\Repo\ironweb\ingresos\forms.py", line 536, in __init__
-    self.fields['pto_vta'].initial = get_pv_defecto(request)
-  File "D:\Repo\ironweb\general\forms.py", line 63, in get_pv_defecto
-    num_pv=empresa_actual(request).pto_vta_defecto.numero
-  File "C:\Python27\lib\site-packages\django\db\models\fields\related.py", line 604, in __get__
-    rel_obj = qs.get()
-  File "C:\Python27\lib\site-packages\django\db\models\query.py", line 334, in get
-    self.model._meta.object_name
-DoesNotExist: cpb_pto_vta matching query does not exist.
+  File "/home/grupogua1/lib/python2.7/django/views/generic/base.py", line 158, in get
+    context = self.get_context_data(**kwargs)
+  File "/home/grupogua1/webapps/iron_demo/ggcontable/general/views.py", line 168, in get_context_data
+    deuda_cobrar_total = deuda_cobrar_cpbs.aggregate(sum=Sum(F('saldo')*F('cpb_tipo__signo_ctacte'), output_field=DecimalField()))['sum'] or 0
+  File "/home/grupogua1/lib/python2.7/django/db/models/query.py", line 305, in aggregate
+    return query.get_aggregation(self.db, kwargs.keys())
+  File "/home/grupogua1/lib/python2.7/django/db/models/sql/query.py", line 447, in get_aggregation
+    result = compiler.execute_sql(SINGLE)
+  File "/home/grupogua1/lib/python2.7/django/db/models/sql/compiler.py", line 840, in execute_sql
+    cursor.execute(sql, params)
+  File "/home/grupogua1/lib/python2.7/django/db/backends/utils.py", line 79, in execute
+    return super(CursorDebugWrapper, self).execute(sql, params)
+  File "/home/grupogua1/lib/python2.7/django/db/backends/utils.py", line 64, in execute
+    return self.cursor.execute(sql, params)
+  File "/home/grupogua1/lib/python2.7/django/db/utils.py", line 97, in __exit__
+    six.reraise(dj_exc_type, dj_exc_value, traceback)
+  File "/home/grupogua1/lib/python2.7/django/db/backends/utils.py", line 64, in execute
+    return self.cursor.execute(sql, params)
+  File "/home/grupogua1/lib/python2.7/django/db/backends/mysql/base.py", line 124, in execute
+    return self.cursor.execute(query, args)
+  File "/home/grupogua1/lib/python2.7/MySQLdb/cursors.py", line 226, in execute
+    self.errorhandler(self, exc, value)
+  File "/home/grupogua1/lib/python2.7/MySQLdb/connections.py", line 36, in defaulterrorhandler
+    raise errorvalue
+OperationalError: (1054, "Unknown column 'cpb_comprobante.pto_vta_id' in 'IN/ALL/ANY subquery'")
+[19/Dec/2018 21:01:26] ERROR [django.request:256] Internal Server Error: /
+Traceback (most recent call last):
+  File "/home/grupogua1/lib/python2.7/django/core/handlers/base.py", line 132, in get_response
+    response = wrapped_callback(request, *callback_args, **callback_kwargs)
+  File "/home/grupogua1/lib/python2.7/django/views/generic/base.py", line 71, in view
+    return self.dispatch(request, *args, **kwargs)
+  File "/home/grupogua1/lib/python2.7/django/utils/decorators.py", line 34, in _wrapper
+    return bound_func(*args, **kwargs)
+  File "/home/grupogua1/lib/python2.7/django/contrib/auth/decorators.py", line 22, in _wrapped_view
+    return view_func(request, *args, **kwargs)
+  File "/home/grupogua1/lib/python2.7/django/utils/decorators.py", line 30, in bound_func
+    return func.__get__(self, type(self))(*args2, **kwargs2)
+  File "/home/grupogua1/webapps/iron_demo/ggcontable/general/views.py", line 160, in dispatch
+    return super(PrincipalView, self).dispatch(*args, **kwargs)
+  File "/home/grupogua1/lib/python2.7/django/views/generic/base.py", line 89, in dispatch
+    return handler(request, *args, **kwargs)
+  File "/home/grupogua1/lib/python2.7/django/views/generic/base.py", line 158, in get
+    context = self.get_context_data(**kwargs)
+  File "/home/grupogua1/webapps/iron_demo/ggcontable/general/views.py", line 168, in get_context_data
+    deuda_cobrar_total = deuda_cobrar_cpbs.aggregate(sum=Sum(F('saldo')*F('cpb_tipo__signo_ctacte'), output_field=DecimalField()))['sum'] or 0
+  File "/home/grupogua1/lib/python2.7/django/db/models/query.py", line 305, in aggregate
+    return query.get_aggregation(self.db, kwargs.keys())
+  File "/home/grupogua1/lib/python2.7/django/db/models/sql/query.py", line 447, in get_aggregation
+    result = compiler.execute_sql(SINGLE)
+  File "/home/grupogua1/lib/python2.7/django/db/models/sql/compiler.py", line 840, in execute_sql
+    cursor.execute(sql, params)
+  File "/home/grupogua1/lib/python2.7/django/db/backends/utils.py", line 79, in execute
+    return super(CursorDebugWrapper, self).execute(sql, params)
+  File "/home/grupogua1/lib/python2.7/django/db/backends/utils.py", line 64, in execute
+    return self.cursor.execute(sql, params)
+  File "/home/grupogua1/lib/python2.7/django/db/utils.py", line 97, in __exit__
+    six.reraise(dj_exc_type, dj_exc_value, traceback)
+  File "/home/grupogua1/lib/python2.7/django/db/backends/utils.py", line 64, in execute
+    return self.cursor.execute(sql, params)
+  File "/home/grupogua1/lib/python2.7/django/db/backends/mysql/base.py", line 124, in execute
+    return self.cursor.execute(query, args)
+  File "/home/grupogua1/lib/python2.7/MySQLdb/cursors.py", line 226, in execute
+    self.errorhandler(self, exc, value)
+  File "/home/grupogua1/lib/python2.7/MySQLdb/connections.py", line 36, in defaulterrorhandler
+    raise errorvalue
+OperationalError: (1054, "Unknown column 'cpb_comprobante.pto_vta_id' in 'IN/ALL/ANY subquery'")
+[03/Jan/2019 16:37:46] ERROR [django.request:256] Internal Server Error: /
+Traceback (most recent call last):
+  File "/home/grupogua1/lib/python2.7/django/core/handlers/base.py", line 119, in get_response
+    resolver_match = resolver.resolve(request.path_info)
+  File "/home/grupogua1/lib/python2.7/django/core/urlresolvers.py", line 365, in resolve
+    for pattern in self.url_patterns:
+  File "/home/grupogua1/lib/python2.7/django/core/urlresolvers.py", line 401, in url_patterns
+    patterns = getattr(self.urlconf_module, "urlpatterns", self.urlconf_module)
+  File "/home/grupogua1/lib/python2.7/django/core/urlresolvers.py", line 395, in urlconf_module
+    self._urlconf_module = import_module(self.urlconf_name)
+  File "/usr/lib64/python2.7/importlib/__init__.py", line 37, in import_module
+    __import__(name)
+  File "/home/grupogua1/webapps/iron_demo/ggcontable/ggcontable/urls.py", line 6, in <module>
+    from usuarios.views import *
+  File "/home/grupogua1/webapps/iron_demo/ggcontable/usuarios/views.py", line 7, in <module>
+    from .forms import *
+  File "/home/grupogua1/webapps/iron_demo/ggcontable/usuarios/forms.py", line 11, in <module>
+    from general.forms import pto_vta_habilitados
+  File "/home/grupogua1/webapps/iron_demo/ggcontable/general/forms.py", line 68, in <module>
+    class ConsultaCpbs(forms.Form):
+  File "/home/grupogua1/webapps/iron_demo/ggcontable/general/forms.py", line 73, in ConsultaCpbs
+    pto_vta = forms.ChoiceField(label='Pto. Vta.',choices=[(pto.numero, pto.__unicode__()) for pto in cpb_pto_vta.objects.filter(baja=False)],required = False)
+  File "/home/grupogua1/lib/python2.7/django/db/models/query.py", line 162, in __iter__
+    self._fetch_all()
+  File "/home/grupogua1/lib/python2.7/django/db/models/query.py", line 965, in _fetch_all
+    self._result_cache = list(self.iterator())
+  File "/home/grupogua1/lib/python2.7/django/db/models/query.py", line 238, in iterator
+    results = compiler.execute_sql()
+  File "/home/grupogua1/lib/python2.7/django/db/models/sql/compiler.py", line 840, in execute_sql
+    cursor.execute(sql, params)
+  File "/home/grupogua1/lib/python2.7/django/db/backends/utils.py", line 79, in execute
+    return super(CursorDebugWrapper, self).execute(sql, params)
+  File "/home/grupogua1/lib/python2.7/django/db/backends/utils.py", line 64, in execute
+    return self.cursor.execute(sql, params)
+  File "/home/grupogua1/lib/python2.7/django/db/utils.py", line 97, in __exit__
+    six.reraise(dj_exc_type, dj_exc_value, traceback)
+  File "/home/grupogua1/lib/python2.7/django/db/backends/utils.py", line 64, in execute
+    return self.cursor.execute(sql, params)
+  File "/home/grupogua1/lib/python2.7/django/db/backends/mysql/base.py", line 124, in execute
+    return self.cursor.execute(query, args)
+  File "/home/grupogua1/lib/python2.7/MySQLdb/cursors.py", line 226, in execute
+    self.errorhandler(self, exc, value)
+  File "/home/grupogua1/lib/python2.7/MySQLdb/connections.py", line 36, in defaulterrorhandler
+    raise errorvalue
+OperationalError: (1046, 'No database selected')
+[03/Jan/2019 16:37:48] ERROR [django.request:256] Internal Server Error: /favicon.ico
+Traceback (most recent call last):
+  File "/home/grupogua1/lib/python2.7/django/core/handlers/base.py", line 108, in get_response
+    response = middleware_method(request)
+  File "/home/grupogua1/lib/python2.7/django/middleware/common.py", line 74, in process_request
+    if (not urlresolvers.is_valid_path(request.path_info, urlconf) and
+  File "/home/grupogua1/lib/python2.7/django/core/urlresolvers.py", line 646, in is_valid_path
+    resolve(path, urlconf)
+  File "/home/grupogua1/lib/python2.7/django/core/urlresolvers.py", line 521, in resolve
+    return get_resolver(urlconf).resolve(path)
+  File "/home/grupogua1/lib/python2.7/django/core/urlresolvers.py", line 365, in resolve
+    for pattern in self.url_patterns:
+  File "/home/grupogua1/lib/python2.7/django/core/urlresolvers.py", line 401, in url_patterns
+    patterns = getattr(self.urlconf_module, "urlpatterns", self.urlconf_module)
+  File "/home/grupogua1/lib/python2.7/django/core/urlresolvers.py", line 395, in urlconf_module
+    self._urlconf_module = import_module(self.urlconf_name)
+  File "/usr/lib64/python2.7/importlib/__init__.py", line 37, in import_module
+    __import__(name)
+  File "/home/grupogua1/webapps/iron_demo/ggcontable/ggcontable/urls.py", line 6, in <module>
+    from usuarios.views import *
+  File "/home/grupogua1/webapps/iron_demo/ggcontable/usuarios/views.py", line 7, in <module>
+    from .forms import *
+  File "/home/grupogua1/webapps/iron_demo/ggcontable/usuarios/forms.py", line 11, in <module>
+    from general.forms import pto_vta_habilitados
+  File "/home/grupogua1/webapps/iron_demo/ggcontable/general/forms.py", line 68, in <module>
+    class ConsultaCpbs(forms.Form):
+  File "/home/grupogua1/webapps/iron_demo/ggcontable/general/forms.py", line 73, in ConsultaCpbs
+    pto_vta = forms.ChoiceField(label='Pto. Vta.',choices=[(pto.numero, pto.__unicode__()) for pto in cpb_pto_vta.objects.filter(baja=False)],required = False)
+  File "/home/grupogua1/lib/python2.7/django/db/models/query.py", line 162, in __iter__
+    self._fetch_all()
+  File "/home/grupogua1/lib/python2.7/django/db/models/query.py", line 965, in _fetch_all
+    self._result_cache = list(self.iterator())
+  File "/home/grupogua1/lib/python2.7/django/db/models/query.py", line 238, in iterator
+    results = compiler.execute_sql()
+  File "/home/grupogua1/lib/python2.7/django/db/models/sql/compiler.py", line 840, in execute_sql
+    cursor.execute(sql, params)
+  File "/home/grupogua1/lib/python2.7/django/db/backends/utils.py", line 79, in execute
+    return super(CursorDebugWrapper, self).execute(sql, params)
+  File "/home/grupogua1/lib/python2.7/django/db/backends/utils.py", line 64, in execute
+    return self.cursor.execute(sql, params)
+  File "/home/grupogua1/lib/python2.7/django/db/utils.py", line 97, in __exit__
+    six.reraise(dj_exc_type, dj_exc_value, traceback)
+  File "/home/grupogua1/lib/python2.7/django/db/backends/utils.py", line 64, in execute
+    return self.cursor.execute(sql, params)
+  File "/home/grupogua1/lib/python2.7/django/db/backends/mysql/base.py", line 124, in execute
+    return self.cursor.execute(query, args)
+  File "/home/grupogua1/lib/python2.7/MySQLdb/cursors.py", line 226, in execute
+    self.errorhandler(self, exc, value)
+  File "/home/grupogua1/lib/python2.7/MySQLdb/connections.py", line 36, in defaulterrorhandler
+    raise errorvalue
+OperationalError: (1046, 'No database selected')
+[03/Jan/2019 16:38:28] ERROR [django.request:256] Internal Server Error: /
+Traceback (most recent call last):
+  File "/home/grupogua1/lib/python2.7/django/core/handlers/base.py", line 119, in get_response
+    resolver_match = resolver.resolve(request.path_info)
+  File "/home/grupogua1/lib/python2.7/django/core/urlresolvers.py", line 365, in resolve
+    for pattern in self.url_patterns:
+  File "/home/grupogua1/lib/python2.7/django/core/urlresolvers.py", line 401, in url_patterns
+    patterns = getattr(self.urlconf_module, "urlpatterns", self.urlconf_module)
+  File "/home/grupogua1/lib/python2.7/django/core/urlresolvers.py", line 395, in urlconf_module
+    self._urlconf_module = import_module(self.urlconf_name)
+  File "/usr/lib64/python2.7/importlib/__init__.py", line 37, in import_module
+    __import__(name)
+  File "/home/grupogua1/webapps/iron_demo/ggcontable/ggcontable/urls.py", line 6, in <module>
+    from usuarios.views import *
+  File "/home/grupogua1/webapps/iron_demo/ggcontable/usuarios/views.py", line 7, in <module>
+    from .forms import *
+  File "/home/grupogua1/webapps/iron_demo/ggcontable/usuarios/forms.py", line 11, in <module>
+    from general.forms import pto_vta_habilitados
+  File "/home/grupogua1/webapps/iron_demo/ggcontable/general/forms.py", line 68, in <module>
+    class ConsultaCpbs(forms.Form):
+  File "/home/grupogua1/webapps/iron_demo/ggcontable/general/forms.py", line 73, in ConsultaCpbs
+    pto_vta = forms.ChoiceField(label='Pto. Vta.',choices=[(pto.numero, pto.__unicode__()) for pto in cpb_pto_vta.objects.filter(baja=False)],required = False)
+  File "/home/grupogua1/lib/python2.7/django/db/models/query.py", line 162, in __iter__
+    self._fetch_all()
+  File "/home/grupogua1/lib/python2.7/django/db/models/query.py", line 965, in _fetch_all
+    self._result_cache = list(self.iterator())
+  File "/home/grupogua1/lib/python2.7/django/db/models/query.py", line 238, in iterator
+    results = compiler.execute_sql()
+  File "/home/grupogua1/lib/python2.7/django/db/models/sql/compiler.py", line 840, in execute_sql
+    cursor.execute(sql, params)
+  File "/home/grupogua1/lib/python2.7/django/db/backends/utils.py", line 79, in execute
+    return super(CursorDebugWrapper, self).execute(sql, params)
+  File "/home/grupogua1/lib/python2.7/django/db/backends/utils.py", line 64, in execute
+    return self.cursor.execute(sql, params)
+  File "/home/grupogua1/lib/python2.7/django/db/utils.py", line 97, in __exit__
+    six.reraise(dj_exc_type, dj_exc_value, traceback)
+  File "/home/grupogua1/lib/python2.7/django/db/backends/utils.py", line 64, in execute
+    return self.cursor.execute(sql, params)
+  File "/home/grupogua1/lib/python2.7/django/db/backends/mysql/base.py", line 124, in execute
+    return self.cursor.execute(query, args)
+  File "/home/grupogua1/lib/python2.7/MySQLdb/cursors.py", line 226, in execute
+    self.errorhandler(self, exc, value)
+  File "/home/grupogua1/lib/python2.7/MySQLdb/connections.py", line 36, in defaulterrorhandler
+    raise errorvalue
+OperationalError: (1046, 'No database selected')
+[03/Jan/2019 16:38:30] ERROR [django.request:256] Internal Server Error: /favicon.ico
+Traceback (most recent call last):
+  File "/home/grupogua1/lib/python2.7/django/core/handlers/base.py", line 108, in get_response
+    response = middleware_method(request)
+  File "/home/grupogua1/lib/python2.7/django/middleware/common.py", line 74, in process_request
+    if (not urlresolvers.is_valid_path(request.path_info, urlconf) and
+  File "/home/grupogua1/lib/python2.7/django/core/urlresolvers.py", line 646, in is_valid_path
+    resolve(path, urlconf)
+  File "/home/grupogua1/lib/python2.7/django/core/urlresolvers.py", line 521, in resolve
+    return get_resolver(urlconf).resolve(path)
+  File "/home/grupogua1/lib/python2.7/django/core/urlresolvers.py", line 365, in resolve
+    for pattern in self.url_patterns:
+  File "/home/grupogua1/lib/python2.7/django/core/urlresolvers.py", line 401, in url_patterns
+    patterns = getattr(self.urlconf_module, "urlpatterns", self.urlconf_module)
+  File "/home/grupogua1/lib/python2.7/django/core/urlresolvers.py", line 395, in urlconf_module
+    self._urlconf_module = import_module(self.urlconf_name)
+  File "/usr/lib64/python2.7/importlib/__init__.py", line 37, in import_module
+    __import__(name)
+  File "/home/grupogua1/webapps/iron_demo/ggcontable/ggcontable/urls.py", line 6, in <module>
+    from usuarios.views import *
+  File "/home/grupogua1/webapps/iron_demo/ggcontable/usuarios/views.py", line 7, in <module>
+    from .forms import *
+  File "/home/grupogua1/webapps/iron_demo/ggcontable/usuarios/forms.py", line 11, in <module>
+    from general.forms import pto_vta_habilitados
+  File "/home/grupogua1/webapps/iron_demo/ggcontable/general/forms.py", line 68, in <module>
+    class ConsultaCpbs(forms.Form):
+  File "/home/grupogua1/webapps/iron_demo/ggcontable/general/forms.py", line 73, in ConsultaCpbs
+    pto_vta = forms.ChoiceField(label='Pto. Vta.',choices=[(pto.numero, pto.__unicode__()) for pto in cpb_pto_vta.objects.filter(baja=False)],required = False)
+  File "/home/grupogua1/lib/python2.7/django/db/models/query.py", line 162, in __iter__
+    self._fetch_all()
+  File "/home/grupogua1/lib/python2.7/django/db/models/query.py", line 965, in _fetch_all
+    self._result_cache = list(self.iterator())
+  File "/home/grupogua1/lib/python2.7/django/db/models/query.py", line 238, in iterator
+    results = compiler.execute_sql()
+  File "/home/grupogua1/lib/python2.7/django/db/models/sql/compiler.py", line 840, in execute_sql
+    cursor.execute(sql, params)
+  File "/home/grupogua1/lib/python2.7/django/db/backends/utils.py", line 79, in execute
+    return super(CursorDebugWrapper, self).execute(sql, params)
+  File "/home/grupogua1/lib/python2.7/django/db/backends/utils.py", line 64, in execute
+    return self.cursor.execute(sql, params)
+  File "/home/grupogua1/lib/python2.7/django/db/utils.py", line 97, in __exit__
+    six.reraise(dj_exc_type, dj_exc_value, traceback)
+  File "/home/grupogua1/lib/python2.7/django/db/backends/utils.py", line 64, in execute
+    return self.cursor.execute(sql, params)
+  File "/home/grupogua1/lib/python2.7/django/db/backends/mysql/base.py", line 124, in execute
+    return self.cursor.execute(query, args)
+  File "/home/grupogua1/lib/python2.7/MySQLdb/cursors.py", line 226, in execute
+    self.errorhandler(self, exc, value)
+  File "/home/grupogua1/lib/python2.7/MySQLdb/connections.py", line 36, in defaulterrorhandler
+    raise errorvalue
+OperationalError: (1046, 'No database selected')
+[03/Jan/2019 16:45:01] ERROR [django.request:256] Internal Server Error: /
+Traceback (most recent call last):
+  File "/home/grupogua1/lib/python2.7/django/core/handlers/base.py", line 132, in get_response
+    response = wrapped_callback(request, *callback_args, **callback_kwargs)
+  File "/home/grupogua1/lib/python2.7/django/views/generic/base.py", line 71, in view
+    return self.dispatch(request, *args, **kwargs)
+  File "/home/grupogua1/lib/python2.7/django/utils/decorators.py", line 34, in _wrapper
+    return bound_func(*args, **kwargs)
+  File "/home/grupogua1/lib/python2.7/django/contrib/auth/decorators.py", line 21, in _wrapped_view
+    if test_func(request.user):
+AttributeError: 'WSGIRequest' object has no attribute 'user'
+[03/Jan/2019 17:11:11] ERROR [django.request:256] Internal Server Error: /login/
+Traceback (most recent call last):
+  File "/home/grupogua1/lib/python2.7/django/core/handlers/base.py", line 132, in get_response
+    response = wrapped_callback(request, *callback_args, **callback_kwargs)
+  File "/home/grupogua1/webapps/iron_demo/ggcontable/ggcontable/views.py", line 28, in login
+    empresa = gral_empresa.objects.get(id=ENTIDAD_ID)
+  File "/home/grupogua1/lib/python2.7/django/db/models/manager.py", line 127, in manager_method
+    return getattr(self.get_queryset(), name)(*args, **kwargs)
+  File "/home/grupogua1/lib/python2.7/django/db/models/query.py", line 328, in get
+    num = len(clone)
+  File "/home/grupogua1/lib/python2.7/django/db/models/query.py", line 144, in __len__
+    self._fetch_all()
+  File "/home/grupogua1/lib/python2.7/django/db/models/query.py", line 965, in _fetch_all
+    self._result_cache = list(self.iterator())
+  File "/home/grupogua1/lib/python2.7/django/db/models/query.py", line 238, in iterator
+    results = compiler.execute_sql()
+  File "/home/grupogua1/lib/python2.7/django/db/models/sql/compiler.py", line 840, in execute_sql
+    cursor.execute(sql, params)
+  File "/home/grupogua1/lib/python2.7/django/db/backends/utils.py", line 79, in execute
+    return super(CursorDebugWrapper, self).execute(sql, params)
+  File "/home/grupogua1/lib/python2.7/django/db/backends/utils.py", line 64, in execute
+    return self.cursor.execute(sql, params)
+  File "/home/grupogua1/lib/python2.7/django/db/utils.py", line 97, in __exit__
+    six.reraise(dj_exc_type, dj_exc_value, traceback)
+  File "/home/grupogua1/lib/python2.7/django/db/backends/utils.py", line 64, in execute
+    return self.cursor.execute(sql, params)
+  File "/home/grupogua1/lib/python2.7/django/db/backends/mysql/base.py", line 124, in execute
+    return self.cursor.execute(query, args)
+  File "/home/grupogua1/lib/python2.7/MySQLdb/cursors.py", line 226, in execute
+    self.errorhandler(self, exc, value)
+  File "/home/grupogua1/lib/python2.7/MySQLdb/connections.py", line 36, in defaulterrorhandler
+    raise errorvalue
+OperationalError: (1054, "Unknown column 'gral_empresa.pprincipal_estadisticas' in 'field list'")
+[07/Jan/2019 20:08:59] ERROR [django.request:256] Internal Server Error: /comprobantes/imprimirFactura/1/
+Traceback (most recent call last):
+  File "/home/grupogua1/lib/python2.7/django/core/handlers/base.py", line 132, in get_response
+    response = wrapped_callback(request, *callback_args, **callback_kwargs)
+  File "/home/grupogua1/lib/python2.7/django/contrib/auth/decorators.py", line 22, in _wrapped_view
+    return view_func(request, *args, **kwargs)
+  File "/home/grupogua1/webapps/iron_demo/ggcontable/comprobantes/views.py", line 573, in imprimirFactura
+    cuit = config.cuit
+AttributeError: 'NoneType' object has no attribute 'cuit'
+[14/Jan/2019 17:13:38] ERROR [django.request:256] Internal Server Error: /entidades/clientes/cliente_editar/1587/
+Traceback (most recent call last):
+  File "/home/grupogua1/lib/python2.7/django/core/handlers/base.py", line 132, in get_response
+    response = wrapped_callback(request, *callback_args, **callback_kwargs)
+  File "/home/grupogua1/lib/python2.7/django/views/generic/base.py", line 71, in view
+    return self.dispatch(request, *args, **kwargs)
+  File "/home/grupogua1/lib/python2.7/django/utils/decorators.py", line 34, in _wrapper
+    return bound_func(*args, **kwargs)
+  File "/home/grupogua1/lib/python2.7/django/contrib/auth/decorators.py", line 22, in _wrapped_view
+    return view_func(request, *args, **kwargs)
+  File "/home/grupogua1/lib/python2.7/django/utils/decorators.py", line 30, in bound_func
+    return func.__get__(self, type(self))(*args2, **kwargs2)
+  File "/home/grupogua1/webapps/iron_demo/ggcontable/entidades/views.py", line 89, in dispatch
+    return super(ClientesEditView, self).dispatch(*args, **kwargs)
+  File "/home/grupogua1/lib/python2.7/django/views/generic/base.py", line 89, in dispatch
+    return handler(request, *args, **kwargs)
+  File "/home/grupogua1/lib/python2.7/django/views/generic/edit.py", line 272, in post
+    return super(BaseUpdateView, self).post(request, *args, **kwargs)
+  File "/home/grupogua1/lib/python2.7/django/views/generic/edit.py", line 214, in post
+    if form.is_valid():
+  File "/home/grupogua1/lib/python2.7/django/forms/forms.py", line 184, in is_valid
+    return self.is_bound and not self.errors
+  File "/home/grupogua1/lib/python2.7/django/forms/forms.py", line 176, in errors
+    self.full_clean()
+  File "/home/grupogua1/lib/python2.7/django/forms/forms.py", line 393, in full_clean
+    self._clean_form()
+  File "/home/grupogua1/lib/python2.7/django/forms/forms.py", line 417, in _clean_form
+    cleaned_data = self.clean()
+  File "/home/grupogua1/webapps/iron_demo/ggcontable/entidades/forms.py", line 76, in clean
+    print validar_cuit(fact_cuit)
+  File "/home/grupogua1/webapps/iron_demo/ggcontable/general/utilidades.py", line 506, in validar_cuit
+    if len(cuit) < 11:
+TypeError: object of type 'NoneType' has no len()
+[14/Jan/2019 17:44:27] ERROR [django.request:256] Internal Server Error: /entidades/clientes/cliente_editar/1364/
+Traceback (most recent call last):
+  File "/home/grupogua1/lib/python2.7/django/core/handlers/base.py", line 132, in get_response
+    response = wrapped_callback(request, *callback_args, **callback_kwargs)
+  File "/home/grupogua1/lib/python2.7/django/views/generic/base.py", line 71, in view
+    return self.dispatch(request, *args, **kwargs)
+  File "/home/grupogua1/lib/python2.7/django/utils/decorators.py", line 34, in _wrapper
+    return bound_func(*args, **kwargs)
+  File "/home/grupogua1/lib/python2.7/django/contrib/auth/decorators.py", line 22, in _wrapped_view
+    return view_func(request, *args, **kwargs)
+  File "/home/grupogua1/lib/python2.7/django/utils/decorators.py", line 30, in bound_func
+    return func.__get__(self, type(self))(*args2, **kwargs2)
+  File "/home/grupogua1/webapps/iron_demo/ggcontable/entidades/views.py", line 89, in dispatch
+    return super(ClientesEditView, self).dispatch(*args, **kwargs)
+  File "/home/grupogua1/lib/python2.7/django/views/generic/base.py", line 89, in dispatch
+    return handler(request, *args, **kwargs)
+  File "/home/grupogua1/lib/python2.7/django/views/generic/edit.py", line 272, in post
+    return super(BaseUpdateView, self).post(request, *args, **kwargs)
+  File "/home/grupogua1/lib/python2.7/django/views/generic/edit.py", line 214, in post
+    if form.is_valid():
+  File "/home/grupogua1/lib/python2.7/django/forms/forms.py", line 184, in is_valid
+    return self.is_bound and not self.errors
+  File "/home/grupogua1/lib/python2.7/django/forms/forms.py", line 176, in errors
+    self.full_clean()
+  File "/home/grupogua1/lib/python2.7/django/forms/forms.py", line 393, in full_clean
+    self._clean_form()
+  File "/home/grupogua1/lib/python2.7/django/forms/forms.py", line 417, in _clean_form
+    cleaned_data = self.clean()
+  File "/home/grupogua1/webapps/iron_demo/ggcontable/entidades/forms.py", line 76, in clean
+    print validar_cuit(fact_cuit)
+  File "/home/grupogua1/webapps/iron_demo/ggcontable/general/utilidades.py", line 506, in validar_cuit
+    if len(cuit) < 11:
+TypeError: object of type 'NoneType' has no len()
+[15/Jan/2019 15:58:28] ERROR [django.request:256] Internal Server Error: /entidades/clientes/cliente_editar/690/
+Traceback (most recent call last):
+  File "/home/grupogua1/lib/python2.7/django/core/handlers/base.py", line 132, in get_response
+    response = wrapped_callback(request, *callback_args, **callback_kwargs)
+  File "/home/grupogua1/lib/python2.7/django/views/generic/base.py", line 71, in view
+    return self.dispatch(request, *args, **kwargs)
+  File "/home/grupogua1/lib/python2.7/django/utils/decorators.py", line 34, in _wrapper
+    return bound_func(*args, **kwargs)
+  File "/home/grupogua1/lib/python2.7/django/contrib/auth/decorators.py", line 22, in _wrapped_view
+    return view_func(request, *args, **kwargs)
+  File "/home/grupogua1/lib/python2.7/django/utils/decorators.py", line 30, in bound_func
+    return func.__get__(self, type(self))(*args2, **kwargs2)
+  File "/home/grupogua1/webapps/iron_demo/ggcontable/entidades/views.py", line 89, in dispatch
+    return super(ClientesEditView, self).dispatch(*args, **kwargs)
+  File "/home/grupogua1/lib/python2.7/django/views/generic/base.py", line 89, in dispatch
+    return handler(request, *args, **kwargs)
+  File "/home/grupogua1/lib/python2.7/django/views/generic/edit.py", line 272, in post
+    return super(BaseUpdateView, self).post(request, *args, **kwargs)
+  File "/home/grupogua1/lib/python2.7/django/views/generic/edit.py", line 214, in post
+    if form.is_valid():
+  File "/home/grupogua1/lib/python2.7/django/forms/forms.py", line 184, in is_valid
+    return self.is_bound and not self.errors
+  File "/home/grupogua1/lib/python2.7/django/forms/forms.py", line 176, in errors
+    self.full_clean()
+  File "/home/grupogua1/lib/python2.7/django/forms/forms.py", line 393, in full_clean
+    self._clean_form()
+  File "/home/grupogua1/lib/python2.7/django/forms/forms.py", line 417, in _clean_form
+    cleaned_data = self.clean()
+  File "/home/grupogua1/webapps/iron_demo/ggcontable/entidades/forms.py", line 76, in clean
+    print validar_cuit(fact_cuit)
+  File "/home/grupogua1/webapps/iron_demo/ggcontable/general/utilidades.py", line 506, in validar_cuit
+    if len(cuit) < 11:
+TypeError: object of type 'NoneType' has no len()
+[15/Jan/2019 15:58:53] ERROR [django.request:256] Internal Server Error: /entidades/clientes/cliente_editar/690/
+Traceback (most recent call last):
+  File "/home/grupogua1/lib/python2.7/django/core/handlers/base.py", line 132, in get_response
+    response = wrapped_callback(request, *callback_args, **callback_kwargs)
+  File "/home/grupogua1/lib/python2.7/django/views/generic/base.py", line 71, in view
+    return self.dispatch(request, *args, **kwargs)
+  File "/home/grupogua1/lib/python2.7/django/utils/decorators.py", line 34, in _wrapper
+    return bound_func(*args, **kwargs)
+  File "/home/grupogua1/lib/python2.7/django/contrib/auth/decorators.py", line 22, in _wrapped_view
+    return view_func(request, *args, **kwargs)
+  File "/home/grupogua1/lib/python2.7/django/utils/decorators.py", line 30, in bound_func
+    return func.__get__(self, type(self))(*args2, **kwargs2)
+  File "/home/grupogua1/webapps/iron_demo/ggcontable/entidades/views.py", line 89, in dispatch
+    return super(ClientesEditView, self).dispatch(*args, **kwargs)
+  File "/home/grupogua1/lib/python2.7/django/views/generic/base.py", line 89, in dispatch
+    return handler(request, *args, **kwargs)
+  File "/home/grupogua1/lib/python2.7/django/views/generic/edit.py", line 272, in post
+    return super(BaseUpdateView, self).post(request, *args, **kwargs)
+  File "/home/grupogua1/lib/python2.7/django/views/generic/edit.py", line 214, in post
+    if form.is_valid():
+  File "/home/grupogua1/lib/python2.7/django/forms/forms.py", line 184, in is_valid
+    return self.is_bound and not self.errors
+  File "/home/grupogua1/lib/python2.7/django/forms/forms.py", line 176, in errors
+    self.full_clean()
+  File "/home/grupogua1/lib/python2.7/django/forms/forms.py", line 393, in full_clean
+    self._clean_form()
+  File "/home/grupogua1/lib/python2.7/django/forms/forms.py", line 417, in _clean_form
+    cleaned_data = self.clean()
+  File "/home/grupogua1/webapps/iron_demo/ggcontable/entidades/forms.py", line 76, in clean
+    print validar_cuit(fact_cuit)
+  File "/home/grupogua1/webapps/iron_demo/ggcontable/general/utilidades.py", line 506, in validar_cuit
+    if len(cuit) < 11:
+TypeError: object of type 'NoneType' has no len()
+[17/Jan/2019 20:16:24] ERROR [django.request:256] Internal Server Error: /entidades/proveedores/proveedor_nuevo/
+Traceback (most recent call last):
+  File "/home/grupogua1/lib/python2.7/django/core/handlers/base.py", line 132, in get_response
+    response = wrapped_callback(request, *callback_args, **callback_kwargs)
+  File "/home/grupogua1/lib/python2.7/django/views/generic/base.py", line 71, in view
+    return self.dispatch(request, *args, **kwargs)
+  File "/home/grupogua1/lib/python2.7/django/utils/decorators.py", line 34, in _wrapper
+    return bound_func(*args, **kwargs)
+  File "/home/grupogua1/lib/python2.7/django/contrib/auth/decorators.py", line 22, in _wrapped_view
+    return view_func(request, *args, **kwargs)
+  File "/home/grupogua1/lib/python2.7/django/utils/decorators.py", line 30, in bound_func
+    return func.__get__(self, type(self))(*args2, **kwargs2)
+  File "/home/grupogua1/webapps/iron_demo/ggcontable/entidades/views.py", line 152, in dispatch
+    return super(ProveedoresCreateView, self).dispatch(*args, **kwargs)
+  File "/home/grupogua1/lib/python2.7/django/views/generic/base.py", line 89, in dispatch
+    return handler(request, *args, **kwargs)
+  File "/home/grupogua1/lib/python2.7/django/views/generic/edit.py", line 249, in post
+    return super(BaseCreateView, self).post(request, *args, **kwargs)
+  File "/home/grupogua1/lib/python2.7/django/views/generic/edit.py", line 214, in post
+    if form.is_valid():
+  File "/home/grupogua1/lib/python2.7/django/forms/forms.py", line 184, in is_valid
+    return self.is_bound and not self.errors
+  File "/home/grupogua1/lib/python2.7/django/forms/forms.py", line 176, in errors
+    self.full_clean()
+  File "/home/grupogua1/lib/python2.7/django/forms/forms.py", line 393, in full_clean
+    self._clean_form()
+  File "/home/grupogua1/lib/python2.7/django/forms/forms.py", line 417, in _clean_form
+    cleaned_data = self.clean()
+  File "/home/grupogua1/webapps/iron_demo/ggcontable/entidades/forms.py", line 49, in clean
+    if (int(fact_categFiscal)==1)and(int(tipo_doc)==80)and(not validar_cuit(fact_cuit)):
+  File "/home/grupogua1/webapps/iron_demo/ggcontable/general/utilidades.py", line 506, in validar_cuit
+    if len(cuit) < 11:
+TypeError: object of type 'NoneType' has no len()
+[05/Feb/2019 17:56:09] ERROR [django.request:256] Internal Server Error: /ingresos/ventas/nuevo/
+Traceback (most recent call last):
+  File "/home/grupogua1/lib/python2.7/django/core/handlers/base.py", line 132, in get_response
+    response = wrapped_callback(request, *callback_args, **callback_kwargs)
+  File "/home/grupogua1/lib/python2.7/django/views/generic/base.py", line 71, in view
+    return self.dispatch(request, *args, **kwargs)
+  File "/home/grupogua1/lib/python2.7/django/utils/decorators.py", line 34, in _wrapper
+    return bound_func(*args, **kwargs)
+  File "/home/grupogua1/lib/python2.7/django/contrib/auth/decorators.py", line 22, in _wrapped_view
+    return view_func(request, *args, **kwargs)
+  File "/home/grupogua1/lib/python2.7/django/utils/decorators.py", line 30, in bound_func
+    return func.__get__(self, type(self))(*args2, **kwargs2)
+  File "/home/grupogua1/webapps/iron_demo/ggcontable/ingresos/views.py", line 115, in dispatch
+    return super(CPBVentaCreateView, self).dispatch(*args, **kwargs)
+  File "/home/grupogua1/lib/python2.7/django/views/generic/base.py", line 89, in dispatch
+    return handler(request, *args, **kwargs)
+  File "/home/grupogua1/webapps/iron_demo/ggcontable/ingresos/views.py", line 153, in post
+    if form.is_valid() and ventas_detalle.is_valid() and ventas_pi.is_valid() and (cpb_fp.is_valid()or(condic_pago==1)):
+  File "/home/grupogua1/lib/python2.7/django/forms/formsets.py", line 304, in is_valid
+    self.errors
+  File "/home/grupogua1/lib/python2.7/django/forms/formsets.py", line 278, in errors
+    self.full_clean()
+  File "/home/grupogua1/lib/python2.7/django/forms/formsets.py", line 327, in full_clean
+    self._errors.append(form.errors)
+  File "/home/grupogua1/lib/python2.7/django/forms/forms.py", line 176, in errors
+    self.full_clean()
+  File "/home/grupogua1/lib/python2.7/django/forms/forms.py", line 393, in full_clean
+    self._clean_form()
+  File "/home/grupogua1/lib/python2.7/django/forms/forms.py", line 417, in _clean_form
+    cleaned_data = self.clean()
+  File "/home/grupogua1/webapps/iron_demo/ggcontable/ingresos/forms.py", line 170, in clean
+    if cantidad and producto.llevar_stock:
+AttributeError: 'NoneType' object has no attribute 'llevar_stock'
+[05/Feb/2019 17:56:23] ERROR [django.request:256] Internal Server Error: /ingresos/ventas/nuevo/
+Traceback (most recent call last):
+  File "/home/grupogua1/lib/python2.7/django/core/handlers/base.py", line 132, in get_response
+    response = wrapped_callback(request, *callback_args, **callback_kwargs)
+  File "/home/grupogua1/lib/python2.7/django/views/generic/base.py", line 71, in view
+    return self.dispatch(request, *args, **kwargs)
+  File "/home/grupogua1/lib/python2.7/django/utils/decorators.py", line 34, in _wrapper
+    return bound_func(*args, **kwargs)
+  File "/home/grupogua1/lib/python2.7/django/contrib/auth/decorators.py", line 22, in _wrapped_view
+    return view_func(request, *args, **kwargs)
+  File "/home/grupogua1/lib/python2.7/django/utils/decorators.py", line 30, in bound_func
+    return func.__get__(self, type(self))(*args2, **kwargs2)
+  File "/home/grupogua1/webapps/iron_demo/ggcontable/ingresos/views.py", line 115, in dispatch
+    return super(CPBVentaCreateView, self).dispatch(*args, **kwargs)
+  File "/home/grupogua1/lib/python2.7/django/views/generic/base.py", line 89, in dispatch
+    return handler(request, *args, **kwargs)
+  File "/home/grupogua1/webapps/iron_demo/ggcontable/ingresos/views.py", line 153, in post
+    if form.is_valid() and ventas_detalle.is_valid() and ventas_pi.is_valid() and (cpb_fp.is_valid()or(condic_pago==1)):
+  File "/home/grupogua1/lib/python2.7/django/forms/formsets.py", line 304, in is_valid
+    self.errors
+  File "/home/grupogua1/lib/python2.7/django/forms/formsets.py", line 278, in errors
+    self.full_clean()
+  File "/home/grupogua1/lib/python2.7/django/forms/formsets.py", line 327, in full_clean
+    self._errors.append(form.errors)
+  File "/home/grupogua1/lib/python2.7/django/forms/forms.py", line 176, in errors
+    self.full_clean()
+  File "/home/grupogua1/lib/python2.7/django/forms/forms.py", line 393, in full_clean
+    self._clean_form()
+  File "/home/grupogua1/lib/python2.7/django/forms/forms.py", line 417, in _clean_form
+    cleaned_data = self.clean()
+  File "/home/grupogua1/webapps/iron_demo/ggcontable/ingresos/forms.py", line 170, in clean
+    if cantidad and producto.llevar_stock:
+AttributeError: 'NoneType' object has no attribute 'llevar_stock'
+[05/Feb/2019 17:56:42] ERROR [django.request:256] Internal Server Error: /ingresos/ventas/nuevo/
+Traceback (most recent call last):
+  File "/home/grupogua1/lib/python2.7/django/core/handlers/base.py", line 132, in get_response
+    response = wrapped_callback(request, *callback_args, **callback_kwargs)
+  File "/home/grupogua1/lib/python2.7/django/views/generic/base.py", line 71, in view
+    return self.dispatch(request, *args, **kwargs)
+  File "/home/grupogua1/lib/python2.7/django/utils/decorators.py", line 34, in _wrapper
+    return bound_func(*args, **kwargs)
+  File "/home/grupogua1/lib/python2.7/django/contrib/auth/decorators.py", line 22, in _wrapped_view
+    return view_func(request, *args, **kwargs)
+  File "/home/grupogua1/lib/python2.7/django/utils/decorators.py", line 30, in bound_func
+    return func.__get__(self, type(self))(*args2, **kwargs2)
+  File "/home/grupogua1/webapps/iron_demo/ggcontable/ingresos/views.py", line 115, in dispatch
+    return super(CPBVentaCreateView, self).dispatch(*args, **kwargs)
+  File "/home/grupogua1/lib/python2.7/django/views/generic/base.py", line 89, in dispatch
+    return handler(request, *args, **kwargs)
+  File "/home/grupogua1/webapps/iron_demo/ggcontable/ingresos/views.py", line 153, in post
+    if form.is_valid() and ventas_detalle.is_valid() and ventas_pi.is_valid() and (cpb_fp.is_valid()or(condic_pago==1)):
+  File "/home/grupogua1/lib/python2.7/django/forms/formsets.py", line 304, in is_valid
+    self.errors
+  File "/home/grupogua1/lib/python2.7/django/forms/formsets.py", line 278, in errors
+    self.full_clean()
+  File "/home/grupogua1/lib/python2.7/django/forms/formsets.py", line 327, in full_clean
+    self._errors.append(form.errors)
+  File "/home/grupogua1/lib/python2.7/django/forms/forms.py", line 176, in errors
+    self.full_clean()
+  File "/home/grupogua1/lib/python2.7/django/forms/forms.py", line 393, in full_clean
+    self._clean_form()
+  File "/home/grupogua1/lib/python2.7/django/forms/forms.py", line 417, in _clean_form
+    cleaned_data = self.clean()
+  File "/home/grupogua1/webapps/iron_demo/ggcontable/ingresos/forms.py", line 170, in clean
+    if cantidad and producto.llevar_stock:
+AttributeError: 'NoneType' object has no attribute 'llevar_stock'
+[05/Feb/2019 17:58:23] ERROR [django.request:256] Internal Server Error: /ingresos/ventas/nuevo/
+Traceback (most recent call last):
+  File "/home/grupogua1/lib/python2.7/django/core/handlers/base.py", line 132, in get_response
+    response = wrapped_callback(request, *callback_args, **callback_kwargs)
+  File "/home/grupogua1/lib/python2.7/django/views/generic/base.py", line 71, in view
+    return self.dispatch(request, *args, **kwargs)
+  File "/home/grupogua1/lib/python2.7/django/utils/decorators.py", line 34, in _wrapper
+    return bound_func(*args, **kwargs)
+  File "/home/grupogua1/lib/python2.7/django/contrib/auth/decorators.py", line 22, in _wrapped_view
+    return view_func(request, *args, **kwargs)
+  File "/home/grupogua1/lib/python2.7/django/utils/decorators.py", line 30, in bound_func
+    return func.__get__(self, type(self))(*args2, **kwargs2)
+  File "/home/grupogua1/webapps/iron_demo/ggcontable/ingresos/views.py", line 115, in dispatch
+    return super(CPBVentaCreateView, self).dispatch(*args, **kwargs)
+  File "/home/grupogua1/lib/python2.7/django/views/generic/base.py", line 89, in dispatch
+    return handler(request, *args, **kwargs)
+  File "/home/grupogua1/webapps/iron_demo/ggcontable/ingresos/views.py", line 153, in post
+    if form.is_valid() and ventas_detalle.is_valid() and ventas_pi.is_valid() and (cpb_fp.is_valid()or(condic_pago==1)):
+  File "/home/grupogua1/lib/python2.7/django/forms/forms.py", line 184, in is_valid
+    return self.is_bound and not self.errors
+  File "/home/grupogua1/lib/python2.7/django/forms/forms.py", line 176, in errors
+    self.full_clean()
+  File "/home/grupogua1/lib/python2.7/django/forms/forms.py", line 393, in full_clean
+    self._clean_form()
+  File "/home/grupogua1/lib/python2.7/django/forms/forms.py", line 417, in _clean_form
+    cleaned_data = self.clean()
+  File "/home/grupogua1/webapps/iron_demo/ggcontable/ingresos/forms.py", line 114, in clean
+    if (importe_total > 1000)and(cliente_categ_fiscal==5)and(entidad.fact_cuit=='')and(entidad.nro_doc==''):
+AttributeError: 'NoneType' object has no attribute 'fact_cuit'
+[05/Feb/2019 17:58:44] ERROR [django.request:256] Internal Server Error: /ingresos/ventas/nuevo/
+Traceback (most recent call last):
+  File "/home/grupogua1/lib/python2.7/django/core/handlers/base.py", line 132, in get_response
+    response = wrapped_callback(request, *callback_args, **callback_kwargs)
+  File "/home/grupogua1/lib/python2.7/django/views/generic/base.py", line 71, in view
+    return self.dispatch(request, *args, **kwargs)
+  File "/home/grupogua1/lib/python2.7/django/utils/decorators.py", line 34, in _wrapper
+    return bound_func(*args, **kwargs)
+  File "/home/grupogua1/lib/python2.7/django/contrib/auth/decorators.py", line 22, in _wrapped_view
+    return view_func(request, *args, **kwargs)
+  File "/home/grupogua1/lib/python2.7/django/utils/decorators.py", line 30, in bound_func
+    return func.__get__(self, type(self))(*args2, **kwargs2)
+  File "/home/grupogua1/webapps/iron_demo/ggcontable/ingresos/views.py", line 115, in dispatch
+    return super(CPBVentaCreateView, self).dispatch(*args, **kwargs)
+  File "/home/grupogua1/lib/python2.7/django/views/generic/base.py", line 89, in dispatch
+    return handler(request, *args, **kwargs)
+  File "/home/grupogua1/webapps/iron_demo/ggcontable/ingresos/views.py", line 153, in post
+    if form.is_valid() and ventas_detalle.is_valid() and ventas_pi.is_valid() and (cpb_fp.is_valid()or(condic_pago==1)):
+  File "/home/grupogua1/lib/python2.7/django/forms/forms.py", line 184, in is_valid
+    return self.is_bound and not self.errors
+  File "/home/grupogua1/lib/python2.7/django/forms/forms.py", line 176, in errors
+    self.full_clean()
+  File "/home/grupogua1/lib/python2.7/django/forms/forms.py", line 393, in full_clean
+    self._clean_form()
+  File "/home/grupogua1/lib/python2.7/django/forms/forms.py", line 417, in _clean_form
+    cleaned_data = self.clean()
+  File "/home/grupogua1/webapps/iron_demo/ggcontable/ingresos/forms.py", line 114, in clean
+    if (importe_total > 1000)and(cliente_categ_fiscal==5)and(entidad.fact_cuit=='')and(entidad.nro_doc==''):
+AttributeError: 'NoneType' object has no attribute 'fact_cuit'
+[05/Feb/2019 18:43:38] ERROR [django.request:256] Internal Server Error: /ingresos/ventas/nuevo/
+Traceback (most recent call last):
+  File "/home/grupogua1/lib/python2.7/django/core/handlers/base.py", line 132, in get_response
+    response = wrapped_callback(request, *callback_args, **callback_kwargs)
+  File "/home/grupogua1/lib/python2.7/django/views/generic/base.py", line 71, in view
+    return self.dispatch(request, *args, **kwargs)
+  File "/home/grupogua1/lib/python2.7/django/utils/decorators.py", line 34, in _wrapper
+    return bound_func(*args, **kwargs)
+  File "/home/grupogua1/lib/python2.7/django/contrib/auth/decorators.py", line 22, in _wrapped_view
+    return view_func(request, *args, **kwargs)
+  File "/home/grupogua1/lib/python2.7/django/utils/decorators.py", line 30, in bound_func
+    return func.__get__(self, type(self))(*args2, **kwargs2)
+  File "/home/grupogua1/webapps/iron_demo/ggcontable/ingresos/views.py", line 115, in dispatch
+    return super(CPBVentaCreateView, self).dispatch(*args, **kwargs)
+  File "/home/grupogua1/lib/python2.7/django/views/generic/base.py", line 89, in dispatch
+    return handler(request, *args, **kwargs)
+  File "/home/grupogua1/webapps/iron_demo/ggcontable/ingresos/views.py", line 153, in post
+    if form.is_valid() and ventas_detalle.is_valid() and ventas_pi.is_valid() and (cpb_fp.is_valid()or(condic_pago==1)):
+  File "/home/grupogua1/lib/python2.7/django/forms/formsets.py", line 304, in is_valid
+    self.errors
+  File "/home/grupogua1/lib/python2.7/django/forms/formsets.py", line 278, in errors
+    self.full_clean()
+  File "/home/grupogua1/lib/python2.7/django/forms/formsets.py", line 327, in full_clean
+    self._errors.append(form.errors)
+  File "/home/grupogua1/lib/python2.7/django/forms/forms.py", line 176, in errors
+    self.full_clean()
+  File "/home/grupogua1/lib/python2.7/django/forms/forms.py", line 393, in full_clean
+    self._clean_form()
+  File "/home/grupogua1/lib/python2.7/django/forms/forms.py", line 417, in _clean_form
+    cleaned_data = self.clean()
+  File "/home/grupogua1/webapps/iron_demo/ggcontable/ingresos/forms.py", line 170, in clean
+    if cantidad and producto.llevar_stock:
+AttributeError: 'NoneType' object has no attribute 'llevar_stock'
+[05/Feb/2019 18:43:56] ERROR [django.request:256] Internal Server Error: /ingresos/ventas/nuevo/
+Traceback (most recent call last):
+  File "/home/grupogua1/lib/python2.7/django/core/handlers/base.py", line 132, in get_response
+    response = wrapped_callback(request, *callback_args, **callback_kwargs)
+  File "/home/grupogua1/lib/python2.7/django/views/generic/base.py", line 71, in view
+    return self.dispatch(request, *args, **kwargs)
+  File "/home/grupogua1/lib/python2.7/django/utils/decorators.py", line 34, in _wrapper
+    return bound_func(*args, **kwargs)
+  File "/home/grupogua1/lib/python2.7/django/contrib/auth/decorators.py", line 22, in _wrapped_view
+    return view_func(request, *args, **kwargs)
+  File "/home/grupogua1/lib/python2.7/django/utils/decorators.py", line 30, in bound_func
+    return func.__get__(self, type(self))(*args2, **kwargs2)
+  File "/home/grupogua1/webapps/iron_demo/ggcontable/ingresos/views.py", line 115, in dispatch
+    return super(CPBVentaCreateView, self).dispatch(*args, **kwargs)
+  File "/home/grupogua1/lib/python2.7/django/views/generic/base.py", line 89, in dispatch
+    return handler(request, *args, **kwargs)
+  File "/home/grupogua1/webapps/iron_demo/ggcontable/ingresos/views.py", line 153, in post
+    if form.is_valid() and ventas_detalle.is_valid() and ventas_pi.is_valid() and (cpb_fp.is_valid()or(condic_pago==1)):
+  File "/home/grupogua1/lib/python2.7/django/forms/formsets.py", line 304, in is_valid
+    self.errors
+  File "/home/grupogua1/lib/python2.7/django/forms/formsets.py", line 278, in errors
+    self.full_clean()
+  File "/home/grupogua1/lib/python2.7/django/forms/formsets.py", line 327, in full_clean
+    self._errors.append(form.errors)
+  File "/home/grupogua1/lib/python2.7/django/forms/forms.py", line 176, in errors
+    self.full_clean()
+  File "/home/grupogua1/lib/python2.7/django/forms/forms.py", line 393, in full_clean
+    self._clean_form()
+  File "/home/grupogua1/lib/python2.7/django/forms/forms.py", line 417, in _clean_form
+    cleaned_data = self.clean()
+  File "/home/grupogua1/webapps/iron_demo/ggcontable/ingresos/forms.py", line 170, in clean
+    if cantidad and producto.llevar_stock:
+AttributeError: 'NoneType' object has no attribute 'llevar_stock'
+[05/Feb/2019 20:06:17] ERROR [django.request:256] Internal Server Error: /ingresos/ventas/nuevo/
+Traceback (most recent call last):
+  File "/home/grupogua1/lib/python2.7/django/core/handlers/base.py", line 164, in get_response
+    response = response.render()
+  File "/home/grupogua1/lib/python2.7/django/template/response.py", line 158, in render
+    self.content = self.rendered_content
+  File "/home/grupogua1/lib/python2.7/django/template/response.py", line 135, in rendered_content
+    content = template.render(context, self._request)
+  File "/home/grupogua1/lib/python2.7/django/template/backends/django.py", line 74, in render
+    return self.template.render(context)
+  File "/home/grupogua1/lib/python2.7/django/template/base.py", line 209, in render
+    return self._render(context)
+  File "/home/grupogua1/lib/python2.7/django/test/utils.py", line 96, in instrumented_test_render
+    return self.nodelist.render(context)
+  File "/home/grupogua1/lib/python2.7/django/template/base.py", line 903, in render
+    bit = self.render_node(node, context)
+  File "/home/grupogua1/lib/python2.7/django/template/debug.py", line 79, in render_node
+    return node.render(context)
+  File "/home/grupogua1/lib/python2.7/django/template/loader_tags.py", line 135, in render
+    return compiled_parent._render(context)
+  File "/home/grupogua1/lib/python2.7/django/test/utils.py", line 96, in instrumented_test_render
+    return self.nodelist.render(context)
+  File "/home/grupogua1/lib/python2.7/django/template/base.py", line 903, in render
+    bit = self.render_node(node, context)
+  File "/home/grupogua1/lib/python2.7/django/template/debug.py", line 79, in render_node
+    return node.render(context)
+  File "/home/grupogua1/lib/python2.7/django/template/loader_tags.py", line 135, in render
+    return compiled_parent._render(context)
+  File "/home/grupogua1/lib/python2.7/django/test/utils.py", line 96, in instrumented_test_render
+    return self.nodelist.render(context)
+  File "/home/grupogua1/lib/python2.7/django/template/base.py", line 903, in render
+    bit = self.render_node(node, context)
+  File "/home/grupogua1/lib/python2.7/django/template/debug.py", line 79, in render_node
+    return node.render(context)
+  File "/home/grupogua1/lib/python2.7/django/template/loader_tags.py", line 65, in render
+    result = block.nodelist.render(context)
+  File "/home/grupogua1/lib/python2.7/django/template/base.py", line 903, in render
+    bit = self.render_node(node, context)
+  File "/home/grupogua1/lib/python2.7/django/template/debug.py", line 79, in render_node
+    return node.render(context)
+  File "/home/grupogua1/lib/python2.7/django/template/loader_tags.py", line 65, in render
+    result = block.nodelist.render(context)
+  File "/home/grupogua1/lib/python2.7/django/template/base.py", line 903, in render
+    bit = self.render_node(node, context)
+  File "/home/grupogua1/lib/python2.7/django/template/debug.py", line 79, in render_node
+    return node.render(context)
+  File "/home/grupogua1/lib/python2.7/django/template/debug.py", line 89, in render
+    output = self.filter_expression.resolve(context)
+  File "/home/grupogua1/lib/python2.7/django/template/base.py", line 647, in resolve
+    obj = self.var.resolve(context)
+  File "/home/grupogua1/lib/python2.7/django/template/base.py", line 787, in resolve
+    value = self._resolve_lookup(context)
+  File "/home/grupogua1/lib/python2.7/django/template/base.py", line 847, in _resolve_lookup
+    current = current()
+  File "/home/grupogua1/lib/python2.7/django/forms/formsets.py", line 269, in non_form_errors
+    self.full_clean()
+  File "/home/grupogua1/lib/python2.7/django/forms/formsets.py", line 327, in full_clean
+    self._errors.append(form.errors)
+  File "/home/grupogua1/lib/python2.7/django/forms/forms.py", line 176, in errors
+    self.full_clean()
+  File "/home/grupogua1/lib/python2.7/django/forms/forms.py", line 393, in full_clean
+    self._clean_form()
+  File "/home/grupogua1/lib/python2.7/django/forms/forms.py", line 417, in _clean_form
+    cleaned_data = self.clean()
+  File "/home/grupogua1/webapps/iron_demo/ggcontable/ingresos/forms.py", line 170, in clean
+    if cantidad and producto.llevar_stock:
+AttributeError: 'NoneType' object has no attribute 'llevar_stock'
+[05/Feb/2019 20:06:44] ERROR [django.request:256] Internal Server Error: /ingresos/ventas/nuevo/
+Traceback (most recent call last):
+  File "/home/grupogua1/lib/python2.7/django/core/handlers/base.py", line 164, in get_response
+    response = response.render()
+  File "/home/grupogua1/lib/python2.7/django/template/response.py", line 158, in render
+    self.content = self.rendered_content
+  File "/home/grupogua1/lib/python2.7/django/template/response.py", line 135, in rendered_content
+    content = template.render(context, self._request)
+  File "/home/grupogua1/lib/python2.7/django/template/backends/django.py", line 74, in render
+    return self.template.render(context)
+  File "/home/grupogua1/lib/python2.7/django/template/base.py", line 209, in render
+    return self._render(context)
+  File "/home/grupogua1/lib/python2.7/django/test/utils.py", line 96, in instrumented_test_render
+    return self.nodelist.render(context)
+  File "/home/grupogua1/lib/python2.7/django/template/base.py", line 903, in render
+    bit = self.render_node(node, context)
+  File "/home/grupogua1/lib/python2.7/django/template/debug.py", line 79, in render_node
+    return node.render(context)
+  File "/home/grupogua1/lib/python2.7/django/template/loader_tags.py", line 135, in render
+    return compiled_parent._render(context)
+  File "/home/grupogua1/lib/python2.7/django/test/utils.py", line 96, in instrumented_test_render
+    return self.nodelist.render(context)
+  File "/home/grupogua1/lib/python2.7/django/template/base.py", line 903, in render
+    bit = self.render_node(node, context)
+  File "/home/grupogua1/lib/python2.7/django/template/debug.py", line 79, in render_node
+    return node.render(context)
+  File "/home/grupogua1/lib/python2.7/django/template/loader_tags.py", line 135, in render
+    return compiled_parent._render(context)
+  File "/home/grupogua1/lib/python2.7/django/test/utils.py", line 96, in instrumented_test_render
+    return self.nodelist.render(context)
+  File "/home/grupogua1/lib/python2.7/django/template/base.py", line 903, in render
+    bit = self.render_node(node, context)
+  File "/home/grupogua1/lib/python2.7/django/template/debug.py", line 79, in render_node
+    return node.render(context)
+  File "/home/grupogua1/lib/python2.7/django/template/loader_tags.py", line 65, in render
+    result = block.nodelist.render(context)
+  File "/home/grupogua1/lib/python2.7/django/template/base.py", line 903, in render
+    bit = self.render_node(node, context)
+  File "/home/grupogua1/lib/python2.7/django/template/debug.py", line 79, in render_node
+    return node.render(context)
+  File "/home/grupogua1/lib/python2.7/django/template/loader_tags.py", line 65, in render
+    result = block.nodelist.render(context)
+  File "/home/grupogua1/lib/python2.7/django/template/base.py", line 903, in render
+    bit = self.render_node(node, context)
+  File "/home/grupogua1/lib/python2.7/django/template/debug.py", line 79, in render_node
+    return node.render(context)
+  File "/home/grupogua1/lib/python2.7/django/template/debug.py", line 89, in render
+    output = self.filter_expression.resolve(context)
+  File "/home/grupogua1/lib/python2.7/django/template/base.py", line 647, in resolve
+    obj = self.var.resolve(context)
+  File "/home/grupogua1/lib/python2.7/django/template/base.py", line 787, in resolve
+    value = self._resolve_lookup(context)
+  File "/home/grupogua1/lib/python2.7/django/template/base.py", line 847, in _resolve_lookup
+    current = current()
+  File "/home/grupogua1/lib/python2.7/django/forms/formsets.py", line 269, in non_form_errors
+    self.full_clean()
+  File "/home/grupogua1/lib/python2.7/django/forms/formsets.py", line 327, in full_clean
+    self._errors.append(form.errors)
+  File "/home/grupogua1/lib/python2.7/django/forms/forms.py", line 176, in errors
+    self.full_clean()
+  File "/home/grupogua1/lib/python2.7/django/forms/forms.py", line 393, in full_clean
+    self._clean_form()
+  File "/home/grupogua1/lib/python2.7/django/forms/forms.py", line 417, in _clean_form
+    cleaned_data = self.clean()
+  File "/home/grupogua1/webapps/iron_demo/ggcontable/ingresos/forms.py", line 170, in clean
+    if cantidad and producto.llevar_stock:
+AttributeError: 'NoneType' object has no attribute 'llevar_stock'
+[05/Feb/2019 20:07:54] ERROR [django.request:256] Internal Server Error: /ingresos/ventas/nuevo/
+Traceback (most recent call last):
+  File "/home/grupogua1/lib/python2.7/django/core/handlers/base.py", line 164, in get_response
+    response = response.render()
+  File "/home/grupogua1/lib/python2.7/django/template/response.py", line 158, in render
+    self.content = self.rendered_content
+  File "/home/grupogua1/lib/python2.7/django/template/response.py", line 135, in rendered_content
+    content = template.render(context, self._request)
+  File "/home/grupogua1/lib/python2.7/django/template/backends/django.py", line 74, in render
+    return self.template.render(context)
+  File "/home/grupogua1/lib/python2.7/django/template/base.py", line 209, in render
+    return self._render(context)
+  File "/home/grupogua1/lib/python2.7/django/test/utils.py", line 96, in instrumented_test_render
+    return self.nodelist.render(context)
+  File "/home/grupogua1/lib/python2.7/django/template/base.py", line 903, in render
+    bit = self.render_node(node, context)
+  File "/home/grupogua1/lib/python2.7/django/template/debug.py", line 79, in render_node
+    return node.render(context)
+  File "/home/grupogua1/lib/python2.7/django/template/loader_tags.py", line 135, in render
+    return compiled_parent._render(context)
+  File "/home/grupogua1/lib/python2.7/django/test/utils.py", line 96, in instrumented_test_render
+    return self.nodelist.render(context)
+  File "/home/grupogua1/lib/python2.7/django/template/base.py", line 903, in render
+    bit = self.render_node(node, context)
+  File "/home/grupogua1/lib/python2.7/django/template/debug.py", line 79, in render_node
+    return node.render(context)
+  File "/home/grupogua1/lib/python2.7/django/template/loader_tags.py", line 135, in render
+    return compiled_parent._render(context)
+  File "/home/grupogua1/lib/python2.7/django/test/utils.py", line 96, in instrumented_test_render
+    return self.nodelist.render(context)
+  File "/home/grupogua1/lib/python2.7/django/template/base.py", line 903, in render
+    bit = self.render_node(node, context)
+  File "/home/grupogua1/lib/python2.7/django/template/debug.py", line 79, in render_node
+    return node.render(context)
+  File "/home/grupogua1/lib/python2.7/django/template/loader_tags.py", line 65, in render
+    result = block.nodelist.render(context)
+  File "/home/grupogua1/lib/python2.7/django/template/base.py", line 903, in render
+    bit = self.render_node(node, context)
+  File "/home/grupogua1/lib/python2.7/django/template/debug.py", line 79, in render_node
+    return node.render(context)
+  File "/home/grupogua1/lib/python2.7/django/template/loader_tags.py", line 65, in render
+    result = block.nodelist.render(context)
+  File "/home/grupogua1/lib/python2.7/django/template/base.py", line 903, in render
+    bit = self.render_node(node, context)
+  File "/home/grupogua1/lib/python2.7/django/template/debug.py", line 79, in render_node
+    return node.render(context)
+  File "/home/grupogua1/lib/python2.7/django/template/debug.py", line 89, in render
+    output = self.filter_expression.resolve(context)
+  File "/home/grupogua1/lib/python2.7/django/template/base.py", line 647, in resolve
+    obj = self.var.resolve(context)
+  File "/home/grupogua1/lib/python2.7/django/template/base.py", line 787, in resolve
+    value = self._resolve_lookup(context)
+  File "/home/grupogua1/lib/python2.7/django/template/base.py", line 847, in _resolve_lookup
+    current = current()
+  File "/home/grupogua1/lib/python2.7/django/forms/formsets.py", line 269, in non_form_errors
+    self.full_clean()
+  File "/home/grupogua1/lib/python2.7/django/forms/formsets.py", line 327, in full_clean
+    self._errors.append(form.errors)
+  File "/home/grupogua1/lib/python2.7/django/forms/forms.py", line 176, in errors
+    self.full_clean()
+  File "/home/grupogua1/lib/python2.7/django/forms/forms.py", line 393, in full_clean
+    self._clean_form()
+  File "/home/grupogua1/lib/python2.7/django/forms/forms.py", line 417, in _clean_form
+    cleaned_data = self.clean()
+  File "/home/grupogua1/webapps/iron_demo/ggcontable/ingresos/forms.py", line 170, in clean
+    if cantidad and producto.llevar_stock:
+AttributeError: 'NoneType' object has no attribute 'llevar_stock'
+[20/Feb/2019 19:21:31] ERROR [django.request:256] Internal Server Error: /empresa/empresa_editar/1/
+Traceback (most recent call last):
+  File "/home/grupogua1/lib/python2.7/django/core/handlers/base.py", line 164, in get_response
+    response = response.render()
+  File "/home/grupogua1/lib/python2.7/django/template/response.py", line 158, in render
+    self.content = self.rendered_content
+  File "/home/grupogua1/lib/python2.7/django/template/response.py", line 135, in rendered_content
+    content = template.render(context, self._request)
+  File "/home/grupogua1/lib/python2.7/django/template/backends/django.py", line 74, in render
+    return self.template.render(context)
+  File "/home/grupogua1/lib/python2.7/django/template/base.py", line 209, in render
+    return self._render(context)
+  File "/home/grupogua1/lib/python2.7/django/template/base.py", line 201, in _render
+    return self.nodelist.render(context)
+  File "/home/grupogua1/lib/python2.7/django/template/base.py", line 903, in render
+    bit = self.render_node(node, context)
+  File "/home/grupogua1/lib/python2.7/django/template/debug.py", line 79, in render_node
+    return node.render(context)
+  File "/home/grupogua1/lib/python2.7/django/template/loader_tags.py", line 135, in render
+    return compiled_parent._render(context)
+  File "/home/grupogua1/lib/python2.7/django/template/base.py", line 201, in _render
+    return self.nodelist.render(context)
+  File "/home/grupogua1/lib/python2.7/django/template/base.py", line 903, in render
+    bit = self.render_node(node, context)
+  File "/home/grupogua1/lib/python2.7/django/template/debug.py", line 79, in render_node
+    return node.render(context)
+  File "/home/grupogua1/lib/python2.7/django/template/loader_tags.py", line 135, in render
+    return compiled_parent._render(context)
+  File "/home/grupogua1/lib/python2.7/django/template/base.py", line 201, in _render
+    return self.nodelist.render(context)
+  File "/home/grupogua1/lib/python2.7/django/template/base.py", line 903, in render
+    bit = self.render_node(node, context)
+  File "/home/grupogua1/lib/python2.7/django/template/debug.py", line 79, in render_node
+    return node.render(context)
+  File "/home/grupogua1/lib/python2.7/django/template/loader_tags.py", line 65, in render
+    result = block.nodelist.render(context)
+  File "/home/grupogua1/lib/python2.7/django/template/base.py", line 903, in render
+    bit = self.render_node(node, context)
+  File "/home/grupogua1/lib/python2.7/django/template/debug.py", line 79, in render_node
+    return node.render(context)
+  File "/home/grupogua1/lib/python2.7/django/template/loader_tags.py", line 65, in render
+    result = block.nodelist.render(context)
+  File "/home/grupogua1/lib/python2.7/django/template/base.py", line 903, in render
+    bit = self.render_node(node, context)
+  File "/home/grupogua1/lib/python2.7/django/template/debug.py", line 79, in render_node
+    return node.render(context)
+  File "/home/grupogua1/lib/python2.7/django/template/base.py", line 1195, in render
+    return func(*resolved_args, **resolved_kwargs)
+  File "/home/grupogua1/lib/python2.7/bootstrap3/templatetags/bootstrap3.py", line 438, in bootstrap_field
+    return render_field(*args, **kwargs)
+  File "/home/grupogua1/lib/python2.7/bootstrap3/forms.py", line 62, in render_field
+    return renderer_cls(field, **kwargs).render()
+  File "/home/grupogua1/lib/python2.7/bootstrap3/renderers.py", line 73, in render
+    return mark_safe(self._render())
+  File "/home/grupogua1/lib/python2.7/bootstrap3/renderers.py", line 500, in _render
+    html = self.field.as_widget(attrs=self.widget.attrs)
+  File "/home/grupogua1/lib/python2.7/django/forms/forms.py", line 593, in as_widget
+    return force_text(widget.render(name, self.value(), attrs=attrs))
+  File "/home/grupogua1/lib/python2.7/django/forms/widgets.py", line 513, in render
+    options = self.render_options(choices, [value])
+  File "/home/grupogua1/lib/python2.7/django/forms/widgets.py", line 539, in render_options
+    for option_value, option_label in chain(self.choices, choices):
+  File "/home/grupogua1/lib/python2.7/django/forms/models.py", line 1103, in __iter__
+    for obj in self.queryset.iterator():
+  File "/home/grupogua1/lib/python2.7/django/db/models/query.py", line 238, in iterator
+    results = compiler.execute_sql()
+  File "/home/grupogua1/lib/python2.7/django/db/models/sql/compiler.py", line 840, in execute_sql
+    cursor.execute(sql, params)
+  File "/home/grupogua1/lib/python2.7/django/db/backends/utils.py", line 79, in execute
+    return super(CursorDebugWrapper, self).execute(sql, params)
+  File "/home/grupogua1/lib/python2.7/django/db/backends/utils.py", line 64, in execute
+    return self.cursor.execute(sql, params)
+  File "/home/grupogua1/lib/python2.7/django/db/utils.py", line 97, in __exit__
+    six.reraise(dj_exc_type, dj_exc_value, traceback)
+  File "/home/grupogua1/lib/python2.7/django/db/backends/utils.py", line 64, in execute
+    return self.cursor.execute(sql, params)
+  File "/home/grupogua1/lib/python2.7/django/db/backends/mysql/base.py", line 124, in execute
+    return self.cursor.execute(query, args)
+  File "/home/grupogua1/lib/python2.7/MySQLdb/cursors.py", line 226, in execute
+    self.errorhandler(self, exc, value)
+  File "/home/grupogua1/lib/python2.7/MySQLdb/connections.py", line 36, in defaulterrorhandler
+    raise errorvalue
+ProgrammingError: (1146, "Table 'ironweb_410.gral_afip_categorias' doesn't exist")
