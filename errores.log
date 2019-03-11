@@ -1115,3 +1115,305 @@ Traceback (most recent call last):
   File "D:\Repo\ironStable\reportes\forms.py", line 67, in __init__
     super(ConsultaSaldosProv, self).__init__(*args, **kwargs)
 TypeError: __init__() got an unexpected keyword argument 'request'
+[11/Mar/2019 11:55:12] ERROR [django.request:256] Internal Server Error: /entidades/clientes/cliente_nuevo/
+Traceback (most recent call last):
+  File "C:\Python27\lib\site-packages\django\core\handlers\base.py", line 132, in get_response
+    response = wrapped_callback(request, *callback_args, **callback_kwargs)
+  File "C:\Python27\lib\site-packages\django\views\generic\base.py", line 71, in view
+    return self.dispatch(request, *args, **kwargs)
+  File "C:\Python27\lib\site-packages\django\utils\decorators.py", line 34, in _wrapper
+    return bound_func(*args, **kwargs)
+  File "C:\Python27\lib\site-packages\django\contrib\auth\decorators.py", line 22, in _wrapped_view
+    return view_func(request, *args, **kwargs)
+  File "C:\Python27\lib\site-packages\django\utils\decorators.py", line 30, in bound_func
+    return func.__get__(self, type(self))(*args2, **kwargs2)
+  File "D:\GitHub\IronWeb\entidades\views.py", line 50, in dispatch
+    return super(ClientesCreateView, self).dispatch(*args, **kwargs)
+  File "C:\Python27\lib\site-packages\django\views\generic\base.py", line 89, in dispatch
+    return handler(request, *args, **kwargs)
+  File "C:\Python27\lib\site-packages\django\views\generic\edit.py", line 245, in get
+    return super(BaseCreateView, self).get(request, *args, **kwargs)
+  File "C:\Python27\lib\site-packages\django\views\generic\edit.py", line 205, in get
+    form = self.get_form()
+  File "C:\Python27\lib\site-packages\django\views\generic\edit.py", line 74, in get_form
+    return form_class(**self.get_form_kwargs())
+  File "D:\GitHub\IronWeb\entidades\forms.py", line 44, in __init__
+    empresa = empresa_actual(request)
+  File "D:\GitHub\IronWeb\general\utilidades.py", line 296, in empresa_actual
+    return request.user.userprofile.id_usuario.empresa
+AttributeError: 'NoneType' object has no attribute 'user'
+[11/Mar/2019 11:55:31] ERROR [django.request:256] Internal Server Error: /entidades/clientes/cliente_nuevo/
+Traceback (most recent call last):
+  File "C:\Python27\lib\site-packages\django\core\handlers\base.py", line 132, in get_response
+    response = wrapped_callback(request, *callback_args, **callback_kwargs)
+  File "C:\Python27\lib\site-packages\django\views\generic\base.py", line 71, in view
+    return self.dispatch(request, *args, **kwargs)
+  File "C:\Python27\lib\site-packages\django\utils\decorators.py", line 34, in _wrapper
+    return bound_func(*args, **kwargs)
+  File "C:\Python27\lib\site-packages\django\contrib\auth\decorators.py", line 22, in _wrapped_view
+    return view_func(request, *args, **kwargs)
+  File "C:\Python27\lib\site-packages\django\utils\decorators.py", line 30, in bound_func
+    return func.__get__(self, type(self))(*args2, **kwargs2)
+  File "D:\GitHub\IronWeb\entidades\views.py", line 50, in dispatch
+    return super(ClientesCreateView, self).dispatch(*args, **kwargs)
+  File "C:\Python27\lib\site-packages\django\views\generic\base.py", line 89, in dispatch
+    return handler(request, *args, **kwargs)
+  File "C:\Python27\lib\site-packages\django\views\generic\edit.py", line 245, in get
+    return super(BaseCreateView, self).get(request, *args, **kwargs)
+  File "C:\Python27\lib\site-packages\django\views\generic\edit.py", line 205, in get
+    form = self.get_form()
+  File "C:\Python27\lib\site-packages\django\views\generic\edit.py", line 74, in get_form
+    return form_class(**self.get_form_kwargs())
+  File "D:\GitHub\IronWeb\entidades\forms.py", line 44, in __init__
+    empresa = empresa_actual(request)
+  File "D:\GitHub\IronWeb\general\utilidades.py", line 296, in empresa_actual
+    return request.user.userprofile.id_usuario.empresa
+AttributeError: 'NoneType' object has no attribute 'user'
+[11/Mar/2019 12:30:12] ERROR [django.request:256] Internal Server Error: /entidades/clientes/
+Traceback (most recent call last):
+  File "C:\Python27\lib\site-packages\django\core\handlers\base.py", line 132, in get_response
+    response = wrapped_callback(request, *callback_args, **callback_kwargs)
+  File "C:\Python27\lib\site-packages\django\views\generic\base.py", line 71, in view
+    return self.dispatch(request, *args, **kwargs)
+  File "C:\Python27\lib\site-packages\django\utils\decorators.py", line 34, in _wrapper
+    return bound_func(*args, **kwargs)
+  File "C:\Python27\lib\site-packages\django\contrib\auth\decorators.py", line 22, in _wrapped_view
+    return view_func(request, *args, **kwargs)
+  File "C:\Python27\lib\site-packages\django\utils\decorators.py", line 30, in bound_func
+    return func.__get__(self, type(self))(*args2, **kwargs2)
+  File "D:\GitHub\IronWeb\entidades\views.py", line 36, in dispatch
+    return super(ClientesView, self).dispatch(*args, **kwargs)
+  File "C:\Python27\lib\site-packages\django\views\generic\base.py", line 89, in dispatch
+    return handler(request, *args, **kwargs)
+  File "C:\Python27\lib\site-packages\django\views\generic\list.py", line 159, in get
+    self.object_list = self.get_queryset()
+  File "D:\GitHub\IronWeb\entidades\views.py", line 40, in get_queryset
+    usuario = usuario_actual(request)
+NameError: global name 'request' is not defined
+[11/Mar/2019 12:48:05] ERROR [django.request:256] Internal Server Error: /entidades/clientes/cliente_nuevo/
+Traceback (most recent call last):
+  File "C:\Python27\lib\site-packages\django\core\handlers\base.py", line 132, in get_response
+    response = wrapped_callback(request, *callback_args, **callback_kwargs)
+  File "C:\Python27\lib\site-packages\django\views\generic\base.py", line 71, in view
+    return self.dispatch(request, *args, **kwargs)
+  File "C:\Python27\lib\site-packages\django\utils\decorators.py", line 34, in _wrapper
+    return bound_func(*args, **kwargs)
+  File "C:\Python27\lib\site-packages\django\contrib\auth\decorators.py", line 22, in _wrapped_view
+    return view_func(request, *args, **kwargs)
+  File "C:\Python27\lib\site-packages\django\utils\decorators.py", line 30, in bound_func
+    return func.__get__(self, type(self))(*args2, **kwargs2)
+  File "D:\GitHub\IronWeb\entidades\views.py", line 54, in dispatch
+    return super(ClientesCreateView, self).dispatch(*args, **kwargs)
+  File "C:\Python27\lib\site-packages\django\views\generic\base.py", line 89, in dispatch
+    return handler(request, *args, **kwargs)
+  File "C:\Python27\lib\site-packages\django\views\generic\edit.py", line 249, in post
+    return super(BaseCreateView, self).post(request, *args, **kwargs)
+  File "C:\Python27\lib\site-packages\django\views\generic\edit.py", line 215, in post
+    return self.form_valid(form)
+  File "D:\GitHub\IronWeb\entidades\views.py", line 69, in form_valid
+    return super(ClientesCreateView, self).form_valid(form)
+  File "D:\GitHub\IronWeb\fm\views.py", line 66, in form_valid
+    self.object.save()
+  File "D:\GitHub\IronWeb\entidades\models.py", line 140, in save
+    super(egr_entidad, self).save()
+  File "C:\Python27\lib\site-packages\django\db\models\base.py", line 710, in save
+    force_update=force_update, update_fields=update_fields)
+  File "C:\Python27\lib\site-packages\django\db\models\base.py", line 738, in save_base
+    updated = self._save_table(raw, cls, force_insert, force_update, using, update_fields)
+  File "C:\Python27\lib\site-packages\django\db\models\base.py", line 822, in _save_table
+    result = self._do_insert(cls._base_manager, using, fields, update_pk, raw)
+  File "C:\Python27\lib\site-packages\django\db\models\base.py", line 861, in _do_insert
+    using=using, raw=raw)
+  File "C:\Python27\lib\site-packages\django\db\models\manager.py", line 127, in manager_method
+    return getattr(self.get_queryset(), name)(*args, **kwargs)
+  File "C:\Python27\lib\site-packages\django\db\models\query.py", line 920, in _insert
+    return query.get_compiler(using=using).execute_sql(return_id)
+  File "C:\Python27\lib\site-packages\django\db\models\sql\compiler.py", line 962, in execute_sql
+    for sql, params in self.as_sql():
+  File "C:\Python27\lib\site-packages\django\db\models\sql\compiler.py", line 920, in as_sql
+    for obj in self.query.objs
+  File "C:\Python27\lib\site-packages\django\db\models\fields\related.py", line 1940, in get_db_prep_save
+    return self.related_field.get_db_prep_save(value, connection=connection)
+  File "C:\Python27\lib\site-packages\django\db\models\fields\__init__.py", line 710, in get_db_prep_save
+    prepared=False)
+  File "C:\Python27\lib\site-packages\django\db\models\fields\__init__.py", line 978, in get_db_prep_value
+    value = connection.ops.validate_autopk_value(value)
+  File "C:\Python27\lib\site-packages\django\db\backends\mysql\operations.py", line 134, in validate_autopk_value
+    raise ValueError('The database backend does not accept 0 as a '
+ValueError: The database backend does not accept 0 as a value for AutoField.
+[11/Mar/2019 12:49:37] ERROR [django.request:256] Internal Server Error: /entidades/clientes/cliente_nuevo/
+Traceback (most recent call last):
+  File "C:\Python27\lib\site-packages\django\core\handlers\base.py", line 132, in get_response
+    response = wrapped_callback(request, *callback_args, **callback_kwargs)
+  File "C:\Python27\lib\site-packages\django\views\generic\base.py", line 71, in view
+    return self.dispatch(request, *args, **kwargs)
+  File "C:\Python27\lib\site-packages\django\utils\decorators.py", line 34, in _wrapper
+    return bound_func(*args, **kwargs)
+  File "C:\Python27\lib\site-packages\django\contrib\auth\decorators.py", line 22, in _wrapped_view
+    return view_func(request, *args, **kwargs)
+  File "C:\Python27\lib\site-packages\django\utils\decorators.py", line 30, in bound_func
+    return func.__get__(self, type(self))(*args2, **kwargs2)
+  File "D:\GitHub\IronWeb\entidades\views.py", line 54, in dispatch
+    return super(ClientesCreateView, self).dispatch(*args, **kwargs)
+  File "C:\Python27\lib\site-packages\django\views\generic\base.py", line 89, in dispatch
+    return handler(request, *args, **kwargs)
+  File "C:\Python27\lib\site-packages\django\views\generic\edit.py", line 249, in post
+    return super(BaseCreateView, self).post(request, *args, **kwargs)
+  File "C:\Python27\lib\site-packages\django\views\generic\edit.py", line 215, in post
+    return self.form_valid(form)
+  File "D:\GitHub\IronWeb\entidades\views.py", line 69, in form_valid
+    return super(ClientesCreateView, self).form_valid(form)
+  File "D:\GitHub\IronWeb\fm\views.py", line 66, in form_valid
+    self.object.save()
+  File "D:\GitHub\IronWeb\entidades\models.py", line 140, in save
+    super(egr_entidad, self).save()
+  File "C:\Python27\lib\site-packages\django\db\models\base.py", line 710, in save
+    force_update=force_update, update_fields=update_fields)
+  File "C:\Python27\lib\site-packages\django\db\models\base.py", line 738, in save_base
+    updated = self._save_table(raw, cls, force_insert, force_update, using, update_fields)
+  File "C:\Python27\lib\site-packages\django\db\models\base.py", line 822, in _save_table
+    result = self._do_insert(cls._base_manager, using, fields, update_pk, raw)
+  File "C:\Python27\lib\site-packages\django\db\models\base.py", line 861, in _do_insert
+    using=using, raw=raw)
+  File "C:\Python27\lib\site-packages\django\db\models\manager.py", line 127, in manager_method
+    return getattr(self.get_queryset(), name)(*args, **kwargs)
+  File "C:\Python27\lib\site-packages\django\db\models\query.py", line 920, in _insert
+    return query.get_compiler(using=using).execute_sql(return_id)
+  File "C:\Python27\lib\site-packages\django\db\models\sql\compiler.py", line 962, in execute_sql
+    for sql, params in self.as_sql():
+  File "C:\Python27\lib\site-packages\django\db\models\sql\compiler.py", line 920, in as_sql
+    for obj in self.query.objs
+  File "C:\Python27\lib\site-packages\django\db\models\fields\related.py", line 1940, in get_db_prep_save
+    return self.related_field.get_db_prep_save(value, connection=connection)
+  File "C:\Python27\lib\site-packages\django\db\models\fields\__init__.py", line 710, in get_db_prep_save
+    prepared=False)
+  File "C:\Python27\lib\site-packages\django\db\models\fields\__init__.py", line 978, in get_db_prep_value
+    value = connection.ops.validate_autopk_value(value)
+  File "C:\Python27\lib\site-packages\django\db\backends\mysql\operations.py", line 134, in validate_autopk_value
+    raise ValueError('The database backend does not accept 0 as a '
+ValueError: The database backend does not accept 0 as a value for AutoField.
+[11/Mar/2019 12:57:08] ERROR [django.request:256] Internal Server Error: /entidades/clientes/cliente_nuevo/
+Traceback (most recent call last):
+  File "C:\Python27\lib\site-packages\django\core\handlers\base.py", line 132, in get_response
+    response = wrapped_callback(request, *callback_args, **callback_kwargs)
+  File "C:\Python27\lib\site-packages\django\views\generic\base.py", line 71, in view
+    return self.dispatch(request, *args, **kwargs)
+  File "C:\Python27\lib\site-packages\django\utils\decorators.py", line 34, in _wrapper
+    return bound_func(*args, **kwargs)
+  File "C:\Python27\lib\site-packages\django\contrib\auth\decorators.py", line 22, in _wrapped_view
+    return view_func(request, *args, **kwargs)
+  File "C:\Python27\lib\site-packages\django\utils\decorators.py", line 30, in bound_func
+    return func.__get__(self, type(self))(*args2, **kwargs2)
+  File "D:\GitHub\IronWeb\entidades\views.py", line 54, in dispatch
+    return super(ClientesCreateView, self).dispatch(*args, **kwargs)
+  File "C:\Python27\lib\site-packages\django\views\generic\base.py", line 89, in dispatch
+    return handler(request, *args, **kwargs)
+  File "C:\Python27\lib\site-packages\django\views\generic\edit.py", line 245, in get
+    return super(BaseCreateView, self).get(request, *args, **kwargs)
+  File "C:\Python27\lib\site-packages\django\views\generic\edit.py", line 205, in get
+    form = self.get_form()
+  File "C:\Python27\lib\site-packages\django\views\generic\edit.py", line 74, in get_form
+    return form_class(**self.get_form_kwargs())
+  File "D:\GitHub\IronWeb\entidades\forms.py", line 44, in __init__
+    self.fields['empresa'].queryset = empresa
+UnboundLocalError: local variable 'empresa' referenced before assignment
+[11/Mar/2019 12:58:30] ERROR [django.request:256] Internal Server Error: /entidades/clientes/cliente_nuevo/
+Traceback (most recent call last):
+  File "C:\Python27\lib\site-packages\django\core\handlers\base.py", line 132, in get_response
+    response = wrapped_callback(request, *callback_args, **callback_kwargs)
+  File "C:\Python27\lib\site-packages\django\views\generic\base.py", line 71, in view
+    return self.dispatch(request, *args, **kwargs)
+  File "C:\Python27\lib\site-packages\django\utils\decorators.py", line 34, in _wrapper
+    return bound_func(*args, **kwargs)
+  File "C:\Python27\lib\site-packages\django\contrib\auth\decorators.py", line 22, in _wrapped_view
+    return view_func(request, *args, **kwargs)
+  File "C:\Python27\lib\site-packages\django\utils\decorators.py", line 30, in bound_func
+    return func.__get__(self, type(self))(*args2, **kwargs2)
+  File "D:\GitHub\IronWeb\entidades\views.py", line 54, in dispatch
+    return super(ClientesCreateView, self).dispatch(*args, **kwargs)
+  File "C:\Python27\lib\site-packages\django\views\generic\base.py", line 89, in dispatch
+    return handler(request, *args, **kwargs)
+  File "C:\Python27\lib\site-packages\django\views\generic\edit.py", line 245, in get
+    return super(BaseCreateView, self).get(request, *args, **kwargs)
+  File "C:\Python27\lib\site-packages\django\views\generic\edit.py", line 205, in get
+    form = self.get_form()
+  File "C:\Python27\lib\site-packages\django\views\generic\edit.py", line 74, in get_form
+    return form_class(**self.get_form_kwargs())
+  File "D:\GitHub\IronWeb\entidades\forms.py", line 44, in __init__
+    self.fields['empresa'].queryset = empresa
+UnboundLocalError: local variable 'empresa' referenced before assignment
+[11/Mar/2019 12:59:28] ERROR [django.request:256] Internal Server Error: /entidades/clientes/cliente_nuevo/
+Traceback (most recent call last):
+  File "C:\Python27\lib\site-packages\django\core\handlers\base.py", line 132, in get_response
+    response = wrapped_callback(request, *callback_args, **callback_kwargs)
+  File "C:\Python27\lib\site-packages\django\views\generic\base.py", line 71, in view
+    return self.dispatch(request, *args, **kwargs)
+  File "C:\Python27\lib\site-packages\django\utils\decorators.py", line 34, in _wrapper
+    return bound_func(*args, **kwargs)
+  File "C:\Python27\lib\site-packages\django\contrib\auth\decorators.py", line 22, in _wrapped_view
+    return view_func(request, *args, **kwargs)
+  File "C:\Python27\lib\site-packages\django\utils\decorators.py", line 30, in bound_func
+    return func.__get__(self, type(self))(*args2, **kwargs2)
+  File "D:\GitHub\IronWeb\entidades\views.py", line 54, in dispatch
+    return super(ClientesCreateView, self).dispatch(*args, **kwargs)
+  File "C:\Python27\lib\site-packages\django\views\generic\base.py", line 89, in dispatch
+    return handler(request, *args, **kwargs)
+  File "C:\Python27\lib\site-packages\django\views\generic\edit.py", line 245, in get
+    return super(BaseCreateView, self).get(request, *args, **kwargs)
+  File "C:\Python27\lib\site-packages\django\views\generic\edit.py", line 205, in get
+    form = self.get_form()
+  File "C:\Python27\lib\site-packages\django\views\generic\edit.py", line 74, in get_form
+    return form_class(**self.get_form_kwargs())
+  File "D:\GitHub\IronWeb\entidades\forms.py", line 44, in __init__
+    self.fields['empresa'].queryset = empresa
+UnboundLocalError: local variable 'empresa' referenced before assignment
+[11/Mar/2019 13:37:00] ERROR [django.request:256] Internal Server Error: /entidades/clientes/cliente_editar/331/
+Traceback (most recent call last):
+  File "C:\Python27\lib\site-packages\django\core\handlers\base.py", line 132, in get_response
+    response = wrapped_callback(request, *callback_args, **callback_kwargs)
+  File "C:\Python27\lib\site-packages\django\views\generic\base.py", line 71, in view
+    return self.dispatch(request, *args, **kwargs)
+  File "C:\Python27\lib\site-packages\django\utils\decorators.py", line 34, in _wrapper
+    return bound_func(*args, **kwargs)
+  File "C:\Python27\lib\site-packages\django\contrib\auth\decorators.py", line 22, in _wrapped_view
+    return view_func(request, *args, **kwargs)
+  File "C:\Python27\lib\site-packages\django\utils\decorators.py", line 30, in bound_func
+    return func.__get__(self, type(self))(*args2, **kwargs2)
+  File "D:\GitHub\IronWeb\entidades\views.py", line 97, in dispatch
+    return super(ClientesEditView, self).dispatch(*args, **kwargs)
+  File "C:\Python27\lib\site-packages\django\views\generic\base.py", line 89, in dispatch
+    return handler(request, *args, **kwargs)
+  File "C:\Python27\lib\site-packages\django\views\generic\edit.py", line 268, in get
+    return super(BaseUpdateView, self).get(request, *args, **kwargs)
+  File "C:\Python27\lib\site-packages\django\views\generic\edit.py", line 205, in get
+    form = self.get_form()
+  File "C:\Python27\lib\site-packages\django\views\generic\edit.py", line 74, in get_form
+    return form_class(**self.get_form_kwargs())
+  File "D:\GitHub\IronWeb\entidades\forms.py", line 91, in __init__
+    super(EntidadesForm, self).__init__(*args, **kwargs)
+TypeError: super(type, obj): obj must be an instance or subtype of type
+[11/Mar/2019 13:37:20] ERROR [django.request:256] Internal Server Error: /entidades/clientes/cliente_editar/331/
+Traceback (most recent call last):
+  File "C:\Python27\lib\site-packages\django\core\handlers\base.py", line 132, in get_response
+    response = wrapped_callback(request, *callback_args, **callback_kwargs)
+  File "C:\Python27\lib\site-packages\django\views\generic\base.py", line 71, in view
+    return self.dispatch(request, *args, **kwargs)
+  File "C:\Python27\lib\site-packages\django\utils\decorators.py", line 34, in _wrapper
+    return bound_func(*args, **kwargs)
+  File "C:\Python27\lib\site-packages\django\contrib\auth\decorators.py", line 22, in _wrapped_view
+    return view_func(request, *args, **kwargs)
+  File "C:\Python27\lib\site-packages\django\utils\decorators.py", line 30, in bound_func
+    return func.__get__(self, type(self))(*args2, **kwargs2)
+  File "D:\GitHub\IronWeb\entidades\views.py", line 97, in dispatch
+    return super(ClientesEditView, self).dispatch(*args, **kwargs)
+  File "C:\Python27\lib\site-packages\django\views\generic\base.py", line 89, in dispatch
+    return handler(request, *args, **kwargs)
+  File "C:\Python27\lib\site-packages\django\views\generic\edit.py", line 268, in get
+    return super(BaseUpdateView, self).get(request, *args, **kwargs)
+  File "C:\Python27\lib\site-packages\django\views\generic\edit.py", line 205, in get
+    form = self.get_form()
+  File "C:\Python27\lib\site-packages\django\views\generic\edit.py", line 74, in get_form
+    return form_class(**self.get_form_kwargs())
+  File "D:\GitHub\IronWeb\entidades\forms.py", line 91, in __init__
+    super(EntidadesForm, self).__init__(*args, **kwargs)
+TypeError: super(type, obj): obj must be an instance or subtype of type

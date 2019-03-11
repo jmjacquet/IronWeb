@@ -27,6 +27,9 @@ TIPO_USR = (
     (3, u'Contador'),
 )
 
+def habilitado_contador(tipo_usr):
+    return tipo_usr in [0,3]
+    
 TIPO_CTA = (
     (0, u'Padre'),
     (1, u'Ingreso'),
@@ -292,8 +295,13 @@ def usuario_actual(request):
 def empresa_actual(request):    
     return request.user.userprofile.id_usuario.empresa
 
-#Incluye la empresa del usuario + la empresa 0 universal
+#Incluye la empresa del usuario + la empresa 1 universal
 def empresas_habilitadas(request):    
+    e = empresa_actual(request)
+    lista = [e.id,1]   
+    return lista
+
+def empresas_habilitadas_list(request):    
     e = empresa_actual(request)
     lista = [e.id,1]   
     return lista

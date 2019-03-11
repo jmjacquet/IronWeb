@@ -29,8 +29,12 @@
                       {% if 'cpb_ventas' in permisos_grupo %}
                       <li>                         
                         <a class="left" href="{% url 'cpb_venta_listado' %}"><i class="icon-note"></i>Comprobantes de Venta</a>
+                        {% if 'cpb_ventas_abm' in permisos_grupo %}
                         <a class="acceso_menu" href="{% url 'cpb_venta_nuevo' %}">+</a>
+                        {% endif %}
                       </li>
+                      {% endif %}
+                      {% if 'cpb_ventas_abm' in permisos_grupo %}
                       <li>                         
                         <a class="left" href="{% url 'cpb_liqprod_nuevo' %}"><i class="icon-note"></i>Nuevo CPB Liq.Prod.</a>                        
                       </li>
@@ -64,7 +68,9 @@
                       {% if 'cpb_compras' in permisos_grupo %}
                       <li>
                         <a href="{% url 'cpb_compra_listado' %}"><i class="icon-note"></i>Comprobantes de Compra</a>
+                        {% if 'cpb_compras_abm' in permisos_grupo %}
                         <a class="acceso_menu" href="{% url 'cpb_compra_nuevo' %}">+</a>
+                        {% endif %}
                       </li>
                       {% endif %}
                       {% if 'cpb_pagos' in permisos_grupo %}

@@ -333,7 +333,6 @@ class saldos_proveedores(VariablesMixin,ListView):
     def post(self, *args, **kwargs):
         return self.get(*args, **kwargs)
              
-
 ################################################################
 
 import StringIO
@@ -546,7 +545,6 @@ def libro_iva_ventas(request):
     context['cpbs'] = cpbs
     context['fecha'] = fecha          
     return render(request,'reportes/contables/libro_iva_ventas.html',context )
-
 
 @login_required                    
 def libro_iva_compras(request):
@@ -987,9 +985,7 @@ class ProdHistoricoView(VariablesMixin,ListView):
     def post(self, *args, **kwargs):
         return self.get(*args, **kwargs)         
 
-
 ################################################################
-
 
 class RankingsView(VariablesMixin,TemplateView):
     template_name = 'reportes/varios/rankings.html'
@@ -1101,11 +1097,7 @@ class RankingsView(VariablesMixin,TemplateView):
 
 
 
-
-
-
 from django.http import JsonResponse
-
 
 def ValuesQuerySetToDict(vqs):
     return [item for item in vqs]

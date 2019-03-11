@@ -61,8 +61,6 @@ class ConsultaCtaCteProv(forms.Form):
 			self.fields['estado'].initial = 0
 
 
-
-
 class ConsultaSaldosProv(forms.Form):               
     entidad = chosenforms.ChosenModelChoiceField(label='Proveedor',queryset=egr_entidad.objects.filter(tipo_entidad=2,baja=False),empty_label=label_todos,required = False) 
     def __init__(self, *args, **kwargs):
@@ -71,7 +69,6 @@ class ConsultaSaldosProv(forms.Form):
 		super(ConsultaSaldosProv, self).__init__(*args, **kwargs)
 		self.fields['entidad'].queryset = egr_entidad.objects.filter(tipo_entidad=2,baja=False,empresa__id__in=empresas_habilitadas(request)).order_by('apellido_y_nombre')
 		
-
 
 #############################################################################	
 

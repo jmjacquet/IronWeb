@@ -36,7 +36,11 @@ class ClientesView(VariablesMixin,ListView):
         return super(ClientesView, self).dispatch(*args, **kwargs)
 
     def get_queryset(self):        
-        return egr_entidad.objects.filter(tipo_entidad=1,empresa=empresa_actual(self.request))
+        entidades = egr_entidad.objects.filter(tipo_entidad=1,empresa=empresa_actual(self.request))
+        usuario = usuario_actual(self.request)
+        if habilitado_contador(usuario.tipoUsr):
+            entidades = egr_entidad.objects.filter(tipo_entidad=1,empresa__id__in=empresas_habilitadas(self.request))
+        return entidades
 
 
 class ClientesCreateView(VariablesMixin,AjaxCreateView):
@@ -49,9 +53,8 @@ class ClientesCreateView(VariablesMixin,AjaxCreateView):
             return redirect(reverse('principal'))
         return super(ClientesCreateView, self).dispatch(*args, **kwargs)
         
-
     def form_valid(self, form):                
-        form.instance.empresa = empresa_actual(self.request)
+        #form.instance.empresa = empresa_actual(self.request)
         form.instance.usuario = usuario_actual(self.request)
         if form.instance.fact_razon_social =='':
             form.instance.fact_razon_social = form.instance.apellido_y_nombre
@@ -67,15 +70,19 @@ class ClientesCreateView(VariablesMixin,AjaxCreateView):
     def get_initial(self):    
         initial = super(ClientesCreateView, self).get_initial()                
         initial['codigo'] = '{0:0{width}}'.format((ultimoNroId(egr_entidad)+1),width=4)
-        initial['request'] = self.request
         initial['tipo_entidad'] = 1
-
+        initial['empresa'] = empresa_actual(self.request)
+        initial['request'] = self.request
         return initial   
 
+    def get_form_kwargs(self):
+        kwargs = super(ClientesCreateView, self).get_form_kwargs()
+        kwargs['request'] = self.request
+        return kwargs  
+
     def form_invalid(self, form):         
+        print form
         return super(ClientesCreateView, self).form_invalid(form)
-
-
 
 class ClientesEditView(VariablesMixin,AjaxUpdateView):
     form_class = EntidadesEditForm
@@ -96,6 +103,10 @@ class ClientesEditView(VariablesMixin,AjaxUpdateView):
     def form_invalid(self, form):
         return super(ClientesEditView, self).form_invalid(form)
 
+    def get_form_kwargs(self):
+        kwargs = super(ClientesEditView, self).get_form_kwargs()
+        kwargs['request'] = self.request
+        return kwargs  
 
     def get_initial(self):    
         initial = super(ClientesEditView, self).get_initial()                      
@@ -132,15 +143,17 @@ class ProveedoresView(VariablesMixin,ListView):
     context_object_name = 'proveedores'    
 
     def get_queryset(self):        
-        return egr_entidad.objects.filter(tipo_entidad=2,empresa=empresa_actual(self.request))
+        entidades = egr_entidad.objects.filter(tipo_entidad=2,empresa=empresa_actual(self.request))
+        usuario = usuario_actual(self.request)
+        if habilitado_contador(usuario.tipoUsr):
+            entidades = egr_entidad.objects.filter(tipo_entidad=2,empresa__id__in=empresas_habilitadas(self.request))
+        return entidades
 
     @method_decorator(login_required)
     def dispatch(self, *args, **kwargs): 
         if not tiene_permiso(self.request,'ent_proveedores'):
             return redirect(reverse('principal'))
         return super(ProveedoresView, self).dispatch(*args, **kwargs)
-
-
 
 class ProveedoresCreateView(VariablesMixin,AjaxCreateView):
     form_class = EntidadesForm
@@ -162,12 +175,17 @@ class ProveedoresCreateView(VariablesMixin,AjaxCreateView):
         initial = super(ProveedoresCreateView, self).get_initial()               
         initial['codigo'] = '{0:0{width}}'.format((ultimoNroId(egr_entidad)+1),width=4)
         initial['tipo_entidad'] = 2
-        return initial    
+        initial['empresa'] = empresa_actual(self.request)
+        initial['request'] = self.request
+        return initial   
+
+    def get_form_kwargs(self):
+        kwargs = super(ProveedoresCreateView, self).get_form_kwargs()
+        kwargs['request'] = self.request
+        return kwargs  
 
     def form_invalid(self, form):         
         return super(ProveedoresCreateView, self).form_invalid(form)
-
-
 
 class ProveedoresEditView(VariablesMixin,AjaxUpdateView):
     form_class = EntidadesEditForm
@@ -188,10 +206,10 @@ class ProveedoresEditView(VariablesMixin,AjaxUpdateView):
     def form_invalid(self, form):         
         return super(ProveedoresEditView, self).form_invalid(form)
 
-
-    def get_initial(self):    
-        initial = super(ProveedoresEditView, self).get_initial()                      
-        return initial    
+    def get_form_kwargs(self):
+        kwargs = super(ProveedoresEditView, self).get_form_kwargs()
+        kwargs['request'] = self.request
+        return kwargs  
 
 class ProveedoresDeleteView(VariablesMixin,AjaxDeleteView):
     model = egr_entidad
@@ -203,7 +221,6 @@ class ProveedoresDeleteView(VariablesMixin,AjaxDeleteView):
             return redirect(reverse('principal'))
         messages.success(self.request, u'Los datos se eliminaron con éxito!')
         return super(ProveedoresDeleteView, self).dispatch(*args, **kwargs)
-
 
 class ProveedoresVerView(VariablesMixin,DetailView):
     model = egr_entidad
@@ -220,19 +237,20 @@ class ProveedoresVerView(VariablesMixin,DetailView):
 class VendedoresView(VariablesMixin,ListView):
     model = egr_entidad
     template_name = 'entidades/lista_vendedores.html'
-    context_object_name = 'vendedores'
+    context_object_name = 'vendedores'    
 
     def get_queryset(self):        
-        return egr_entidad.objects.filter(tipo_entidad=3,empresa=empresa_actual(self.request))
+        entidades = egr_entidad.objects.filter(tipo_entidad=3,empresa=empresa_actual(self.request))
+        usuario = usuario_actual(self.request)
+        if habilitado_contador(usuario.tipoUsr):
+            entidades = egr_entidad.objects.filter(tipo_entidad=3,empresa__id__in=empresas_habilitadas(self.request))
+        return entidades
 
     @method_decorator(login_required)
     def dispatch(self, *args, **kwargs): 
         if not tiene_permiso(self.request,'ent_vendedores'):
             return redirect(reverse('principal'))
         return super(VendedoresView, self).dispatch(*args, **kwargs)
-
-
-
 
 class VendedoresCreateView(VariablesMixin,AjaxCreateView):
     form_class = VendedoresForm
@@ -245,17 +263,23 @@ class VendedoresCreateView(VariablesMixin,AjaxCreateView):
         return super(VendedoresCreateView, self).dispatch(*args, **kwargs)
 
     def form_valid(self, form):                
-        form.instance.empresa = empresa_actual(self.request)
+        #form.instance.empresa = empresa_actual(self.request)
         form.instance.usuario = usuario_actual(self.request)
         messages.success(self.request, u'Los datos se guardaron con éxito!')
         return super(VendedoresCreateView, self).form_valid(form)
+
+    def get_form_kwargs(self):
+        kwargs = super(VendedoresCreateView, self).get_form_kwargs()
+        kwargs['request'] = self.request
+        return kwargs  
 
     def get_initial(self):    
         initial = super(VendedoresCreateView, self).get_initial()               
         initial['codigo'] = '{0:0{width}}'.format((ultimoNroId(egr_entidad)+1),width=4)
         initial['tipo_entidad'] = 3
+        initial['empresa'] = empresa_actual(self.request)
+        initial['request'] = self.request        
         return initial    
-
 
 class VendedoresEditView(VariablesMixin,AjaxUpdateView):
     form_class = VendedoresForm
@@ -278,6 +302,11 @@ class VendedoresEditView(VariablesMixin,AjaxUpdateView):
         initial = super(VendedoresEditView, self).get_initial()                      
         return initial    
 
+    def get_form_kwargs(self):
+        kwargs = super(VendedoresEditView, self).get_form_kwargs()
+        kwargs['request'] = self.request
+        return kwargs
+
 class VendedoresDeleteView(VariablesMixin,AjaxDeleteView):
     model = egr_entidad
     pk_url_kwarg = 'id'       
@@ -288,7 +317,6 @@ class VendedoresDeleteView(VariablesMixin,AjaxDeleteView):
             return redirect(reverse('principal'))
         messages.success(self.request, u'Los datos se eliminaron con éxito!')
         return super(VendedoresDeleteView, self).dispatch(*args, **kwargs)
-
 
 class VendedoresVerView(VariablesMixin,DetailView):
     model = egr_entidad

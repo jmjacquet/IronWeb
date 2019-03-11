@@ -14,6 +14,8 @@ from crispy_forms.helper import FormHelper
 from crispy_forms.layout import Layout, Submit, Div,Button,HTML
 from .models import *
 from general.utilidades import *
+from general.models import gral_empresa
+from general.forms import empresas_buscador
 from general.flavor import ARCUITField,ARDNIField,ARPostalCodeField
 				
 
@@ -26,10 +28,24 @@ class EntidadesForm(forms.ModelForm):
 	tipo_doc = forms.ChoiceField(label=u'Tipo Documento',required = True,choices=TIPO_DOC)
 	cod_postal = ARPostalCodeField(label='CP',required = False)		
 	tipo_entidad = forms.IntegerField(widget = forms.HiddenInput(), required = False)
-
+	empresa = forms.ModelChoiceField(queryset=gral_empresa.objects.all(),empty_label=None)
 	class Meta:
 			model = egr_entidad
-			exclude = ['id','fecha_creacion','fecha_modif','usuario','empresa']
+			exclude = ['id','fecha_creacion','fecha_modif','usuario']
+
+	def __init__(self, *args, **kwargs):
+		request = kwargs.pop('request', None)
+		super(EntidadesForm, self).__init__(*args, **kwargs)
+		
+		try:
+			empresas = empresas_buscador(request)			
+			self.fields['empresa'].queryset = empresas
+			self.fields['empresa'].initial = 1
+		except:
+			empresas = empresa_actual(request)  
+			self.fields['empresa'].queryset = empresas
+		
+			
 
 	def clean(self):		
 		fact_cuit = self.cleaned_data.get('fact_cuit')
@@ -64,10 +80,23 @@ class EntidadesEditForm(forms.ModelForm):
 	cod_postal = ARPostalCodeField(label='CP',required = False)		
 	tipo_entidad = forms.IntegerField(widget = forms.HiddenInput(), required = False)	
 	tipo_doc = forms.ChoiceField(label=u'Tipo Documento',required = True,choices=TIPO_DOC,initial=80)
+	empresa = forms.ModelChoiceField(queryset=gral_empresa.objects.all(),empty_label=None)
 
 	class Meta:
 			model = egr_entidad
-			exclude = ['id','fecha_creacion','fecha_modif','usuario','empresa']
+			exclude = ['id','fecha_creacion','fecha_modif','usuario']
+
+	def __init__(self, *args, **kwargs):
+		request = kwargs.pop('request', None)
+		super(EntidadesEditForm, self).__init__(*args, **kwargs)
+		
+		try:
+			empresas = empresas_buscador(request)			
+			self.fields['empresa'].queryset = empresas			
+		except:
+			empresas = empresa_actual(request)  
+			self.fields['empresa'].queryset = empresas
+
 
 	def clean(self):				
 		fact_categFiscal = self.cleaned_data.get('fact_categFiscal')
@@ -86,18 +115,25 @@ class EntidadesEditForm(forms.ModelForm):
 
 		return self.cleaned_data
 
-	
-
-
 class VendedoresForm(forms.ModelForm):
 	observaciones = forms.CharField(label='Observaciones / Datos adicionales',widget=forms.Textarea(attrs={'class':'form-control2', 'rows': 5}),required = False)	
 	fact_nro_doc = ARDNIField(label=u'Número',required = False)	
 	cod_postal = ARPostalCodeField(label='CP',required = False)		
 	tipo_entidad = forms.IntegerField(widget = forms.HiddenInput(), required = False)
-	
-
+	empresa = forms.ModelChoiceField(queryset=gral_empresa.objects.all(),empty_label=None)
 	class Meta:
 			model = egr_entidad
-			exclude = ['id','fecha_creacion','fecha_modif','usuario','empresa']
+			exclude = ['id','fecha_creacion','fecha_modif','usuario']
+
+	def __init__(self, *args, **kwargs):
+		request = kwargs.pop('request', None)
+		super(VendedoresForm, self).__init__(*args, **kwargs)
+		
+		try:
+			empresas = empresas_buscador(request)
+			self.fields['empresa'].queryset = empresa
+			self.fields['empresa'].initial = 1
+		except:
+			empresa = empresa_actual(request)  
 	
 

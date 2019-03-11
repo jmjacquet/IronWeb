@@ -20,6 +20,11 @@ from productos.models import prod_productos,prod_producto_lprecios,prod_lista_pr
 from comprobantes.models import cpb_comprobante,cpb_pto_vta
 from entidades.models import egr_entidad
 
+
+def empresas_buscador(request):        
+    empresas = gral_empresa.objects.filter(id__in=empresas_habilitadas(request)).order_by('id')        
+    return empresas
+
 def pto_vta_habilitados(request):    
     empresa = empresa_actual(request)  
     usuario = usuario_actual(request) 
@@ -43,7 +48,7 @@ def pto_vta_buscador(request):
     empresa = empresa_actual(request)  
     usuario = usuario_actual(request) 
     pv = cpb_pto_vta.objects.filter(baja=False).order_by('numero')
-
+    pvs = []
     if empresa:
     	pv = pv.filter(empresa=empresa)        
     try:

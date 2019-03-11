@@ -77,10 +77,14 @@ def getVariablesMixin(request):
     except gral_empresa.DoesNotExist:
         empresa = None                  
     context['empresa'] = empresa
+    
     try:
-        context['tipo_usr'] = usr.userprofile.id_usuario.tipoUsr
+        tipo_usr = usr.userprofile.id_usuario.tipoUsr
+        context['tipo_usr'] = tipo_usr
+        context['habilitado_contador'] = habilitado_contador(tipo_usr)
     except:
         context['tipo_usr'] = 1
+        context['habilitado_contador'] = False
 
     permisos_grupo = ver_permisos(request)
     context['permisos_grupo'] = permisos_grupo        
@@ -122,9 +126,12 @@ class VariablesMixin(object):
         context['settings'] = settings 
         
         try:
-            context['tipo_usr'] = usr.userprofile.id_usuario.tipoUsr
+            tipo_usr = usr.userprofile.id_usuario.tipoUsr
+            context['tipo_usr'] = tipo_usr
+            context['habilitado_contador'] = habilitado_contador(tipo_usr)
         except:
             context['tipo_usr'] = 1
+            context['habilitado_contador'] = False
 
         permisos_grupo = ver_permisos(self.request)
         context['permisos_grupo'] = permisos_grupo     
