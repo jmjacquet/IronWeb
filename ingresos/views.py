@@ -1820,6 +1820,7 @@ class CPBLiqProdCreateView(VariablesMixin,CreateView):
         self.object.usuario = usuario_actual(self.request)
         if not self.object.fecha_vto:
             self.object.fecha_vto=self.object.fecha_cpb
+        self.object.fecha_imputacion=self.object.fecha_cpb
         self.object.condic_pago = 1
         self.object.save()
         liqprod_detalle.instance = self.object

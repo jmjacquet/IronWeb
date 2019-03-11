@@ -511,7 +511,7 @@ def libro_iva_ventas(request):
         fact_x = form.cleaned_data['fact_x']  
         cae = form.cleaned_data['cae']  
         total = 0                    
-        cpbs = cpb_comprobante.objects.filter(cpb_tipo__libro_iva=True,cpb_tipo__compra_venta='V',empresa=empresa,fecha_imputacion__gte=fdesde,fecha_imputacion__lte=fhasta)\
+        cpbs = cpb_comprobante.objects.filter(cpb_tipo__compra_venta='V',pto_vta__in=pto_vta_habilitados_list(request),cpb_tipo__tipo__in=[1,2,3,9,14],empresa=empresa,fecha_imputacion__gte=fdesde,fecha_imputacion__lte=fhasta)\
             .select_related('cpb_tipo','entidad')\
             .order_by('-fecha_imputacion','-id','entidad__codigo','entidad__apellido_y_nombre','cpb_tipo__tipo')
         
@@ -521,16 +521,19 @@ def libro_iva_ventas(request):
             cpbs=cpbs.filter(estado__in=[3])
         else:                
             cpbs=cpbs.filter(estado__in=[1,2,3])
+        
+
         if entidad:
                cpbs= cpbs.filter(entidad=entidad)
         if pto_vta:
-               cpbs= cpbs.filter(pto_vta=pto_vta)
-        
+               cpbs= cpbs.filter(pto_vta=pto_vta)        
+
         if int(cae)!=0:
             no_tiene = (cae=='2')                
             cpbs= cpbs.filter(cae_vto__isnull=no_tiene)
+        
         if int(fact_x)==1:
-            cpbs= cpbs.filter(cpb_tipo__facturable=True)
+            cpbs= cpbs.filter(cpb_tipo__libro_iva=True)
                
         if ('cpbs' in request.POST)and(cpbs):                
             response = HttpResponse(generarCITI(cpbs,'V','cpbs'),content_type='text/plain')
@@ -567,7 +570,7 @@ def libro_iva_compras(request):
         estado = form.cleaned_data['estado'] 
         pto_vta = form.cleaned_data['pto_vta'] 
                 
-        cpbs = cpb_comprobante.objects.filter(cpb_tipo__libro_iva=True,cpb_tipo__compra_venta='C',empresa=empresa,fecha_imputacion__gte=fdesde,fecha_imputacion__lte=fhasta)\
+        cpbs = cpb_comprobante.objects.filter(cpb_tipo__libro_iva=True,pto_vta__in=pto_vta_habilitados_list(request),cpb_tipo__tipo__in=[1,2,3,9],cpb_tipo__compra_venta='C',empresa=empresa,fecha_imputacion__gte=fdesde,fecha_imputacion__lte=fhasta)\
             .select_related('cpb_tipo','entidad')\
             .order_by('-fecha_imputacion','-id','entidad__codigo','entidad__apellido_y_nombre','cpb_tipo__tipo')
         

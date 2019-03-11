@@ -55,7 +55,7 @@
                                 <td title="{{cpb.pk|safe}}" class="text-center">{{ cpb.fecha_imputacion|date:'d/m/Y' }}</td>
                                 <td title="{{ cpb.cpb_tipo}}">{{ cpb.cpb_tipo.codigo|default_if_none:'' }}</td>
                                 <td >{{ cpb.get_cpb}}</td>                                
-                                <td  title="{{ cpb.entidad}}" >{% include "entidades/proveedor_ver.html" %}</td>
+                                <td  title="{{ cpb.entidad}}" ><strong>{{ cpb.entidad|truncatechars:60 }}</strong></td>
                                 <td class="importe">${{cpb.get_importe_gravado|default_if_none:0|floatformat:2}}</td>
                                 <td class="importe">${{cpb.get_importe_iva|default_if_none:0|floatformat:2}}</td>
                                 <td class="importe">${{cpb.get_importe_perc_imp|default_if_none:0|floatformat:2}}</td>

@@ -315,11 +315,11 @@ def verifUnificacion(request):
     cant = 0
     data= {}
     if cpbs: 
-        comprobantes = cpb_comprobante.objects.filter(id__in=cpbs,cae=None,estado__id__lte=1)                                       
+        comprobantes = cpb_comprobante.objects.filter(id__in=cpbs,cae=None,estado__id__lte=2,cpb_tipo__tipo__in=[1,2,3,9])                                       
         cant_cpbs = len(set(list(comprobantes.values_list('id',flat=True))))        
         cant_entidades = len(set(list(comprobantes.values_list('entidad',flat=True))))
         cant_cpb_tipo = len(set(list(comprobantes.values_list('cpb_tipo',flat=True))))                    
-        data = {'cant_cpbs':int(cant_cpbs),'cant_entidades':int(cant_entidades),'cant_cpb_tipo':int(cant_cpb_tipo)}
+        data = {'cant_cpbs':int(cant_cpbs),'cant_entidades':int(cant_entidades),'cant_cpb_tipo':int(cant_cpb_tipo)}        
     return HttpResponse(json.dumps(data,cls=DjangoJSONEncoder), content_type = "application/json")
     
 @login_required 
@@ -1745,7 +1745,7 @@ def CobrarDepositarChequesView(request):
                 detalle = detalle+' '+str(c.mdcp_cheque)
 
             movimiento = cpb_comprobante(cpb_tipo=tipo,estado=estado,pto_vta=pto_vta,letra=letra,numero=numero,fecha_cpb=fecha_cpb,importe_total=total_cheques,
-                     usuario=usuario_actual(request),empresa = empresa_actual(request))            
+                     usuario=usuario_actual(request),empresa = empresa_actual(request),fecha_imputacion=fecha_cpb)            
             movimiento.save()
             
             tipo_fp=cpb_tipo_forma_pago.objects.get(pk=1)

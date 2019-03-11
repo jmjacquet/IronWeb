@@ -24,9 +24,7 @@ class cpb_estado(models.Model):
         db_table = 'cpb_estado'
 
     def __unicode__(self):
-        return u'%s' % (self.nombre) 
-
-    
+        return u'%s' % (self.nombre)   
 
 class cpb_tipo(models.Model):
     id = models.AutoField(primary_key=True,db_index=True)
@@ -65,7 +63,6 @@ class cpb_nro_afip(models.Model):
     
     def __unicode__(self):
         return u'%s - %s --> %s' % (self.cpb_tipo,self.letra,self.numero_afip)  
-
 
 class cpb_pto_vta(models.Model):
     id = models.IntegerField(u'Número',primary_key=True,db_index=True)
@@ -314,9 +311,7 @@ class cpb_comprobante(models.Model):
             return self.importe_perc_imp * signo
         else:
             return self.importe_perc_imp
-
-   
-      
+    
 class cpb_comprobante_detalle(models.Model):
     id = models.AutoField(primary_key=True,db_index=True)
     cpb_comprobante = models.ForeignKey('cpb_comprobante',verbose_name=u'CPB', db_column='cpb_comprobante',blank=True, null=True,on_delete=models.CASCADE)
@@ -399,8 +394,6 @@ class cpb_cobranza(models.Model):
     
     def __unicode__(self):
         return u'%s-%s-$ %s' % (self.cpb_comprobante,self.cpb_factura,self.importe_total)
-
-
 
 class cpb_banco(models.Model):
     id = models.AutoField(primary_key=True,db_index=True)
@@ -637,7 +630,7 @@ def actualizar_stock(request,producto,ubicacion,id_tipo_cpb,cantidad):
     # pv=cpb_pto_vta.objects.get(pk=-1)
     pv=0
     recibo = cpb_comprobante(cpb_tipo=tipo_cpb,estado=estado,pto_vta=pv,letra="X",numero='{0:0{width}}'.format((ultimoNro(id_tipo_cpb,pv,"X")+1),width=8)
-        ,fecha_cpb=hoy(),importe_iva=None,importe_total=None,usuario=usuario_actual(request),fecha_vto=hoy(),empresa = empresa_actual(request))
+        ,fecha_cpb=hoy(),fecha_imputacion=hoy(),importe_iva=None,importe_total=None,usuario=usuario_actual(request),fecha_vto=hoy(),empresa = empresa_actual(request))
     recibo.save()
 
     detalle = cpb_comprobante_detalle(cpb_comprobante=recibo,producto=producto,cantidad=cantidad,tasa_iva=producto.tasa_iva,coef_iva=producto.tasa_iva.coeficiente,
@@ -650,7 +643,7 @@ def actualizar_stock_multiple(request,prods,id_tipo_cpb,cantidad):
     # pv=cpb_pto_vta.objects.get(pk=-1)
     pv=0
     recibo = cpb_comprobante(cpb_tipo=tipo_cpb,estado=estado,pto_vta=pv,letra="X",numero='{0:0{width}}'.format((ultimoNro(id_tipo_cpb,pv,"X")+1),width=8)
-        ,fecha_cpb=hoy(),importe_iva=None,importe_total=None,usuario=usuario_actual(request),fecha_vto=hoy(),empresa = empresa_actual(request))
+        ,fecha_cpb=hoy(),fecha_imputacion=hoy(),importe_iva=None,importe_total=None,usuario=usuario_actual(request),fecha_vto=hoy(),empresa = empresa_actual(request))
     recibo.save()
 
     for p in prods:
