@@ -80,8 +80,7 @@ class ClientesCreateView(VariablesMixin,AjaxCreateView):
         kwargs['request'] = self.request
         return kwargs  
 
-    def form_invalid(self, form):         
-        print form
+    def form_invalid(self, form):                 
         return super(ClientesCreateView, self).form_invalid(form)
 
 class ClientesEditView(VariablesMixin,AjaxUpdateView):

@@ -38,7 +38,7 @@ def eliminar_detalles_fp_huerfanos(request):
     ids = [int(x) for x in ids]
     
     detalles = cpb_comprobante_detalle.objects.filter(cpb_comprobante__empresa=empresa).exclude(cpb_comprobante__id__in=ids).values_list('cpb_comprobante',flat=True)
-    print detalles 
+
     # for c in detalles
     #     recalcular_saldo_cpb(c.id)
 
@@ -388,8 +388,7 @@ def cpb_facturar(request,id,nro):
     except:
         cpb=None
     #cpb.estado=cpb_estado.objects.get(id=4)
-    if cpb:        
-        print nro
+    if cpb:                
         if nro == None:
             nro = random.randrange(0, 99999999999999, 14) 
         nro = "{num:>014}".format(num=str(nro))

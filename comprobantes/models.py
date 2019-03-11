@@ -573,8 +573,7 @@ def recalcular_saldo_cpb(idCpb):# pragma: no cover
 
         #Las cobranzas/pagos activos del Comprobante de Venta/Compra
         cobranzas = cpb_cobranza.objects.filter(cpb_factura=cpb,cpb_comprobante__estado__pk__lt=3).aggregate(sum=Sum('importe_total'))
-        if settings.DEBUG:
-            print cobranzas        
+           
         importes = cobranzas['sum']    
 
         if not importes:
