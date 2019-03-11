@@ -60,9 +60,7 @@ class CPBCompraViewList(VariablesMixin,ListView):
             if int(estado) == 1:                
                 comprobantes = cpb_comprobante.objects.filter(cpb_tipo__tipo__in=[1,2,3,9],estado__in=[1,2,3],cpb_tipo__compra_venta='C',empresa=empresa).order_by('-fecha_cpb','-id','-fecha_creacion').select_related('estado','cpb_tipo','entidad','vendedor')
             elif int(estado) == 2:
-                comprobantes = cpb_comprobante.objects.filter(cpb_tipo__tipo__in=[1,2,3,9],estado__in=[3],cpb_tipo__compra_venta='C',empresa=empresa).order_by('-fecha_cpb','-id','-fecha_creacion').select_related('estado','cpb_tipo','entidad','vendedor')
-            print estado    
-
+                comprobantes = cpb_comprobante.objects.filter(cpb_tipo__tipo__in=[1,2,3,9],estado__in=[3],cpb_tipo__compra_venta='C',empresa=empresa).order_by('-fecha_cpb','-id','-fecha_creacion').select_related('estado','cpb_tipo','entidad','vendedor')            
             if fdesde:
                 comprobantes= comprobantes.filter(fecha_cpb__gte=fdesde)
             if fhasta:
@@ -740,8 +738,7 @@ class CPBPagarCreateView(VariablesMixin,CreateView):
         for fp in cpb_fp:
             if fp.cleaned_data['origen']:
                 origen = fp.cleaned_data['origen']
-                c = cpb_comprobante_fp.objects.get(id=origen)
-                print fp.instance
+                c = cpb_comprobante_fp.objects.get(id=origen)                
                 c.mdcp_salida = fp.instance
                 c.save()
         # estado=cpb_estado.objects.get(pk=2)

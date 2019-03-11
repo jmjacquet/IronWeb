@@ -476,7 +476,6 @@ class cpb_comprobante_fp(models.Model):
             fecha = u' | Vencimiento: %s' % (datetime.strftime(self.mdcp_fecha,"%d/%m/%Y"))    
         except:
             fecha=''        
-        print self.mdcp_banco
         try:            
             banco = ' | '+ str(self.mdcp_banco)
         except:
