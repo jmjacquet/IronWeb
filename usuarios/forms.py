@@ -18,7 +18,7 @@ class CHKMultiplePermisos(forms.CheckboxSelectMultiple):
 
      def render(self, name, value, attrs=None, choices=()):
          if value is None: value = []
-         print attrs
+         
          has_id = attrs and 'id' in attrs        
          usuario = self.usuario
          if usuario:

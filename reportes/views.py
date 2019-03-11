@@ -515,7 +515,7 @@ def libro_iva_ventas(request):
         cpbs = cpb_comprobante.objects.filter(cpb_tipo__libro_iva=True,cpb_tipo__compra_venta='V',empresa=empresa,fecha_imputacion__gte=fdesde,fecha_imputacion__lte=fhasta)\
             .select_related('cpb_tipo','entidad')\
             .order_by('-fecha_imputacion','-id','entidad__codigo','entidad__apellido_y_nombre','cpb_tipo__tipo')
-        print cpbs.query
+        
         if int(estado) == 0:                
             cpbs=cpbs.filter(estado__in=[1,2])                
         elif int(estado) == 2:                
