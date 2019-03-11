@@ -10,7 +10,7 @@
 {% endblock %}
 {% block extra_js %}        
     <script src="{% static 'js/jquery.formset.js' %}" type="text/javascript"></script>
-    <script src="{% static 'js/scripts/scripts_cpb_liq_prod.js'%}?{% now "Ymd"%}" type="text/javascript"></script>
+    <script src="{% static 'js/scripts/scripts_cpb_liqprod.js'%}?{% now "Ymd"%}" type="text/javascript"></script>
     {% block modales_js %} 
     {% endblock %}
 {% endblock %}
@@ -39,7 +39,7 @@
 										</div>						
 										{% if not sitio_mobile %}
 										<div class="col-sm-1 col-xs-1">
-						                  <a id="recargarClientes" href="#" class="recargarDatos" type="button" data-toggle="tooltip" data-placement="top" title="Recargar Clientes">
+						                  <a id="recargarProveedores" href="#" class="recargarDatos" type="button" data-toggle="tooltip" data-placement="top" title="Recargar">
 											<i class="fa fa-refresh"></i></a>
 						                </div>        				
 						                {% endif %}
