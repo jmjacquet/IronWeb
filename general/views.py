@@ -174,10 +174,12 @@ class PrincipalView(VariablesMixin,TemplateView):
         
         fecha_desde = ultimo_anio()
         fecha_hoy = hoy()
-
+        pvs = pto_vta_habilitados_list(self.request)
+        empresas = empresas_habilitadas(self.request)
+        
         comprobantes = cpb_comprobante.objects.filter(estado__in=[1,2]).filter(fecha_cpb__range=[fecha_desde, fecha_hoy],empresa=empresa_actual(self.request))
         
-        ventas = comprobantes.filter(cpb_tipo__compra_venta='V',pto_vta__in=pto_vta_habilitados_list(self.request),cpb_tipo__tipo__in=[1,2,3,9])
+        ventas = comprobantes.filter(cpb_tipo__compra_venta='V',pto_vta__in=pvs,cpb_tipo__tipo__in=[1,2,3,9])
         total_ventas_mensual = ventas.filter(fecha_cpb__range=[inicioMes(), fecha_hoy])
         total_ventas_mensual = total_ventas_mensual.aggregate(sum=Sum(F('importe_total')*F('cpb_tipo__signo_ctacte'), output_field=DecimalField()))['sum'] or 0 
         total_ventas = ventas.aggregate(sum=Sum(F('importe_total')*F('cpb_tipo__signo_ctacte'), output_field=DecimalField()))['sum'] or 0 
@@ -221,12 +223,12 @@ class PrincipalView(VariablesMixin,TemplateView):
         
         context['ultimas_ventas'] = ventas.filter(cpb_tipo__id__in=[1,3,5,14]).order_by('-fecha_cpb','-fecha_creacion','-id').select_related('entidad','cpb_tipo','estado')[:10]
         context['ultimas_compras'] = compras.filter(cpb_tipo__id__in=[2,4,6,18],estado__in=[1,2]).order_by('-fecha_cpb','-fecha_creacion','-id').select_related('entidad','cpb_tipo','estado')[:10]
-        context['ultimos_presup'] = comprobantes.filter(cpb_tipo__id=11).order_by('-fecha_cpb','-fecha_creacion','-id').select_related('entidad','cpb_tipo','estado','presup_aprobacion')[:10]
+        context['ultimos_presup'] = comprobantes.filter(cpb_tipo__id=11).order_by('-fecha_cpb','-fecha_creacion','-id').select_related('entidad','cpb_tipo','estado','presup_aprobacion','presup_aprobacion')[:10]
         
         if usr.tipoUsr==0:
-            context['tareas'] = gral_tareas.objects.filter(empresa__id__in=empresas_habilitadas(self.request)).select_related('usuario_creador','usuario_asignado').order_by('-fecha','-fecha_creacion','-id')                
+            context['tareas'] = gral_tareas.objects.filter(empresa__id__in=empresas).select_related('usuario_creador','usuario_asignado').order_by('-fecha','-fecha_creacion','-id')                
         else:    
-            context['tareas'] = gral_tareas.objects.filter(empresa__id__in=empresas_habilitadas(self.request)).filter(Q(usuario_asignado=usr)|Q(usuario_asignado__isnull=True)).select_related('usuario_creador','usuario_asignado').order_by('-fecha','-fecha_creacion','-id')        
+            context['tareas'] = gral_tareas.objects.filter(empresa__id__in=empresas).filter(Q(usuario_asignado=usr)|Q(usuario_asignado__isnull=True)).select_related('usuario_creador','usuario_asignado').order_by('-fecha','-fecha_creacion','-id')        
         
         
         comprobantes = comprobantes.filter(cpb_tipo__tipo__in=[1,2,3,9]).distinct().annotate(m=Month('fecha_cpb'),anio=Year('fecha_cpb')).order_by(F('anio'),F('m')).values('m','anio')        
@@ -265,7 +267,7 @@ class PrincipalView(VariablesMixin,TemplateView):
         context['hoy'] = fecha_hoy
         context['fecha_desde'] = fecha_desde
 
-        productos_vendidos = cpb_comprobante_detalle.objects.filter(cpb_comprobante__pto_vta__in=pto_vta_habilitados_list(self.request),cpb_comprobante__cpb_tipo__compra_venta='V',cpb_comprobante__cpb_tipo__tipo__in=[1,2,3,9],cpb_comprobante__estado__in=[1,2],cpb_comprobante__fecha_cpb__range=[fecha_desde, fecha_hoy])
+        productos_vendidos = cpb_comprobante_detalle.objects.filter(cpb_comprobante__pto_vta__in=pvs,cpb_comprobante__cpb_tipo__compra_venta='V',cpb_comprobante__cpb_tipo__tipo__in=[1,2,3,9],cpb_comprobante__estado__in=[1,2],cpb_comprobante__fecha_cpb__range=[fecha_desde, fecha_hoy])
         productos_vendidos_total = productos_vendidos.aggregate(sum=Sum(F('importe_total')*F('cpb_comprobante__cpb_tipo__signo_ctacte'), output_field=DecimalField()))['sum'] or 0 
         productos_vendidos = productos_vendidos.values('producto__nombre').annotate(tot=Sum(F('importe_total')*F('cpb_comprobante__cpb_tipo__signo_ctacte'),output_field=DecimalField())).order_by('-tot')[:10]
         context['productos_vendidos']= productos_vendidos 
@@ -398,76 +400,6 @@ def TareasDeleteView(request, id):
     t.delete()
     messages.success(request, u'Los datos se guardaron con éxito!')
     return redirect('tareas_listado')        
-
-#************* Cuentas **************
-
-# class CuentasView(VariablesMixin,ListView):
-#     model = gral_plan_cuentas
-#     template_name = 'general/lista_plan_cuentas.html'
-#     context_object_name = 'plan_cuentas'
-#     queryset = gral_plan_cuentas.objects.filter().order_by('-fecha')
-
-#     @method_decorator(login_required)
-#     def dispatch(self, *args, **kwargs):         
-#         limpiar_sesion(self.request)
-#         return super(CuentasView, self).dispatch(*args, **kwargs)
-
-#     def get_context_data(self, **kwargs):
-#         context = super(CuentasView, self).get_context_data(**kwargs)
-#         return context
-
-# class CuentasCreateView(VariablesMixin,CreateView):
-#     form_class = PlanCtasForm
-#     template_name = 'general/plan_cuentas_form.html'
-#     success_url = '/listado_plan_cuentas/'
-
-#     @method_decorator(login_required)
-#     def dispatch(self, *args, **kwargs):        
-#         if not tiene_permiso(self.request,'gral_configuracion'):
-#             return redirect(reverse('principal'))
-#         return super(CuentasCreateView, self).dispatch(*args, **kwargs)
-
-#     def form_valid(self, form):                       
-#         # form.instance.empresa = self.request.user.userprofile.id_usuario.empresa        
-#         form.instance.usuario_creador = usuario_actual(self.request)
-#         return super(CuentasCreateView, self).form_valid(form)
-
-#     def form_invalid(self, form):         
-#         return self.render_to_response(self.get_context_data(form=form))
-
-#     def get_initial(self):    
-#         initial = super(CuentasCreateView, self).get_initial()               
-#         return initial    
-
-# class CuentasEditView(VariablesMixin,UpdateView):
-#     form_class = PlanCtasForm
-#     model = gral_plan_cuentas
-#     pk_url_kwarg = 'id'
-#     template_name = 'general/plan_cuentas_form.html'
-#     success_url = '/listado_plan_cuentas/'
-
-#     @method_decorator(login_required)
-#     def dispatch(self, *args, **kwargs):        
-#         if not tiene_permiso(self.request,'gral_configuracion'):
-#             return redirect(reverse('principal'))
-#         return super(CuentasEditView, self).dispatch(*args, **kwargs)
-
-#     def form_valid(self, form):        
-#         return super(CuentasEditView, self).form_valid(form)
-
-#     def get_initial(self):    
-#         initial = super(CuentasEditView, self).get_initial()                      
-#         return initial    
-
-# class CuentasDeleteView(VariablesMixin,AjaxDeleteView):
-#     model = gral_plan_cuentas
-#     pk_url_kwarg = 'id'    
-
-#     @method_decorator(login_required)
-#     def dispatch(self, *args, **kwargs):        
-#         if not tiene_permiso(self.request,'gral_configuracion'):
-#             return redirect(reverse('principal'))
-#         return super(CuentasDeleteView, self).dispatch(*args, **kwargs)
 
 #*************  **************
 

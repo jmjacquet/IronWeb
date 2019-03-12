@@ -36,8 +36,6 @@ DATABASES = {
         'PORT': '',      
     },
 }
-if 'test' in sys.argv or 'test_coverage' in sys.argv: #Covers regular testing and django-coverage
-    DATABASES['default']['ENGINE'] = 'django.db.backends.sqlite3'
 
 ALLOWED_HOSTS = '*'
 TIME_ZONE = 'America/Argentina/Buenos_Aires'
@@ -78,9 +76,7 @@ TEMPLATE_CONTEXT_PROCESSORS =   (
     'django.contrib.messages.context_processors.messages',
 )
 
-#SECRET_KEY = '7i@#mz$&m(!02ij#^-z)wd1+g4yay9*s%5vw7ix$@#m)k=unrx'
-
-SECRET_KEY = os.environ.get('DJANGO_SECRET_KEY', '7i@#mz$&m(!02ij#^-z)wd1+g4yay9*s%5vw7ix$@#m)k=unrx')
+SECRET_KEY = '7i@#mz$&m(!02ij#^-z)wd1+g4yay9*s%5vw7ix$@#m)k=unrx'
 
 TEMPLATE_LOADERS = (
     'django.template.loaders.filesystem.Loader',
@@ -97,7 +93,7 @@ MIDDLEWARE_CLASSES = (
     'django.contrib.messages.middleware.MessageMiddleware',
     # Uncomment the next line for simple clickjacking protection:
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
-    # 'debug_toolbar.middleware.DebugToolbarMiddleware',#Barra DEBUG
+    'debug_toolbar.middleware.DebugToolbarMiddleware',#Barra DEBUG
 )
 
 ROOT_URLCONF = 'ggcontable.urls'
@@ -119,7 +115,7 @@ INSTALLED_APPS = (
     'crispy_forms',
     'fm',
     'django_extensions',
-    # 'debug_toolbar',
+    'debug_toolbar',
     'localflavor',
     'modal',    
     'general',
@@ -140,8 +136,8 @@ SESSION_SERIALIZER = 'django.contrib.sessions.serializers.JSONSerializer'
 
 # EMAIL_PORT = 465
 EMAIL_HOST = 'smtp.webfaction.com'
-EMAIL_HOST_USER = 'copyfast'
-EMAIL_HOST_PASSWORD = 'facugonza'
+EMAIL_HOST_USER = 'grupogua_errores'
+EMAIL_HOST_PASSWORD = 'battlehome'
 # EMAIL_USE_TLS = True
 # EMAIL_HOST_USER = os.environ.get('EMAIL_HOST_USER', 'grupogua_errores')
 # EMAIL_HOST_PASSWORD = os.environ.get('EMAIL_HOST_PASSWORD', None)

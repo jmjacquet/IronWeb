@@ -228,7 +228,6 @@ class cpb_comprobante(models.Model):
         cobranzas = cpb_cobranza.objects.filter(cpb_comprobante=self,cpb_comprobante__estado__pk__lt=3).select_related('cpb_factura','cpb_factura__cpb_tipo','cpb_comprobante')
         return list(cobranzas)
 
-
     def tiene_cobranzas(self):                
         return cpb_cobranza.objects.filter(cpb_factura=self).count() > 0   
 

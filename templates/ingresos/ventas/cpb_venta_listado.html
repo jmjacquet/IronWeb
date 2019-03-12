@@ -97,7 +97,7 @@
                                                     {% endif %}   
 
                                                 {% elif cpb.estado.pk < 3 %}
-                                                    {% if not cpb.tiene_cobranzas%}
+                                                    {% if cpb.cobranzas == 0 %}
                                                     <li><a href="#" 
                                                     onClick="alerta= alertify.dialog('confirm').set({'labels':{ok:'Aceptar', cancel:'Cancelar'},'message': '¿DESEA ANULAR EL COMPROBANTE ACTUAL?',transition:'fade','onok': function(){ window.location.href = '{% url 'cpb_anular_reactivar' id=cpb.pk estado=3  %}'; },'oncancel': function(){ return true;} }); alerta.setting('modal', true); alerta.setHeader('ANULAR/REACTIVAR COMPROBANTE'); alerta.show(); return true;" ><i class="icon-dislike"></i>Anular</a></li>
                                                     {% endif %}
@@ -115,7 +115,7 @@
                                                     {% endif %}
                                                                                                  
                                                 {% endif %} 
-                                                {% if not cpb.tiene_cobranzas%}
+                                                {% if cpb.cobranzas == 0 %}
                                                      <li><a href="#" 
                                                         onClick="alerta= alertify.dialog('confirm').set({'labels':{ok:'Aceptar', cancel:'Cancelar'},'message': '¿DESEA ELIMINAR LA VENTA SELECCIONADA?',transition:'fade','onok': function(){ window.location.href = '{% url 'cpb_venta_eliminar' id=cpb.pk %}'; },'oncancel': function(){ return true;} }); alerta.setting('modal', true); alerta.setHeader('ELIMINAR COMPROBANTE'); alerta.show(); return true;"><i class="icon-trash"></i>Eliminar</a>
                                                     </li>                                                 
