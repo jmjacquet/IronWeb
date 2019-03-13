@@ -32,13 +32,13 @@ if settings.DEBUG:
         url(r'^__debug__/', include(debug_toolbar.urls)),
     ] + urlpatterns
 
-if settings.DEBUG is False:   #if DEBUG is True it will be served automatically
+# if settings.DEBUG is False:   #if DEBUG is True it will be served automatically
 
-    urlpatterns += [
+#     urlpatterns += [
             
-            url(r'^media/(?P<path>.*)$', 'django.views.static.serve', {'document_root': settings.MEDIA_ROOT,}),
-            url(r'^staticfiles/(?P<path>.*)$', 'django.views.static.serve', {'document_root': settings.STATIC_ROOT}),
-    ]
+#             url(r'^media/(?P<path>.*)$', 'django.views.static.serve', {'document_root': settings.MEDIA_ROOT,}),
+#             url(r'^staticfiles/(?P<path>.*)$', 'django.views.static.serve', {'document_root': settings.STATIC_ROOT}),
+#     ]
 
 handler500 = volverHome
 handler404 = volverHome
