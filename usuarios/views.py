@@ -96,31 +96,6 @@ def cambiar_password(request):
         variables = RequestContext(request, {'form':form})        
         return render_to_response("general/varios/cambiar_password.html", variables)
 
-# @login_required
-# def UsrCambiarClave(request):            
-
-#     if request.method == "POST":
-#         form = UsuUsuarioForm(request.POST, instance=usr_diputado,request=request)
-#         if form.is_valid():                
-#             post = form.save(commit=False)
-#             if usuario == post.password:
-#                 error = u"La contraseña no debe ser igual al Usuario: %s" % str(usuario)
-#                 messages.add_message(request, messages.ERROR,u'%s' % (error))   
-#                 form = UsuUsuarioForm(instance=usr_diputado,request=request)
-#                 return render(request, 'cambio_clave.html', {'form': form})
-#             post.save()
-#             msj=u"Se modificó la contraseña con éxito. \nPor favor ingrese con su nueva contraseña."
-#             messages.add_message(request, messages.SUCCESS,u'%s' % (msj))   
-#             return redirect('desloguearse')
-#         else:
-#             error = u"Verifique que los datos sean correctos"
-#             messages.add_message(request, messages.ERROR,u'%s' % (error))   
-#             form = UsuUsuarioForm(instance=usr_diputado,request=request)
-#             return render(request, 'cambio_clave.html', {'form': form})
-#     else:
-#         form = UsuUsuarioForm(instance=usr_diputado,request=request)
-#     return render(request, 'cambio_clave.html', {'form': form})
-
 from django.views.generic import TemplateView,ListView
 from general.views import VariablesMixin
 from django.utils.decorators import method_decorator
@@ -225,9 +200,10 @@ def get_usuarios_conectados(request):
         user_id_list.append(data.get('_auth_user_id', None))
     # Query all logged in users based on id list
     conectados = []
-    usuarios = UserProfile.objects.filter(user__id__in=user_id_list)
+    usuarios = UserProfile.objects.filter(user__id__in=user_id_list)    
     for u in usuarios:
         if u.user.is_authenticated():
             conectados.append(u.id_usuario.usuario)
 
     return HttpResponse( json.dumps(conectados), content_type='application/json' ) 
+

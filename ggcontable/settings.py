@@ -214,7 +214,6 @@ AUTH_PROFILE_MODULE = 'usuarios.UserProfile'
 AUTHENTICATION_BACKENDS = ('django.contrib.auth.backends.ModelBackend','usuarios.authentication.UsuarioBackend',)
 SESSION_EXPIRE_AT_BROWSER_CLOSE = True
 SESSION_COOKIE_NAME = "grupogua"
-SESSION_COOKIE_AGE = 86400
 SECRET_KEY='grupoguadalupe'
 
 

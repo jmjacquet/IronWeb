@@ -650,9 +650,7 @@ class caja_diaria(VariablesMixin,ListView):
                    ingresos= ingresos.filter(cpb_comprobante__pto_vta=pto_vta)
                    egresos= egresos.filter(cpb_comprobante__pto_vta=pto_vta)            
 
-            if cuenta:
-                   ingresos= ingresos.filter(cta_ingreso=cuenta)
-                   egresos= egresos.filter(cta_egreso=cuenta)
+            
 
             ingresos_resumen = ingresos.values('tipo_forma_pago__id','tipo_forma_pago__codigo','tipo_forma_pago__nombre')\
                             .annotate( saldo=Sum(ExpressionWrapper(F("importe"), output_field=FloatField())) )
@@ -661,6 +659,10 @@ class caja_diaria(VariablesMixin,ListView):
                             .annotate( saldo=Sum(ExpressionWrapper(F("importe"), output_field=FloatField())) )
             egresos_total = egresos.aggregate(egresos_total=Sum('importe'))
             
+            if cuenta:
+                   ingresos= ingresos.filter(cta_ingreso=cuenta)
+                   egresos= egresos.filter(cta_egreso=cuenta)
+                   
             ingresos_cta_resumen = ingresos.values('cta_ingreso__id','cta_ingreso__codigo','cta_ingreso__nombre').annotate( saldo=Sum(ExpressionWrapper(F("importe"), output_field=FloatField())) )
             ingresos_cta_total = ingresos.aggregate(ingresos_cta_total=Sum('importe'))
             egresos_cta_resumen = egresos.values('cta_egreso__id','cta_egreso__codigo','cta_egreso__nombre').annotate( saldo=Sum(ExpressionWrapper(F("importe"), output_field=FloatField())) )
@@ -712,16 +714,14 @@ class saldos_cuentas(VariablesMixin,ListView):
             cuenta = form.cleaned_data['cuenta']                                             
             pto_vta = form.cleaned_data['pto_vta'] 
             
-            if cuenta:
-                ctas = cpb_cuenta.objects.filter(id=cuenta.id)
-            else:
-                ctas = cpb_cuenta.objects.filter(empresa=empresa,baja=False)
+            ctas = cpb_cuenta.objects.filter(empresa=empresa,baja=False)
 
+            if cuenta:
+                ctas = ctas.filter(id=cuenta.id)           
             
             for cta in ctas:
                 
-                cpbs = cpb_comprobante_fp.objects.filter(cpb_comprobante__empresa=empresa,cpb_comprobante__estado__in=[1,2],cpb_comprobante__fecha_cpb__lte=fhasta).select_related('cpb_comprobante','cpb_comprobante__cpb_tipo','cta_egreso','cta_ingreso','tipo_forma_pago').order_by('cpb_comprobante__fecha_cpb','id')
-                
+                cpbs = cpb_comprobante_fp.objects.filter(cpb_comprobante__empresa=empresa,cpb_comprobante__estado__in=[1,2],cpb_comprobante__fecha_cpb__lte=fhasta).select_related('cpb_comprobante','cpb_comprobante__cpb_tipo','cta_egreso','cta_ingreso','tipo_forma_pago').order_by('cpb_comprobante__fecha_cpb','id')                
                 if pto_vta:
                     cpbs = cpbs.filter(cpb_comprobante__pto_vta=pto_vta)
                 
