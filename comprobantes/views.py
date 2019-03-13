@@ -268,11 +268,12 @@ def ultimp_nro_cpb_ajax(request):
     letra = request.GET.get('letra','X')
     pto_vta = request.GET.get('pto_vta',0)
     entidad = request.GET.get('entidad',None)
+
     try:
         tipo=cpb_tipo.objects.get(id=tipo)        
         nro = 1    
         if tipo.usa_pto_vta == True:            
-            pv = cpb_pto_vta.objects.get(numero=int(pto_vta),empresa=empresa_actual(request))            
+            pv = cpb_pto_vta.objects.get(numero=int(pto_vta),empresa=empresa_actual(request))                        
             ult_nro = cpb_pto_vta_numero.objects.get(cpb_tipo=tipo,letra=letra,cpb_pto_vta=pv,empresa=empresa_actual(request)).ultimo_nro
             nro = ult_nro+1                
         else:
