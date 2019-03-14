@@ -49,7 +49,7 @@ var tabla = $('#dataTables-cpb_venta').DataTable({
                   "targets"  : 'no-sort',
                   "orderable": false,
                 }],          
-           "paging":   false,
+           "paging":   true,
            "lengthMenu": [[20, 50, -1], [20, 50, "Todos"]],
            "autoWidth": false,
            "order": [],
