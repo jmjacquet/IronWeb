@@ -188,6 +188,12 @@ class cpb_comprobante(models.Model):
 
     estado_cpb = property(_get_estado)
 
+    def _get_estado_color(self):        
+        if self.estado:
+            return self.estado.color
+
+    estado_color = property(_get_estado_color)
+
     def _get_seleccionable(self):        
         if self.cpb_tipo.compra_venta=='V':
             return (self.estado.id in [1,2]) and not(self.cae and (self.estado.id==2))
