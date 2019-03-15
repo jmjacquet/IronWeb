@@ -164,8 +164,15 @@ class cpb_comprobante(models.Model):
     def __unicode__(self):
         return u'%s-%s-%s' % ("{num:>04}".format(num=str(self.pto_vta)),self.letra,"{num:>08}".format(num=str(self.numero)))              
 
-    def get_cpb(self):
+    
+    # def get_cpb(self):
+    #     return u'%s-%s-%s' % ("{num:>04}".format(num=str(self.pto_vta)),self.letra,"{num:>08}".format(num=str(self.numero)))              
+
+    @property
+    def get_cpb(self):        
         return u'%s-%s-%s' % ("{num:>04}".format(num=str(self.pto_vta)),self.letra,"{num:>08}".format(num=str(self.numero)))              
+
+    
 
     def get_pto_vta(self):
         try:
@@ -175,7 +182,8 @@ class cpb_comprobante(models.Model):
         return pv
 
 
-    def _get_estado(self):        
+    @property
+    def estado_cpb(self):        
         #Si es presupuesto verifico que no esté vencido
         if self.cpb_tipo.tipo == 6:
             if (self.fecha_vto <= timezone.now().date()) and (self.estado.pk<12):
@@ -186,23 +194,20 @@ class cpb_comprobante(models.Model):
             e=self.estado
         return e
 
-    estado_cpb = property(_get_estado)
-
-    def _get_estado_color(self):        
+    @property
+    def estado_color(self):        
         if self.estado:
             return self.estado.color
-
-    estado_color = property(_get_estado_color)
-
-    def _get_seleccionable(self):        
+    
+    @property
+    def seleccionable(self):        
         if self.cpb_tipo.compra_venta=='V':
             return (self.estado.id in [1,2]) and not(self.cae and (self.estado.id==2))
         elif self.cpb_tipo.compra_venta=='C':
             return (self.estado.id in [1,2])
 
-    seleccionable = property(_get_seleccionable)   
-
-    def _get_vencimiento(self):        
+    @property
+    def vencimiento_cpb(self):        
         if self.fecha_vto:
             if (self.fecha_vto <= timezone.now().date()):
                 e=cpb_estado.objects.get(pk=11)
@@ -212,7 +217,6 @@ class cpb_comprobante(models.Model):
             e=self.estado        
         return e
 
-    vencimiento_cpb = property(_get_vencimiento)
 
     def get_nro_afip(self):
         c = cpb_nro_afip.objects.get(cpb_tipo=self.cpb_tipo.tipo,letra=self.letra)
@@ -221,14 +225,10 @@ class cpb_comprobante(models.Model):
     def get_numero(self):                
         return '%s-%s' % ("{num:>04}".format(num=str(self.pto_vta)),"{num:>08}".format(num=str(self.numero))) 
 
-    # def get_pto_vta(self):
-    #     #CPBs que usan la tabla de pto_vta para el ultimo nro
-    #     if self.cpb_tipo.usa_pto_vta:
-    #     elif self.cpb_tipo.pk in [2,4,6,18,19]:
-
-
+    @property
     def get_cpb_tipo(self):                
         return u'%s: %s-%s-%s ' % (self.cpb_tipo,"{num:>04}".format(num=str(self.pto_vta)),self.letra,"{num:>08}".format(num=str(self.numero)))
+
 
     def get_cobranzas(self):                
         cobranzas = cpb_cobranza.objects.filter(cpb_comprobante=self,cpb_comprobante__estado__pk__lt=3).select_related('cpb_factura','cpb_factura__cpb_tipo','cpb_comprobante')

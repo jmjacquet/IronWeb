@@ -845,15 +845,13 @@ class vencimientos_cpbs(VariablesMixin,ListView):
         form = ConsultaVencimientos(self.request.POST or None,empresa=empresa,request=self.request)            
         fecha = date.today()        
 
-        comprobantes = cpb_comprobante.objects.filter(cpb_tipo__tipo__in=[1,2,3,4,5,6,7,9],empresa=empresa).order_by('-fecha_vto','-fecha_cpb','-id').select_related('estado','cpb_tipo','entidad','vendedor')
-        comprobantes = comprobantes.extra(select={'dias_restantes': "fecha_vto-current_date"})
-        comprobantes = comprobantes.extra(order_by = ['-dias_restantes','-fecha_cpb'])
+        comprobantes = cpb_comprobante.objects.filter(cpb_tipo__tipo__in=[1,2,3,4,5,6,7,9,14],empresa=empresa).order_by('-fecha_vto','-fecha_cpb','-id').select_related('cpb_tipo','estado','entidad')        
+                
         if form.is_valid():                                
             entidad = form.cleaned_data['entidad']                                                              
             fdesde = form.cleaned_data['fdesde']   
             fhasta = form.cleaned_data['fhasta']                                                 
-            pto_vta = form.cleaned_data['pto_vta']   
-            vendedor = form.cleaned_data['vendedor']                                                 
+            pto_vta = form.cleaned_data['pto_vta']               
             estado = form.cleaned_data['estado']
             tipo_cpb = form.cleaned_data['tipo_cpb']
             cae = form.cleaned_data['cae']  
@@ -873,9 +871,7 @@ class vencimientos_cpbs(VariablesMixin,ListView):
             if fhasta:
                 comprobantes= comprobantes.filter(fecha_cpb__lte=fhasta)
             if entidad:
-                comprobantes= comprobantes.filter(entidad__apellido_y_nombre__icontains=entidad)
-            if vendedor:
-                comprobantes= comprobantes.filter(vendedor=vendedor)
+                comprobantes= comprobantes.filter(entidad__apellido_y_nombre__icontains=entidad)           
             if pto_vta:
                 comprobantes= comprobantes.filter(pto_vta=pto_vta)            
 

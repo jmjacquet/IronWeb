@@ -24,15 +24,14 @@
                          <form class="form" accept-charset="UTF-8" role="form" action="" method="post">
                             {% csrf_token %} 
                             <div class="barra_busqueda col-sm-12">                                                                
-                                    <div class="col-sm-2">{% bootstrap_field form.entidad  %}</div>
-                                    <div class="col-sm-2">{% bootstrap_field form.vendedor  %}</div>                                                                                                     
-                                    <div class="col-sm-2">{% bootstrap_field form.tipo_cpb  %}</div>                                                                                                     
+                                    <div class="col-sm-2">{% bootstrap_field form.entidad  %}</div>                                  
+                                    <div class="col-sm-2">{% bootstrap_field form.tipo_cpb  %}</div>
                                     <div class="col-sm-1">{% bootstrap_field form.estado  %}</div>                                 
                                     <div class="col-sm-1">{% bootstrap_field form.cae  %}</div>                                                                   
                                     <div class="col-sm-1">{% bootstrap_field form.pto_vta  %}</div>
                                     <div class="col-sm-1">{% bootstrap_field form.fdesde  %}</div>                                
                                     <div class="col-sm-1">{% bootstrap_field form.fhasta  %}</div>                                    
-                                    <div class="col-sm-1 pull-right"><button class="btn btn-sm blue-hoki text-center" type="submit">Buscar</button></div>
+                                    <div class="col-sm-1"><button class="btn btn-sm blue-hoki text-center" type="submit">Buscar</button></div>
                             </div>     
                             </form>         
                         </div>
@@ -44,11 +43,10 @@
                         <thead>
                             <tr>                               
                                 <th class="no-sort text-center" data-priority="2"></th>
-                                    <th class="no-sort text-center" data-priority="3"></th>
+                                <th class="no-sort text-center" data-priority="3"></th>
                                 <th style="width:5%;" class="text-center">Fecha</th> 
-                                <th class="text-center">Estado</th> 
-                                <th style="width:5%;" class="text-center">Vencimiento</th>
-                                <th style="width:3%;" class="text-center">Días Venc.</th>                                
+                                <th style="width:5%;" class="text-center">Estado</th> 
+                                <th style="width:5%;" class="text-center">Vencimiento</th>                                
                                 <th style="width:5%;">Comprobante</th>                                
                                 <th class="text-center">Tipo</th>                                
                                 <th class="text-center">Cliente/Proveedor</th>
@@ -63,18 +61,17 @@
                                 <tr>                                
                                     <td></td>
                                     <td>
-                                        <input class="hidden" value="{{cpb.pk|safe}}" id="chk_{{forloop.counter0}}_id_cpb" /><input type="checkbox" class='tildado' id="chk_{{forloop.counter0}}" />
+                                        <input class="hidden" value="{{cpb.id|safe}}" id="chk_{{forloop.counter0}}_id_cpb" /><input type="checkbox" class='tildado' id="chk_{{forloop.counter0}}" />
                                     </td>
                                     <td class="text-center">{{cpb.fecha_cpb|date:'d/m/Y'}}</td>                              
-                                    <td class="listado_estado {{cpb.estado.color}}">{{cpb.estado}}</td>
-                                    <td class="text-center">{{cpb.fecha_vto|date:'d/m/Y'}}</td>                              
-                                    <td class="listado_estado {% if cpb.dias_restantes == 0 %}warning{% elif cpb.dias_restantes < 0 %}danger{% endif %}">{{cpb.dias_restantes|default_if_none:'0'}}</td>
+                                    <td class="listado_estado {{cpb.estado.color}}">{{cpb.estado.nombre}}</td>
+                                    <td class="text-center">{{cpb.fecha_vto|date:'d/m/Y'}}</td>                                                                 
                                     <td>{% include "general/varios/cpb_ver.html" %}{{ cpb}}</td> 
                                     <td class="text-center" title="{{ cpb.cpb_tipo|default_if_none:'' }}">{{ cpb.cpb_tipo.codigo|default_if_none:'' }}</td>
-                                    <td title="{{ cpb.entidad}}" >{% if cpb.entidad.tipo_entidad == 1 %}
+                                    <td title="{{ cpb.detalle_entidad}}" >{% if cpb.entidad.tipo_entidad == 1 %}
                                     {% include "entidades/cliente_ver.html" %} {% else %}
                                     {% include "entidades/proveedor_ver.html" %} {% endif %}</td>
-                                    <td class="importe">${{cpb.importe_total|default_if_none:0|floatformat:2}}</td> 
+                                    <td class="importe">${{cpb.get_importe_total|default_if_none:0|floatformat:2}}</td> 
                                     <td {% if cpb.cae %}title="Vencimiento CAE: {{cpb.cae_vto|date:'d/m/Y'}}" class="listado_estado success"{% endif %}>{{ cpb.cae|default_if_none:'' }}</td>
                                     <td title="{{ cpb.descripcion}} {{ cpb.seguimiento|default_if_none:''}}">{{ cpb.descripcion|default_if_none:''|truncatechars:40 }}{% if cpb.seguimiento %} - {{ cpb.seguimiento|default_if_none:''|truncatechars:40 }} {% endif %}</td>                                    
                                     <td title="{{ cpb.vendedor}}">{{ cpb.vendedor|default_if_none:''|truncatechars:40 }}</td>
@@ -84,7 +81,6 @@
                         <tfoot>
                             <tr>
                                 <th></th> 
-                                <th></th>                                 
                                 <th></th> 
                                 <th></th> 
                                 <th></th>                                

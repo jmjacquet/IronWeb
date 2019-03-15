@@ -69,7 +69,7 @@
                                     </div>                              
                                 </td> 
                                 
-                                <td class="listado_estado {{orden.estado.color}}">{{orden.estado|default_if_none:'A CONFIRMAR'}}</td>
+                                <td class="listado_estado {{orden.estado_color}}">{{orden.estado|default_if_none:'A CONFIRMAR'}}</td>
                                 <td class="text-center">{{orden.fecha|date:'d/m/Y'}}</td>                                
                                 <td>{{ orden}}</td>                                
                                 <td title="{{ orden.cliente}}"><a href="{% url 'cliente_ver' id=orden.cliente.id %}"   class="modal-detail" data-modal-head="DETALLE CLIENTE {{orden.cliente.codigo}}" data-fm-callback="reload">

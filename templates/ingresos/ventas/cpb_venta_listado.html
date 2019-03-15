@@ -157,7 +157,7 @@
                                     <td>
                                         <input type="checkbox" class="tildado" id="chk_{{forloop.counter0}}" value="{{ cpb.pk|safe }}" aria-label="chk_{{forloop.counter0}}">
                                     </td>
-                                    <td  class="listado_estado {{cpb.estado.color}}">{{cpb.estado}}</td>
+                                    <td  class="listado_estado {{cpb.estado_color}}">{{cpb.estado}}</td>
                                     <td {% if cpb.cae %}title="Nº CAE: {{cpb.cae}} Vencimiento: {{cpb.cae_vto|date:'d/m/Y'}}"{% endif %} class="text-center">{% if cpb.cae %}<a target="_blank" href="{% url 'imprimirFactura' id=cpb.pk %}"><strong><i class="glyphicon glyphicon-paperclip text-primary"></strong></a>{% endif %}</td>
                                     <td class="text-center" title="Fecha Creación: {{cpb.fecha_creacion|date:'d/m/Y H:i'}}">{{cpb.fecha_cpb|date:'d/m/Y'}}</td>
                                     <td class="text-center" title="{{ cpb.cpb_tipo|default_if_none:'' }}">{{ cpb.cpb_tipo.codigo|default_if_none:'' }}</td>

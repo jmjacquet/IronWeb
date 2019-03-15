@@ -79,7 +79,7 @@ var tabla = $('#dataTables-cpb_venta').DataTable({
                     extend:    'excel',
                     text:      '<i class="fa fa-file-excel-o"></i>',
                     titleAttr: 'Excel',
-                    filename: 'VENCIMIENTO_COMPROBANTES',                    
+                    filename: 'COMPROBANTES',                    
                     exportOptions: {  modifier: {
                                         page: 'current'
                                     }, 
@@ -137,7 +137,7 @@ var tabla = $('#dataTables-cpb_venta').DataTable({
             ],
             initComplete: function () {
                // this.api().columns().every( function () {[0, 1, 9]
-                this.api().columns([3,7]).every( function () {
+                this.api().columns([3,6]).every( function () {
                     var column = this;
                     var select = $('<select class="form-control"><option value=""></option></select>')
                         .appendTo( $(column.footer()).empty() )
@@ -188,8 +188,8 @@ var tabla = $('#dataTables-cpb_venta').DataTable({
             };
                         
             
-            pageTotal1 = api.column(9, { page: 'current'} ).data().reduce( function (a, b) {return floatVal(a) + floatVal(b);}, 0 );            
-            $( api.column(9).footer() ).html('$'+pageTotal1.toFixed(2));            
+            pageTotal1 = api.column(8, { page: 'current'} ).data().reduce( function (a, b) {return floatVal(a) + floatVal(b);}, 0 );            
+            $( api.column(8).footer() ).html('$'+pageTotal1.toFixed(2));            
             },
                                   
         });

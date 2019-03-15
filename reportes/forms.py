@@ -137,8 +137,7 @@ class ConsultaSaldosCuentas(forms.Form):
 class ConsultaVencimientos(forms.Form):               
 	entidad = forms.CharField(label='Cliente',max_length=100,widget=forms.TextInput(attrs={'class':'form-control','text-transform': 'uppercase'}),required=False)
 	fdesde =  forms.DateField(label='Fecha Desde',widget=forms.DateInput(attrs={'class': 'form-control datepicker'}),required = False,initial=inicioMes())
-	fhasta =  forms.DateField(label='Fecha Hasta',widget=forms.DateInput(attrs={'class': 'form-control datepicker'}),required = False,initial=finMes())    
-	vendedor = forms.ModelChoiceField(label='Vendedor',queryset=egr_entidad.objects.filter(tipo_entidad=3,baja=False),empty_label=label_todos,required = False)
+	fhasta =  forms.DateField(label='Fecha Hasta',widget=forms.DateInput(attrs={'class': 'form-control datepicker'}),required = False,initial=finMes())    	
 	pto_vta = forms.IntegerField(label='Pto. Vta.',required = False)
 	estado = forms.ChoiceField(label='Estado',choices=ESTADO_,required=False,initial=0)	
 	cae = forms.ChoiceField(label='CAE',choices=SINO,required=False,initial=0)	
@@ -146,8 +145,7 @@ class ConsultaVencimientos(forms.Form):
 	def __init__(self, *args, **kwargs):
 		empresa = kwargs.pop('empresa', None)  
 		request = kwargs.pop('request', None) 
-		super(ConsultaVencimientos, self).__init__(*args, **kwargs)				
-		self.fields['vendedor'].queryset = egr_entidad.objects.filter(tipo_entidad=3,baja=False,empresa__id__in=empresas_habilitadas(request))		
+		super(ConsultaVencimientos, self).__init__(*args, **kwargs)						
 		self.fields['tipo_cpb'].queryset = cpb_tipo.objects.filter(tipo__in=[1,2,3,4,5,6,7,9],baja=False)
 
 

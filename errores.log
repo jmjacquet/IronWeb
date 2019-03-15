@@ -1497,3 +1497,303 @@ Traceback (most recent call last):
   File "D:\Repo\ironStable\reportes\views.py", line 514, in libro_iva_ventas
     cpbs = cpb_comprobante.objects.filter(cpb_tipo__compra_venta='V',pto_vta__in=pto_vta_habilitados_list(self.request),cpb_tipo__tipo__in=[1,2,3,9,14],empresa=empresa,fecha_imputacion__gte=fdesde,fecha_imputacion__lte=fhasta)\
 NameError: global name 'self' is not defined
+[15/Mar/2019 11:29:13] ERROR [django.request:256] Internal Server Error: /reportes/vencimientos_cpbs/
+Traceback (most recent call last):
+  File "C:\Python27\lib\site-packages\django\core\handlers\base.py", line 132, in get_response
+    response = wrapped_callback(request, *callback_args, **callback_kwargs)
+  File "C:\Python27\lib\site-packages\django\views\generic\base.py", line 71, in view
+    return self.dispatch(request, *args, **kwargs)
+  File "C:\Python27\lib\site-packages\django\utils\decorators.py", line 34, in _wrapper
+    return bound_func(*args, **kwargs)
+  File "C:\Python27\lib\site-packages\django\contrib\auth\decorators.py", line 22, in _wrapped_view
+    return view_func(request, *args, **kwargs)
+  File "C:\Python27\lib\site-packages\django\utils\decorators.py", line 30, in bound_func
+    return func.__get__(self, type(self))(*args2, **kwargs2)
+  File "D:\GitHub\IronWeb\reportes\views.py", line 837, in dispatch
+    return super(vencimientos_cpbs, self).dispatch(*args,**kwargs)
+  File "C:\Python27\lib\site-packages\django\views\generic\base.py", line 89, in dispatch
+    return handler(request, *args, **kwargs)
+  File "D:\GitHub\IronWeb\reportes\views.py", line 894, in post
+    return self.get(*args, **kwargs)
+  File "C:\Python27\lib\site-packages\django\views\generic\list.py", line 174, in get
+    context = self.get_context_data()
+  File "D:\GitHub\IronWeb\reportes\views.py", line 849, in get_context_data
+    comprobantes = comprobantes.values('pk','fecha_cpb','estado_color','estado_cpb','fecha_vto','cpb_tipo','get_cpb','get_cpb_tipo','cpb_tipo__codigo')
+  File "C:\Python27\lib\site-packages\django\db\models\query.py", line 606, in values
+    return self._clone(klass=ValuesQuerySet, setup=True, _fields=fields)
+  File "C:\Python27\lib\site-packages\django\db\models\query.py", line 960, in _clone
+    c._setup_query()
+  File "C:\Python27\lib\site-packages\django\db\models\query.py", line 1136, in _setup_query
+    self.query.add_fields(self.field_names, True)
+  File "C:\Python27\lib\site-packages\django\db\models\sql\query.py", line 1702, in add_fields
+    "Choices are: %s" % (name, ", ".join(names)))
+FieldError: Cannot resolve keyword 'estado_color' into field. Choices are: anulacion_fecha, anulacion_motivo, cae, cae_errores, cae_excepcion, cae_observaciones, cae_traceback, cae_vto, cae_xml_request, cae_xml_response, condic_pago, cpb_cobranza_cpb, cpb_cobranza_factura, cpb_comprobante_detalle, cpb_comprobante_fp, cpb_comprobante_padre, cpb_comprobante_perc_imp, cpb_comprobante_tot_iva, cpb_tipo, cpb_tipo_id, empresa, empresa_id, entidad, entidad_id, estado, estado_id, fecha_cpb, fecha_creacion, fecha_envio_mail, fecha_imputacion, fecha_recepcion_mail, fecha_vto, id, id_cpb_padre, id_cpb_padre_id, importe_exento, importe_gravado, importe_iva, importe_no_gravado, importe_perc_imp, importe_subtotal, importe_total, letra, numero, observacion, op_presupuesto, op_venta, presup_aprobacion, presup_aprobacion_id, presup_forma_pago, presup_tiempo_entrega, pto_vta, saldo, seguimiento, usuario, usuario_id, vendedor, vendedor_id
+[15/Mar/2019 11:30:21] ERROR [django.request:256] Internal Server Error: /reportes/vencimientos_cpbs/
+Traceback (most recent call last):
+  File "C:\Python27\lib\site-packages\django\core\handlers\base.py", line 132, in get_response
+    response = wrapped_callback(request, *callback_args, **callback_kwargs)
+  File "C:\Python27\lib\site-packages\django\views\generic\base.py", line 71, in view
+    return self.dispatch(request, *args, **kwargs)
+  File "C:\Python27\lib\site-packages\django\utils\decorators.py", line 34, in _wrapper
+    return bound_func(*args, **kwargs)
+  File "C:\Python27\lib\site-packages\django\contrib\auth\decorators.py", line 22, in _wrapped_view
+    return view_func(request, *args, **kwargs)
+  File "C:\Python27\lib\site-packages\django\utils\decorators.py", line 30, in bound_func
+    return func.__get__(self, type(self))(*args2, **kwargs2)
+  File "D:\GitHub\IronWeb\reportes\views.py", line 837, in dispatch
+    return super(vencimientos_cpbs, self).dispatch(*args,**kwargs)
+  File "C:\Python27\lib\site-packages\django\views\generic\base.py", line 89, in dispatch
+    return handler(request, *args, **kwargs)
+  File "C:\Python27\lib\site-packages\django\views\generic\list.py", line 174, in get
+    context = self.get_context_data()
+  File "D:\GitHub\IronWeb\reportes\views.py", line 849, in get_context_data
+    comprobantes = comprobantes.values('pk','fecha_cpb','estado_color','estado_cpb','fecha_vto','cpb_tipo','get_cpb','get_cpb_tipo','cpb_tipo__codigo')
+  File "C:\Python27\lib\site-packages\django\db\models\query.py", line 606, in values
+    return self._clone(klass=ValuesQuerySet, setup=True, _fields=fields)
+  File "C:\Python27\lib\site-packages\django\db\models\query.py", line 960, in _clone
+    c._setup_query()
+  File "C:\Python27\lib\site-packages\django\db\models\query.py", line 1136, in _setup_query
+    self.query.add_fields(self.field_names, True)
+  File "C:\Python27\lib\site-packages\django\db\models\sql\query.py", line 1702, in add_fields
+    "Choices are: %s" % (name, ", ".join(names)))
+FieldError: Cannot resolve keyword 'estado_color' into field. Choices are: anulacion_fecha, anulacion_motivo, cae, cae_errores, cae_excepcion, cae_observaciones, cae_traceback, cae_vto, cae_xml_request, cae_xml_response, condic_pago, cpb_cobranza_cpb, cpb_cobranza_factura, cpb_comprobante_detalle, cpb_comprobante_fp, cpb_comprobante_padre, cpb_comprobante_perc_imp, cpb_comprobante_tot_iva, cpb_tipo, cpb_tipo_id, empresa, empresa_id, entidad, entidad_id, estado, estado_id, fecha_cpb, fecha_creacion, fecha_envio_mail, fecha_imputacion, fecha_recepcion_mail, fecha_vto, id, id_cpb_padre, id_cpb_padre_id, importe_exento, importe_gravado, importe_iva, importe_no_gravado, importe_perc_imp, importe_subtotal, importe_total, letra, numero, observacion, op_presupuesto, op_venta, presup_aprobacion, presup_aprobacion_id, presup_forma_pago, presup_tiempo_entrega, pto_vta, saldo, seguimiento, usuario, usuario_id, vendedor, vendedor_id
+[15/Mar/2019 11:33:00] ERROR [django.request:256] Internal Server Error: /reportes/vencimientos_cpbs/
+Traceback (most recent call last):
+  File "C:\Python27\lib\site-packages\django\core\handlers\base.py", line 132, in get_response
+    response = wrapped_callback(request, *callback_args, **callback_kwargs)
+  File "C:\Python27\lib\site-packages\django\views\generic\base.py", line 71, in view
+    return self.dispatch(request, *args, **kwargs)
+  File "C:\Python27\lib\site-packages\django\utils\decorators.py", line 34, in _wrapper
+    return bound_func(*args, **kwargs)
+  File "C:\Python27\lib\site-packages\django\contrib\auth\decorators.py", line 22, in _wrapped_view
+    return view_func(request, *args, **kwargs)
+  File "C:\Python27\lib\site-packages\django\utils\decorators.py", line 30, in bound_func
+    return func.__get__(self, type(self))(*args2, **kwargs2)
+  File "D:\GitHub\IronWeb\reportes\views.py", line 837, in dispatch
+    return super(vencimientos_cpbs, self).dispatch(*args,**kwargs)
+  File "C:\Python27\lib\site-packages\django\views\generic\base.py", line 89, in dispatch
+    return handler(request, *args, **kwargs)
+  File "C:\Python27\lib\site-packages\django\views\generic\list.py", line 174, in get
+    context = self.get_context_data()
+  File "D:\GitHub\IronWeb\reportes\views.py", line 849, in get_context_data
+    comprobantes = comprobantes.values('pk','fecha_cpb',F('estado_color'),'estado_cpb','fecha_vto','cpb_tipo','get_cpb','get_cpb_tipo','cpb_tipo__codigo')
+  File "C:\Python27\lib\site-packages\django\db\models\query.py", line 606, in values
+    return self._clone(klass=ValuesQuerySet, setup=True, _fields=fields)
+  File "C:\Python27\lib\site-packages\django\db\models\query.py", line 960, in _clone
+    c._setup_query()
+  File "C:\Python27\lib\site-packages\django\db\models\query.py", line 1136, in _setup_query
+    self.query.add_fields(self.field_names, True)
+  File "C:\Python27\lib\site-packages\django\db\models\sql\query.py", line 1687, in add_fields
+    name.split(LOOKUP_SEP), opts, alias, allow_many=allow_m2m)
+AttributeError: 'F' object has no attribute 'split'
+[15/Mar/2019 11:42:09] ERROR [django.request:256] Internal Server Error: /reportes/vencimientos_cpbs/
+Traceback (most recent call last):
+  File "C:\Python27\lib\site-packages\django\core\handlers\base.py", line 132, in get_response
+    response = wrapped_callback(request, *callback_args, **callback_kwargs)
+  File "C:\Python27\lib\site-packages\django\views\generic\base.py", line 71, in view
+    return self.dispatch(request, *args, **kwargs)
+  File "C:\Python27\lib\site-packages\django\utils\decorators.py", line 34, in _wrapper
+    return bound_func(*args, **kwargs)
+  File "C:\Python27\lib\site-packages\django\contrib\auth\decorators.py", line 22, in _wrapped_view
+    return view_func(request, *args, **kwargs)
+  File "C:\Python27\lib\site-packages\django\utils\decorators.py", line 30, in bound_func
+    return func.__get__(self, type(self))(*args2, **kwargs2)
+  File "D:\GitHub\IronWeb\reportes\views.py", line 837, in dispatch
+    return super(vencimientos_cpbs, self).dispatch(*args,**kwargs)
+  File "C:\Python27\lib\site-packages\django\views\generic\base.py", line 89, in dispatch
+    return handler(request, *args, **kwargs)
+  File "C:\Python27\lib\site-packages\django\views\generic\list.py", line 174, in get
+    context = self.get_context_data()
+  File "D:\GitHub\IronWeb\reportes\views.py", line 849, in get_context_data
+    comprobantes = comprobantes.values('pk','fecha_cpb',F('estado_color'),'estado_cpb','fecha_vto','cpb_tipo','get_cpb','get_cpb_tipo','cpb_tipo__codigo')
+  File "C:\Python27\lib\site-packages\django\db\models\query.py", line 606, in values
+    return self._clone(klass=ValuesQuerySet, setup=True, _fields=fields)
+  File "C:\Python27\lib\site-packages\django\db\models\query.py", line 960, in _clone
+    c._setup_query()
+  File "C:\Python27\lib\site-packages\django\db\models\query.py", line 1136, in _setup_query
+    self.query.add_fields(self.field_names, True)
+  File "C:\Python27\lib\site-packages\django\db\models\sql\query.py", line 1687, in add_fields
+    name.split(LOOKUP_SEP), opts, alias, allow_many=allow_m2m)
+AttributeError: 'F' object has no attribute 'split'
+[15/Mar/2019 11:42:43] ERROR [django.request:256] Internal Server Error: /reportes/vencimientos_cpbs/
+Traceback (most recent call last):
+  File "C:\Python27\lib\site-packages\django\core\handlers\base.py", line 132, in get_response
+    response = wrapped_callback(request, *callback_args, **callback_kwargs)
+  File "C:\Python27\lib\site-packages\django\views\generic\base.py", line 71, in view
+    return self.dispatch(request, *args, **kwargs)
+  File "C:\Python27\lib\site-packages\django\utils\decorators.py", line 34, in _wrapper
+    return bound_func(*args, **kwargs)
+  File "C:\Python27\lib\site-packages\django\contrib\auth\decorators.py", line 22, in _wrapped_view
+    return view_func(request, *args, **kwargs)
+  File "C:\Python27\lib\site-packages\django\utils\decorators.py", line 30, in bound_func
+    return func.__get__(self, type(self))(*args2, **kwargs2)
+  File "D:\GitHub\IronWeb\reportes\views.py", line 837, in dispatch
+    return super(vencimientos_cpbs, self).dispatch(*args,**kwargs)
+  File "C:\Python27\lib\site-packages\django\views\generic\base.py", line 89, in dispatch
+    return handler(request, *args, **kwargs)
+  File "C:\Python27\lib\site-packages\django\views\generic\list.py", line 174, in get
+    context = self.get_context_data()
+  File "D:\GitHub\IronWeb\reportes\views.py", line 849, in get_context_data
+    comprobantes = comprobantes.values('pk','fecha_cpb','estado_color','estado_cpb','fecha_vto','cpb_tipo','get_cpb','get_cpb_tipo','cpb_tipo__codigo')
+  File "C:\Python27\lib\site-packages\django\db\models\query.py", line 606, in values
+    return self._clone(klass=ValuesQuerySet, setup=True, _fields=fields)
+  File "C:\Python27\lib\site-packages\django\db\models\query.py", line 960, in _clone
+    c._setup_query()
+  File "C:\Python27\lib\site-packages\django\db\models\query.py", line 1136, in _setup_query
+    self.query.add_fields(self.field_names, True)
+  File "C:\Python27\lib\site-packages\django\db\models\sql\query.py", line 1702, in add_fields
+    "Choices are: %s" % (name, ", ".join(names)))
+FieldError: Cannot resolve keyword 'estado_color' into field. Choices are: anulacion_fecha, anulacion_motivo, cae, cae_errores, cae_excepcion, cae_observaciones, cae_traceback, cae_vto, cae_xml_request, cae_xml_response, condic_pago, cpb_cobranza_cpb, cpb_cobranza_factura, cpb_comprobante_detalle, cpb_comprobante_fp, cpb_comprobante_padre, cpb_comprobante_perc_imp, cpb_comprobante_tot_iva, cpb_tipo, cpb_tipo_id, empresa, empresa_id, entidad, entidad_id, estado, estado_id, fecha_cpb, fecha_creacion, fecha_envio_mail, fecha_imputacion, fecha_recepcion_mail, fecha_vto, id, id_cpb_padre, id_cpb_padre_id, importe_exento, importe_gravado, importe_iva, importe_no_gravado, importe_perc_imp, importe_subtotal, importe_total, letra, numero, observacion, op_presupuesto, op_venta, presup_aprobacion, presup_aprobacion_id, presup_forma_pago, presup_tiempo_entrega, pto_vta, saldo, seguimiento, usuario, usuario_id, vendedor, vendedor_id
+[15/Mar/2019 11:45:46] ERROR [django.request:256] Internal Server Error: /reportes/vencimientos_cpbs/
+Traceback (most recent call last):
+  File "C:\Python27\lib\site-packages\django\core\handlers\base.py", line 132, in get_response
+    response = wrapped_callback(request, *callback_args, **callback_kwargs)
+  File "C:\Python27\lib\site-packages\django\views\generic\base.py", line 71, in view
+    return self.dispatch(request, *args, **kwargs)
+  File "C:\Python27\lib\site-packages\django\utils\decorators.py", line 34, in _wrapper
+    return bound_func(*args, **kwargs)
+  File "C:\Python27\lib\site-packages\django\contrib\auth\decorators.py", line 22, in _wrapped_view
+    return view_func(request, *args, **kwargs)
+  File "C:\Python27\lib\site-packages\django\utils\decorators.py", line 30, in bound_func
+    return func.__get__(self, type(self))(*args2, **kwargs2)
+  File "D:\GitHub\IronWeb\reportes\views.py", line 837, in dispatch
+    return super(vencimientos_cpbs, self).dispatch(*args,**kwargs)
+  File "C:\Python27\lib\site-packages\django\views\generic\base.py", line 89, in dispatch
+    return handler(request, *args, **kwargs)
+  File "C:\Python27\lib\site-packages\django\views\generic\list.py", line 174, in get
+    context = self.get_context_data()
+  File "D:\GitHub\IronWeb\reportes\views.py", line 849, in get_context_data
+    comprobantes = comprobantes.values('pk','fecha_cpb','estado_color','estado_cpb','fecha_vto','cpb_tipo','get_cpb','get_cpb_tipo','cpb_tipo__codigo')
+  File "C:\Python27\lib\site-packages\django\db\models\query.py", line 606, in values
+    return self._clone(klass=ValuesQuerySet, setup=True, _fields=fields)
+  File "C:\Python27\lib\site-packages\django\db\models\query.py", line 960, in _clone
+    c._setup_query()
+  File "C:\Python27\lib\site-packages\django\db\models\query.py", line 1136, in _setup_query
+    self.query.add_fields(self.field_names, True)
+  File "C:\Python27\lib\site-packages\django\db\models\sql\query.py", line 1702, in add_fields
+    "Choices are: %s" % (name, ", ".join(names)))
+FieldError: Cannot resolve keyword 'estado_color' into field. Choices are: anulacion_fecha, anulacion_motivo, cae, cae_errores, cae_excepcion, cae_observaciones, cae_traceback, cae_vto, cae_xml_request, cae_xml_response, condic_pago, cpb_cobranza_cpb, cpb_cobranza_factura, cpb_comprobante_detalle, cpb_comprobante_fp, cpb_comprobante_padre, cpb_comprobante_perc_imp, cpb_comprobante_tot_iva, cpb_tipo, cpb_tipo_id, empresa, empresa_id, entidad, entidad_id, estado, estado_id, fecha_cpb, fecha_creacion, fecha_envio_mail, fecha_imputacion, fecha_recepcion_mail, fecha_vto, id, id_cpb_padre, id_cpb_padre_id, importe_exento, importe_gravado, importe_iva, importe_no_gravado, importe_perc_imp, importe_subtotal, importe_total, letra, numero, observacion, op_presupuesto, op_venta, presup_aprobacion, presup_aprobacion_id, presup_forma_pago, presup_tiempo_entrega, pto_vta, saldo, seguimiento, usuario, usuario_id, vendedor, vendedor_id
+[15/Mar/2019 12:11:07] ERROR [django.request:256] Internal Server Error: /reportes/vencimientos_cpbs/
+Traceback (most recent call last):
+  File "C:\Python27\lib\site-packages\django\core\handlers\base.py", line 132, in get_response
+    response = wrapped_callback(request, *callback_args, **callback_kwargs)
+  File "C:\Python27\lib\site-packages\django\views\generic\base.py", line 71, in view
+    return self.dispatch(request, *args, **kwargs)
+  File "C:\Python27\lib\site-packages\django\utils\decorators.py", line 34, in _wrapper
+    return bound_func(*args, **kwargs)
+  File "C:\Python27\lib\site-packages\django\contrib\auth\decorators.py", line 22, in _wrapped_view
+    return view_func(request, *args, **kwargs)
+  File "C:\Python27\lib\site-packages\django\utils\decorators.py", line 30, in bound_func
+    return func.__get__(self, type(self))(*args2, **kwargs2)
+  File "D:\GitHub\IronWeb\reportes\views.py", line 837, in dispatch
+    return super(vencimientos_cpbs, self).dispatch(*args,**kwargs)
+  File "C:\Python27\lib\site-packages\django\views\generic\base.py", line 89, in dispatch
+    return handler(request, *args, **kwargs)
+  File "C:\Python27\lib\site-packages\django\views\generic\list.py", line 174, in get
+    context = self.get_context_data()
+  File "D:\GitHub\IronWeb\reportes\views.py", line 849, in get_context_data
+    comprobantes = comprobantes.values('pk','fecha_cpb','estado__color','estado_cpb','fecha_vto','cpb_tipo','get_cpb','get_cpb_tipo','cpb_tipo__codigo')
+  File "C:\Python27\lib\site-packages\django\db\models\query.py", line 606, in values
+    return self._clone(klass=ValuesQuerySet, setup=True, _fields=fields)
+  File "C:\Python27\lib\site-packages\django\db\models\query.py", line 960, in _clone
+    c._setup_query()
+  File "C:\Python27\lib\site-packages\django\db\models\query.py", line 1136, in _setup_query
+    self.query.add_fields(self.field_names, True)
+  File "C:\Python27\lib\site-packages\django\db\models\sql\query.py", line 1702, in add_fields
+    "Choices are: %s" % (name, ", ".join(names)))
+FieldError: Cannot resolve keyword 'estado_cpb' into field. Choices are: anulacion_fecha, anulacion_motivo, cae, cae_errores, cae_excepcion, cae_observaciones, cae_traceback, cae_vto, cae_xml_request, cae_xml_response, condic_pago, cpb_cobranza_cpb, cpb_cobranza_factura, cpb_comprobante_detalle, cpb_comprobante_fp, cpb_comprobante_padre, cpb_comprobante_perc_imp, cpb_comprobante_tot_iva, cpb_tipo, cpb_tipo_id, empresa, empresa_id, entidad, entidad_id, estado, estado_id, fecha_cpb, fecha_creacion, fecha_envio_mail, fecha_imputacion, fecha_recepcion_mail, fecha_vto, id, id_cpb_padre, id_cpb_padre_id, importe_exento, importe_gravado, importe_iva, importe_no_gravado, importe_perc_imp, importe_subtotal, importe_total, letra, numero, observacion, op_presupuesto, op_venta, presup_aprobacion, presup_aprobacion_id, presup_forma_pago, presup_tiempo_entrega, pto_vta, saldo, seguimiento, usuario, usuario_id, vendedor, vendedor_id
+[15/Mar/2019 12:13:28] ERROR [django.request:256] Internal Server Error: /reportes/vencimientos_cpbs/
+Traceback (most recent call last):
+  File "C:\Python27\lib\site-packages\django\core\handlers\base.py", line 132, in get_response
+    response = wrapped_callback(request, *callback_args, **callback_kwargs)
+  File "C:\Python27\lib\site-packages\django\views\generic\base.py", line 71, in view
+    return self.dispatch(request, *args, **kwargs)
+  File "C:\Python27\lib\site-packages\django\utils\decorators.py", line 34, in _wrapper
+    return bound_func(*args, **kwargs)
+  File "C:\Python27\lib\site-packages\django\contrib\auth\decorators.py", line 22, in _wrapped_view
+    return view_func(request, *args, **kwargs)
+  File "C:\Python27\lib\site-packages\django\utils\decorators.py", line 30, in bound_func
+    return func.__get__(self, type(self))(*args2, **kwargs2)
+  File "D:\GitHub\IronWeb\reportes\views.py", line 837, in dispatch
+    return super(vencimientos_cpbs, self).dispatch(*args,**kwargs)
+  File "C:\Python27\lib\site-packages\django\views\generic\base.py", line 89, in dispatch
+    return handler(request, *args, **kwargs)
+  File "C:\Python27\lib\site-packages\django\views\generic\list.py", line 174, in get
+    context = self.get_context_data()
+  File "D:\GitHub\IronWeb\reportes\views.py", line 849, in get_context_data
+    comprobantes = comprobantes.values('pk','fecha_cpb','estado__color','estado__nombre','fecha_vto','cpb_tipo','get_cpb','get_cpb_tipo','cpb_tipo__codigo')
+  File "C:\Python27\lib\site-packages\django\db\models\query.py", line 606, in values
+    return self._clone(klass=ValuesQuerySet, setup=True, _fields=fields)
+  File "C:\Python27\lib\site-packages\django\db\models\query.py", line 960, in _clone
+    c._setup_query()
+  File "C:\Python27\lib\site-packages\django\db\models\query.py", line 1136, in _setup_query
+    self.query.add_fields(self.field_names, True)
+  File "C:\Python27\lib\site-packages\django\db\models\sql\query.py", line 1702, in add_fields
+    "Choices are: %s" % (name, ", ".join(names)))
+FieldError: Cannot resolve keyword 'get_cpb' into field. Choices are: anulacion_fecha, anulacion_motivo, cae, cae_errores, cae_excepcion, cae_observaciones, cae_traceback, cae_vto, cae_xml_request, cae_xml_response, condic_pago, cpb_cobranza_cpb, cpb_cobranza_factura, cpb_comprobante_detalle, cpb_comprobante_fp, cpb_comprobante_padre, cpb_comprobante_perc_imp, cpb_comprobante_tot_iva, cpb_tipo, cpb_tipo_id, empresa, empresa_id, entidad, entidad_id, estado, estado_id, fecha_cpb, fecha_creacion, fecha_envio_mail, fecha_imputacion, fecha_recepcion_mail, fecha_vto, id, id_cpb_padre, id_cpb_padre_id, importe_exento, importe_gravado, importe_iva, importe_no_gravado, importe_perc_imp, importe_subtotal, importe_total, letra, numero, observacion, op_presupuesto, op_venta, presup_aprobacion, presup_aprobacion_id, presup_forma_pago, presup_tiempo_entrega, pto_vta, saldo, seguimiento, usuario, usuario_id, vendedor, vendedor_id
+[15/Mar/2019 12:29:06] ERROR [django.request:256] Internal Server Error: /reportes/vencimientos_cpbs/
+Traceback (most recent call last):
+  File "C:\Python27\lib\site-packages\django\core\handlers\base.py", line 164, in get_response
+    response = response.render()
+  File "C:\Python27\lib\site-packages\django\template\response.py", line 158, in render
+    self.content = self.rendered_content
+  File "C:\Python27\lib\site-packages\django\template\response.py", line 135, in rendered_content
+    content = template.render(context, self._request)
+  File "C:\Python27\lib\site-packages\django\template\backends\django.py", line 74, in render
+    return self.template.render(context)
+  File "C:\Python27\lib\site-packages\django\template\base.py", line 209, in render
+    return self._render(context)
+  File "C:\Python27\lib\site-packages\django\test\utils.py", line 96, in instrumented_test_render
+    return self.nodelist.render(context)
+  File "C:\Python27\lib\site-packages\django\template\base.py", line 903, in render
+    bit = self.render_node(node, context)
+  File "C:\Python27\lib\site-packages\django\template\debug.py", line 79, in render_node
+    return node.render(context)
+  File "C:\Python27\lib\site-packages\django\template\loader_tags.py", line 135, in render
+    return compiled_parent._render(context)
+  File "C:\Python27\lib\site-packages\django\test\utils.py", line 96, in instrumented_test_render
+    return self.nodelist.render(context)
+  File "C:\Python27\lib\site-packages\django\template\base.py", line 903, in render
+    bit = self.render_node(node, context)
+  File "C:\Python27\lib\site-packages\django\template\debug.py", line 79, in render_node
+    return node.render(context)
+  File "C:\Python27\lib\site-packages\django\template\loader_tags.py", line 135, in render
+    return compiled_parent._render(context)
+  File "C:\Python27\lib\site-packages\django\test\utils.py", line 96, in instrumented_test_render
+    return self.nodelist.render(context)
+  File "C:\Python27\lib\site-packages\django\template\base.py", line 903, in render
+    bit = self.render_node(node, context)
+  File "C:\Python27\lib\site-packages\django\template\debug.py", line 79, in render_node
+    return node.render(context)
+  File "C:\Python27\lib\site-packages\django\template\loader_tags.py", line 65, in render
+    result = block.nodelist.render(context)
+  File "C:\Python27\lib\site-packages\django\template\base.py", line 903, in render
+    bit = self.render_node(node, context)
+  File "C:\Python27\lib\site-packages\django\template\debug.py", line 79, in render_node
+    return node.render(context)
+  File "C:\Python27\lib\site-packages\django\template\loader_tags.py", line 65, in render
+    result = block.nodelist.render(context)
+  File "C:\Python27\lib\site-packages\django\template\base.py", line 903, in render
+    bit = self.render_node(node, context)
+  File "C:\Python27\lib\site-packages\django\template\debug.py", line 79, in render_node
+    return node.render(context)
+  File "C:\Python27\lib\site-packages\django\template\base.py", line 1195, in render
+    return func(*resolved_args, **resolved_kwargs)
+  File "C:\Python27\lib\site-packages\bootstrap3\templatetags\bootstrap3.py", line 517, in bootstrap_field
+    return render_field(*args, **kwargs)
+  File "C:\Python27\lib\site-packages\bootstrap3\forms.py", line 78, in render_field
+    return renderer_cls(field, **kwargs).render()
+  File "C:\Python27\lib\site-packages\bootstrap3\renderers.py", line 254, in __init__
+    'Parameter "field" should contain a valid Django BoundField.'
+BootstrapError: Parameter "field" should contain a valid Django BoundField.
+[15/mar/2019 13:02:10] ERROR [django.request:256] Internal Server Error: /reportes/vencimientos_cpbs/
+Traceback (most recent call last):
+  File "C:\Python27\lib\site-packages\django\core\handlers\base.py", line 223, in get_response
+    response = middleware_method(request, response)
+  File "C:\Python27\lib\site-packages\debug_toolbar\middleware.py", line 117, in process_response
+    content = force_text(response.content, encoding=settings.DEFAULT_CHARSET)
+  File "C:\Python27\lib\site-packages\django\utils\encoding.py", line 99, in force_text
+    s = s.decode(encoding, errors)
+  File "C:\Python27\lib\encodings\utf_8.py", line 16, in decode
+    return codecs.utf_8_decode(input, errors, True)
+MemoryError
