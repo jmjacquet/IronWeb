@@ -141,19 +141,19 @@
   </tr>
 </table>
 <div id="page-footer">
-  <table id="tabla_totales" width="100%"  align="center" >    
+  <table id="tabla_totales" width="100%"  align="middle" >    
     <tr>
-      <td width="50%" rowspan="4" align="center" class="borde_izq borde_arriba borde_abajo">
+      <td width="50%" rowspan="4" align="middle" class="borde_izq borde_arriba borde_abajo">
         {% if facturado %}
-        <table width="100%" align="center">
+        <table width="100%" align="middle">
           <tr>
           <td valign="middle">            
-            <div align="center">
-              <img  src="{% static 'images/afip.png' %}" alt="afip" width="80" height="20" align="center" />
+            <div align="middle">
+              <img  src="{% static 'images/afip.png' %}" alt="afip" width="80" height="20" align="middle" />
               <span class="cae_autorizado" align="right">Comprobante Autorizado</span>
             </div>
             <span class="cae_leyenda">La Administración Federal no se responsabiliza por los datos ingresados en el detalle de la operación</span>
-            <div align="center">
+            <div align="middle">
               <span align="texto_izq">CAE Nº:{{cpb.cae}}</span>
               <span align="texto_der">Fecha Vto.CAE:{{cpb.cae_vto|date:'d/m/Y'}}</span>
             </div>
