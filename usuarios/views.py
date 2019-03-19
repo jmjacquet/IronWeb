@@ -14,9 +14,8 @@ from .forms import *
 #     else:
 #         permisos = UsuUsuario.objects.filter(permisos__permiso_name__id_app=id_app).values_list('permisos__permiso_name', flat=True).distinct()
 #     return permisos
-
-
 #####################
+
 @login_required 
 def ver_permisos(request):
     try:
@@ -56,24 +55,6 @@ from django.contrib.auth.forms import PasswordChangeForm
 from django.shortcuts import render, redirect
 from django.utils.translation import ugettext as _
 
-# @login_required 
-# def cambiar_password(request):
-#     form = UsuarioCambiarPasswdForm(request.POST or None)
-#     if request.method == 'POST':        
-#         if form.is_valid():            
-#             new_password = form.cleaned_data['new_password']
-#             usuario=request.user.userprofile.id_usuario
-#             clave = make_password(password=new_password,salt=None,hasher='unsalted_md5')
-#             usuario.password = clave
-#             usuario.save()
-#             update_session_auth_hash(request, usuario)
-#             messages.success(request, _(u'Su contraseña fué actualizada!'))
-#             return redirect('principal')
-#         else:
-#             messages.error(request, _(u'Ingrese los datos correctamente.'))    
-#     return render(request, 'general/varios/cambiar_password.html', {
-#         'form': form
-#     })
 
 @login_required 
 def cambiar_password(request):            
