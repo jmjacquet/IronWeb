@@ -15,8 +15,8 @@ try:
 	def application(environ, start_response):
 		global _application
 		if _application == None:
-			os.environ['ENTIDAD_ID'] = 1
-			os.environ['ENTIDAD_DB'] = 'gg_copyfast'
+			os.environ['ENTIDAD_ID'] = '1'
+			os.environ['ENTIDAD_DB'] = 'gg_contable'
 			os.environ['ENTIDAD_DIR'] = 'copyfast'
 			_application = get_wsgi_application()
 		return _application(environ, start_response)

@@ -15,7 +15,7 @@ try:
 	def application(environ, start_response):
 		global _application
 		if _application == None:
-			os.environ['ENTIDAD_ID'] = 1
+			os.environ['ENTIDAD_ID'] = '1'
 			os.environ['ENTIDAD_DB'] = 'gg_ironweb'
 			os.environ['ENTIDAD_DIR'] = 'sucec'
 			_application = get_wsgi_application()
