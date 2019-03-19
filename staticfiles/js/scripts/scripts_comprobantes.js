@@ -57,7 +57,7 @@ var tabla = $('#dataTables-cpb_venta').DataTable({
            "searching": true,
             fixedHeader: {
               header: false,
-              footer: true
+              footer: false
               },
             responsive: true,
             dom: 'Bfrtlip',
