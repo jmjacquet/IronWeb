@@ -7,9 +7,8 @@
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
 <title>{{cpb|upper}}</title>
-
+<link rel="stylesheet" href="{% static 'css/reportes_factura.css' %}" type="text/css" />
 <style type="text/css">
-@import url("{% static 'css/reportes_factura.css'%}");
 
  @page {
          margin: 0.5cm 0.5cm 0.5cm 0.5cm;         
@@ -18,8 +17,7 @@
                         -pdf-frame-content: page-footer;                        
                         height: 2cm;
                         margin-right: 0.5cm;                        
-                        margin-left: 0.5cm;                        
-                        width: 100%;                       
+                        margin-left: 0.5cm;                                           
                         bottom: 0.5cm;
                     }
          @frame footer {
@@ -29,9 +27,7 @@
                         margin-left: 0.5cm; 
                         height: 0.5cm;
                         bottom:0.2cm;                        
-                        width: 100%;
-                        
-                       
+
                     }         
          }
 </style>

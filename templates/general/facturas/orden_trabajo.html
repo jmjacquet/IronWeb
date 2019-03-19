@@ -6,9 +6,8 @@
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
 <title>{{pedido|upper}}</title>
-
+<link rel="stylesheet" href="{% static 'css/reportes_factura.css' %}" type="text/css" />
 <style type="text/css">
-@import url("{% static 'css/reportes_factura.css'%}");
 
  @page {
          margin: 1cm 0.5cm 1cm 0.5cm;
@@ -19,7 +18,6 @@
                         height: 4cm;
                         margin-right: 0.5cm;                        
                         margin-left: 0.5cm;                        
-                        width: 100%;
                     }
          @frame header {
                         -pdf-frame-content: page-header;
