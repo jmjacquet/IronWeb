@@ -285,7 +285,7 @@ def ultimp_nro_cpb_ajax(request):
                         nro = ult_cpb.numero + 1        
     except:
         nro=1
-        print 'error ultimo nro'
+        #print 'error ultimo nro'
     nro=list({nro})     
     
     return HttpResponse( json.dumps(nro, cls=DjangoJSONEncoder), content_type='application/json' )   

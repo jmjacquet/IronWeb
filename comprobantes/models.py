@@ -624,7 +624,7 @@ def ultimoNro(tipoCpb,ptoVenta,letra,entidad=None):
                 nro = tipo.ultimo_nro + 1            
         return nro
     except:        
-        print 'error ultimo nro'
+        #print 'error ultimo nro'
         tipo=cpb_tipo.objects.get(id=tipoCpb)
         nro = tipo.ultimo_nro
     return nro
