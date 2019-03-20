@@ -120,10 +120,10 @@ class egr_entidad(models.Model):
 
 		return  entidad      
 
+	detalle_entidad = property(__unicode__)
+
 	def get_entidad(self):
-		entidad=u'%s' % (self.apellido_y_nombre)
-		# if self.codigo:
-		# 	entidad = u'%s - %s' % (self.codigo,entidad)     		
+		entidad=u'%s' % (self.apellido_y_nombre)		
 		if self.fact_categFiscal:
 			entidad = u'%s - %s' % (entidad,self.fact_categFiscal)     		
 

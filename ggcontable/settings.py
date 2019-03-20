@@ -20,10 +20,6 @@ MANAGERS = ADMINS
 ENTIDAD_ID = os.environ.get('ENTIDAD_ID')
 ENTIDAD_DB = os.environ.get('ENTIDAD_DB')
 ENTIDAD_DIR = os.environ.get('ENTIDAD_DIR')
-# ENTIDAD_ID = '1'
-# # ENTIDAD_DB = 'gg_contable'
-# ENTIDAD_DB = 'gg_ironweb'
-# ENTIDAD_DIR = 'copyfast'
 
 DB_USER = "gg"
 DB_PASS = "battlehome"
@@ -40,8 +36,6 @@ DATABASES = {
         'PORT': '',      
     },
 }
-if 'test' in sys.argv or 'test_coverage' in sys.argv: #Covers regular testing and django-coverage
-    DATABASES['default']['ENGINE'] = 'django.db.backends.sqlite3'
 
 ALLOWED_HOSTS = '*'
 TIME_ZONE = 'America/Argentina/Buenos_Aires'
@@ -82,9 +76,7 @@ TEMPLATE_CONTEXT_PROCESSORS =   (
     'django.contrib.messages.context_processors.messages',
 )
 
-#SECRET_KEY = '7i@#mz$&m(!02ij#^-z)wd1+g4yay9*s%5vw7ix$@#m)k=unrx'
-
-SECRET_KEY = os.environ.get('DJANGO_SECRET_KEY', '7i@#mz$&m(!02ij#^-z)wd1+g4yay9*s%5vw7ix$@#m)k=unrx')
+SECRET_KEY = '7i@#mz$&m(!02ij#^-z)wd1+g4yay9*s%5vw7ix$@#m)k=unrx'
 
 TEMPLATE_LOADERS = (
     'django.template.loaders.filesystem.Loader',
@@ -144,8 +136,8 @@ SESSION_SERIALIZER = 'django.contrib.sessions.serializers.JSONSerializer'
 
 # EMAIL_PORT = 465
 EMAIL_HOST = 'smtp.webfaction.com'
-EMAIL_HOST_USER = 'copyfast'
-EMAIL_HOST_PASSWORD = 'facugonza'
+EMAIL_HOST_USER = 'grupogua_errores'
+EMAIL_HOST_PASSWORD = 'battlehome'
 # EMAIL_USE_TLS = True
 # EMAIL_HOST_USER = os.environ.get('EMAIL_HOST_USER', 'grupogua_errores')
 # EMAIL_HOST_PASSWORD = os.environ.get('EMAIL_HOST_PASSWORD', None)
@@ -222,7 +214,6 @@ AUTH_PROFILE_MODULE = 'usuarios.UserProfile'
 AUTHENTICATION_BACKENDS = ('django.contrib.auth.backends.ModelBackend','usuarios.authentication.UsuarioBackend',)
 SESSION_EXPIRE_AT_BROWSER_CLOSE = True
 SESSION_COOKIE_NAME = "grupogua"
-SESSION_COOKIE_AGE = 86400
 SECRET_KEY='grupoguadalupe'
 
 

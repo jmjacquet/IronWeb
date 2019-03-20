@@ -204,11 +204,11 @@
                                                     <a href="{% url 'caja_diaria' %}">Detalle Ingresos/Egresos</a>
                                                   </li>   
                                                   {% endif %}        
-                                                
+                                                {% if 'rep_seguim_cheques' in permisos_grupo %}
                                                   <li>
                                                     <a href="{% url 'seguimiento_cheques' %}">Seguimiento Cheques</a>
                                                   </li>   
-                                                    
+                                                 {% endif %}        
                                             </ul>
                                         </li>
                                         {% endif %}

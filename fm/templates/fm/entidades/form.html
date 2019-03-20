@@ -189,6 +189,11 @@
 		    {% endif %}       
 	        {% for hidden in form.hidden_fields %} {{ hidden }} {% endfor %}
 	 </div>    
+	 <div class="row">
+         <div class="col-xs-12">
+         	{{form.empresa|as_crispy_field}}
+         </div>
+     </div>
     </form>
 </div>
 {% block extra_js %}

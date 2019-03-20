@@ -1,0 +1,17 @@
+INFORMES:
+========
+
+.Ventas/Compras por Producto/Categoria/Cliente/TipoProd/Vendedor --> Prod/Cant/Precio/Total
+
+.Saldos -->A vencer/Vencidos/Total y Cta Cte Clientes/Proveedores  (movimientos)
+
+.Ventas vs Compras (IngresosvsEgresos)
+
+.Informe de Gastos (Impuestos, servicios, oficina etc)
+.Informe Stock (stock, costo total, valor venta total)
+
+.Saldos y Cobros/Pagos en Cuentas (ver capturas)
+.Informe Auditoria por Usuario
+
+
+

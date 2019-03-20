@@ -39,8 +39,8 @@ class FormaPagoForm(forms.ModelForm):
 		request = kwargs.pop('request', None)
 		super(FormaPagoForm, self).__init__(*args, **kwargs)
 		try:
-			empresa = request.user.userprofile.id_usuario.empresa						
-			self.fields['cuenta'].queryset = cpb_cuenta.objects.filter(empresa=empresa,baja=False,tipo__in=[0,1,2])			
+			empresa = empresa_actual(request)						
+			self.fields['cuenta'].queryset = cpb_cuenta.objects.filter(empresa__id__in=empresas_habilitadas(request),baja=False,tipo__in=[0,1,2])			
 		except gral_empresa.DoesNotExist:
 			empresa = None	
 
@@ -75,11 +75,11 @@ class MovimCuentasFPForm(forms.ModelForm):
 		request = kwargs.pop('request', None)
 		super(MovimCuentasFPForm, self).__init__(*args, **kwargs)
 		try:
-			empresa = request.user.userprofile.id_usuario.empresa			
-			self.fields['tipo_forma_pago'].queryset = cpb_tipo_forma_pago.objects.filter(empresa=empresa,baja=False,cuenta__tipo__in=[0,1,3])			
-			self.fields['mdcp_banco'].queryset = cpb_banco.objects.filter(empresa=empresa,baja=False)			
-			self.fields['cta_egreso'].queryset = cpb_cuenta.objects.filter(empresa=empresa,baja=False,tipo__in=[0,1,3])			
-			self.fields['cta_ingreso'].queryset = cpb_cuenta.objects.filter(empresa=empresa,baja=False,tipo__in=[0,1,3])			
+			empresa = empresa_actual(request)			
+			self.fields['tipo_forma_pago'].queryset = cpb_tipo_forma_pago.objects.filter(empresa__id__in=empresas_habilitadas(request),baja=False,cuenta__tipo__in=[0,1,3])			
+			self.fields['mdcp_banco'].queryset = cpb_banco.objects.filter(empresa__id__in=empresas_habilitadas(request),baja=False)			
+			self.fields['cta_egreso'].queryset = cpb_cuenta.objects.filter(empresa__id__in=empresas_habilitadas(request),baja=False,tipo__in=[0,1,3])			
+			self.fields['cta_ingreso'].queryset = cpb_cuenta.objects.filter(empresa__id__in=empresas_habilitadas(request),baja=False,tipo__in=[0,1,3])			
 		except gral_empresa.DoesNotExist:
 			empresa = None		
 
@@ -192,8 +192,8 @@ class DispoForm(forms.ModelForm):
 		super(DispoForm, self).__init__(*args, **kwargs)
 		try:
 			empresa = empresa_actual(request)
-			self.fields['tipo_forma_pago'].queryset = cpb_tipo_forma_pago.objects.filter(empresa=empresa,baja=False)			
-			self.fields['banco'].queryset = cpb_banco.objects.filter(empresa=empresa,baja=False)			
+			self.fields['tipo_forma_pago'].queryset = cpb_tipo_forma_pago.objects.filter(empresa__id__in=empresas_habilitadas(request),baja=False)			
+			self.fields['banco'].queryset = cpb_banco.objects.filter(empresa__id__in=empresas_habilitadas(request),baja=False)			
 		except gral_empresa.DoesNotExist:
 			empresa = None	
 
@@ -228,7 +228,7 @@ class FormChequesCobro(forms.Form):
 		super(FormChequesCobro, self).__init__(*args, **kwargs)
 		try:			
 			empresa = empresa_actual(request)					
-			self.fields['cuenta'].queryset = cpb_cuenta.objects.filter(empresa=empresa,baja=False,tipo__in=[0,1])			
+			self.fields['cuenta'].queryset = cpb_cuenta.objects.filter(empresa__id__in=empresas_habilitadas(request),baja=False,tipo__in=[0,1])			
 		except gral_empresa.DoesNotExist:
 			empresa = None
 

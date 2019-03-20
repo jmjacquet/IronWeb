@@ -30,7 +30,7 @@
                         </thead>
                         <tbody>
                             {% for cpb in comprobantes %}
-                            <tr {% if cpb.estado.pk = 3 %}class="{{cpb.estado.color}}"{% endif %}>                                                          
+                            <tr {% if cpb.estado.pk = 3 %}class="{{cpb.estado_color}}"{% endif %}>                                                          
                                 <td><div class="btn-group">
                                       <button type="button" class="btn btn-xs blue-hoki" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                                         <i class="icon-settings"> </i> <span class="caret"></span>

@@ -46,11 +46,11 @@ class ProductosForm(forms.ModelForm):
 		request = kwargs.pop('request', None)
 		super(ProductosForm, self).__init__(*args, **kwargs)      
 		try:
-			empresa = request.user.userprofile.id_usuario.empresa			
-			self.fields['cta_ingreso'].queryset = gral_plan_cuentas.objects.filter(baja=False,empresa=empresa,tipo=1)
-			self.fields['cta_egreso'].queryset = gral_plan_cuentas.objects.filter(baja=False,empresa=empresa,tipo=2)			
-			self.fields['ubicacion'].queryset = prod_ubicacion.objects.filter(baja=False,empresa=empresa)			
-			self.fields['categoria'].queryset = prod_categoria.objects.filter(baja=False,empresa=empresa)			
+			empresa = empresa_actual(request)			
+			self.fields['cta_ingreso'].queryset = gral_plan_cuentas.objects.filter(baja=False,empresa__id__in=empresas_habilitadas(request),tipo=1)
+			self.fields['cta_egreso'].queryset = gral_plan_cuentas.objects.filter(baja=False,empresa__id__in=empresas_habilitadas(request),tipo=2)			
+			self.fields['ubicacion'].queryset = prod_ubicacion.objects.filter(baja=False,empresa__id__in=empresas_habilitadas(request))			
+			self.fields['categoria'].queryset = prod_categoria.objects.filter(baja=False,empresa__id__in=empresas_habilitadas(request))			
 		except gral_empresa.DoesNotExist:
 			empresa = None  
 
@@ -79,8 +79,8 @@ class Producto_ListaPreciosForm(forms.ModelForm):
 		request = kwargs.pop('request', None)
 		super(Producto_ListaPreciosForm, self).__init__(*args, **kwargs)      
 		try:
-			empresa = request.user.userprofile.id_usuario.empresa			
-			self.fields['lista_precios'].queryset = prod_lista_precios.objects.filter(baja=False,empresa=empresa)			
+			empresa = empresa_actual(request)			
+			self.fields['lista_precios'].queryset = prod_lista_precios.objects.filter(baja=False,empresa__id__in=empresas_habilitadas(request))			
 		except gral_empresa.DoesNotExist:
 			empresa = None  
 
@@ -104,8 +104,8 @@ class Producto_StockForm(forms.ModelForm):
 		request = kwargs.pop('request', None)
 		super(Producto_StockForm, self).__init__(*args, **kwargs)      
 		try:
-			empresa = request.user.userprofile.id_usuario.empresa			
-			self.fields['ubicacion'].queryset = prod_ubicacion.objects.filter(baja=False,empresa=empresa)			
+			empresa = empresa_actual(request)			
+			self.fields['ubicacion'].queryset = prod_ubicacion.objects.filter(baja=False,empresa__id__in=empresas_habilitadas(request))			
 		except gral_empresa.DoesNotExist:
 			empresa = None  
 
@@ -141,11 +141,11 @@ class ConsultaLPreciosProd(forms.Form):
 	tipo_prod = forms.ChoiceField(label=u'Tipo',choices=TIPO_PRODUCTO_,initial=0)
 	mostrar_en = forms.ChoiceField(label=u'Mostrar en',choices=MOSTRAR_PRODUCTO_,required=False,initial=0)
 
-	def __init__(self, *args, **kwargs):
-		empresa = kwargs.pop('empresa', None)  
+	def __init__(self, *args, **kwargs):		
+		request = kwargs.pop('request', None)
 		super(ConsultaLPreciosProd, self).__init__(*args, **kwargs)				
-		self.fields['lista_precios'].queryset = prod_lista_precios.objects.filter(baja=False,empresa=empresa)
-		self.fields['categoria'].queryset = prod_categoria.objects.filter(baja=False,empresa=empresa)
+		self.fields['lista_precios'].queryset = prod_lista_precios.objects.filter(baja=False,empresa__id__in=empresas_habilitadas(request))
+		self.fields['categoria'].queryset = prod_categoria.objects.filter(baja=False,empresa__id__in=empresas_habilitadas(request))
 		
 
 class Producto_EditarPrecioForm(forms.ModelForm):	
@@ -190,10 +190,10 @@ class ConsultaStockProd(forms.Form):
 	lleva_stock = forms.ChoiceField(label=u'Lleva Stock',required = True,choices=SINO,initial=1)
 
 	def __init__(self, *args, **kwargs):
-		empresa = kwargs.pop('empresa', None)  
+		request = kwargs.pop('request', None)
 		super(ConsultaStockProd, self).__init__(*args, **kwargs)				
-		self.fields['ubicacion'].queryset = prod_ubicacion.objects.filter(baja=False,empresa=empresa)
-		self.fields['categoria'].queryset = prod_categoria.objects.filter(baja=False,empresa=empresa)
+		self.fields['ubicacion'].queryset = prod_ubicacion.objects.filter(baja=False,empresa__id__in=empresas_habilitadas(request))
+		self.fields['categoria'].queryset = prod_categoria.objects.filter(baja=False,empresa__id__in=empresas_habilitadas(request))
 
 OPERACION2_ = (
  (21,'Movimiento Ingreso Stock'),	

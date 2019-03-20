@@ -39,7 +39,8 @@ urlpatterns = patterns('ingresos.views',
     url(r'^presup/eliminar/(?P<id>\d+)/$', CPBPresupDeleteView, name="cpb_presup_eliminar"),    
     url(r'^presup_aprobacion/(?P<id>\d+)/(?P<estado>\d+)/$', presup_aprobacion, name="presup_aprobacion"),    
 
-    
-    # url(r'^cta_cte_clientes/$', cta_cte_clientes.as_view(), name="cta_cte_clientes"),    
+    url(r'^liqprod/nuevo/$', CPBLiqProdCreateView.as_view(), name="cpb_liqprod_nuevo"),    
+    url(r'^liqprod/editar/(?P<id>\d+)/$', CPBLiqProdEditView.as_view(), name="cpb_liqprod_editar"),
+    url(r'^liqprod/eliminar/(?P<id>\d+)/$', CPBLiqProdDeleteView, name="cpb_liqprod_eliminar"),
      
     )

@@ -60,7 +60,7 @@
                                 <td title="{{ cpb.cpb_tipo}}">{{ cpb.cpb_tipo.codigo|default_if_none:'' }}</td>
                                 <td >{{ cpb.get_cpb }}</td>                                
                                 <td  {% if cpb.cae %}title="Vencimiento CAE: {{cpb.cae_vto|date:'d/m/Y'}}" class="listado_estado success"{% endif %}> {{cpb.cae|default_if_none:''}}</td>       
-                                <td  title="{{ cpb.entidad}}" >{% include "entidades/cliente_ver.html" %}</td>
+                                <td  title="{{ cpb.entidad}}" ><strong>{{ cpb.entidad|truncatechars:60 }}</strong></td>
                                 <td class="importe">${{cpb.get_importe_gravado|default_if_none:0|floatformat:2}}</td>
                                 <td class="importe">${{cpb.get_importe_iva|default_if_none:0|floatformat:2}}</td>
                                 <td class="importe">${{cpb.get_importe_perc_imp|default_if_none:0|floatformat:2}}</td>

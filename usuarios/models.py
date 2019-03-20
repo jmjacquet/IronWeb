@@ -47,7 +47,7 @@ def get_image_name_usr(instance, filename):
 
 
 class usu_usuario(models.Model):
-    id_usuario = models.AutoField(db_column='ID_USUARIO', primary_key=True) # Field name made lowercase.    
+    id_usuario = models.AutoField(db_column='ID_USUARIO', primary_key=True,unique=True) # Field name made lowercase.    
     nombre = models.CharField(db_column='NOMBRE', max_length=200, blank=True) # Field name made lowercase.
     usuario = models.CharField(db_column='USUARIO', max_length=100, blank=True) # Field name made lowercase.    
     password = models.CharField(db_column='PASSWORD', max_length=100, blank=True) # Field name made lowercase.
@@ -60,6 +60,7 @@ class usu_usuario(models.Model):
     permisos = models.ManyToManyField(UsuPermiso)    
     baja = models.BooleanField(default=False)
     cpb_pto_vta = models.ForeignKey('comprobantes.cpb_pto_vta',verbose_name=u'Punto Vta', db_column='cpb_pto_vta',blank=True, null=True,on_delete=models.SET_NULL)
+    usuario_relacionado = models.ForeignKey('self',to_field='id_usuario',db_column='usuario_relacionado',related_name='usuario_relac',blank=True, null=True,on_delete=models.SET_NULL)
     
     class Meta:
         db_table = 'usu_usuario'
@@ -74,8 +75,8 @@ class usu_usuario(models.Model):
 # #Tabla de Usuario con datos Extra
 # class usu_usuario_permisos(models.Model):
 #     id = models.AutoField(db_column='ID', primary_key=True) 
-#     usuario = models.ForeignKey(usu_usuario,db_column='USU_USUARIO_ID',blank=True, null=True,on_delete=models.SET_NULL)
-#     permiso = models.ForeignKey(UsuPermiso,db_column='USUPERMISO_ID',blank=True, null=True,on_delete=models.SET_NULL)
+#     usuario = models.ForeignKey(usu_usuario,db_column='usu_usuario_id',blank=True, null=True,on_delete=models.SET_NULL)
+#     permiso = models.ForeignKey(UsuPermiso,db_column='usupermiso_id',blank=True, null=True,on_delete=models.SET_NULL)
 #     class Meta:
 #         db_table = 'usu_usuario_permisos'
 

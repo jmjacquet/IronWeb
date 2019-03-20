@@ -41,7 +41,7 @@
                         <thead>
                             <tr>                                                               
                                 <th class="no-sort text-center"></th>
-                                <th class="no-sort text-center"></th>
+                                <th class="no-sort text-center"> <input type="checkbox" id="checkall" title="Seleccionar Todas"/></th>
                                 <th class="">Producto</th>
                                 <th>Categoría</th>
                                 <th>TipoProd.</th>                                                                
@@ -153,7 +153,7 @@ var tabla = $('#dataTables-lprecios').DataTable({
                   "targets"  : 'no-sort',
                   "orderable": false,
                 }],          
-           "paging":   true,
+           "paging":   false,
            "lengthMenu": [[50, -1], [50, "Todos"]],
            "autoWidth": false,           
            "order": [],

@@ -38,7 +38,7 @@
                         </thead>
                         <tbody>
                             {% for cpb in comprobantes %}
-                            <tr {% if cpb.estado.pk = 3 %}class="{{cpb.estado.color}}"{% endif %}>                                                        
+                            <tr {% if cpb.estado.pk = 3 %}class="{{cpb.estado_color}}"{% endif %}>                                                        
                                 <td><div class="btn-group">
                                       <button type="button" title="{{ cpb.pk|safe}}" class="btn btn-xs color_barra" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                                         <i class="icon-settings"> </i> <span class="caret"></span>
@@ -58,7 +58,7 @@
                                             onClick="alerta= alertify.dialog('confirm').set({'labels':{ok:'Aceptar', cancel:'Cancelar'},'message': '¿DESEA ANULAR EL COMPROBANTE ACTUAL?',transition:'fade','onok': function(){ window.location.href = '{% url 'cpb_anular_reactivar' id=cpb.pk estado=3  %}'; },'oncancel': function(){ return true;} }); alerta.setting('modal', true); alerta.setHeader('ANULAR/REACTIVAR COMPROBANTE'); alerta.show(); return true;" ><i class="icon-dislike"></i>Anular</a></li>                                                
                                         {% endif %}
                                         <li><a href="#" 
-                                                onClick="alerta= alertify.dialog('confirm').set({'labels':{ok:'Aceptar', cancel:'Cancelar'},'message': '¿DESEA ELIMINAR LA COMPRA SELECCIONADA?',transition:'fade','onok': function(){ window.location.href = '{% url 'cpb_pago_eliminar' id=cpb.pk %}'; },'oncancel': function(){ return true;} }); alerta.setting('modal', true); alerta.setHeader('ELIMINAR COMPROBANTE'); alerta.show(); return true;"><i class="icon-trash"></i>Eliminar</a>
+                                                onClick="alerta= alertify.dialog('confirm').set({'labels':{ok:'Aceptar', cancel:'Cancelar'},'message': '¿DESEA ELIMINAR LA OP SELECCIONADA?',transition:'fade','onok': function(){ window.location.href = '{% url 'cpb_pago_eliminar' id=cpb.pk %}'; },'oncancel': function(){ return true;} }); alerta.setting('modal', true); alerta.setHeader('ELIMINAR COMPROBANTE'); alerta.show(); return true;"><i class="icon-trash"></i>Eliminar</a>
                                         </li>      
                                         <li role="separator" class="divider"></li>
                                         <li><a href="{% url 'cpb_editar_seguimiento' id=cpb.pk %}"  class="fm-update" data-fm-head="EDITAR SEGUIMIENTO"  title="Editar Seguimiento" data-fm-target="#object-{{ item.pk }}" data-fm-callback="reload" ><i class="icon-note"></i>Seguimiento</a></li>                                               

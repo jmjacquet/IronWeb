@@ -20,6 +20,11 @@ from productos.models import prod_productos,prod_producto_lprecios,prod_lista_pr
 from comprobantes.models import cpb_comprobante,cpb_pto_vta
 from entidades.models import egr_entidad
 
+
+def empresas_buscador(request):        
+    empresas = gral_empresa.objects.filter(id__in=empresas_habilitadas(request)).order_by('id')        
+    return empresas
+
 def pto_vta_habilitados(request):    
     empresa = empresa_actual(request)  
     usuario = usuario_actual(request) 
@@ -36,13 +41,14 @@ def pto_vta_habilitados(request):
 def pto_vta_habilitados_list(request):    
     pvs = pto_vta_habilitados(request)
     pvs = [pto.numero for pto in pvs]
+   
     return pvs
 
 def pto_vta_buscador(request):    
     empresa = empresa_actual(request)  
     usuario = usuario_actual(request) 
     pv = cpb_pto_vta.objects.filter(baja=False).order_by('numero')
-
+    pvs = []
     if empresa:
     	pv = pv.filter(empresa=empresa)        
     try:
@@ -64,6 +70,7 @@ def get_pv_defecto(request):
             return num_pv
         else:
             return 1
+
             
 class ConsultaCpbs(forms.Form):               
 	entidad = forms.CharField(label='Cliente',max_length=100,widget=forms.TextInput(attrs={'class':'form-control','text-transform': 'uppercase'}),required=False)
@@ -79,7 +86,7 @@ class ConsultaCpbs(forms.Form):
 		request = kwargs.pop('request', None)  
 		empresa = kwargs.pop('empresa', None)  
 		super(ConsultaCpbs, self).__init__(*args, **kwargs)				
-		self.fields['vendedor'].queryset = egr_entidad.objects.filter(tipo_entidad=3,baja=False,empresa=empresa)
+		self.fields['vendedor'].queryset = egr_entidad.objects.filter(tipo_entidad=3,baja=False,empresa__id__in=empresas_habilitadas(request))
 		pto_vta = pto_vta_buscador(request)
 		self.fields['pto_vta'].choices = pto_vta
 
@@ -152,7 +159,7 @@ class ConsultaLPreciosProductos(forms.Form):
     def __init__(self, *args, **kwargs):		
 		empresa = kwargs.pop('empresa', None)     
 		super(ConsultaLPreciosProductos, self).__init__(*args, **kwargs)
-		self.fields['lista'].queryset = prod_lista_precios.objects.filter(baja=False,empresa=empresa).order_by('nombre')			
+		self.fields['lista'].queryset = prod_lista_precios.objects.filter(baja=False,empresa__id__in=empresas_habilitadas(request)).order_by('nombre')			
 		
 
 # class UserForm(UserCreationForm):

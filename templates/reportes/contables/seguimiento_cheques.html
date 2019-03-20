@@ -173,9 +173,9 @@
                                    <td title="{{i.cpb_comprobante.cpb_tipo|default_if_none:''}}" class="">
                                     <a href="{% url 'recibo_ver' id=i.cpb_comprobante.id %}"  title="VER" class="modal-detail" data-modal-head="DETALLE {{i.cpb_comprobante.cpb_tipo.nombre|upper}} {{i.cpb_comprobante}}   Fecha:{{i.cpb_comprobante.fecha_cpb|date:'d/m/Y'}}  Vencimiento:{{i.cpb_comprobante.fecha_vto|date:'d/m/Y'}}" data-fm-callback="reload">  
                                       <i class="fa fa-list-alt text-primary"></i></a>{{i.cpb_comprobante.cpb_tipo.codigo|default_if_none:''}}: {{i.cpb_comprobante|default_if_none:''}}</td>
-                                   <td title="{{i.mdcp_salida.cpb_tipo|default_if_none:''}}" class="">{% if i.mdcp_salida %}
-                                    <a href="{% url 'recibo_ver' id=i.mdcp_salida.id %}"  title="VER" class="modal-detail" data-modal-head="DETALLE {{i.mdcp_salida.cpb_tipo.nombre|upper}} {{i.mdcp_salida}}   Fecha:{{i.mdcp_salida.fecha_cpb|date:'d/m/Y'}}  Vencimiento:{{i.mdcp_salida.fecha_vto|date:'d/m/Y'}}" data-fm-callback="reload">  
-                                      <i class="fa fa-list-alt text-primary"></i></a>{{i.mdcp_salida.cpb_tipo.codigo|default_if_none:''}}: {{i.mdcp_salida|default_if_none:''}}{% endif %}
+                                   <td title="{{i.get_origen.cpb_tipo|default_if_none:''}}" class="">{% if i.get_origen %}
+                                    <a href="{% url 'recibo_ver' id=i.get_origen.id %}"  title="VER" class="modal-detail" data-modal-head="DETALLE {{i.get_origen.cpb_tipo.nombre|upper}} {{i.get_origen}}   Fecha:{{i.get_origen.fecha_cpb|date:'d/m/Y'}}  Vencimiento:{{i.get_origen.fecha_vto|date:'d/m/Y'}}" data-fm-callback="reload">  
+                                      <i class="fa fa-list-alt text-primary"></i></a>{{i.get_origen.cpb_tipo.codigo|default_if_none:''}}: {{i.get_origen|default_if_none:''}}{% endif %}
                                     </td>
 
                                    <td class="">{{i.cpb_comprobante.entidad|default_if_none:''}}</td>

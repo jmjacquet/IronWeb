@@ -553,16 +553,6 @@ class OTEditView(VariablesMixin,UpdateView):
 
         return self.render_to_response(self.get_context_data(form=form,ot_detalle = ot_detalle,pedido=pedido,pedido_detalles=pedido_detalles))
 
-        # RecCobranzaCPBFormSet = inlineformset_factory(cpb_comprobante, cpb_cobranza, fk_name='cpb_comprobante',form=CPBRecCPBForm,formset=CPBReciboCPBFormSet, can_delete=False,extra=len(cpbs_cobro),max_num=len(cpbs_cobro))
-        # d=[]
-        # for cpb in cpbs_cobro:
-        #     c = cpb.cpb_factura
-        #     entidad = c.entidad                                
-        #     d.append({'detalle_cpb': c.get_cpb_tipo(),'desc_rec':'0','importe_total':cpb.importe_total,'saldo':c.saldo,'id_cpb_factura':c.id,'cpb_factura':c})            
-        # cpbs = RecCobranzaCPBFormSet(prefix='formCPB',initial=d)      
-        # return self.render_to_response(self.get_context_data(form=form,cpb_fp=cpb_fp,cpbs=cpbs))
-
-        # return self.render_to_response(self.get_context_data(form=form,ot_detalle=ot_detalle,op_detalle=op_detalle))
 
     def post(self, request, *args, **kwargs):
         self.object = self.get_object()

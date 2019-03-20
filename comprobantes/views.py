@@ -38,13 +38,12 @@ def eliminar_detalles_fp_huerfanos(request):
     ids = [int(x) for x in ids]
     
     detalles = cpb_comprobante_detalle.objects.filter(cpb_comprobante__empresa=empresa).exclude(cpb_comprobante__id__in=ids).values_list('cpb_comprobante',flat=True)
-    print detalles 
+
     # for c in detalles
     #     recalcular_saldo_cpb(c.id)
 
     return HttpResponse( json.dumps(list(detalles), cls=DjangoJSONEncoder), content_type='application/json' )     
   
-
 @login_required 
 def recalcular_compras(request):
     usr= request.user     
@@ -131,7 +130,6 @@ def obtener_stock(prod_ubi):
         total_stock = cpb_comprobante_detalle.objects.filter(cpb_comprobante__estado__in=[1,2],cpb_comprobante__cpb_tipo__usa_stock=True,cpb_comprobante__empresa__id=prod_ubi.producto.empresa.id,producto__id=prod_ubi.producto.id,origen_destino__id=prod_ubi.ubicacion.id).prefetch_related('cpb_comprobante__empresa','producto','ubicacion').aggregate(total=Sum(F('cantidad') *F('cpb_comprobante__cpb_tipo__signo_stock'),output_field=DecimalField()))['total'] or 0               
         return total_stock
 
-
 @login_required 
 def buscarDatosProd(request):                                  
    try:                          
@@ -181,7 +179,6 @@ def buscarDatosProd(request):
      prod= {}
    return HttpResponse( json.dumps(prod, cls=DjangoJSONEncoder), content_type='application/json' )     
   
-
 def buscarPrecioProd(prod,letra,cant,precio):                                  
                                        
        coeficiente = 0
@@ -213,7 +210,6 @@ def buscarPrecioProd(prod,letra,cant,precio):
    
        return prod
   
-
 @login_required 
 def buscarDatosEntidad(request):                     
    
@@ -266,31 +262,33 @@ def setearCta_FP(request):
     datos= []
    return HttpResponse( json.dumps(datos, cls=DjangoJSONEncoder), content_type='application/json' )   
 
-
 @login_required 
 def ultimp_nro_cpb_ajax(request):
     tipo = request.GET.get('cpb_tipo',0)
     letra = request.GET.get('letra','X')
     pto_vta = request.GET.get('pto_vta',0)
     entidad = request.GET.get('entidad',None)
+
     try:
         tipo=cpb_tipo.objects.get(id=tipo)        
         nro = 1    
         if tipo.usa_pto_vta == True:            
-            pv = cpb_pto_vta.objects.get(numero=int(pto_vta))            
-            nro = cpb_pto_vta_numero.objects.get(cpb_tipo=tipo,letra=letra,cpb_pto_vta=pv).ultimo_nro+1                
+            pv = cpb_pto_vta.objects.get(numero=int(pto_vta),empresa=empresa_actual(request))                        
+            ult_nro = cpb_pto_vta_numero.objects.get(cpb_tipo=tipo,letra=letra,cpb_pto_vta=pv,empresa=empresa_actual(request)).ultimo_nro
+            nro = ult_nro+1                
         else:
             nro = 1        
             if entidad:
                 entidad = egr_entidad.objects.get(id=entidad)
-                ult_cpb = cpb_comprobante.objects.filter(entidad=entidad,cpb_tipo=tipo,letra=letra,pto_vta=int(pto_vta)).order_by('numero').last()        
+                ult_cpb = cpb_comprobante.objects.filter(entidad=entidad,cpb_tipo=tipo,letra=letra,pto_vta=int(pto_vta),empresa=empresa_actual(request)).order_by('numero').last()        
                 if ult_cpb:
                         nro = ult_cpb.numero + 1        
     except:
         nro=1
+        #print 'error ultimo nro'
     nro=list({nro})     
+    
     return HttpResponse( json.dumps(nro, cls=DjangoJSONEncoder), content_type='application/json' )   
-
 
 @login_required 
 def buscarDatosCPB(request):                     
@@ -318,11 +316,11 @@ def verifUnificacion(request):
     cant = 0
     data= {}
     if cpbs: 
-        comprobantes = cpb_comprobante.objects.filter(id__in=cpbs,cae=None,estado__id__lte=1)                                       
+        comprobantes = cpb_comprobante.objects.filter(id__in=cpbs,cae=None,estado__id__lte=2,cpb_tipo__tipo__in=[1,2,3,9])                                       
         cant_cpbs = len(set(list(comprobantes.values_list('id',flat=True))))        
         cant_entidades = len(set(list(comprobantes.values_list('entidad',flat=True))))
         cant_cpb_tipo = len(set(list(comprobantes.values_list('cpb_tipo',flat=True))))                    
-        data = {'cant_cpbs':int(cant_cpbs),'cant_entidades':int(cant_entidades),'cant_cpb_tipo':int(cant_cpb_tipo)}
+        data = {'cant_cpbs':int(cant_cpbs),'cant_entidades':int(cant_entidades),'cant_cpb_tipo':int(cant_cpb_tipo)}        
     return HttpResponse(json.dumps(data,cls=DjangoJSONEncoder), content_type = "application/json")
     
 @login_required 
@@ -341,9 +339,10 @@ def cpb_anular_reactivar(request,id,estado,descr=None):
     if ((cpb.cpb_tipo.tipo not in [4,7])and cpb.tiene_cobranzas()):       
         messages.error(request, u'¡El Comprobante posee movimientos de cobro/pago asociados!.Verifique')
         return HttpResponseRedirect(cpb.get_listado())
-    
+   
      #Para cada uno de los comprobantes de Movimientos/Traspaso anulo o reactivo sus CPBS(Cheques cobrados/diferidos/depositados)
     fps = cpb_comprobante_fp.objects.filter(cpb_comprobante=cpb,mdcp_salida__isnull=False).values_list('mdcp_salida',flat=True)
+    
     if (len(fps)>0):
         messages.error(request, u'¡El Comprobante posee movimientos de cobranza/depósito de Cheques asociados!. Verifique')
         return HttpResponseRedirect(cpb.get_listado())    
@@ -351,7 +350,8 @@ def cpb_anular_reactivar(request,id,estado,descr=None):
 
     state = cpb_estado.objects.get(id=estado)
     cpb.estado=state
-    if estado<3:
+    
+    if estado==3:
         cpb.anulacion_fecha=hoy()
     else:
         cpb.anulacion_fecha=None
@@ -360,18 +360,18 @@ def cpb_anular_reactivar(request,id,estado,descr=None):
         cpb.anulacion_motivo = descr 
     cpb.save()
     
-       
+
     movs = cpb_comprobante_fp.objects.filter(pk__in=fps)
     for m in movs:
         m.cpb_comprobante.estado = state
-        if estado<3:
+        if estado==3:
             m.cpb_comprobante.anulacion_fecha=hoy()
         else:
             m.cpb_comprobante.anulacion_fecha=None
 
         if descr:
             m.cpb_comprobante.anulacion_motivo = descr 
-        m.cpb_comprobante.save()
+        m.cpb_comprobante.save()   
 
     #Para cada uno de los comprobantes del Recibo/OP recalculo su saldo (Recibos/OP anulados no suman)
     if (cpb.cpb_tipo.tipo in [4,7]):
@@ -389,8 +389,7 @@ def cpb_facturar(request,id,nro):
     except:
         cpb=None
     #cpb.estado=cpb_estado.objects.get(id=4)
-    if cpb:        
-        print nro
+    if cpb:                
         if nro == None:
             nro = random.randrange(0, 99999999999999, 14) 
         nro = "{num:>014}".format(num=str(nro))
@@ -478,7 +477,6 @@ def cpbs_anular(request):
         cpb_anular_reactivar(request,c,3)    
 
     return HttpResponse(json.dumps(len(id_cpbs)), content_type = "application/json")
-
 
 class EditarSeguimientoView(VariablesMixin,AjaxUpdateView):
     form_class = SeguimientoForm
@@ -780,8 +778,6 @@ def imprimirRemito(request,id,pdf=None):
         return render_to_pdf(template,locals())
     return render_to_pdf_response(request, template, locals())
 
-
-
 @login_required 
 def imprimirCobranza(request,id,pdf=None):   
     cpb = cpb_comprobante.objects.get(id=id)        
@@ -971,7 +967,6 @@ class BancosDeleteView(VariablesMixin,AjaxDeleteView):
     def dispatch(self, *args, **kwargs):        
         return super(BancosDeleteView, self).dispatch(*args, **kwargs)
 
-
 #************* MOVIMIENTOS INTERNOS **************
 
 class MovInternosViewList(VariablesMixin,ListView):
@@ -993,7 +988,7 @@ class MovInternosViewList(VariablesMixin,ListView):
         except gral_empresa.DoesNotExist:
             empresa = None 
         form = ConsultaCpbsCompras(self.request.POST or None,empresa=empresa,request=self.request)   
-        movimientos = cpb_comprobante_fp.objects.filter(cpb_comprobante__cpb_tipo__id=13,cpb_comprobante__empresa=empresa).order_by('-cpb_comprobante__fecha_cpb','-cpb_comprobante__fecha_creacion').select_related('cpb_comprobante')                
+        movimientos = cpb_comprobante_fp.objects.filter(cpb_comprobante__cpb_tipo__id=13,cpb_comprobante__empresa__id__in=empresas_habilitadas(self.request)).order_by('-cpb_comprobante__fecha_cpb','-cpb_comprobante__fecha_creacion').select_related('cpb_comprobante')                
         if form.is_valid():                                
             fdesde = form.cleaned_data['fdesde']   
             fhasta = form.cleaned_data['fhasta']                                                             
@@ -1012,7 +1007,6 @@ class MovInternosViewList(VariablesMixin,ListView):
     
     def post(self, *args, **kwargs):
         return self.get(*args, **kwargs)
-
 
 class CPBMIFPFormSet(BaseInlineFormSet): 
     pass 
@@ -1277,8 +1271,6 @@ class RemitoVerView(VariablesMixin,DetailView):
         context['detalle_comprobante'] = detalle_comprobante             
         return context
 
-
-
 class PresupVerView(VariablesMixin,DetailView):
     model = cpb_comprobante
     pk_url_kwarg = 'id'
@@ -1301,9 +1293,6 @@ class PresupVerView(VariablesMixin,DetailView):
         context['detalle_comprobante'] = detalle_comprobante    
 
         return context
-
-
-
 
 # class MovimVerView(VariablesMixin,DetailView):
 #     model = cpb_comprobante
@@ -1342,12 +1331,10 @@ class PercImpView(VariablesMixin,ListView):
     def get_queryset(self):
         try:
             empresa = empresa_actual(self.request)
-            queryset = cpb_perc_imp.objects.filter(empresa=empresa)
+            queryset = cpb_perc_imp.objects.filter(empresa__id__in=empresas_habilitadas(self.request))
         except:
             queryset = cpb_perc_imp.objects.none()
         return queryset
-
-
 
 class PercImpCreateView(VariablesMixin,AjaxCreateView):
     form_class = PercImpForm
@@ -1398,8 +1385,6 @@ class PercImpDeleteView(VariablesMixin,AjaxDeleteView):
             return redirect(reverse('principal'))
         return super(PercImpDeleteView, self).dispatch(*args, **kwargs)
 
-
-
 #************* FormaPago  **************
 class FPView(VariablesMixin,ListView):
     model = cpb_tipo_forma_pago
@@ -1415,7 +1400,7 @@ class FPView(VariablesMixin,ListView):
     def get_queryset(self):
         try:
             empresa = empresa_actual(self.request)
-            queryset = cpb_tipo_forma_pago.objects.filter(empresa=empresa)
+            queryset = cpb_tipo_forma_pago.objects.filter(empresa__id__in=empresas_habilitadas(request))
         except:
             queryset = cpb_tipo_forma_pago.objects.none()
         return queryset
@@ -1479,7 +1464,6 @@ class FPDeleteView(VariablesMixin,AjaxDeleteView):
             return redirect(reverse('principal'))
         return super(FPDeleteView, self).dispatch(*args, **kwargs)
 
-
 #************* Pto de Venta y sus Nros **************
 class PtoVtaView(VariablesMixin,ListView):
     model = cpb_pto_vta
@@ -1506,7 +1490,7 @@ class PtoVtaView(VariablesMixin,ListView):
             usuario = usuario_actual(self.request) 
             queryset = cpb_pto_vta.objects.all().order_by('numero')
             if empresa:
-                queryset = queryset.filter(empresa=empresa)        
+                queryset = queryset.filter(empresa__id__in=empresas_habilitadas(self.request))        
             try:
                 if usuario.cpb_pto_vta:
                     queryset = queryset.filter(id=usuario.cpb_pto_vta.id)        
@@ -1517,7 +1501,6 @@ class PtoVtaView(VariablesMixin,ListView):
             queryset = cpb_pto_vta.objects.none()
 
         return queryset
-
 
 class PtoVtaCreateView(VariablesMixin,CreateView):
     form_class = PtoVtaForm
@@ -1587,7 +1570,6 @@ class PtoVtaEditView(VariablesMixin,UpdateView):
         # initial['request'] = self.request                      
         return initial
 
-
 class PtoVtaDeleteView(VariablesMixin,AjaxDeleteView):
     model = cpb_pto_vta
     pk_url_kwarg = 'id'
@@ -1615,7 +1597,6 @@ def pto_vta_numero_cambiar(request,id,nro):
             messages.success(request, u'Los datos se guardaron con éxito!')               
     return HttpResponseRedirect(reverse('pto_vta_listado'))
 
-
 #************* Disponibilidades **************
 class DispoView(VariablesMixin,ListView):
     model = cpb_cuenta
@@ -1635,7 +1616,7 @@ class DispoView(VariablesMixin,ListView):
     def get_queryset(self):
         try:
             empresa = empresa_actual(self.request)
-            queryset = cpb_cuenta.objects.filter(empresa=empresa)
+            queryset = cpb_cuenta.objects.filter(empresa__id__in=empresas_habilitadas(self.request))
         except:
             queryset = cpb_cuenta.objects.none()
         return queryset
@@ -1716,8 +1697,6 @@ def dispo_baja_reactivar(request,id):
     messages.success(self.request, u'Los datos se guardaron con éxito!')
     return HttpResponseRedirect(reverse("disponibilidades_listado"))
 
-
-
 @login_required 
 def SeleccionarChequesView(request):        
     if request.method == 'POST' and request.is_ajax():                                       
@@ -1736,7 +1715,6 @@ def SeleccionarChequesView(request):
         formCheques = FormCheques(request=request,id_cheques=id_cheques)
         variables = RequestContext(request, {'formCheques':formCheques})        
         return render_to_response("general/varios/buscar_cheques.html", variables)
-
 
 @login_required 
 def CobrarDepositarChequesView(request):        
@@ -1768,7 +1746,7 @@ def CobrarDepositarChequesView(request):
                 detalle = detalle+' '+str(c.mdcp_cheque)
 
             movimiento = cpb_comprobante(cpb_tipo=tipo,estado=estado,pto_vta=pto_vta,letra=letra,numero=numero,fecha_cpb=fecha_cpb,importe_total=total_cheques,
-                     usuario=usuario_actual(request),empresa = empresa_actual(request))            
+                     usuario=usuario_actual(request),empresa = empresa_actual(request),fecha_imputacion=fecha_cpb)            
             movimiento.save()
             
             tipo_fp=cpb_tipo_forma_pago.objects.get(pk=1)
@@ -1799,12 +1777,11 @@ def CobrarDepositarChequesView(request):
         variables = RequestContext(request, {'formCheques':formCheques,'total_cheques':total_cheques})        
         return render_to_response("general/varios/cobrar_cheques.html", variables)
 
-
 @login_required 
 def imprimir_detalles(request):        
     limpiar_sesion(request)        
     id_cpbs = [int(x) for x in request.GET.getlist('id_cpb')]        
-    cpbs_detalles = cpb_comprobante_detalle.objects.filter(cpb_comprobante__id__in=id_cpbs,cpb_comprobante__empresa = request.user.userprofile.id_usuario.empresa).order_by('cpb_comprobante__fecha_cpb','producto__nombre')
+    cpbs_detalles = cpb_comprobante_detalle.objects.filter(cpb_comprobante__id__in=id_cpbs,cpb_comprobante__empresa = empresa_actual(request)).order_by('cpb_comprobante__fecha_cpb','producto__nombre')
 
     context = {}
     context = getVariablesMixin(request)  

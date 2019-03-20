@@ -28,7 +28,9 @@
                     {% include "general/varios/barra_busqueda_compras.html" %}
                     <div class="btn-group" style="float:left;margin-right:20px;margin-bottom:10px;"> 
                     <a class="btn btn-sm blue-steel" style="float:left;margin-right:10px;" href="{% url 'cpb_compra_nuevo' %}">Nueva Compra</a>
+                    {% if 'cpb_compras_pagar' in permisos_grupo %}
                     <button class="btn btn-sm blue-steel" id="btnPago" style="float:left;margin-right:10px;" >Pagar</button>                                                           
+                    {% endif %}
                     <button class="btn btn-sm red-flamingo" value="" style="margin-right:10px;"  id="btnAnular">Anular</button>
 
                     <button class="btn btn-sm blue-steel" value="" id="btnImprimirDetalles">Listado Detalles</button>                                       
@@ -80,10 +82,11 @@
                                                 
                                                 <li><a href="#" 
                                                 onClick="alerta= alertify.dialog('confirm').set({'labels':{ok:'Aceptar', cancel:'Cancelar'},'message': '¿DESEA ANULAR EL COMPROBANTE ACTUAL?',transition:'fade','onok': function(){ window.location.href = '{% url 'cpb_anular_reactivar' id=cpb.pk estado=3  %}'; },'oncancel': function(){ return true;} }); alerta.setting('modal', true); alerta.setHeader('ANULAR/REACTIVAR COMPROBANTE'); alerta.show(); return true;" ><i class="icon-dislike"></i>Anular</a></li>
-                                                
-                                                {% if cpb.saldo > 0 %}
+                                               {% if 'cpb_compras_pagar' in permisos_grupo %} 
+                                                {% if cpb.saldo > 0 and cpb.cpb_tipo.usa_forma_pago %}
                                                 <li><a onclick="return abrir_modal('/egresos/pagos/comprobantes/?id_cpb={{cpb.id|safe}}');"><i class=" icon-note"></i>Orden de Pago</a></li>
                                                 {% endif %}
+                                               {% endif %} 
                                                 
                                                                                             
                                             {% endif %}
@@ -106,7 +109,7 @@
                                     <input type="checkbox" class='tildado' id="chk_{{forloop.counter0}}" value="{{ cpb.pk|safe }}"/>
                                     {% endif %}
                                 </td>
-                                <td class="listado_estado {{cpb.estado.color}}">{{cpb.estado}}</td>
+                                <td class="listado_estado {{cpb.estado_color}}">{{cpb.estado}}</td>
                                 <td class="text-center" title="Fecha Creación: {{cpb.fecha_creacion|date:'d/m/Y H:i'}}">{{cpb.fecha_cpb|date:'d/m/Y'}}</td>
                                 <td class="text-center" title="{{ cpb.cpb_tipo|default_if_none:'' }}">{{ cpb.cpb_tipo.codigo|default_if_none:'' }}</td>
                                 <td>{{ cpb}}</td>                                

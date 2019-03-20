@@ -465,11 +465,11 @@ class ProdLPreciosView(VariablesMixin,ListView):
             empresa = None 
         fecha = date.today()
         
-        form = ConsultaLPreciosProd(self.request.POST or None,empresa=empresa)   
-
-        precios = prod_producto_lprecios.objects.filter(producto__empresa=empresa,lista_precios__empresa=empresa).select_related('producto','producto__categoria').order_by('producto','lista_precios')
+        form = ConsultaLPreciosProd(self.request.POST or None,request=self.request)           
+        precios = prod_producto_lprecios.objects.none()
         
         if form.is_valid():                                
+            precios = prod_producto_lprecios.objects.filter(producto__empresa=empresa,lista_precios___empresa__id__in=empresas_habilitadas(self.request)).select_related('producto','producto__categoria').order_by('producto','lista_precios')
             producto = form.cleaned_data['producto']                                                              
             lista_precios = form.cleaned_data['lista_precios']                                                              
             categoria = form.cleaned_data['categoria']   
@@ -622,7 +622,7 @@ class ProdStockView(VariablesMixin,ListView):
             empresa = None 
         fecha = date.today()
         
-        form = ConsultaStockProd(self.request.POST or None,empresa=empresa)   
+        form = ConsultaStockProd(self.request.POST or None,request =self.request )   
 
         productos = prod_producto_ubicac.objects.none()
         
@@ -632,7 +632,7 @@ class ProdStockView(VariablesMixin,ListView):
             categoria = form.cleaned_data['categoria']   
             tipo_prod = int(form.cleaned_data['tipo_prod'])             
             lleva_stock = form.cleaned_data['lleva_stock']                         
-            productos = prod_producto_ubicac.objects.filter(producto__empresa=empresa,ubicacion__empresa=empresa,ubicacion=ubicacion).select_related('producto','producto__categoria')            
+            productos = prod_producto_ubicac.objects.filter(producto__empresa=empresa,ubicacion__empresa__id__in=empresas_habilitadas(self.request)).select_related('producto','producto__categoria')            
         
             if producto:
                 productos = productos.filter(producto__nombre__icontains=producto)
@@ -673,7 +673,7 @@ class ProdStockEditView(VariablesMixin,AjaxUpdateView):
         initial = super(ProdStockEditView, self).get_initial()                      
         return initial     
 
-from comprobantes.models import actualizar_stock
+from comprobantes.models import actualizar_stock_multiple
 
 @login_required 
 def prod_stock_actualizar(request):        
@@ -689,10 +689,8 @@ def prod_stock_actualizar(request):
         if form.is_valid():                                   
             tipo_operacion = int(form.cleaned_data['tipo_operacion'])                                                              
             valor = form.cleaned_data['valor']
-            cant=0
-            for p in prods:
-                actualizar_stock(request,p.producto,p.ubicacion,tipo_operacion,valor)                           
-                cant+=1
+            actualizar_stock_multiple(request,prods,tipo_operacion,valor) 
+            cant=len(prods)
 
             response = {'cant': cant, 'message': "Se actualizaron exitosamente."} # for ok        
         else:

@@ -7,9 +7,9 @@
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
 <title>{{cpb|upper}}</title>
-
+<link rel="stylesheet" href="{% static 'css/reportes_factura.css' %}" type="text/css" />
 <style type="text/css">
-@import url("{% static 'css/reportes_factura.css'%}");
+
  @page {
          margin: 0.5cm 0.5cm 0.5cm 0.5cm;
          padding: 0;         
@@ -25,10 +25,7 @@
                         {% else %}
                           height: 2.5cm;
                           bottom:0.4cm;
-                        {% endif %}
-                        width: 100%;
-
-                       
+                        {% endif %}                       
                     }
          @frame footer {
                         -pdf-frame-content: page-footer2;                       
@@ -37,9 +34,6 @@
                         margin-left: 0.5cm; 
                         height: 0.5cm;
                         bottom:0.2cm;                        
-                        width: 100%;
-                        
-                       
                     }
          }
 </style>
@@ -141,19 +135,19 @@
   </tr>
 </table>
 <div id="page-footer">
-  <table id="tabla_totales" width="100%"  align="middle" >    
+  <table id="tabla_totales" width="100%"  align="center" >    
     <tr>
-      <td width="50%" rowspan="4" align="middle" class="borde_izq borde_arriba borde_abajo">
+      <td width="50%" rowspan="4" align="center" class="borde_izq borde_arriba borde_abajo">
         {% if facturado %}
-        <table width="100%" align="middle">
+        <table width="100%" align="center">
           <tr>
           <td valign="middle">            
-            <div align="middle">
-              <img  src="{% static 'images/afip.png' %}" alt="afip" width="80" height="20" align="middle" />
+            <div align="center">
+              <img  src="{% static 'images/afip.png' %}" alt="afip" width="80" height="20" align="center" />
               <span class="cae_autorizado" align="right">Comprobante Autorizado</span>
             </div>
             <span class="cae_leyenda">La Administración Federal no se responsabiliza por los datos ingresados en el detalle de la operación</span>
-            <div align="middle">
+            <div align="center">
               <span align="texto_izq">CAE Nº:{{cpb.cae}}</span>
               <span align="texto_der">Fecha Vto.CAE:{{cpb.cae_vto|date:'d/m/Y'}}</span>
             </div>

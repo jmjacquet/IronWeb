@@ -67,13 +67,20 @@
 						</div>  
 				   </div>				  
 		         </fieldset>        
-		       </div>    
+		       </div>
+		   </div>		   	
+		   	<div class="row">
+		         <div class="col-xs-12">
+		         	{{form.empresa|as_crispy_field}}
+		         </div>
+		     </div>    		     
 				{% if form.non_field_errors  %}
 		     	<script type="text/javascript">
 		     	alertify.errorAlert("{% for err in form.non_field_errors %}{{ err }}{% endfor %}");
 		     	</script>
 		    {% endif %}       	        
 	        {% for hidden in form.hidden_fields %} {{ hidden }} {% endfor %}
+	  </div>
     </form>
 </div>
 

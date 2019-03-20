@@ -1,5 +1,4 @@
 # -*- coding: utf-8 -*-
-
 from django.contrib.auth import login as django_login, authenticate, logout as django_logout
 from django.shortcuts import *
 from settings import *
@@ -54,7 +53,7 @@ def login(request):
    
     template = 'login.html'      
             
-    return render_to_response(template, {'msj':messages},context_instance=RequestContext(request))
+    return render_to_response(template, {'msj':messages,'empresa':empresa},context_instance=RequestContext(request))
 
 def logout(request):
     request.session.clear()
@@ -74,3 +73,7 @@ def volverHome(request):
 #     if not request.user.is_active:
 #       return HttpResponseRedirect(LOGIN_URL)
 #     return HttpResponseRedirect(LOGIN_REDIRECT_URL)
+
+
+def alive(request):
+  return HttpResponse("Vive", status=200)

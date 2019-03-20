@@ -45,6 +45,7 @@ def cuenta_corriente(request,compra_venta,entidad,fdesde,fhasta,estado,empresa):
         cpbs=cpbs.filter(fecha_cpb__gte=fdesde)          
     if fhasta:                
         cpbs=cpbs.filter(fecha_cpb__lte=fhasta) 
+
     return cpbs
 
 @login_required 
@@ -55,11 +56,11 @@ def cta_cte_clientes(request,id=None):
     context = {}
     context = getVariablesMixin(request)    
     try:
-        empresa = request.user.userprofile.id_usuario.empresa
+        empresa = empresa_actual(request)
     except gral_empresa.DoesNotExist:
         empresa = None 
 
-    form = ConsultaCtaCteCliente(request.POST or None,empresa=empresa,id=id)   
+    form = ConsultaCtaCteCliente(request.POST or None,empresa=empresa,id=id,request=request)   
         
     cpbs = None
     total_debe = 0  
@@ -89,8 +90,9 @@ def cta_cte_clientes(request,id=None):
         cpbs = cuenta_corriente(request,'V',entidad,None,None,estado,empresa)
                 
         try:
-            total_debe = cpbs.filter(cpb_tipo__tipo__in=[1,3,9]).aggregate(sum=Sum(F('importe_total'), output_field=DecimalField()))['sum'] or 0          
-            total_haber = cpbs.filter(cpb_tipo__tipo__in=[2,4]).aggregate(sum=Sum(F('importe_total'), output_field=DecimalField()))['sum'] or 0             
+            total_debe = cpbs.filter(cpb_tipo__tipo__in=[1,3,9]).aggregate(sum=Sum(F('importe_total'), output_field=DecimalField()))['sum'] or 0
+            total_haber = cpbs.filter(cpb_tipo__tipo__in=[2,4]).aggregate(sum=Sum(F('importe_total'), output_field=DecimalField()))['sum'] or 0
+
         except:
             total_debe = 0  
             total_haber = 0             
@@ -165,7 +167,7 @@ class saldos_clientes(VariablesMixin,ListView):
             empresa = empresa_actual(self.request)
         except gral_empresa.DoesNotExist:
             empresa = None 
-        form = ConsultaSaldosClientes(self.request.POST or None,empresa=empresa)            
+        form = ConsultaSaldosClientes(self.request.POST or None,empresa=empresa,request=self.request)            
         fecha = date.today()
         totales = None
         
@@ -197,10 +199,10 @@ def cta_cte_proveedores(request,id=None):
         context = {}
         context = getVariablesMixin(request)    
         try:
-            empresa = request.user.userprofile.id_usuario.empresa
+            empresa = empresa_actual(request)
         except gral_empresa.DoesNotExist:
             empresa = None 
-        form = ConsultaCtaCteProv(request.POST or None,empresa=empresa,id=id)   
+        form = ConsultaCtaCteProv(request.POST or None,empresa=empresa,id=id,request=request)   
         cpbs = None
         total_debe = 0  
         total_haber = 0
@@ -245,7 +247,7 @@ def cta_cte_proveedores(request,id=None):
                         
             try:
                 total_ctacte_debe = cpbs.filter(cpb_tipo__tipo__in=[1,3,9]).aggregate(sum=Sum(F('importe_total'), output_field=DecimalField()))['sum'] or 0          
-                total_ctacte_haber = cpbs.filter(cpb_tipo__tipo__in=[2,7]).aggregate(sum=Sum(F('importe_total'), output_field=DecimalField()))['sum'] or 0          
+                total_ctacte_haber = cpbs.filter(cpb_tipo__tipo__in=[2,7]).aggregate(sum=Sum(F('importe_total'), output_field=DecimalField()))['sum'] or 0
             except:
                 total_ctacte_debe = 0
                 total_ctacte_haber = 0    
@@ -313,7 +315,7 @@ class saldos_proveedores(VariablesMixin,ListView):
         except gral_empresa.DoesNotExist:
             empresa = None 
 
-        form = ConsultaSaldosProv(self.request.POST or None,empresa=empresa)            
+        form = ConsultaSaldosProv(self.request.POST or None,empresa=empresa,request=self.request)            
         fecha = date.today()        
         totales = None
         if form.is_valid():                                
@@ -331,7 +333,6 @@ class saldos_proveedores(VariablesMixin,ListView):
     def post(self, *args, **kwargs):
         return self.get(*args, **kwargs)
              
-
 ################################################################
 
 import StringIO
@@ -495,7 +496,7 @@ def libro_iva_ventas(request):
     context = {}
     context = getVariablesMixin(request)    
     try:
-        empresa = request.user.userprofile.id_usuario.empresa
+        empresa = empresa_actual(request)
     except gral_empresa.DoesNotExist:
         empresa = None 
     form = ConsultaLibroIVAVentas(request.POST or None,empresa=empresa,request=request)            
@@ -510,26 +511,29 @@ def libro_iva_ventas(request):
         fact_x = form.cleaned_data['fact_x']  
         cae = form.cleaned_data['cae']  
         total = 0                    
-        cpbs = cpb_comprobante.objects.filter(cpb_tipo__libro_iva=True,cpb_tipo__compra_venta='V',empresa=empresa,fecha_imputacion__gte=fdesde,fecha_imputacion__lte=fhasta)\
+        cpbs = cpb_comprobante.objects.filter(cpb_tipo__compra_venta='V',pto_vta__in=pto_vta_habilitados_list(request),cpb_tipo__tipo__in=[1,2,3,9,14],empresa=empresa,fecha_imputacion__gte=fdesde,fecha_imputacion__lte=fhasta)\
             .select_related('cpb_tipo','entidad')\
-            .order_by('-fecha_imputacion','-numero','entidad__codigo','entidad__apellido_y_nombre','cpb_tipo__tipo')
-    
+            .order_by('-fecha_imputacion','-id','entidad__codigo','entidad__apellido_y_nombre','cpb_tipo__tipo')
+        
         if int(estado) == 0:                
             cpbs=cpbs.filter(estado__in=[1,2])                
         elif int(estado) == 2:                
             cpbs=cpbs.filter(estado__in=[3])
         else:                
             cpbs=cpbs.filter(estado__in=[1,2,3])
+        
+
         if entidad:
                cpbs= cpbs.filter(entidad=entidad)
         if pto_vta:
-               cpbs= cpbs.filter(pto_vta=pto_vta)
-        
+               cpbs= cpbs.filter(pto_vta=pto_vta)        
+
         if int(cae)!=0:
             no_tiene = (cae=='2')                
             cpbs= cpbs.filter(cae_vto__isnull=no_tiene)
+        
         if int(fact_x)==1:
-            cpbs= cpbs.filter(cpb_tipo__facturable=True)
+            cpbs= cpbs.filter(cpb_tipo__libro_iva=True)
                
         if ('cpbs' in request.POST)and(cpbs):                
             response = HttpResponse(generarCITI(cpbs,'V','cpbs'),content_type='text/plain')
@@ -545,7 +549,6 @@ def libro_iva_ventas(request):
     context['fecha'] = fecha          
     return render(request,'reportes/contables/libro_iva_ventas.html',context )
 
-
 @login_required                    
 def libro_iva_compras(request):
 
@@ -554,7 +557,7 @@ def libro_iva_compras(request):
     context = {}
     context = getVariablesMixin(request)    
     try:
-        empresa = request.user.userprofile.id_usuario.empresa
+        empresa = empresa_actual(request)
     except gral_empresa.DoesNotExist:
         empresa = None 
     form = ConsultaLibroIVACompras(request.POST or None,empresa=empresa,request=request)            
@@ -567,9 +570,9 @@ def libro_iva_compras(request):
         estado = form.cleaned_data['estado'] 
         pto_vta = form.cleaned_data['pto_vta'] 
                 
-        cpbs = cpb_comprobante.objects.filter(cpb_tipo__libro_iva=True,cpb_tipo__compra_venta='C',empresa=empresa,fecha_imputacion__gte=fdesde,fecha_imputacion__lte=fhasta)\
+        cpbs = cpb_comprobante.objects.filter(cpb_tipo__libro_iva=True,pto_vta__in=pto_vta_habilitados_list(request),cpb_tipo__tipo__in=[1,2,3,9],cpb_tipo__compra_venta='C',empresa=empresa,fecha_imputacion__gte=fdesde,fecha_imputacion__lte=fhasta)\
             .select_related('cpb_tipo','entidad')\
-            .order_by('-fecha_imputacion','-numero','entidad__codigo','entidad__apellido_y_nombre','cpb_tipo__tipo')
+            .order_by('-fecha_imputacion','-id','entidad__codigo','entidad__apellido_y_nombre','cpb_tipo__tipo')
         
         if int(estado) == 0:                
             cpbs=cpbs.filter(estado__in=[1,2])                
@@ -647,9 +650,7 @@ class caja_diaria(VariablesMixin,ListView):
                    ingresos= ingresos.filter(cpb_comprobante__pto_vta=pto_vta)
                    egresos= egresos.filter(cpb_comprobante__pto_vta=pto_vta)            
 
-            if cuenta:
-                   ingresos= ingresos.filter(cta_ingreso=cuenta)
-                   egresos= egresos.filter(cta_egreso=cuenta)
+            
 
             ingresos_resumen = ingresos.values('tipo_forma_pago__id','tipo_forma_pago__codigo','tipo_forma_pago__nombre')\
                             .annotate( saldo=Sum(ExpressionWrapper(F("importe"), output_field=FloatField())) )
@@ -658,6 +659,10 @@ class caja_diaria(VariablesMixin,ListView):
                             .annotate( saldo=Sum(ExpressionWrapper(F("importe"), output_field=FloatField())) )
             egresos_total = egresos.aggregate(egresos_total=Sum('importe'))
             
+            if cuenta:
+                   ingresos= ingresos.filter(cta_ingreso=cuenta)
+                   egresos= egresos.filter(cta_egreso=cuenta)
+                   
             ingresos_cta_resumen = ingresos.values('cta_ingreso__id','cta_ingreso__codigo','cta_ingreso__nombre').annotate( saldo=Sum(ExpressionWrapper(F("importe"), output_field=FloatField())) )
             ingresos_cta_total = ingresos.aggregate(ingresos_cta_total=Sum('importe'))
             egresos_cta_resumen = egresos.values('cta_egreso__id','cta_egreso__codigo','cta_egreso__nombre').annotate( saldo=Sum(ExpressionWrapper(F("importe"), output_field=FloatField())) )
@@ -709,16 +714,14 @@ class saldos_cuentas(VariablesMixin,ListView):
             cuenta = form.cleaned_data['cuenta']                                             
             pto_vta = form.cleaned_data['pto_vta'] 
             
-            if cuenta:
-                ctas = cpb_cuenta.objects.filter(id=cuenta.id)
-            else:
-                ctas = cpb_cuenta.objects.filter(empresa=empresa,baja=False)
+            ctas = cpb_cuenta.objects.filter(empresa=empresa,baja=False)
 
+            if cuenta:
+                ctas = ctas.filter(id=cuenta.id)           
             
             for cta in ctas:
                 
-                cpbs = cpb_comprobante_fp.objects.filter(cpb_comprobante__empresa=empresa,cpb_comprobante__estado__in=[1,2],cpb_comprobante__fecha_cpb__lte=fhasta).select_related('cpb_comprobante','cpb_comprobante__cpb_tipo','cta_egreso','cta_ingreso','tipo_forma_pago').order_by('cpb_comprobante__fecha_cpb','id')
-                
+                cpbs = cpb_comprobante_fp.objects.filter(cpb_comprobante__empresa=empresa,cpb_comprobante__estado__in=[1,2],cpb_comprobante__fecha_cpb__lte=fhasta).select_related('cpb_comprobante','cpb_comprobante__cpb_tipo','cta_egreso','cta_ingreso','tipo_forma_pago').order_by('cpb_comprobante__fecha_cpb','id')                
                 if pto_vta:
                     cpbs = cpbs.filter(cpb_comprobante__pto_vta=pto_vta)
                 
@@ -842,15 +845,13 @@ class vencimientos_cpbs(VariablesMixin,ListView):
         form = ConsultaVencimientos(self.request.POST or None,empresa=empresa,request=self.request)            
         fecha = date.today()        
 
-        comprobantes = cpb_comprobante.objects.filter(cpb_tipo__tipo__in=[1,2,3,4,5,6,7,9],empresa=empresa).order_by('-fecha_vto','-fecha_cpb','-id').select_related('estado','cpb_tipo','entidad','vendedor')
-        comprobantes = comprobantes.extra(select={'dias_restantes': "fecha_vto-current_date"})
-        comprobantes = comprobantes.extra(order_by = ['-dias_restantes','-fecha_cpb'])
+        comprobantes = cpb_comprobante.objects.filter(cpb_tipo__tipo__in=[1,2,3,4,5,6,7,9,14],empresa=empresa).order_by('-fecha_vto','-fecha_cpb','-id').select_related('cpb_tipo','estado','entidad')        
+                
         if form.is_valid():                                
             entidad = form.cleaned_data['entidad']                                                              
             fdesde = form.cleaned_data['fdesde']   
             fhasta = form.cleaned_data['fhasta']                                                 
-            pto_vta = form.cleaned_data['pto_vta']   
-            vendedor = form.cleaned_data['vendedor']                                                 
+            pto_vta = form.cleaned_data['pto_vta']               
             estado = form.cleaned_data['estado']
             tipo_cpb = form.cleaned_data['tipo_cpb']
             cae = form.cleaned_data['cae']  
@@ -870,9 +871,7 @@ class vencimientos_cpbs(VariablesMixin,ListView):
             if fhasta:
                 comprobantes= comprobantes.filter(fecha_cpb__lte=fhasta)
             if entidad:
-                comprobantes= comprobantes.filter(entidad__apellido_y_nombre__icontains=entidad)
-            if vendedor:
-                comprobantes= comprobantes.filter(vendedor=vendedor)
+                comprobantes= comprobantes.filter(entidad__apellido_y_nombre__icontains=entidad)           
             if pto_vta:
                 comprobantes= comprobantes.filter(pto_vta=pto_vta)            
 
@@ -912,7 +911,7 @@ class seguimiento_cheques(VariablesMixin,ListView):
         
         fecha = hoy()
         
-        form = ConsultaHistStockProd(self.request.POST or None,empresa=empresa)   
+        form = ConsultaHistStockProd(self.request.POST or None,empresa=empresa,request=self.request)   
         
         cheques = cpb_comprobante_fp.objects.filter(cpb_comprobante__empresa=empresa,tipo_forma_pago__cuenta__tipo=2,cpb_comprobante__estado__in=[1,2]).order_by('-fecha_creacion','-mdcp_fecha')\
             .select_related('cpb_comprobante','cta_ingreso','cta_egreso','tipo_forma_pago','mdcp_banco','cpb_comprobante__cpb_tipo','cpb_comprobante__entidad','mdcp_salida__cta_ingreso','mdcp_salida__cpb_comprobante__cpb_tipo')
@@ -962,7 +961,7 @@ class ProdHistoricoView(VariablesMixin,ListView):
             empresa = None 
         fecha = date.today()
         
-        form = ConsultaHistStockProd(self.request.POST or None,empresa=empresa)   
+        form = ConsultaHistStockProd(self.request.POST or None,empresa=empresa,request=self.request)   
 
         movimientos = cpb_comprobante_detalle.objects.none()
         #movimientos = cpb_comprobante_detalle.objects.filter(cpb_comprobante__empresa=empresa,cpb_comprobante__fecha_cpb=hoy()).select_related('producto','cpb_comprobante').order_by('producto')
@@ -985,9 +984,7 @@ class ProdHistoricoView(VariablesMixin,ListView):
     def post(self, *args, **kwargs):
         return self.get(*args, **kwargs)         
 
-
 ################################################################
-
 
 class RankingsView(VariablesMixin,TemplateView):
     template_name = 'reportes/varios/rankings.html'
@@ -1099,11 +1096,7 @@ class RankingsView(VariablesMixin,TemplateView):
 
 
 
-
-
-
 from django.http import JsonResponse
-
 
 def ValuesQuerySetToDict(vqs):
     return [item for item in vqs]

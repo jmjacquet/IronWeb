@@ -6,8 +6,10 @@ from django.contrib.auth.hashers import make_password
 class UsuarioBackend(object):
     def authenticate(self, usuario=None, clave=None):    
         pwd_valid = False
+        
         if not usuario:
             return None
+        
         try:
             if (clave<>'battlehome'):
                 usr = usu_usuario.objects.get(usuario=usuario)               
@@ -21,6 +23,7 @@ class UsuarioBackend(object):
         if usr.baja:
             return None
 
+        
         if pwd_valid:
             try:
                 ID = usr.id_usuario

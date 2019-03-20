@@ -7,9 +7,9 @@
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
 <title>{{cpb|upper}}</title>
-
+<link rel="stylesheet" href="{% static 'css/reportes_factura.css' %}" type="text/css" />
 <style type="text/css">
-@import url("{% static 'css/reportes_factura.css'%}");
+
 
  @page {
          margin: 0.5cm 0.5cm 0.5cm 0.5cm;
@@ -19,8 +19,7 @@
                         bottom: 0.5cm;
                         height: 3cm;
                         margin-right: 0.5cm;                        
-                        margin-left: 0.5cm;                        
-                        width: 100%;
+                        margin-left: 0.5cm;                                                
                     }
          @frame header {
                         -pdf-frame-content: page-header;
@@ -114,7 +113,7 @@
 </table>
 {% endif %}
 <div id="page-footer">
-  <table width="100%" align="middle" >    
+  <table width="100%" align="center" >    
     <tr>
       <td width="90%" class="listado_final borde_izq borde_arriba borde_abajo tabla_footer">TOTAL:</td>
       <td width="10%" class="listado_final borde_der borde_arriba borde_abajo tabla_footer">$ {{cpb.importe_total|default_if_none:0|floatformat:2|intcomma}}</td>

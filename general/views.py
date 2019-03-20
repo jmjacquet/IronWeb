@@ -25,13 +25,12 @@ from django.db.models import DecimalField,Func
 from django.core.serializers.json import DjangoJSONEncoder
 
 ##############################################
-#      Mixin para cargar las Vars de sistema #
+#   Mixin para cargar las Vars de sistema    #
 ##############################################
 
 def ultimoNroId(tabla):
     ultimo = tabla.objects.latest('id').id
     return ultimo
-
 
 @login_required 
 def buscarDatosAPICUIT(request):      
@@ -60,7 +59,6 @@ def buscarDatosAPICUIT(request):
     d= []
    return HttpResponse( json.dumps(d), content_type='application/json' ) 
 
-
 def getVariablesMixin(request):
     context = {} 
     context['ENTIDAD_ID'] = settings.ENTIDAD_ID
@@ -79,18 +77,22 @@ def getVariablesMixin(request):
     except gral_empresa.DoesNotExist:
         empresa = None                  
     context['empresa'] = empresa
+    
     try:
-        context['tipo_usr'] = usr.userprofile.id_usuario.tipoUsr
+        tipo_usr = usr.userprofile.id_usuario.tipoUsr
+        context['tipo_usr'] = tipo_usr
+        context['habilitado_contador'] = habilitado_contador(tipo_usr)
     except:
         context['tipo_usr'] = 1
+        context['habilitado_contador'] = False
 
     permisos_grupo = ver_permisos(request)
     context['permisos_grupo'] = permisos_grupo        
-    context['permisos_ingresos'] = ('cpb_ventas' in permisos_grupo)or('cpb_cobranzas' in permisos_grupo)or('cpb_remitos' in permisos_grupo)or('cpb_presupuestos' in permisos_grupo)        
+    context['permisos_ingresos'] = ('cpb_ventas' in permisos_grupo)or('cpb_cobranzas' in permisos_grupo)or('cpb_remitos' in permisos_grupo)or('cpb_presupuestos' in permisos_grupo)or('cpb_liqprod_abm' in permisos_grupo)        
     context['permisos_egresos'] = ('cpb_compras' in permisos_grupo)or('cpb_pagos' in permisos_grupo)or('cpb_movimientos' in permisos_grupo)        
     context['permisos_trabajos'] = ('trab_pedidos' in permisos_grupo)or('trab_trabajos' in permisos_grupo)or('trab_colocacion' in permisos_grupo)
-    context['permisos_rep_ingr_egr'] = ('rep_cta_cte' in permisos_grupo)or('rep_saldos' in permisos_grupo)or('rep_cta_cte' in permisos_grupo)or('rep_saldos' in permisos_grupo)
-    context['permisos_rep_contables'] = ('rep_libro_iva' in permisos_grupo)or('rep_caja_diaria' in permisos_grupo)
+    context['permisos_rep_ingr_egr'] = ('rep_cta_cte_clientes' in permisos_grupo)or('rep_saldos_clientes' in permisos_grupo)or('rep_cta_cte_prov' in permisos_grupo)or('rep_saldos_prov' in permisos_grupo)or('rep_varios' in permisos_grupo)
+    context['permisos_rep_contables'] = ('rep_libro_iva' in permisos_grupo)or('rep_caja_diaria' in permisos_grupo)or('rep_seguim_cheques' in permisos_grupo)
     context['permisos_entidades'] = ('ent_clientes' in permisos_grupo)or('ent_proveedores' in permisos_grupo)or('ent_vendedores' in permisos_grupo)        
     context['permisos_productos'] = ('prod_productos' in permisos_grupo)or('prod_productos_abm' in permisos_grupo)
     context['sitio_mobile'] = mobile(request)
@@ -124,18 +126,21 @@ class VariablesMixin(object):
         context['settings'] = settings 
         
         try:
-            context['tipo_usr'] = usr.userprofile.id_usuario.tipoUsr
+            tipo_usr = usr.userprofile.id_usuario.tipoUsr
+            context['tipo_usr'] = tipo_usr
+            context['habilitado_contador'] = habilitado_contador(tipo_usr)
         except:
             context['tipo_usr'] = 1
+            context['habilitado_contador'] = False
 
         permisos_grupo = ver_permisos(self.request)
         context['permisos_grupo'] = permisos_grupo     
         
-        context['permisos_ingresos'] = ('cpb_ventas' in permisos_grupo)or('cpb_cobranzas' in permisos_grupo)or('cpb_remitos' in permisos_grupo)or('cpb_presupuestos' in permisos_grupo)        
+        context['permisos_ingresos'] = ('cpb_ventas' in permisos_grupo)or('cpb_cobranzas' in permisos_grupo)or('cpb_remitos' in permisos_grupo)or('cpb_presupuestos' in permisos_grupo)or('cpb_liqprod_abm' in permisos_grupo)        
         context['permisos_egresos'] = ('cpb_compras' in permisos_grupo)or('cpb_pagos' in permisos_grupo)or('cpb_movimientos' in permisos_grupo)        
         context['permisos_trabajos'] = ('trab_pedidos' in permisos_grupo)or('trab_trabajos' in permisos_grupo)or('trab_colocacion' in permisos_grupo)
-        context['permisos_rep_ingr_egr'] = ('rep_cta_cte' in permisos_grupo)or('rep_saldos' in permisos_grupo)or('rep_cta_cte' in permisos_grupo)or('rep_saldos' in permisos_grupo)
-        context['permisos_rep_contables'] = ('rep_libro_iva' in permisos_grupo)or('rep_caja_diaria' in permisos_grupo)
+        context['permisos_rep_ingr_egr'] = ('rep_cta_cte_clientes' in permisos_grupo)or('rep_saldos_clientes' in permisos_grupo)or('rep_cta_cte_prov' in permisos_grupo)or('rep_saldos_prov' in permisos_grupo)or('rep_varios' in permisos_grupo)
+        context['permisos_rep_contables'] = ('rep_libro_iva' in permisos_grupo)or('rep_caja_diaria' in permisos_grupo)or('rep_seguim_cheques' in permisos_grupo)
         context['permisos_entidades'] = ('ent_clientes' in permisos_grupo)or('ent_proveedores' in permisos_grupo)or('ent_vendedores' in permisos_grupo)        
         context['permisos_productos'] = ('prod_productos' in permisos_grupo)or('prod_productos_abm' in permisos_grupo)
 
@@ -166,60 +171,64 @@ class PrincipalView(VariablesMixin,TemplateView):
     def get_context_data(self, **kwargs):
         context = super(PrincipalView, self).get_context_data(**kwargs)            
         usr= usuario_actual(self.request)
+        
         fecha_desde = ultimo_anio()
         fecha_hoy = hoy()
+        pvs = pto_vta_habilitados_list(self.request)
+        empresas = empresas_habilitadas(self.request)
+        
+        comprobantes = cpb_comprobante.objects.filter(estado__in=[1,2]).filter(fecha_cpb__range=[fecha_desde, fecha_hoy],empresa=empresa_actual(self.request))
+        
+        ventas = comprobantes.filter(cpb_tipo__compra_venta='V',pto_vta__in=pvs,cpb_tipo__tipo__in=[1,2,3,9])
+        total_ventas_mensual = ventas.filter(fecha_cpb__range=[inicioMes(), fecha_hoy])
+        total_ventas_mensual = total_ventas_mensual.aggregate(sum=Sum(F('importe_total')*F('cpb_tipo__signo_ctacte'), output_field=DecimalField()))['sum'] or 0 
+        total_ventas = ventas.aggregate(sum=Sum(F('importe_total')*F('cpb_tipo__signo_ctacte'), output_field=DecimalField()))['sum'] or 0 
+        context['total_ventas'] = total_ventas            
+        context['total_ventas_mensual'] = total_ventas_mensual
 
-        comprobantes = cpb_comprobante.objects.filter(estado__in=[1,2]).filter(fecha_cpb__range=[fecha_desde, fecha_hoy])
+
+        deuda_cobrar_total = ventas.aggregate(sum=Sum(F('saldo')*F('cpb_tipo__signo_ctacte'), output_field=DecimalField()))['sum'] or 0        
+        deuda_cobrar_mensual = ventas.filter(fecha_cpb__range=[inicioMes(), fecha_hoy]).aggregate(sum=Sum(F('saldo')*F('cpb_tipo__signo_ctacte'), output_field=DecimalField()))['sum'] or 0                    
+        context['deuda_cobrar_total'] = deuda_cobrar_total
+        context['deuda_cobrar_mensual'] = deuda_cobrar_mensual
+        
+        porc_cobrar_total = 0
+        porc_cobrar_mensual = 0
+        if total_ventas > 0:
+            porc_cobrar_total=(deuda_cobrar_total/total_ventas)*100                        
+        if total_ventas_mensual > 0:
+            porc_cobrar_mensual=(deuda_cobrar_mensual/total_ventas_mensual)*100    
+        context['porc_cobrar_mensual'] = porc_cobrar_mensual
+        context['porc_cobrar_total'] = porc_cobrar_total
+        
+        compras = comprobantes.filter(cpb_tipo__compra_venta='C',cpb_tipo__tipo__in=[1,2,3,9])
+        total_compras = compras.aggregate(sum=Sum(F('importe_total')*F('cpb_tipo__signo_ctacte'), output_field=DecimalField()))['sum'] or 0 
+        context['total_compras'] = total_compras
+        total_compras_mensual = compras.filter(fecha_cpb__range=[inicioMes(), fecha_hoy]).aggregate(sum=Sum(F('importe_total')*F('cpb_tipo__signo_ctacte'), output_field=DecimalField()))['sum'] or 0 
+        context['total_compras_mensual'] = total_compras_mensual
+                   
+        deuda_pagar_total = compras.aggregate(sum=Sum(F('saldo')*F('cpb_tipo__signo_ctacte'), output_field=DecimalField()))['sum'] or 0      
+        deuda_pagar_mensual = compras.filter(fecha_cpb__range=[inicioMes(), fecha_hoy]).aggregate(sum=Sum(F('saldo')*F('cpb_tipo__signo_ctacte'), output_field=DecimalField()))['sum'] or 0      
+        context['deuda_pagar_total'] = deuda_pagar_total            
+        context['deuda_pagar_mensual'] = deuda_pagar_mensual            
+        
+        porc_pagar_total = 0
+        porc_pagar_mensual = 0
+        if total_compras > 0:
+            porc_pagar_total=(deuda_pagar_total/total_compras)*100                        
+        if total_compras_mensual > 0:
+            porc_pagar_mensual=(deuda_pagar_mensual/total_compras_mensual)*100    
+        context['porc_pagar_total'] = porc_pagar_total
+        context['porc_pagar_mensual'] = porc_pagar_mensual
+        
+        context['ultimas_ventas'] = ventas.filter(cpb_tipo__id__in=[1,3,5,14]).order_by('-fecha_cpb','-fecha_creacion','-id').select_related('entidad','cpb_tipo','estado')[:10]
+        context['ultimas_compras'] = compras.filter(cpb_tipo__id__in=[2,4,6,18],estado__in=[1,2]).order_by('-fecha_cpb','-fecha_creacion','-id').select_related('entidad','cpb_tipo','estado')[:10]
+        context['ultimos_presup'] = comprobantes.filter(cpb_tipo__id=11).order_by('-fecha_cpb','-fecha_creacion','-id').select_related('entidad','cpb_tipo','estado','presup_aprobacion','presup_aprobacion')[:10]
+        
         if usr.tipoUsr==0:
-            ventas = comprobantes.filter(cpb_tipo__compra_venta='V',pto_vta__in=pto_vta_habilitados_list(self.request),cpb_tipo__tipo__in=[1,2,3,9])
-            total_ventas_mensual = ventas.filter(fecha_cpb__range=[inicioMes(), fecha_hoy])
-            total_ventas_mensual = total_ventas_mensual.aggregate(sum=Sum(F('importe_total')*F('cpb_tipo__signo_ctacte'), output_field=DecimalField()))['sum'] or 0 
-            total_ventas = ventas.aggregate(sum=Sum(F('importe_total')*F('cpb_tipo__signo_ctacte'), output_field=DecimalField()))['sum'] or 0 
-            context['total_ventas'] = total_ventas            
-            context['total_ventas_mensual'] = total_ventas_mensual
-
-
-            deuda_cobrar_total = ventas.aggregate(sum=Sum(F('saldo')*F('cpb_tipo__signo_ctacte'), output_field=DecimalField()))['sum'] or 0        
-            deuda_cobrar_mensual = ventas.filter(fecha_cpb__range=[inicioMes(), fecha_hoy]).aggregate(sum=Sum(F('saldo')*F('cpb_tipo__signo_ctacte'), output_field=DecimalField()))['sum'] or 0                    
-            context['deuda_cobrar_total'] = deuda_cobrar_total
-            context['deuda_cobrar_mensual'] = deuda_cobrar_mensual
-            
-            porc_cobrar_total = 0
-            porc_cobrar_mensual = 0
-            if total_ventas > 0:
-                porc_cobrar_total=(deuda_cobrar_total/total_ventas)*100                        
-            if total_ventas_mensual > 0:
-                porc_cobrar_mensual=(deuda_cobrar_mensual/total_ventas_mensual)*100    
-            context['porc_cobrar_mensual'] = porc_cobrar_mensual
-            context['porc_cobrar_total'] = porc_cobrar_total
-            
-            compras = comprobantes.filter(cpb_tipo__compra_venta='C',cpb_tipo__tipo__in=[1,2,3,9])
-            total_compras = compras.aggregate(sum=Sum(F('importe_total')*F('cpb_tipo__signo_ctacte'), output_field=DecimalField()))['sum'] or 0 
-            context['total_compras'] = total_compras
-            total_compras_mensual = compras.filter(fecha_cpb__range=[inicioMes(), fecha_hoy]).aggregate(sum=Sum(F('importe_total')*F('cpb_tipo__signo_ctacte'), output_field=DecimalField()))['sum'] or 0 
-            context['total_compras_mensual'] = total_compras_mensual
-                       
-            deuda_pagar_total = compras.aggregate(sum=Sum(F('saldo')*F('cpb_tipo__signo_ctacte'), output_field=DecimalField()))['sum'] or 0      
-            deuda_pagar_mensual = compras.filter(fecha_cpb__range=[inicioMes(), fecha_hoy]).aggregate(sum=Sum(F('saldo')*F('cpb_tipo__signo_ctacte'), output_field=DecimalField()))['sum'] or 0      
-            context['deuda_pagar_total'] = deuda_pagar_total            
-            context['deuda_pagar_mensual'] = deuda_pagar_mensual            
-            
-            porc_pagar_total = 0
-            porc_pagar_mensual = 0
-            if total_compras > 0:
-                porc_pagar_total=(deuda_pagar_total/total_compras)*100                        
-            if total_compras_mensual > 0:
-                porc_pagar_mensual=(deuda_pagar_mensual/total_compras_mensual)*100    
-            context['porc_pagar_total'] = porc_pagar_total
-            context['porc_pagar_mensual'] = porc_pagar_mensual
-            
-            context['ultimas_ventas'] = ventas.filter(cpb_tipo__id__in=[1,3,5,14]).order_by('-fecha_cpb','-fecha_creacion','-id').select_related('entidad','cpb_tipo','estado')[:10]
-            context['ultimas_compras'] = compras.filter(cpb_tipo__id__in=[2,4,6,18],estado__in=[1,2]).order_by('-fecha_cpb','-fecha_creacion','-id').select_related('entidad','cpb_tipo','estado')[:10]
-            context['ultimos_presup'] = comprobantes.filter(cpb_tipo__id=11).order_by('-fecha_cpb','-fecha_creacion','-id').select_related('entidad','cpb_tipo','estado','presup_aprobacion')[:10]
-            
-            context['tareas'] = gral_tareas.objects.all().select_related('usuario_creador','usuario_asignado').order_by('-fecha','-fecha_creacion','-id')        
+            context['tareas'] = gral_tareas.objects.filter(empresa__id__in=empresas).select_related('usuario_creador','usuario_asignado').order_by('-fecha','-fecha_creacion','-id')                
         else:    
-            context['tareas'] = gral_tareas.objects.filter(Q(usuario_asignado=usr)|Q(usuario_asignado__isnull=True)).select_related('usuario_creador','usuario_asignado').order_by('-fecha','-fecha_creacion','-id')        
+            context['tareas'] = gral_tareas.objects.filter(empresa__id__in=empresas).filter(Q(usuario_asignado=usr)|Q(usuario_asignado__isnull=True)).select_related('usuario_creador','usuario_asignado').order_by('-fecha','-fecha_creacion','-id')        
         
         
         comprobantes = comprobantes.filter(cpb_tipo__tipo__in=[1,2,3,9]).distinct().annotate(m=Month('fecha_cpb'),anio=Year('fecha_cpb')).order_by(F('anio'),F('m')).values('m','anio')        
@@ -258,7 +267,7 @@ class PrincipalView(VariablesMixin,TemplateView):
         context['hoy'] = fecha_hoy
         context['fecha_desde'] = fecha_desde
 
-        productos_vendidos = cpb_comprobante_detalle.objects.filter(cpb_comprobante__pto_vta__in=pto_vta_habilitados_list(self.request),cpb_comprobante__cpb_tipo__compra_venta='V',cpb_comprobante__cpb_tipo__tipo__in=[1,2,3,9],cpb_comprobante__estado__in=[1,2],cpb_comprobante__fecha_cpb__range=[fecha_desde, fecha_hoy])
+        productos_vendidos = cpb_comprobante_detalle.objects.filter(cpb_comprobante__pto_vta__in=pvs,cpb_comprobante__cpb_tipo__compra_venta='V',cpb_comprobante__cpb_tipo__tipo__in=[1,2,3,9],cpb_comprobante__estado__in=[1,2],cpb_comprobante__fecha_cpb__range=[fecha_desde, fecha_hoy])
         productos_vendidos_total = productos_vendidos.aggregate(sum=Sum(F('importe_total')*F('cpb_comprobante__cpb_tipo__signo_ctacte'), output_field=DecimalField()))['sum'] or 0 
         productos_vendidos = productos_vendidos.values('producto__nombre').annotate(tot=Sum(F('importe_total')*F('cpb_comprobante__cpb_tipo__signo_ctacte'),output_field=DecimalField())).order_by('-tot')[:10]
         context['productos_vendidos']= productos_vendidos 
@@ -319,8 +328,7 @@ class EmpresaEditView(VariablesMixin,UpdateView):
 class TareasView(VariablesMixin,ListView):
     model = gral_tareas
     template_name = 'general/tareas/tareas_listado.html'
-    context_object_name = 'tareas'
-    queryset = gral_tareas.objects.filter().order_by('-fecha')
+    context_object_name = 'tareas'   
 
     @method_decorator(login_required)
     def dispatch(self, *args, **kwargs):         
@@ -330,7 +338,12 @@ class TareasView(VariablesMixin,ListView):
         return super(TareasView, self).dispatch(*args, **kwargs)
 
     def get_context_data(self, **kwargs):
-        context = super(TareasView, self).get_context_data(**kwargs)
+        context = super(TareasView, self).get_context_data(**kwargs)        
+        try:                         
+            tareas = gral_tareas.objects.filter(empresa__id__in=empresas_habilitadas(self.request)).select_related('usuario_creador','usuario_asignado').order_by('-fecha','-fecha_creacion','-id')               
+            context['tareas'] = tareas           
+        except:
+            context['tareas'] = None
         return context
 
 class TareasCreateView(VariablesMixin,CreateView):
@@ -347,6 +360,7 @@ class TareasCreateView(VariablesMixin,CreateView):
     def form_valid(self, form):                       
         # form.instance.empresa = self.request.user.userprofile.id_usuario.empresa        
         form.instance.usuario_creador = usuario_actual(self.request)
+        form.instance.empresa = empresa_actual(self.request)
         messages.success(self.request, u'Los datos se guardaron con éxito!')
         return super(TareasCreateView, self).form_valid(form)
 
@@ -387,103 +401,33 @@ def TareasDeleteView(request, id):
     messages.success(request, u'Los datos se guardaron con éxito!')
     return redirect('tareas_listado')        
 
-#************* Cuentas **************
-
-# class CuentasView(VariablesMixin,ListView):
-#     model = gral_plan_cuentas
-#     template_name = 'general/lista_plan_cuentas.html'
-#     context_object_name = 'plan_cuentas'
-#     queryset = gral_plan_cuentas.objects.filter().order_by('-fecha')
-
-#     @method_decorator(login_required)
-#     def dispatch(self, *args, **kwargs):         
-#         limpiar_sesion(self.request)
-#         return super(CuentasView, self).dispatch(*args, **kwargs)
-
-#     def get_context_data(self, **kwargs):
-#         context = super(CuentasView, self).get_context_data(**kwargs)
-#         return context
-
-# class CuentasCreateView(VariablesMixin,CreateView):
-#     form_class = PlanCtasForm
-#     template_name = 'general/plan_cuentas_form.html'
-#     success_url = '/listado_plan_cuentas/'
-
-#     @method_decorator(login_required)
-#     def dispatch(self, *args, **kwargs):        
-#         if not tiene_permiso(self.request,'gral_configuracion'):
-#             return redirect(reverse('principal'))
-#         return super(CuentasCreateView, self).dispatch(*args, **kwargs)
-
-#     def form_valid(self, form):                       
-#         # form.instance.empresa = self.request.user.userprofile.id_usuario.empresa        
-#         form.instance.usuario_creador = usuario_actual(self.request)
-#         return super(CuentasCreateView, self).form_valid(form)
-
-#     def form_invalid(self, form):         
-#         return self.render_to_response(self.get_context_data(form=form))
-
-#     def get_initial(self):    
-#         initial = super(CuentasCreateView, self).get_initial()               
-#         return initial    
-
-# class CuentasEditView(VariablesMixin,UpdateView):
-#     form_class = PlanCtasForm
-#     model = gral_plan_cuentas
-#     pk_url_kwarg = 'id'
-#     template_name = 'general/plan_cuentas_form.html'
-#     success_url = '/listado_plan_cuentas/'
-
-#     @method_decorator(login_required)
-#     def dispatch(self, *args, **kwargs):        
-#         if not tiene_permiso(self.request,'gral_configuracion'):
-#             return redirect(reverse('principal'))
-#         return super(CuentasEditView, self).dispatch(*args, **kwargs)
-
-#     def form_valid(self, form):        
-#         return super(CuentasEditView, self).form_valid(form)
-
-#     def get_initial(self):    
-#         initial = super(CuentasEditView, self).get_initial()                      
-#         return initial    
-
-# class CuentasDeleteView(VariablesMixin,AjaxDeleteView):
-#     model = gral_plan_cuentas
-#     pk_url_kwarg = 'id'    
-
-#     @method_decorator(login_required)
-#     def dispatch(self, *args, **kwargs):        
-#         if not tiene_permiso(self.request,'gral_configuracion'):
-#             return redirect(reverse('principal'))
-#         return super(CuentasDeleteView, self).dispatch(*args, **kwargs)
-
 #*************  **************
 
 @login_required 
 def recargar_clientes(request):
     context={}
-    clientes = egr_entidad.objects.filter(tipo_entidad=1,baja=False).order_by('apellido_y_nombre') 
+    clientes = egr_entidad.objects.filter(tipo_entidad=1,baja=False,empresa__id__in=empresas_habilitadas(request)).order_by('apellido_y_nombre')
     context["clientes"]=list(clientes.values('id','apellido_y_nombre','codigo','fact_cuit').distinct())   
     return HttpResponse(json.dumps(context))
 
 @login_required 
 def recargar_vendedores(request):
     context={}
-    vendedores = egr_entidad.objects.filter(tipo_entidad=3,baja=False).order_by('apellido_y_nombre')  
+    vendedores = egr_entidad.objects.filter(tipo_entidad=3,baja=False,empresa__id__in=empresas_habilitadas(request)).order_by('apellido_y_nombre')  
     context["vendedores"]=list(vendedores.values('id','apellido_y_nombre','codigo','fact_cuit').distinct())   
     return HttpResponse(json.dumps(context))
 
 @login_required 
 def recargar_proveedores(request):
     context={}
-    proveedores = egr_entidad.objects.filter(tipo_entidad=2,baja=False).order_by('apellido_y_nombre')  
+    proveedores = egr_entidad.objects.filter(tipo_entidad=2,baja=False,empresa__id__in=empresas_habilitadas(request)).order_by('apellido_y_nombre')  
     context["proveedores"]=list(proveedores.values('id','apellido_y_nombre','codigo','fact_cuit').distinct())   
     return HttpResponse(json.dumps(context))
 
 @login_required 
 def recargar_productos(request,tipo):
     context={}
-    productos = prod_productos.objects.filter(baja=False,mostrar_en__in=(tipo,3)).order_by('nombre')  
+    productos = prod_productos.objects.filter(baja=False,mostrar_en__in=(tipo,3),empresa__id__in=empresas_habilitadas(request)).order_by('nombre')  
     context["productos"]=list(productos.values('id','nombre','codigo').distinct())   
     return HttpResponse(json.dumps(context))
 

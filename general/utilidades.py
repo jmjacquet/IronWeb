@@ -11,6 +11,7 @@ from decimal import *
 # from settings import ENTIDAD_DIR,MEDIA_ROOT,PROJECT_ROOT
 from django.core.files.storage import default_storage
 
+
 label_todos = 'Todos/as'
 
 SINO = (    
@@ -21,10 +22,14 @@ SINO = (
 
 TIPO_USR = (
     (0, u'Administrador'),
-    (1, u'Operador/Empleado'),
-    (2, u'Vendedor'),
+    (1, u'Cliente/Usuario'),
+    (2, u'Vendedor/Empleado'),
+    (3, u'Contador'),
 )
 
+def habilitado_contador(tipo_usr):
+    return tipo_usr in [0,3]
+    
 TIPO_CTA = (
     (0, u'Padre'),
     (1, u'Ingreso'),
@@ -43,62 +48,6 @@ ESTADO_ = (
  (1,'TODOS'), 
  (2,'ANULADOS'),
 )
-
-def usuario_actual(request):    
-    return request.user.userprofile.id_usuario
-
-def empresa_actual(request):    
-    return request.user.userprofile.id_usuario.empresa
-
-def tipo_comprob_fiscal(id):
-    if id==6:
-        COMPROB_FISCAL = (('C', 'C'),('X', 'X'))
-    elif id==1:
-        COMPROB_FISCAL = (('A', 'A'),('B', 'B'),('M', 'M'), ('E', 'E'),('X', 'X') )
-    else:
-        COMPROB_FISCAL = (('A', 'A'),('B', 'B'),('C', 'C'),('M', 'M'), ('E', 'E'),('X', 'X') )
-    return COMPROB_FISCAL
-
-def facturacion_cliente_letra(letra, cliente_categ,empresa_categ):
-    #RI    
-    if empresa_categ==1:
-        #RI
-        if cliente_categ==1:
-            return (letra in ['A','E','M'])
-        else:
-            return (letra in ['B'])
-    else:
-        return (letra in ['C'])
-
-def nofacturac_cliente_letra(letra, cliente_categ,empresa_categ):
-    #RI    
-    if empresa_categ==1:
-        #RI
-        if cliente_categ==1:
-            return (letra in ['A','E','M','X'])
-        else:
-            return (letra in ['B','X'])
-    else:
-        return (letra in ['C','X'])
-
-def get_letra(cliente_categ,empresa_categ):
-    #RI
-    if empresa_categ==1:
-        #RI
-        if cliente_categ==1:
-            return 'A'
-        else:
-            return 'B'
-    else:
-        return 'C'
-
-# def logo_url():        
-#         url = '/media/empresa/%s/logo_empresa.png' % ENTIDAD_DIR
-#         print url
-#         if default_storage.exists(url):        
-#             return filepath
-#         else:        
-#             return STATIC_URL+'/images/logo_iron.png'
 
 COMPROB_FISCAL_X = (('X', 'X'),)
 
@@ -161,8 +110,8 @@ TIPO_COMPROBANTE = (
     (11,'Orden Trabajo'),
     (12,u'Orden Colocación'),
     (13,u'Movimientos Stock'),
+    (14,u'Liquido Producto'),
 )
-
 
 COMPROB_FISCAL = (
 ('A', 'A'),          
@@ -337,6 +286,76 @@ MESSAGE_TAGS = {message_constants.DEBUG: 'debug',
                 message_constants.SUCCESS: 'success',
                 message_constants.WARNING: 'warning',
                 message_constants.ERROR: 'danger',}
+
+
+
+def usuario_actual(request):    
+    return request.user.userprofile.id_usuario
+
+def empresa_actual(request):    
+    return request.user.userprofile.id_usuario.empresa
+
+#Incluye la empresa del usuario + la empresa 1 universal
+def empresas_habilitadas(request):    
+    e = empresa_actual(request)
+    lista = [e.id,1]   
+    return lista
+
+def empresas_habilitadas_list(request):    
+    e = empresa_actual(request)
+    lista = [e.id,1]   
+    return lista
+
+def tipo_comprob_fiscal(id):
+    if id==6:
+        COMPROB_FISCAL = (('C', 'C'),('X', 'X'))
+    elif id==1:
+        COMPROB_FISCAL = (('A', 'A'),('B', 'B'),('M', 'M'), ('E', 'E'),('X', 'X') )
+    else:
+        COMPROB_FISCAL = (('A', 'A'),('B', 'B'),('C', 'C'),('M', 'M'), ('E', 'E'),('X', 'X') )
+    return COMPROB_FISCAL
+
+def facturacion_cliente_letra(letra, cliente_categ,empresa_categ):
+    #RI    
+    if empresa_categ==1:
+        #RI
+        if cliente_categ==1:
+            return (letra in ['A','E','M'])
+        else:
+            return (letra in ['B'])
+    else:
+        return (letra in ['C'])
+
+def nofacturac_cliente_letra(letra, cliente_categ,empresa_categ):
+    #RI    
+    if empresa_categ==1:
+        #RI
+        if cliente_categ==1:
+            return (letra in ['A','E','M','X'])
+        else:
+            return (letra in ['B','X'])
+    else:
+        return (letra in ['C','X'])
+
+def get_letra(cliente_categ,empresa_categ):
+    #RI
+    if empresa_categ==1:
+        #RI
+        if cliente_categ==1:
+            return 'A'
+        else:
+            return 'B'
+    else:
+        return 'C'
+
+# def logo_url():        
+#         url = '/media/empresa/%s/logo_empresa.png' % ENTIDAD_DIR
+#         print url
+#         if default_storage.exists(url):        
+#             return filepath
+#         else:        
+#             return STATIC_URL+'/images/logo_iron.png'
+
 
 
 class PrependWidget(Widget):

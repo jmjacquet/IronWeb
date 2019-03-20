@@ -54,7 +54,7 @@
                             </tr>
                             {% endif %}
                             {% for cpb in cpbs %}
-                                <tr {% if cpb.estado.pk == 3 %}class="{{cpb.estado.color}}"{%endif%}>                                
+                                <tr {% if cpb.estado.pk == 3 %}class="{{cpb.estado_color}}"{%endif%}>                                
                                     <td class="text-center">{{cpb.fecha_cpb|date:'d/m/Y'}}</td>                              
                                     <td nowrap title="{{cpb.cpb_tipo|default_if_none:''}}">{% include "general/varios/cpb_ver.html" %}{{ cpb.get_cpb}}</td> 
                                     <td class="">{{ cpb.cpb_tipo|default_if_none:'' }}</td>

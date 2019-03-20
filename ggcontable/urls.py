@@ -4,7 +4,7 @@ from django.conf import settings
 from django.conf.urls.static import static
 from django.contrib.staticfiles.urls import staticfiles_urlpatterns
 from usuarios.views import *
-from .views import login,logout,volverHome
+from .views import login,logout,volverHome,alive
 
 
 urlpatterns = [    
@@ -20,18 +20,27 @@ urlpatterns = [
     url(r'^reportes/', include('reportes.urls')),      
     url(r'^login/$', login,name="login"),
     url(r'^logout/$', logout,name="logout"),
-    
+    url(r'^alive/$', alive,name="alive"),
 
     
 
 ]+ static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
 
+if settings.DEBUG:
+    import debug_toolbar
+    urlpatterns = [
+        url(r'^__debug__/', include(debug_toolbar.urls)),
+        url(r'^media/(?P<path>.*)$', 'django.views.static.serve', {'document_root': settings.MEDIA_ROOT,}),
+        url(r'^staticfiles/(?P<path>.*)$', 'django.views.static.serve', {'document_root': settings.STATIC_ROOT}),
+    ] + urlpatterns
 
-if settings.DEBUG is False:   #if DEBUG is True it will be served automatically
-    urlpatterns += [
-            url(r'^media/(?P<path>.*)$', 'django.views.static.serve', {'document_root': settings.MEDIA_ROOT,}),
-            url(r'^staticfiles/(?P<path>.*)$', 'django.views.static.serve', {'document_root': settings.STATIC_ROOT}),
-    ]
+# if settings.DEBUG is False:   #if DEBUG is True it will be served automatically
+
+#     urlpatterns += [
+            
+#             url(r'^media/(?P<path>.*)$', 'django.views.static.serve', {'document_root': settings.MEDIA_ROOT,}),
+#             url(r'^staticfiles/(?P<path>.*)$', 'django.views.static.serve', {'document_root': settings.STATIC_ROOT}),
+#     ]
 
 handler500 = volverHome
 handler404 = volverHome
