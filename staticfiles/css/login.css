@@ -1,10 +1,10 @@
 html {
-    background-color:#030421 !important;
+    background-color:#000000 !important;
     background:none;
 }
 html:after {    
     content: "";
-    background: url("../img/login_pattern2.png") repeat;
+    background: url("../img/login_pattern.png") repeat;
     opacity: 0.4!important;
     top: 0;
     left: 0;

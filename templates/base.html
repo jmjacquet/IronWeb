@@ -11,8 +11,8 @@
         <link rel="shortcut icon" href="{% static 'images/logo_iron.png' %}"  type="image/png">        
         <!--Mobile specific meta goodness :)-->
         <meta name="viewport" content="width=device-width, initial-scale=1">        
-        {% load compress %}
-        {% compress css %}
+        
+        
         <link href="{% static 'fonts/Ubuntu.css' %}" rel="stylesheet" type="text/css"/>
         <link href="{% static 'fonts/OpenSans.css' %}" rel="stylesheet" type="text/css"/>
         <link href="{% static 'font-awesome/css/font-awesome.min.css' %}" rel="stylesheet" type="text/css"/>
@@ -39,7 +39,7 @@
         <link rel="stylesheet" href="{% static 'css/bootstrap-chosen.css' %}" type="text/css" />
         <link rel="stylesheet" href="{% static 'css/modificaciones.css'%}?{% now "Ymd"%}" />
         <link href="{% static 'css/toastr.min.css' %}" rel="stylesheet" type="text/css"/> 
-        {% endcompress %}
+        
 
         {% block extra_css %}
         {% endblock %}          

@@ -129,8 +129,7 @@ INSTALLED_APPS = (
     'trabajos',
     'reportes',
     'felectronica',
-    'djangosecure',
-    'compressor'
+    'djangosecure',   
 )
 
 
