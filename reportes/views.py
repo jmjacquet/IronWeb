@@ -339,13 +339,19 @@ import StringIO
 def generarCITI(cpbs,ventas_compras,tipo_archivo):
     #ventascompras = V/C
     #tipo_archivo = cpbs/alicuotas
+    #import time
+    #start = time.time()
     archivo = StringIO.StringIO()
+    nafip = None
     if (ventas_compras=='V'):
        if tipo_archivo=='cpbs': 
         for c in cpbs:
+            nafip=c.get_nro_afip()
+            if nafip==None:
+                continue
             linea=""
             linea += str(c.fecha_imputacion.strftime("%Y%m%d")).encode('utf-8').rjust(8, "0") #FECHA
-            linea += str(c.get_nro_afip()).encode('utf-8').rjust(3, "0") #CODIGO CPB AFIP
+            linea += str(nafip).encode('utf-8').rjust(3, "0") #CODIGO CPB AFIP
             linea += str(c.pto_vta).encode('utf-8').rjust(5, "0") #PTO VTA
             linea += str(c.numero).encode('utf-8').rjust(20, "0") #NRO CPB
             linea += str(c.numero).encode('utf-8').rjust(20, "0") #NRO CPB HASTA
@@ -394,10 +400,13 @@ def generarCITI(cpbs,ventas_compras,tipo_archivo):
 
        elif tipo_archivo=='alicuotas':
          for c in cpbs:
+            nafip=c.get_nro_afip()
+            if nafip==None:
+                continue
             cpb_iva = cpb_comprobante_tot_iva.objects.filter(cpb_comprobante=c)
             for ci in cpb_iva:            
                 linea="" 
-                linea += str(c.get_nro_afip()).encode('utf-8').rjust(3, "0") #CODIGO CPB AFIP
+                linea += str(nafip).encode('utf-8').rjust(3, "0") #CODIGO CPB AFIP
                 linea += str(c.pto_vta).encode('utf-8').rjust(5, "0") #PTO VTA
                 linea += str(c.numero).encode('utf-8').rjust(20, "0") #NRO CPB                
                 linea += str(ci.importe_base).encode('utf-8').replace(".","").rjust(15, "0") #importe_neto
@@ -407,9 +416,12 @@ def generarCITI(cpbs,ventas_compras,tipo_archivo):
     else:
         if tipo_archivo=='cpbs':
          for c in cpbs:
+            nafip=c.get_nro_afip()
+            if nafip==None:
+                continue
             linea=""
             linea += str(c.fecha_imputacion.strftime("%Y%m%d")).encode('utf-8').rjust(8, "0") #FECHA
-            linea += str(c.get_nro_afip()).encode('utf-8').rjust(3, "0") #CODIGO CPB AFIP
+            linea += str(nafip).encode('utf-8').rjust(3, "0") #CODIGO CPB AFIP
             linea += str(c.pto_vta).encode('utf-8').rjust(5, "0") #PTO VTA
             linea += str(c.numero).encode('utf-8').rjust(20, "0") #NRO CPB
             linea += str('').encode('utf-8').ljust(16, " ") #NRO DESPACHO IMPORTACION
@@ -460,6 +472,9 @@ def generarCITI(cpbs,ventas_compras,tipo_archivo):
             archivo.write(linea+'\r\n')
         elif tipo_archivo=='alicuotas':         
          for c in cpbs:
+            nafip=c.get_nro_afip()
+            if nafip==None:
+                continue
             cpb_iva = cpb_comprobante_tot_iva.objects.filter(cpb_comprobante=c)
             tipo_doc=c.entidad.tipo_doc
             if tipo_doc == 99:
@@ -472,7 +487,7 @@ def generarCITI(cpbs,ventas_compras,tipo_archivo):
                 nro_doc = c.entidad.fact_cuit
             for ci in cpb_iva:            
                 linea="" 
-                linea += str(c.get_nro_afip()).encode('utf-8').rjust(3, "0") #CODIGO CPB AFIP
+                linea += str(nafip).encode('utf-8').rjust(3, "0") #CODIGO CPB AFIP
                 linea += str(c.pto_vta).encode('utf-8').rjust(5, "0") #PTO VTA
                 linea += str(c.numero).encode('utf-8').rjust(20, "0") #NRO CPB                
                 linea += str(tipo_doc).encode('utf-8').rjust(2, "0") #TIPO DOC
@@ -482,9 +497,11 @@ def generarCITI(cpbs,ventas_compras,tipo_archivo):
                 linea += str(ci.importe_total).encode('utf-8').replace(".","").rjust(15, "0") #importe IVA            
                 archivo.write(linea+'\r\n')        
 
+    
     contents = archivo.getvalue()
     archivo.close()
-
+    end=time.time() - start
+    #print end
     return contents
 
 
