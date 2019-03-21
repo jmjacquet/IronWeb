@@ -845,7 +845,10 @@ class vencimientos_cpbs(VariablesMixin,ListView):
         form = ConsultaVencimientos(self.request.POST or None,empresa=empresa,request=self.request)            
         fecha = date.today()        
 
-        comprobantes = cpb_comprobante.objects.filter(cpb_tipo__tipo__in=[1,2,3,4,5,6,7,9,14],empresa=empresa).order_by('-fecha_vto','-fecha_cpb','-id').select_related('cpb_tipo','estado','entidad')        
+        comprobantes = cpb_comprobante.objects.filter(cpb_tipo__tipo__in=[1,2,3,4,5,6,7,9,14],empresa=empresa).order_by('-fecha_vto','-fecha_cpb','-id')\
+        .select_related('estado','entidad','cpb_tipo','vendedor')\
+        .only('id','pto_vta','letra','numero','importe_total','fecha_cpb','estado','fecha_vto','cpb_tipo__codigo','cpb_tipo__nombre','cpb_tipo__tipo','cpb_tipo__signo_ctacte','cae_vto','cae','observacion','seguimiento','vendedor__apellido_y_nombre',\
+            'entidad__id','entidad__apellido_y_nombre','entidad__tipo_entidad','entidad__codigo','entidad__fact_cuit','entidad__nro_doc','entidad__fact_categFiscal')
                 
         if form.is_valid():                                
             entidad = form.cleaned_data['entidad']                                                              
@@ -877,7 +880,7 @@ class vencimientos_cpbs(VariablesMixin,ListView):
 
             if int(cae)!=0:
                 no_tiene = (cae=='2')                
-                comprobantes= comprobantes.filter(cae_vto__isnull=no_tiene)
+                comprobantes= comprobantes.filter(cae_vto__isnull=no_tiene)           
         else:
             comprobantes = None
 

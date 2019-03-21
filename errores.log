@@ -1797,3 +1797,383 @@ Traceback (most recent call last):
   File "C:\Python27\lib\encodings\utf_8.py", line 16, in decode
     return codecs.utf_8_decode(input, errors, True)
 MemoryError
+[20/mar/2019 17:54:33] ERROR [django.request:256] Internal Server Error: /reportes/vencimientos_cpbs/
+Traceback (most recent call last):
+  File "C:\Python27\lib\site-packages\django\core\handlers\base.py", line 164, in get_response
+    response = response.render()
+  File "C:\Python27\lib\site-packages\django\template\response.py", line 158, in render
+    self.content = self.rendered_content
+  File "C:\Python27\lib\site-packages\django\template\response.py", line 135, in rendered_content
+    content = template.render(context, self._request)
+  File "C:\Python27\lib\site-packages\django\template\backends\django.py", line 74, in render
+    return self.template.render(context)
+  File "C:\Python27\lib\site-packages\django\template\base.py", line 209, in render
+    return self._render(context)
+  File "C:\Python27\lib\site-packages\django\test\utils.py", line 96, in instrumented_test_render
+    return self.nodelist.render(context)
+  File "C:\Python27\lib\site-packages\django\template\base.py", line 903, in render
+    bit = self.render_node(node, context)
+  File "C:\Python27\lib\site-packages\django\template\debug.py", line 79, in render_node
+    return node.render(context)
+  File "C:\Python27\lib\site-packages\django\template\loader_tags.py", line 135, in render
+    return compiled_parent._render(context)
+  File "C:\Python27\lib\site-packages\django\test\utils.py", line 96, in instrumented_test_render
+    return self.nodelist.render(context)
+  File "C:\Python27\lib\site-packages\django\template\base.py", line 903, in render
+    bit = self.render_node(node, context)
+  File "C:\Python27\lib\site-packages\django\template\debug.py", line 79, in render_node
+    return node.render(context)
+  File "C:\Python27\lib\site-packages\django\template\loader_tags.py", line 135, in render
+    return compiled_parent._render(context)
+  File "C:\Python27\lib\site-packages\django\test\utils.py", line 96, in instrumented_test_render
+    return self.nodelist.render(context)
+  File "C:\Python27\lib\site-packages\django\template\base.py", line 903, in render
+    bit = self.render_node(node, context)
+  File "C:\Python27\lib\site-packages\django\template\debug.py", line 79, in render_node
+    return node.render(context)
+  File "C:\Python27\lib\site-packages\django\template\loader_tags.py", line 65, in render
+    result = block.nodelist.render(context)
+  File "C:\Python27\lib\site-packages\django\template\base.py", line 903, in render
+    bit = self.render_node(node, context)
+  File "C:\Python27\lib\site-packages\django\template\debug.py", line 79, in render_node
+    return node.render(context)
+  File "C:\Python27\lib\site-packages\django\template\loader_tags.py", line 65, in render
+    result = block.nodelist.render(context)
+  File "C:\Python27\lib\site-packages\django\template\base.py", line 903, in render
+    bit = self.render_node(node, context)
+  File "C:\Python27\lib\site-packages\django\template\debug.py", line 79, in render_node
+    return node.render(context)
+  File "C:\Python27\lib\site-packages\django\template\defaulttags.py", line 162, in render
+    len_values = len(values)
+  File "C:\Python27\lib\site-packages\django\db\models\query.py", line 144, in __len__
+    self._fetch_all()
+  File "C:\Python27\lib\site-packages\django\db\models\query.py", line 965, in _fetch_all
+    self._result_cache = list(self.iterator())
+  File "C:\Python27\lib\site-packages\django\db\models\query.py", line 238, in iterator
+    results = compiler.execute_sql()
+  File "C:\Python27\lib\site-packages\django\db\models\sql\compiler.py", line 829, in execute_sql
+    sql, params = self.as_sql()
+  File "C:\Python27\lib\site-packages\django\db\models\sql\compiler.py", line 378, in as_sql
+    extra_select, order_by, group_by = self.pre_sql_setup()
+  File "C:\Python27\lib\site-packages\django\db\models\sql\compiler.py", line 48, in pre_sql_setup
+    self.setup_query()
+  File "C:\Python27\lib\site-packages\django\db\models\sql\compiler.py", line 39, in setup_query
+    self.select, self.klass_info, self.annotation_col_map = self.get_select()
+  File "C:\Python27\lib\site-packages\django\db\models\sql\compiler.py", line 206, in get_select
+    related_klass_infos = self.get_related_selections(select)
+  File "C:\Python27\lib\site-packages\django\db\models\sql\compiler.py", line 689, in get_related_selections
+    only_load.get(field_model)):
+  File "C:\Python27\lib\site-packages\django\db\models\query_utils.py", line 202, in select_related_descend
+    (field.model._meta.object_name, field.name))
+InvalidQuery: Field cpb_comprobante.cpb_tipo cannot be both deferred and traversed using select_related at the same time.
+[20/Mar/2019 17:56:07] ERROR [django.request:256] Internal Server Error: /reportes/vencimientos_cpbs/
+Traceback (most recent call last):
+  File "C:\Python27\lib\site-packages\django\core\handlers\base.py", line 164, in get_response
+    response = response.render()
+  File "C:\Python27\lib\site-packages\django\template\response.py", line 158, in render
+    self.content = self.rendered_content
+  File "C:\Python27\lib\site-packages\django\template\response.py", line 135, in rendered_content
+    content = template.render(context, self._request)
+  File "C:\Python27\lib\site-packages\django\template\backends\django.py", line 74, in render
+    return self.template.render(context)
+  File "C:\Python27\lib\site-packages\django\template\base.py", line 209, in render
+    return self._render(context)
+  File "C:\Python27\lib\site-packages\django\test\utils.py", line 96, in instrumented_test_render
+    return self.nodelist.render(context)
+  File "C:\Python27\lib\site-packages\django\template\base.py", line 903, in render
+    bit = self.render_node(node, context)
+  File "C:\Python27\lib\site-packages\django\template\debug.py", line 79, in render_node
+    return node.render(context)
+  File "C:\Python27\lib\site-packages\django\template\loader_tags.py", line 135, in render
+    return compiled_parent._render(context)
+  File "C:\Python27\lib\site-packages\django\test\utils.py", line 96, in instrumented_test_render
+    return self.nodelist.render(context)
+  File "C:\Python27\lib\site-packages\django\template\base.py", line 903, in render
+    bit = self.render_node(node, context)
+  File "C:\Python27\lib\site-packages\django\template\debug.py", line 79, in render_node
+    return node.render(context)
+  File "C:\Python27\lib\site-packages\django\template\loader_tags.py", line 135, in render
+    return compiled_parent._render(context)
+  File "C:\Python27\lib\site-packages\django\test\utils.py", line 96, in instrumented_test_render
+    return self.nodelist.render(context)
+  File "C:\Python27\lib\site-packages\django\template\base.py", line 903, in render
+    bit = self.render_node(node, context)
+  File "C:\Python27\lib\site-packages\django\template\debug.py", line 79, in render_node
+    return node.render(context)
+  File "C:\Python27\lib\site-packages\django\template\loader_tags.py", line 65, in render
+    result = block.nodelist.render(context)
+  File "C:\Python27\lib\site-packages\django\template\base.py", line 903, in render
+    bit = self.render_node(node, context)
+  File "C:\Python27\lib\site-packages\django\template\debug.py", line 79, in render_node
+    return node.render(context)
+  File "C:\Python27\lib\site-packages\django\template\loader_tags.py", line 65, in render
+    result = block.nodelist.render(context)
+  File "C:\Python27\lib\site-packages\django\template\base.py", line 903, in render
+    bit = self.render_node(node, context)
+  File "C:\Python27\lib\site-packages\django\template\debug.py", line 79, in render_node
+    return node.render(context)
+  File "C:\Python27\lib\site-packages\django\template\defaulttags.py", line 162, in render
+    len_values = len(values)
+  File "C:\Python27\lib\site-packages\django\db\models\query.py", line 144, in __len__
+    self._fetch_all()
+  File "C:\Python27\lib\site-packages\django\db\models\query.py", line 965, in _fetch_all
+    self._result_cache = list(self.iterator())
+  File "C:\Python27\lib\site-packages\django\db\models\query.py", line 238, in iterator
+    results = compiler.execute_sql()
+  File "C:\Python27\lib\site-packages\django\db\models\sql\compiler.py", line 829, in execute_sql
+    sql, params = self.as_sql()
+  File "C:\Python27\lib\site-packages\django\db\models\sql\compiler.py", line 378, in as_sql
+    extra_select, order_by, group_by = self.pre_sql_setup()
+  File "C:\Python27\lib\site-packages\django\db\models\sql\compiler.py", line 48, in pre_sql_setup
+    self.setup_query()
+  File "C:\Python27\lib\site-packages\django\db\models\sql\compiler.py", line 39, in setup_query
+    self.select, self.klass_info, self.annotation_col_map = self.get_select()
+  File "C:\Python27\lib\site-packages\django\db\models\sql\compiler.py", line 206, in get_select
+    related_klass_infos = self.get_related_selections(select)
+  File "C:\Python27\lib\site-packages\django\db\models\sql\compiler.py", line 689, in get_related_selections
+    only_load.get(field_model)):
+  File "C:\Python27\lib\site-packages\django\db\models\query_utils.py", line 202, in select_related_descend
+    (field.model._meta.object_name, field.name))
+InvalidQuery: Field cpb_comprobante.cpb_tipo cannot be both deferred and traversed using select_related at the same time.
+[20/Mar/2019 18:00:09] ERROR [django.request:256] Internal Server Error: /reportes/vencimientos_cpbs/
+Traceback (most recent call last):
+  File "C:\Python27\lib\site-packages\django\core\handlers\base.py", line 164, in get_response
+    response = response.render()
+  File "C:\Python27\lib\site-packages\django\template\response.py", line 158, in render
+    self.content = self.rendered_content
+  File "C:\Python27\lib\site-packages\django\template\response.py", line 135, in rendered_content
+    content = template.render(context, self._request)
+  File "C:\Python27\lib\site-packages\django\template\backends\django.py", line 74, in render
+    return self.template.render(context)
+  File "C:\Python27\lib\site-packages\django\template\base.py", line 209, in render
+    return self._render(context)
+  File "C:\Python27\lib\site-packages\django\test\utils.py", line 96, in instrumented_test_render
+    return self.nodelist.render(context)
+  File "C:\Python27\lib\site-packages\django\template\base.py", line 903, in render
+    bit = self.render_node(node, context)
+  File "C:\Python27\lib\site-packages\django\template\debug.py", line 79, in render_node
+    return node.render(context)
+  File "C:\Python27\lib\site-packages\django\template\loader_tags.py", line 135, in render
+    return compiled_parent._render(context)
+  File "C:\Python27\lib\site-packages\django\test\utils.py", line 96, in instrumented_test_render
+    return self.nodelist.render(context)
+  File "C:\Python27\lib\site-packages\django\template\base.py", line 903, in render
+    bit = self.render_node(node, context)
+  File "C:\Python27\lib\site-packages\django\template\debug.py", line 79, in render_node
+    return node.render(context)
+  File "C:\Python27\lib\site-packages\django\template\loader_tags.py", line 135, in render
+    return compiled_parent._render(context)
+  File "C:\Python27\lib\site-packages\django\test\utils.py", line 96, in instrumented_test_render
+    return self.nodelist.render(context)
+  File "C:\Python27\lib\site-packages\django\template\base.py", line 903, in render
+    bit = self.render_node(node, context)
+  File "C:\Python27\lib\site-packages\django\template\debug.py", line 79, in render_node
+    return node.render(context)
+  File "C:\Python27\lib\site-packages\django\template\loader_tags.py", line 65, in render
+    result = block.nodelist.render(context)
+  File "C:\Python27\lib\site-packages\django\template\base.py", line 903, in render
+    bit = self.render_node(node, context)
+  File "C:\Python27\lib\site-packages\django\template\debug.py", line 79, in render_node
+    return node.render(context)
+  File "C:\Python27\lib\site-packages\django\template\loader_tags.py", line 65, in render
+    result = block.nodelist.render(context)
+  File "C:\Python27\lib\site-packages\django\template\base.py", line 903, in render
+    bit = self.render_node(node, context)
+  File "C:\Python27\lib\site-packages\django\template\debug.py", line 79, in render_node
+    return node.render(context)
+  File "C:\Python27\lib\site-packages\django\template\defaulttags.py", line 162, in render
+    len_values = len(values)
+  File "C:\Python27\lib\site-packages\django\db\models\query.py", line 144, in __len__
+    self._fetch_all()
+  File "C:\Python27\lib\site-packages\django\db\models\query.py", line 965, in _fetch_all
+    self._result_cache = list(self.iterator())
+  File "C:\Python27\lib\site-packages\django\db\models\query.py", line 238, in iterator
+    results = compiler.execute_sql()
+  File "C:\Python27\lib\site-packages\django\db\models\sql\compiler.py", line 829, in execute_sql
+    sql, params = self.as_sql()
+  File "C:\Python27\lib\site-packages\django\db\models\sql\compiler.py", line 378, in as_sql
+    extra_select, order_by, group_by = self.pre_sql_setup()
+  File "C:\Python27\lib\site-packages\django\db\models\sql\compiler.py", line 48, in pre_sql_setup
+    self.setup_query()
+  File "C:\Python27\lib\site-packages\django\db\models\sql\compiler.py", line 39, in setup_query
+    self.select, self.klass_info, self.annotation_col_map = self.get_select()
+  File "C:\Python27\lib\site-packages\django\db\models\sql\compiler.py", line 187, in get_select
+    for c in self.get_default_columns():
+  File "C:\Python27\lib\site-packages\django\db\models\sql\compiler.py", line 498, in get_default_columns
+    only_load = self.deferred_to_columns()
+  File "C:\Python27\lib\site-packages\django\db\models\sql\compiler.py", line 766, in deferred_to_columns
+    self.query.deferred_to_data(columns, self.query.get_loaded_field_names_cb)
+  File "C:\Python27\lib\site-packages\django\db\models\sql\query.py", line 636, in deferred_to_data
+    field = opts.get_field(parts[-1])
+  File "C:\Python27\lib\site-packages\django\db\models\options.py", line 554, in get_field
+    raise FieldDoesNotExist('%s has no field named %r' % (self.object_name, field_name))
+FieldDoesNotExist: cpb_comprobante has no field named 'descripcion'
+[20/Mar/2019 18:04:23] ERROR [django.request:256] Internal Server Error: /reportes/vencimientos_cpbs/
+Traceback (most recent call last):
+  File "C:\Python27\lib\site-packages\django\core\handlers\base.py", line 164, in get_response
+    response = response.render()
+  File "C:\Python27\lib\site-packages\django\template\response.py", line 158, in render
+    self.content = self.rendered_content
+  File "C:\Python27\lib\site-packages\django\template\response.py", line 135, in rendered_content
+    content = template.render(context, self._request)
+  File "C:\Python27\lib\site-packages\django\template\backends\django.py", line 74, in render
+    return self.template.render(context)
+  File "C:\Python27\lib\site-packages\django\template\base.py", line 209, in render
+    return self._render(context)
+  File "C:\Python27\lib\site-packages\django\test\utils.py", line 96, in instrumented_test_render
+    return self.nodelist.render(context)
+  File "C:\Python27\lib\site-packages\django\template\base.py", line 903, in render
+    bit = self.render_node(node, context)
+  File "C:\Python27\lib\site-packages\django\template\debug.py", line 79, in render_node
+    return node.render(context)
+  File "C:\Python27\lib\site-packages\django\template\loader_tags.py", line 135, in render
+    return compiled_parent._render(context)
+  File "C:\Python27\lib\site-packages\django\test\utils.py", line 96, in instrumented_test_render
+    return self.nodelist.render(context)
+  File "C:\Python27\lib\site-packages\django\template\base.py", line 903, in render
+    bit = self.render_node(node, context)
+  File "C:\Python27\lib\site-packages\django\template\debug.py", line 79, in render_node
+    return node.render(context)
+  File "C:\Python27\lib\site-packages\django\template\loader_tags.py", line 135, in render
+    return compiled_parent._render(context)
+  File "C:\Python27\lib\site-packages\django\test\utils.py", line 96, in instrumented_test_render
+    return self.nodelist.render(context)
+  File "C:\Python27\lib\site-packages\django\template\base.py", line 903, in render
+    bit = self.render_node(node, context)
+  File "C:\Python27\lib\site-packages\django\template\debug.py", line 79, in render_node
+    return node.render(context)
+  File "C:\Python27\lib\site-packages\django\template\loader_tags.py", line 65, in render
+    result = block.nodelist.render(context)
+  File "C:\Python27\lib\site-packages\django\template\base.py", line 903, in render
+    bit = self.render_node(node, context)
+  File "C:\Python27\lib\site-packages\django\template\debug.py", line 79, in render_node
+    return node.render(context)
+  File "C:\Python27\lib\site-packages\django\template\loader_tags.py", line 65, in render
+    result = block.nodelist.render(context)
+  File "C:\Python27\lib\site-packages\django\template\base.py", line 903, in render
+    bit = self.render_node(node, context)
+  File "C:\Python27\lib\site-packages\django\template\debug.py", line 79, in render_node
+    return node.render(context)
+  File "C:\Python27\lib\site-packages\django\template\defaulttags.py", line 162, in render
+    len_values = len(values)
+  File "C:\Python27\lib\site-packages\django\db\models\query.py", line 144, in __len__
+    self._fetch_all()
+  File "C:\Python27\lib\site-packages\django\db\models\query.py", line 965, in _fetch_all
+    self._result_cache = list(self.iterator())
+  File "C:\Python27\lib\site-packages\django\db\models\query.py", line 238, in iterator
+    results = compiler.execute_sql()
+  File "C:\Python27\lib\site-packages\django\db\models\sql\compiler.py", line 829, in execute_sql
+    sql, params = self.as_sql()
+  File "C:\Python27\lib\site-packages\django\db\models\sql\compiler.py", line 378, in as_sql
+    extra_select, order_by, group_by = self.pre_sql_setup()
+  File "C:\Python27\lib\site-packages\django\db\models\sql\compiler.py", line 48, in pre_sql_setup
+    self.setup_query()
+  File "C:\Python27\lib\site-packages\django\db\models\sql\compiler.py", line 39, in setup_query
+    self.select, self.klass_info, self.annotation_col_map = self.get_select()
+  File "C:\Python27\lib\site-packages\django\db\models\sql\compiler.py", line 187, in get_select
+    for c in self.get_default_columns():
+  File "C:\Python27\lib\site-packages\django\db\models\sql\compiler.py", line 498, in get_default_columns
+    only_load = self.deferred_to_columns()
+  File "C:\Python27\lib\site-packages\django\db\models\sql\compiler.py", line 766, in deferred_to_columns
+    self.query.deferred_to_data(columns, self.query.get_loaded_field_names_cb)
+  File "C:\Python27\lib\site-packages\django\db\models\sql\query.py", line 636, in deferred_to_data
+    field = opts.get_field(parts[-1])
+  File "C:\Python27\lib\site-packages\django\db\models\options.py", line 554, in get_field
+    raise FieldDoesNotExist('%s has no field named %r' % (self.object_name, field_name))
+FieldDoesNotExist: cpb_comprobante has no field named 'get_cpb'
+[20/Mar/2019 18:22:55] ERROR [django.request:256] Internal Server Error: /reportes/vencimientos_cpbs/
+Traceback (most recent call last):
+  File "C:\Python27\lib\site-packages\django\core\handlers\base.py", line 164, in get_response
+    response = response.render()
+  File "C:\Python27\lib\site-packages\django\template\response.py", line 158, in render
+    self.content = self.rendered_content
+  File "C:\Python27\lib\site-packages\django\template\response.py", line 135, in rendered_content
+    content = template.render(context, self._request)
+  File "C:\Python27\lib\site-packages\django\template\backends\django.py", line 74, in render
+    return self.template.render(context)
+  File "C:\Python27\lib\site-packages\django\template\base.py", line 209, in render
+    return self._render(context)
+  File "C:\Python27\lib\site-packages\django\test\utils.py", line 96, in instrumented_test_render
+    return self.nodelist.render(context)
+  File "C:\Python27\lib\site-packages\django\template\base.py", line 903, in render
+    bit = self.render_node(node, context)
+  File "C:\Python27\lib\site-packages\django\template\debug.py", line 79, in render_node
+    return node.render(context)
+  File "C:\Python27\lib\site-packages\django\template\loader_tags.py", line 135, in render
+    return compiled_parent._render(context)
+  File "C:\Python27\lib\site-packages\django\test\utils.py", line 96, in instrumented_test_render
+    return self.nodelist.render(context)
+  File "C:\Python27\lib\site-packages\django\template\base.py", line 903, in render
+    bit = self.render_node(node, context)
+  File "C:\Python27\lib\site-packages\django\template\debug.py", line 79, in render_node
+    return node.render(context)
+  File "C:\Python27\lib\site-packages\django\template\loader_tags.py", line 135, in render
+    return compiled_parent._render(context)
+  File "C:\Python27\lib\site-packages\django\test\utils.py", line 96, in instrumented_test_render
+    return self.nodelist.render(context)
+  File "C:\Python27\lib\site-packages\django\template\base.py", line 903, in render
+    bit = self.render_node(node, context)
+  File "C:\Python27\lib\site-packages\django\template\debug.py", line 79, in render_node
+    return node.render(context)
+  File "C:\Python27\lib\site-packages\django\template\loader_tags.py", line 65, in render
+    result = block.nodelist.render(context)
+  File "C:\Python27\lib\site-packages\django\template\base.py", line 903, in render
+    bit = self.render_node(node, context)
+  File "C:\Python27\lib\site-packages\django\template\debug.py", line 79, in render_node
+    return node.render(context)
+  File "C:\Python27\lib\site-packages\django\template\loader_tags.py", line 65, in render
+    result = block.nodelist.render(context)
+  File "C:\Python27\lib\site-packages\django\template\base.py", line 903, in render
+    bit = self.render_node(node, context)
+  File "C:\Python27\lib\site-packages\django\template\debug.py", line 79, in render_node
+    return node.render(context)
+  File "C:\Python27\lib\site-packages\django\template\defaulttags.py", line 162, in render
+    len_values = len(values)
+  File "C:\Python27\lib\site-packages\django\db\models\query.py", line 144, in __len__
+    self._fetch_all()
+  File "C:\Python27\lib\site-packages\django\db\models\query.py", line 965, in _fetch_all
+    self._result_cache = list(self.iterator())
+  File "C:\Python27\lib\site-packages\django\db\models\query.py", line 238, in iterator
+    results = compiler.execute_sql()
+  File "C:\Python27\lib\site-packages\django\db\models\sql\compiler.py", line 829, in execute_sql
+    sql, params = self.as_sql()
+  File "C:\Python27\lib\site-packages\django\db\models\sql\compiler.py", line 378, in as_sql
+    extra_select, order_by, group_by = self.pre_sql_setup()
+  File "C:\Python27\lib\site-packages\django\db\models\sql\compiler.py", line 48, in pre_sql_setup
+    self.setup_query()
+  File "C:\Python27\lib\site-packages\django\db\models\sql\compiler.py", line 39, in setup_query
+    self.select, self.klass_info, self.annotation_col_map = self.get_select()
+  File "C:\Python27\lib\site-packages\django\db\models\sql\compiler.py", line 187, in get_select
+    for c in self.get_default_columns():
+  File "C:\Python27\lib\site-packages\django\db\models\sql\compiler.py", line 498, in get_default_columns
+    only_load = self.deferred_to_columns()
+  File "C:\Python27\lib\site-packages\django\db\models\sql\compiler.py", line 766, in deferred_to_columns
+    self.query.deferred_to_data(columns, self.query.get_loaded_field_names_cb)
+  File "C:\Python27\lib\site-packages\django\db\models\sql\query.py", line 636, in deferred_to_data
+    field = opts.get_field(parts[-1])
+  File "C:\Python27\lib\site-packages\django\db\models\options.py", line 554, in get_field
+    raise FieldDoesNotExist('%s has no field named %r' % (self.object_name, field_name))
+FieldDoesNotExist: egr_entidad has no field named 'tipo_entidad '
+[20/Mar/2019 20:20:04] ERROR [django.request:256] Internal Server Error: /reportes/vencimientos_cpbs/
+Traceback (most recent call last):
+  File "C:\Python27\lib\site-packages\django\core\handlers\base.py", line 132, in get_response
+    response = wrapped_callback(request, *callback_args, **callback_kwargs)
+  File "C:\Python27\lib\site-packages\django\views\generic\base.py", line 71, in view
+    return self.dispatch(request, *args, **kwargs)
+  File "C:\Python27\lib\site-packages\django\utils\decorators.py", line 34, in _wrapper
+    return bound_func(*args, **kwargs)
+  File "C:\Python27\lib\site-packages\django\contrib\auth\decorators.py", line 22, in _wrapped_view
+    return view_func(request, *args, **kwargs)
+  File "C:\Python27\lib\site-packages\django\utils\decorators.py", line 30, in bound_func
+    return func.__get__(self, type(self))(*args2, **kwargs2)
+  File "D:\Repo\ironStable\reportes\views.py", line 837, in dispatch
+    return super(vencimientos_cpbs, self).dispatch(*args,**kwargs)
+  File "C:\Python27\lib\site-packages\django\views\generic\base.py", line 89, in dispatch
+    return handler(request, *args, **kwargs)
+  File "D:\Repo\ironStable\reportes\views.py", line 892, in post
+    return self.get(*args, **kwargs)
+  File "C:\Python27\lib\site-packages\django\views\generic\list.py", line 174, in get
+    context = self.get_context_data()
+  File "D:\Repo\ironStable\reportes\views.py", line 863, in get_context_data
+    comprobantes=comprobantes.filter(estado__in=[1,2])
+AttributeError: 'generator' object has no attribute 'filter'

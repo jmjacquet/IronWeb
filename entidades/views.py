@@ -22,7 +22,15 @@ from django.http import JsonResponse
 import json
 
 
+class EntidadVerView(VariablesMixin,DetailView):
+    model = egr_entidad
+    pk_url_kwarg = 'id'
+    context_object_name = 'entidad'
+    template_name = 'entidades/detalle.html'
 
+    @method_decorator(login_required)
+    def dispatch(self, *args, **kwargs): 
+        return super(EntidadVerView, self).dispatch(*args, **kwargs)
 #************* CLIENTES **************
 class ClientesView(VariablesMixin,ListView):
     model = egr_entidad
