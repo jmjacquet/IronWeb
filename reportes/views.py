@@ -499,7 +499,7 @@ def libro_iva_ventas(request):
         empresa = empresa_actual(request)
     except gral_empresa.DoesNotExist:
         empresa = None 
-    form = ConsultaLibroIVAVentas(request.POST or None,empresa=empresa,request=request)            
+    form = ConsultaLibroIVAVentas(request.POST or None,request=request)            
     fecha = date.today()
     cpbs = None
     if form.is_valid():                                
@@ -511,9 +511,13 @@ def libro_iva_ventas(request):
         fact_x = form.cleaned_data['fact_x']  
         cae = form.cleaned_data['cae']  
         total = 0                    
-        cpbs = cpb_comprobante.objects.filter(cpb_tipo__compra_venta='V',pto_vta__in=pto_vta_habilitados_list(request),cpb_tipo__tipo__in=[1,2,3,9,14],empresa=empresa,fecha_imputacion__gte=fdesde,fecha_imputacion__lte=fhasta)\
+        cpbs = cpb_comprobante.objects.filter(cpb_tipo__compra_venta='V',pto_vta__in=pto_vta_habilitados_list(request),cpb_tipo__tipo__in=[1,2,3,9,14],empresa=empresa,fecha_imputacion__gte=fdesde,fecha_imputacion__lte=fhasta).exclude(letra='X')\
             .select_related('cpb_tipo','entidad')\
-            .order_by('-fecha_imputacion','-id','entidad__codigo','entidad__apellido_y_nombre','cpb_tipo__tipo')
+            .only('id','pto_vta','letra','numero','fecha_imputacion','cpb_tipo__codigo','cpb_tipo__nombre','cpb_tipo__tipo','cpb_tipo__signo_ctacte','cae_vto','cae',\
+            'entidad__id','entidad__apellido_y_nombre','entidad__tipo_entidad','entidad__codigo','entidad__fact_cuit','entidad__nro_doc','entidad__fact_categFiscal',\
+            'importe_gravado','importe_iva','importe_perc_imp','importe_no_gravado','importe_exento','importe_total')\
+            .order_by('-fecha_imputacion','-id','entidad__codigo','entidad__apellido_y_nombre','cpb_tipo__tipo')            
+            
         
         if int(estado) == 0:                
             cpbs=cpbs.filter(estado__in=[1,2])                
@@ -522,9 +526,9 @@ def libro_iva_ventas(request):
         else:                
             cpbs=cpbs.filter(estado__in=[1,2,3])
         
-
         if entidad:
-               cpbs= cpbs.filter(entidad=entidad)
+                cpbs= cpbs.filter(entidad__apellido_y_nombre__icontains=entidad)
+        
         if pto_vta:
                cpbs= cpbs.filter(pto_vta=pto_vta)        
 
@@ -560,7 +564,7 @@ def libro_iva_compras(request):
         empresa = empresa_actual(request)
     except gral_empresa.DoesNotExist:
         empresa = None 
-    form = ConsultaLibroIVACompras(request.POST or None,empresa=empresa,request=request)            
+    form = ConsultaLibroIVACompras(request.POST or None,request=request)            
     fecha = date.today()
     cpbs = None
     if form.is_valid():                                
@@ -568,10 +572,14 @@ def libro_iva_compras(request):
         fdesde = form.cleaned_data['fdesde']   
         fhasta = form.cleaned_data['fhasta']   
         estado = form.cleaned_data['estado'] 
+        fact_x = form.cleaned_data['fact_x']  
         pto_vta = form.cleaned_data['pto_vta'] 
                 
         cpbs = cpb_comprobante.objects.filter(cpb_tipo__libro_iva=True,pto_vta__in=pto_vta_habilitados_list(request),cpb_tipo__tipo__in=[1,2,3,9],cpb_tipo__compra_venta='C',empresa=empresa,fecha_imputacion__gte=fdesde,fecha_imputacion__lte=fhasta)\
             .select_related('cpb_tipo','entidad')\
+            .only('id','pto_vta','letra','numero','fecha_imputacion','cpb_tipo__codigo','cpb_tipo__nombre','cpb_tipo__tipo','cpb_tipo__signo_ctacte','cae_vto','cae',\
+            'entidad__id','entidad__apellido_y_nombre','entidad__tipo_entidad','entidad__codigo','entidad__fact_cuit','entidad__nro_doc','entidad__fact_categFiscal',\
+            'importe_gravado','importe_iva','importe_perc_imp','importe_no_gravado','importe_exento','importe_total')\
             .order_by('-fecha_imputacion','-id','entidad__codigo','entidad__apellido_y_nombre','cpb_tipo__tipo')
         
         if int(estado) == 0:                
@@ -581,9 +589,12 @@ def libro_iva_compras(request):
         else:                
             cpbs=cpbs.filter(estado__in=[1,2,3])
         if entidad:
-               cpbs= cpbs.filter(entidad=entidad)
+                cpbs= cpbs.filter(entidad__apellido_y_nombre__icontains=entidad)
         if pto_vta:
                cpbs= cpbs.filter(pto_vta=pto_vta)                   
+
+        if int(fact_x)==1:
+            cpbs= cpbs.filter(cpb_tipo__libro_iva=True).exclude(letra='X')
         
         if ('cpbs' in request.POST)and(cpbs):                
             response = HttpResponse(generarCITI(cpbs,'C','cpbs'),content_type='text/plain')
@@ -598,6 +609,8 @@ def libro_iva_compras(request):
     context['cpbs'] = cpbs
     context['fecha'] = fecha          
     return render(request,'reportes/contables/libro_iva_compras.html',context )
+
+
 ################################################################
 
 class caja_diaria(VariablesMixin,ListView):

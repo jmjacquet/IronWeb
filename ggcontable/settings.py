@@ -64,8 +64,7 @@ ADMIN_MEDIA_PREFIX = os.path.join(SITE_ROOT, '/static/admin/')
 STATICFILES_FINDERS = (
     'django.contrib.staticfiles.finders.FileSystemFinder',
     'django.contrib.staticfiles.finders.AppDirectoriesFinder',
-#    'django.contrib.staticfiles.finders.DefaultStorageFinder',
-    'compressor.finders.CompressorFinder',
+#    'django.contrib.staticfiles.finders.DefaultStorageFinder',    
 )
 TEMPLATE_CONTEXT_PROCESSORS =   (
     'django.contrib.auth.context_processors.auth',

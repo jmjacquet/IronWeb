@@ -219,7 +219,10 @@ class cpb_comprobante(models.Model):
 
 
     def get_nro_afip(self):
-        c = cpb_nro_afip.objects.get(cpb_tipo=self.cpb_tipo.tipo,letra=self.letra)
+        try:
+            c = cpb_nro_afip.objects.get(cpb_tipo=self.cpb_tipo.tipo,letra=self.letra)
+        except:
+            return None
         return c.numero_afip
 
     def get_numero(self):                

@@ -2259,3 +2259,138 @@ Traceback (most recent call last):
   File "C:\Python27\lib\site-packages\django\template\defaulttags.py", line 1159, in load
     (taglib, e))
 TemplateSyntaxError: 'compress' is not a valid tag library: Template library compress not found, tried django.templatetags.compress,django.contrib.staticfiles.templatetags.compress,django.contrib.humanize.templatetags.compress,bootstrap3.templatetags.compress,crispy_forms.templatetags.compress,fm.templatetags.compress,django_extensions.templatetags.compress,debug_toolbar.templatetags.compress,modal.templatetags.compress,comprobantes.templatetags.compress
+[21/Mar/2019 10:41:49] ERROR [django.request:256] Internal Server Error: /reportes/libro_iva_ventas/
+Traceback (most recent call last):
+  File "C:\Python27\lib\site-packages\django\core\handlers\base.py", line 223, in get_response
+    response = middleware_method(request, response)
+  File "C:\Python27\lib\site-packages\debug_toolbar\middleware.py", line 94, in process_response
+    new_response = panel.process_response(request, response)
+  File "C:\Python27\lib\site-packages\debug_toolbar\panels\staticfiles.py", line 124, in process_response
+    'staticfiles_apps': self.get_staticfiles_apps(),
+  File "C:\Python27\lib\site-packages\debug_toolbar\panels\staticfiles.py", line 166, in get_staticfiles_apps
+    for finder in finders.get_finders():
+  File "C:\Python27\lib\site-packages\django\contrib\staticfiles\finders.py", line 264, in get_finders
+    yield get_finder(finder_path)
+  File "C:\Python27\lib\site-packages\django\utils\lru_cache.py", line 101, in wrapper
+    result = user_function(*args, **kwds)
+  File "C:\Python27\lib\site-packages\django\contrib\staticfiles\finders.py", line 273, in get_finder
+    Finder = import_string(import_path)
+  File "C:\Python27\lib\site-packages\django\utils\module_loading.py", line 26, in import_string
+    module = import_module(module_path)
+  File "C:\Python27\lib\importlib\__init__.py", line 37, in import_module
+    __import__(name)
+ImportError: No module named compressor.finders
+[21/Mar/2019 10:41:53] ERROR [django.request:256] Internal Server Error: /favicon.ico
+Traceback (most recent call last):
+  File "C:\Python27\lib\site-packages\django\core\handlers\base.py", line 223, in get_response
+    response = middleware_method(request, response)
+  File "C:\Python27\lib\site-packages\debug_toolbar\middleware.py", line 94, in process_response
+    new_response = panel.process_response(request, response)
+  File "C:\Python27\lib\site-packages\debug_toolbar\panels\staticfiles.py", line 124, in process_response
+    'staticfiles_apps': self.get_staticfiles_apps(),
+  File "C:\Python27\lib\site-packages\debug_toolbar\panels\staticfiles.py", line 166, in get_staticfiles_apps
+    for finder in finders.get_finders():
+  File "C:\Python27\lib\site-packages\django\contrib\staticfiles\finders.py", line 264, in get_finders
+    yield get_finder(finder_path)
+  File "C:\Python27\lib\site-packages\django\utils\lru_cache.py", line 101, in wrapper
+    result = user_function(*args, **kwds)
+  File "C:\Python27\lib\site-packages\django\contrib\staticfiles\finders.py", line 273, in get_finder
+    Finder = import_string(import_path)
+  File "C:\Python27\lib\site-packages\django\utils\module_loading.py", line 26, in import_string
+    module = import_module(module_path)
+  File "C:\Python27\lib\importlib\__init__.py", line 37, in import_module
+    __import__(name)
+ImportError: No module named compressor.finders
+[21/Mar/2019 10:45:30] ERROR [django.request:256] Internal Server Error: /reportes/libro_iva_ventas/
+Traceback (most recent call last):
+  File "C:\Python27\lib\site-packages\django\core\handlers\base.py", line 223, in get_response
+    response = middleware_method(request, response)
+  File "C:\Python27\lib\site-packages\debug_toolbar\middleware.py", line 94, in process_response
+    new_response = panel.process_response(request, response)
+  File "C:\Python27\lib\site-packages\debug_toolbar\panels\staticfiles.py", line 124, in process_response
+    'staticfiles_apps': self.get_staticfiles_apps(),
+  File "C:\Python27\lib\site-packages\debug_toolbar\panels\staticfiles.py", line 166, in get_staticfiles_apps
+    for finder in finders.get_finders():
+  File "C:\Python27\lib\site-packages\django\contrib\staticfiles\finders.py", line 264, in get_finders
+    yield get_finder(finder_path)
+  File "C:\Python27\lib\site-packages\django\utils\lru_cache.py", line 101, in wrapper
+    result = user_function(*args, **kwds)
+  File "C:\Python27\lib\site-packages\django\contrib\staticfiles\finders.py", line 273, in get_finder
+    Finder = import_string(import_path)
+  File "C:\Python27\lib\site-packages\django\utils\module_loading.py", line 26, in import_string
+    module = import_module(module_path)
+  File "C:\Python27\lib\importlib\__init__.py", line 37, in import_module
+    __import__(name)
+ImportError: No module named compressor.finders
+[21/Mar/2019 10:45:34] ERROR [django.request:256] Internal Server Error: /favicon.ico
+Traceback (most recent call last):
+  File "C:\Python27\lib\site-packages\django\core\handlers\base.py", line 223, in get_response
+    response = middleware_method(request, response)
+  File "C:\Python27\lib\site-packages\debug_toolbar\middleware.py", line 94, in process_response
+    new_response = panel.process_response(request, response)
+  File "C:\Python27\lib\site-packages\debug_toolbar\panels\staticfiles.py", line 124, in process_response
+    'staticfiles_apps': self.get_staticfiles_apps(),
+  File "C:\Python27\lib\site-packages\debug_toolbar\panels\staticfiles.py", line 166, in get_staticfiles_apps
+    for finder in finders.get_finders():
+  File "C:\Python27\lib\site-packages\django\contrib\staticfiles\finders.py", line 264, in get_finders
+    yield get_finder(finder_path)
+  File "C:\Python27\lib\site-packages\django\utils\lru_cache.py", line 101, in wrapper
+    result = user_function(*args, **kwds)
+  File "C:\Python27\lib\site-packages\django\contrib\staticfiles\finders.py", line 273, in get_finder
+    Finder = import_string(import_path)
+  File "C:\Python27\lib\site-packages\django\utils\module_loading.py", line 26, in import_string
+    module = import_module(module_path)
+  File "C:\Python27\lib\importlib\__init__.py", line 37, in import_module
+    __import__(name)
+ImportError: No module named compressor.finders
+[21/Mar/2019 11:17:57] ERROR [django.request:256] Internal Server Error: /reportes/libro_iva_ventas/
+Traceback (most recent call last):
+  File "C:\Python27\lib\site-packages\django\core\handlers\base.py", line 132, in get_response
+    response = wrapped_callback(request, *callback_args, **callback_kwargs)
+  File "C:\Python27\lib\site-packages\django\contrib\auth\decorators.py", line 22, in _wrapped_view
+    return view_func(request, *args, **kwargs)
+  File "D:\GitHub\IronWeb\reportes\views.py", line 543, in libro_iva_ventas
+    response = HttpResponse(generarCITI(cpbs,'V','cpbs'),content_type='text/plain')
+  File "D:\GitHub\IronWeb\reportes\views.py", line 348, in generarCITI
+    linea += str(c.get_nro_afip()).encode('utf-8').rjust(3, "0") #CODIGO CPB AFIP
+  File "D:\GitHub\IronWeb\comprobantes\models.py", line 222, in get_nro_afip
+    c = cpb_nro_afip.objects.get(cpb_tipo=self.cpb_tipo.tipo,letra=self.letra)
+  File "C:\Python27\lib\site-packages\django\db\models\manager.py", line 127, in manager_method
+    return getattr(self.get_queryset(), name)(*args, **kwargs)
+  File "C:\Python27\lib\site-packages\django\db\models\query.py", line 334, in get
+    self.model._meta.object_name
+DoesNotExist: cpb_nro_afip matching query does not exist.
+[21/Mar/2019 11:28:25] ERROR [django.request:256] Internal Server Error: /reportes/libro_iva_ventas/
+Traceback (most recent call last):
+  File "C:\Python27\lib\site-packages\django\core\handlers\base.py", line 132, in get_response
+    response = wrapped_callback(request, *callback_args, **callback_kwargs)
+  File "C:\Python27\lib\site-packages\django\contrib\auth\decorators.py", line 22, in _wrapped_view
+    return view_func(request, *args, **kwargs)
+  File "D:\GitHub\IronWeb\reportes\views.py", line 543, in libro_iva_ventas
+    response = HttpResponse(generarCITI(cpbs,'V','cpbs'),content_type='text/plain')
+  File "D:\GitHub\IronWeb\reportes\views.py", line 348, in generarCITI
+    linea += str(c.get_nro_afip()).encode('utf-8').rjust(3, "0") #CODIGO CPB AFIP
+  File "D:\GitHub\IronWeb\comprobantes\models.py", line 222, in get_nro_afip
+    c = cpb_nro_afip.objects.get(cpb_tipo=self.cpb_tipo.tipo,letra=self.letra)
+  File "C:\Python27\lib\site-packages\django\db\models\manager.py", line 127, in manager_method
+    return getattr(self.get_queryset(), name)(*args, **kwargs)
+  File "C:\Python27\lib\site-packages\django\db\models\query.py", line 334, in get
+    self.model._meta.object_name
+DoesNotExist: cpb_nro_afip matching query does not exist.
+[21/Mar/2019 11:37:10] ERROR [django.request:256] Internal Server Error: /reportes/libro_iva_compras/
+Traceback (most recent call last):
+  File "C:\Python27\lib\site-packages\django\core\handlers\base.py", line 132, in get_response
+    response = wrapped_callback(request, *callback_args, **callback_kwargs)
+  File "C:\Python27\lib\site-packages\django\contrib\auth\decorators.py", line 22, in _wrapped_view
+    return view_func(request, *args, **kwargs)
+  File "D:\GitHub\IronWeb\reportes\views.py", line 596, in libro_iva_compras
+    response = HttpResponse(generarCITI(cpbs,'C','cpbs'),content_type='text/plain')
+  File "D:\GitHub\IronWeb\reportes\views.py", line 412, in generarCITI
+    linea += str(c.get_nro_afip()).encode('utf-8').rjust(3, "0") #CODIGO CPB AFIP
+  File "D:\GitHub\IronWeb\comprobantes\models.py", line 222, in get_nro_afip
+    c = cpb_nro_afip.objects.get(cpb_tipo=self.cpb_tipo.tipo,letra=self.letra)
+  File "C:\Python27\lib\site-packages\django\db\models\manager.py", line 127, in manager_method
+    return getattr(self.get_queryset(), name)(*args, **kwargs)
+  File "C:\Python27\lib\site-packages\django\db\models\query.py", line 334, in get
+    self.model._meta.object_name
+DoesNotExist: cpb_nro_afip matching query does not exist.
