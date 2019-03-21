@@ -11,8 +11,10 @@
         <link rel="shortcut icon" href="{% static 'images/logo_iron.png' %}"  type="image/png">        
         <!--Mobile specific meta goodness :)-->
         <meta name="viewport" content="width=device-width, initial-scale=1">        
-        <link href="https://fonts.googleapis.com/css?family=Ubuntu:400,300,600,700&subset=all" rel="stylesheet" type="text/css"/>
-        <link href="https://fonts.googleapis.com/css?family=Open+Sans:400,300,600,700&subset=all" rel="stylesheet" type="text/css"/>
+        {% load compress %}
+        {% compress css %}
+        <link href="{% static 'fonts/Ubuntu.css' %}" rel="stylesheet" type="text/css"/>
+        <link href="{% static 'fonts/OpenSans.css' %}" rel="stylesheet" type="text/css"/>
         <link href="{% static 'font-awesome/css/font-awesome.min.css' %}" rel="stylesheet" type="text/css"/>
         <link href="{% static 'simple-line-icons/simple-line-icons.min.css' %}" rel="stylesheet" type="text/css"/>        
         <link href="{% static 'bootstrap/css/bootstrap.min.css' %}" rel="stylesheet" type="text/css" />        
@@ -37,13 +39,14 @@
         <link rel="stylesheet" href="{% static 'css/bootstrap-chosen.css' %}" type="text/css" />
         <link rel="stylesheet" href="{% static 'css/modificaciones.css'%}?{% now "Ymd"%}" />
         <link href="{% static 'css/toastr.min.css' %}" rel="stylesheet" type="text/css"/> 
-
+        {% endcompress %}
 
         {% block extra_css %}
         {% endblock %}          
         
-        
+       
         <script src="{% static 'js/jquery.min.js' %}" type="text/javascript"></script>        
+      
         <script src="{% static 'js/respond.min.js' %}" type="text/javascript"></script>
         <script src="{% static 'js/html5shiv.js' %}" type="text/javascript"></script>     
         <script src="{% static 'js/jquery-ui.js' %}" type="text/javascript" ></script>
@@ -53,8 +56,7 @@
         <script src="{% static 'fm/js/fm.js' %}" type="text/javascript"></script>
         <script src="{% static 'js/jquery-migrate.min.js' %}" type="text/javascript"></script>        
         <script src="{% static 'js/html5shiv.js' %}" type="text/javascript"></script>
-        <script src="{% static 'js/respond.min.js' %}" type="text/javascript"></script>
-        
+                
         <script src="{% static 'js/sorttable.js' %}" type="text/javascript"></script>
         <script src="{% static 'bootstrap-hover-dropdown/bootstrap-hover-dropdown.min.js' %}" type="text/javascript"></script>               
         <script src="{% static 'alertifyjs/alertify.js' %}" type="text/javascript"></script>
@@ -82,8 +84,12 @@
         <script src="{% static 'js/layout.js' %}" type="text/javascript"></script>
                 
         <script src="{% static 'js/jquery.waypoints.min.js' %}" type="text/javascript"></script>        
+
         {% block extra_js %}
         {% endblock %}
+       
+       
+
         <script type="text/javascript">
                
             alertify.defaults.transition = "slide";
@@ -150,6 +156,8 @@
         
 
        </script> 
+      
+        
 </head>
         
       {% block principal %}          
@@ -170,7 +178,7 @@
         
         });
       </script> 
-       
+     
           
         
        

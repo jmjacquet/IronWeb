@@ -135,7 +135,7 @@ class ConsultaSaldosCuentas(forms.Form):
 
 
 class ConsultaVencimientos(forms.Form):               
-	entidad = forms.CharField(label='Cliente',max_length=100,widget=forms.TextInput(attrs={'class':'form-control','text-transform': 'uppercase'}),required=False)
+	entidad = forms.CharField(label='Cliente/Proveedor',max_length=100,widget=forms.TextInput(attrs={'class':'form-control','text-transform': 'uppercase'}),required=False)
 	fdesde =  forms.DateField(label='Fecha Desde',widget=forms.DateInput(attrs={'class': 'form-control datepicker'}),required = False,initial=inicioMes())
 	fhasta =  forms.DateField(label='Fecha Hasta',widget=forms.DateInput(attrs={'class': 'form-control datepicker'}),required = False,initial=finMes())    	
 	pto_vta = forms.IntegerField(label='Pto. Vta.',required = False)

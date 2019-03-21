@@ -128,7 +128,8 @@ INSTALLED_APPS = (
     'trabajos',
     'reportes',
     'felectronica',
-    'djangosecure'
+    'djangosecure',
+    'djangocompress'
 )
 
 

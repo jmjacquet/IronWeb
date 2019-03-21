@@ -362,13 +362,13 @@ var tabla = $('#dataTables-cpb_venta').DataTable({
                             'cpbs[]': cpbs
                         },
                         success: function(data) {
-                            if (data['cant_cpbs'] < 1) {
-                                alertify.errorAlert("¡Los comprobantes no deben contener cobranzas!");
+                            if (data['cant_cpbs'] <= 1) {
+                                alertify.errorAlert("¡Los comprobantes no pueden ser unificados!");
                             }else{
                                 entidades = data['cant_entidades'];
                                 cpb_tipos = data['cant_cpb_tipo'];
                                 if ((entidades > 1) || (cpb_tipos > 1)) {
-                                    alertify.errorAlert("¡El Cliente y el tipo de Comprobante deben ser iguales!");
+                                    alertify.errorAlert("¡El Cliente/Tipo de Comprobante deben ser iguales y no deben contener cobranzas!");
                                 } else {
                                     window.location.href = "/ingresos/ventas/unificar?" + $('#btnAnular').val();
                             }}
