@@ -65,6 +65,7 @@ STATICFILES_FINDERS = (
     'django.contrib.staticfiles.finders.FileSystemFinder',
     'django.contrib.staticfiles.finders.AppDirectoriesFinder',
 #    'django.contrib.staticfiles.finders.DefaultStorageFinder',
+    'compressor.finders.CompressorFinder',
 )
 TEMPLATE_CONTEXT_PROCESSORS =   (
     'django.contrib.auth.context_processors.auth',
@@ -129,7 +130,7 @@ INSTALLED_APPS = (
     'reportes',
     'felectronica',
     'djangosecure',
-    'djangocompress'
+    'compressor'
 )
 
 
