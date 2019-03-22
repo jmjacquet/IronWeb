@@ -282,6 +282,7 @@ MESSAGE_TAGS = {message_constants.DEBUG: 'debug',
 
 
 COMPRESS_ENABLED = True
+COMPRESS_OFFLINE = True
 COMPRESS_OUTPUT_DIR = '/'
 COMPRESS_CSS_FILTERS = [
     'compressor.filters.cssmin.CSSMinFilter',
