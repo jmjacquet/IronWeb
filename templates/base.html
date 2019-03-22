@@ -1,6 +1,7 @@
 {% load static from staticfiles %}
 {% load i18n %}
 
+
 <!DOCTYPE HTML>
 <html>
 
@@ -11,8 +12,8 @@
         <link rel="shortcut icon" href="{% static 'images/logo_iron.png' %}"  type="image/png">        
         <!--Mobile specific meta goodness :)-->
         <meta name="viewport" content="width=device-width, initial-scale=1">        
-        
-        
+        {% load compress %}
+        {% compress css %}
         <link href="{% static 'fonts/Ubuntu.css' %}" rel="stylesheet" type="text/css"/>
         <link href="{% static 'fonts/OpenSans.css' %}" rel="stylesheet" type="text/css"/>
         <link href="{% static 'font-awesome/css/font-awesome.min.css' %}" rel="stylesheet" type="text/css"/>
@@ -43,8 +44,8 @@
 
         {% block extra_css %}
         {% endblock %}          
+        {% endcompress %}
         
-       
         <script src="{% static 'js/jquery.min.js' %}" type="text/javascript"></script>        
       
         <script src="{% static 'js/respond.min.js' %}" type="text/javascript"></script>

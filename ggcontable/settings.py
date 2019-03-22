@@ -65,6 +65,7 @@ STATICFILES_FINDERS = (
     'django.contrib.staticfiles.finders.FileSystemFinder',
     'django.contrib.staticfiles.finders.AppDirectoriesFinder',
 #    'django.contrib.staticfiles.finders.DefaultStorageFinder',    
+    'compressor.finders.CompressorFinder',
 )
 TEMPLATE_CONTEXT_PROCESSORS =   (
     'django.contrib.auth.context_processors.auth',
@@ -128,7 +129,8 @@ INSTALLED_APPS = (
     'trabajos',
     'reportes',
     'felectronica',
-    'djangosecure',   
+    'djangosecure',
+    'compressor'   ,
 )
 
 
@@ -279,3 +281,13 @@ MESSAGE_TAGS = {message_constants.DEBUG: 'debug',
 
 
 
+COMPRESS_ENABLED = True
+COMPRESS_OUTPUT_DIR = '/'
+COMPRESS_CSS_FILTERS = [
+    'compressor.filters.cssmin.CSSMinFilter',
+    'compressor.filters.css_default.CssAbsoluteFilter',
+    'compressor.filters.datauri.CssDataUriFilter',
+]
+COMPRESS_JS_FILTERS = [
+    'compressor.filters.jsmin.JSMinFilter'
+]

@@ -339,14 +339,14 @@ import StringIO
 def generarCITI(cpbs,ventas_compras,tipo_archivo):
     #ventascompras = V/C
     #tipo_archivo = cpbs/alicuotas
-    #import time
-    #start = time.time()
+    import time
+    start = time.time()
     archivo = StringIO.StringIO()
     nafip = None
     if (ventas_compras=='V'):
        if tipo_archivo=='cpbs': 
         for c in cpbs:
-            nafip=c.get_nro_afip()
+            nafip=c.get_nro_afip()            
             if nafip==None:
                 continue
             linea=""
@@ -496,12 +496,9 @@ def generarCITI(cpbs,ventas_compras,tipo_archivo):
                 linea += str(ci.tasa_iva.id_afip).encode('utf-8').rjust(4, "0") #CODIGO IVA AFIP
                 linea += str(ci.importe_total).encode('utf-8').replace(".","").rjust(15, "0") #importe IVA            
                 archivo.write(linea+'\r\n')        
-
     
     contents = archivo.getvalue()
-    archivo.close()
-    end=time.time() - start
-    #print end
+    archivo.close()    
     return contents
 
 
