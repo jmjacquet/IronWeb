@@ -135,9 +135,9 @@ INSTALLED_APPS = (
 SESSION_SERIALIZER = 'django.contrib.sessions.serializers.JSONSerializer'
 
 # EMAIL_PORT = 465
-EMAIL_HOST = 'smtp.webfaction.com'
-EMAIL_HOST_USER = 'grupogua_errores'
-EMAIL_HOST_PASSWORD = 'battlehome'
+EMAIL_HOST = str("smtp.webfaction.com")
+EMAIL_HOST_USER = str("grupogua_errores")
+EMAIL_HOST_PASSWORD = str("battlehome")
 # EMAIL_USE_TLS = True
 # EMAIL_HOST_USER = os.environ.get('EMAIL_HOST_USER', 'grupogua_errores')
 # EMAIL_HOST_PASSWORD = os.environ.get('EMAIL_HOST_PASSWORD', None)
