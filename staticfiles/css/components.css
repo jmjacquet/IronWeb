@@ -1644,7 +1644,7 @@ name .popover .popover-content,
 .portlet.solid.blue-chambray > .portlet-title > .tools > a.config{background-image:url(../img/portlet-config-icon.png);}
 .portlet.solid.blue-chambray > .portlet-title > .tools > a.reload{background-image:url(../img/portlet-reload-icon.png);}
 .portlet.solid.blue-chambray > .portlet-title > .tools > a.expand{background-image:url(../img/portlet-expand-icon.png);}
-.portlet.solid.blue-chambray > .portlet-title > .tools > a.collapse{background-image:url(../img/portlet-collapse-icon.png);}
+.portlet.solid.blue-chambray > .portlet-title > .tools > a.collapse{background-image:url(../img/portlet-collapse-icon-white.png);}
 .portlet.solid.blue-chambray > .portlet-title > .tools > a.fullscreen{color:#fdfdfd;}
 .portlet.box.blue-chambray{border:1px solid #3e5771;border-top:0;}
 .portlet.box.blue-chambray > .portlet-title{background-color:#2C3E50;}
