@@ -1902,7 +1902,7 @@ name .popover .popover-content,
 .portlet.solid.green > .portlet-title > .tools > a.remove{background-image:url(../img/portlet-remove-icon-white.png);}
 .portlet.solid.green > .portlet-title > .tools > a.config{background-image:url(../img/portlet-config-icon-white.png);}
 .portlet.solid.green > .portlet-title > .tools > a.reload{background-image:url(../img/portlet-reload-icon-white.png);}
-.portlet.solid.green > .portlet-title > .tools > a.expand{background-image:url(../img/portlet-expand-icon);}
+.portlet.solid.green > .portlet-title > .tools > a.expand{background-image:url(../img/portlet-expand-icon.png);}
 .portlet.solid.green > .portlet-title > .tools > a.collapse{background-image:url(../img/portlet-collapse-icon-white.png);}
 .portlet.solid.green > .portlet-title > .tools > a.fullscreen{color:#fdfdfd;}
 .portlet.box.green{border:1px solid #30d0c1;border-top:0;}

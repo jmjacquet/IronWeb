@@ -201,9 +201,7 @@ textarea.form-control{height:auto}
     font-weight: bold;
     color: #ccc;
     height: 36px;
-    padding-left: 20px;
-    /*line-height: 36px;*/
-    background: url('/img/toptabs_bg.png') repeat-x top;
+    padding-left: 20px;    
 }
 
 .tabsContainer_enduser a {
@@ -261,45 +259,6 @@ textarea.form-control{height:auto}
     font-size: 1.2em;
 }
 
-.tabItem_blue a {
-    color: #fff;
-    background-color: #6e87a4;
-    background-image: url('/img/tab-blue.png');
-}
-
-.tabItem_violet a {
-    color: #fff;
-    background-color: #9c7996;
-    background-image: url('/img/tab-violet.png');
-}
-
-.tabItem_black a {
-    color: #fff;
-    background-color: #707070;
-    background-image: url('/img/tab-black.png');
-}
-
-.tabItem_green a {
-    color: #fff;
-    background-color: #799c82;
-    background-image: url('/img/tab-green.png');
-}
-
-.tabItem_blue a:hover {
-    background-image: url('/img/tab-blue-h.png');
-}
-
-.tabItem_green a:hover {
-    background-image: url('/img/tab-green-h.png');
-}
-
-.tabItem_violet a:hover {
-    background-image: url('/img/tab-violet-h.png');
-}
-
-.tabItem_black a:hover {
-    background-image: url('/img/tab-black-h.png');
-}
 
 .tabItem_blue a .icon:before {
     content: '\f0ca';
