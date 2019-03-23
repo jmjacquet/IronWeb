@@ -2480,3 +2480,72 @@ Traceback (most recent call last):
   File "C:\Python27\lib\site-packages\django\template\debug.py", line 65, in unclosed_block_tag
     raise self.source_error(source, msg)
 TemplateSyntaxError: Unclosed tag 'compress'. Looking for one of: endcompress 
+[22/Mar/2019 21:07:11] ERROR [django.request:256] Internal Server Error: /login/
+Traceback (most recent call last):
+  File "C:\Python27\lib\site-packages\django\core\handlers\base.py", line 132, in get_response
+    response = wrapped_callback(request, *callback_args, **callback_kwargs)
+  File "D:\Repo\ironStable\ggcontable\views.py", line 56, in login
+    return render_to_response(template, {'msj':messages,'empresa':empresa},context_instance=RequestContext(request))
+  File "C:\Python27\lib\site-packages\django\shortcuts.py", line 45, in render_to_response
+    using=using)
+  File "C:\Python27\lib\site-packages\django\template\loader.py", line 115, in render_to_string
+    template_name, context, context_instance, dirs, dictionary)
+  File "C:\Python27\lib\site-packages\django\template\engine.py", line 221, in render_to_string
+    return t.render(context_instance)
+  File "C:\Python27\lib\site-packages\django\template\base.py", line 209, in render
+    return self._render(context)
+  File "C:\Python27\lib\site-packages\django\test\utils.py", line 96, in instrumented_test_render
+    return self.nodelist.render(context)
+  File "C:\Python27\lib\site-packages\django\template\base.py", line 903, in render
+    bit = self.render_node(node, context)
+  File "C:\Python27\lib\site-packages\django\template\debug.py", line 79, in render_node
+    return node.render(context)
+  File "C:\Python27\lib\site-packages\django\template\loader_tags.py", line 135, in render
+    return compiled_parent._render(context)
+  File "C:\Python27\lib\site-packages\django\test\utils.py", line 96, in instrumented_test_render
+    return self.nodelist.render(context)
+  File "C:\Python27\lib\site-packages\django\template\base.py", line 903, in render
+    bit = self.render_node(node, context)
+  File "C:\Python27\lib\site-packages\django\template\debug.py", line 79, in render_node
+    return node.render(context)
+  File "C:\Python27\lib\site-packages\compressor\templatetags\compress.py", line 131, in render
+    return self.render_compressed(context, self.kind, self.mode, forced=forced)
+  File "C:\Python27\lib\site-packages\compressor\templatetags\compress.py", line 90, in render_compressed
+    return self.render_offline(context)
+  File "C:\Python27\lib\site-packages\compressor\templatetags\compress.py", line 75, in render_offline
+    'is the original content:\n\n%s' % (key, original_content))
+OfflineGenerationError: You have offline compression enabled but key "fdd55f1019c454cc1bd6d82bf87fdd4f6db521617457adf4e73152512b6ac1a0" is missing from offline manifest. You may need to run "python manage.py compress". Here is the original content:
+
+
+        <link href="/staticfiles/fonts/Ubuntu.css" rel="stylesheet" type="text/css"/>
+        <link href="/staticfiles/fonts/OpenSans.css" rel="stylesheet" type="text/css"/>
+        <link href="/staticfiles/font-awesome/css/font-awesome.min.css" rel="stylesheet" type="text/css"/>
+        <link href="/staticfiles/simple-line-icons/simple-line-icons.min.css" rel="stylesheet" type="text/css"/>        
+        <link href="/staticfiles/bootstrap/css/bootstrap.min.css" rel="stylesheet" type="text/css" />        
+        <link href="/staticfiles/css/uniform.default.css" rel="stylesheet" type="text/css"/>
+        
+        <link href="/staticfiles/bootstrap-datepicker/css/datepicker3.css" rel="stylesheet" type="text/css"/>        
+        <link href="/staticfiles/css/components.css?20190322"  rel="stylesheet" type="text/css"/>
+        <link href="/staticfiles/css/plugins.css" rel="stylesheet" type="text/css"/>
+        <link href="/staticfiles/css/layout.css?20190322" rel="stylesheet" type="text/css"/>
+        <link href="/staticfiles/css/grey.css?20190322" rel="stylesheet" type="text/css"/>           
+        <link rel="stylesheet" href="/staticfiles/alertifyjs/css/alertify.css" type="text/css" />        
+        <link rel="stylesheet" href="/staticfiles/fonts/flaticon.css" type="text/css" />
+        <link rel="stylesheet" href="/staticfiles/DataTables/datatables.css" type="text/css" />        
+        <link rel="stylesheet" href="/staticfiles/DataTables/DataTables-1.10.15/css/dataTables.bootstrap.css" type="text/css" />        
+        <link rel="stylesheet" href="/staticfiles/DataTables/Buttons-1.3.1/css/buttons.bootstrap.css" type="text/css" />
+        <link rel="stylesheet" href="/staticfiles/DataTables/FixedHeader-3.1.2/css/fixedHeader.bootstrap.css" type="text/css" />
+        <link rel="stylesheet" href="/staticfiles/DataTables/FixedHeader-3.1.2/css/fixedHeader.dataTables.min.css" type="text/css" />
+        <link rel="stylesheet" href="/staticfiles/DataTables/Buttons-1.3.1/css/buttons.dataTables.css" type="text/css" />
+        <link rel="stylesheet" href="/staticfiles/DataTables/Buttons-1.3.1/css/buttons.bootstrap.css" type="text/css" />
+
+        <link rel="stylesheet" href="/staticfiles/modal/css/modal.css" />        
+        <link rel="stylesheet" href="/staticfiles/css/bootstrap-chosen.css" type="text/css" />
+        <link rel="stylesheet" href="/staticfiles/css/modificaciones.css?20190322" />
+        <link href="/staticfiles/css/toastr.min.css" rel="stylesheet" type="text/css"/> 
+        
+
+        
+	<link rel="stylesheet" href="/staticfiles/css/login.css?20190322" type="text/css" />
+          
+        

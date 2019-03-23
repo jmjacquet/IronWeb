@@ -860,6 +860,9 @@ def mandarEmail(request,id):
         cpb = cpb_comprobante.objects.get(id=id)            
         mail_destino = []
         direccion = str(cpb.entidad.email)
+        if not direccion:
+            messages.error(request, 'El comprobante no pudo ser enviado! (verifique la dirección de correo del destinatario)')  
+            return HttpResponseRedirect(cpb.get_listado())
         mail_destino.append(direccion)
         try:
             config = gral_empresa.objects.get(id=settings.ENTIDAD_ID)        
@@ -891,9 +894,7 @@ def mandarEmail(request,id):
         html_content = get_template('general/varios/email.html').render({'mensaje': mail_cuerpo,'image_url':image_url})
         
         
-        if not direccion:
-            messages.error(request, 'El comprobante no pudo ser enviado! (verifique la dirección de correo del destinatario)')  
-            return HttpResponseRedirect(cpb.get_listado())
+        
                 
         backend = EmailBackend(host=mail_servidor, port=mail_puerto, username=mail_usuario,password=mail_password,fail_silently=False)        
         email = EmailMessage( subject=u'%s' % (cpb.get_cpb_tipo()),body=html_content,from_email=mail_origen,to=mail_destino,connection=backend)                
