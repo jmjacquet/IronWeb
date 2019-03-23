@@ -12,10 +12,11 @@
         <link rel="shortcut icon" href="{% static 'images/logo_iron.png' %}"  type="image/png">        
         <!--Mobile specific meta goodness :)-->
         <meta name="viewport" content="width=device-width, initial-scale=1">        
-        {% load compress %}
-        {% compress css %}
+        
         <link href="{% static 'fonts/Ubuntu.css' %}" rel="stylesheet" type="text/css"/>
         <link href="{% static 'fonts/OpenSans.css' %}" rel="stylesheet" type="text/css"/>
+        {% load compress %}
+        {% compress css %}
         <link href="{% static 'font-awesome/css/font-awesome.min.css' %}" rel="stylesheet" type="text/css"/>
         <link href="{% static 'simple-line-icons/simple-line-icons.min.css' %}" rel="stylesheet" type="text/css"/>        
         <link href="{% static 'bootstrap/css/bootstrap.min.css' %}" rel="stylesheet" type="text/css" />        
