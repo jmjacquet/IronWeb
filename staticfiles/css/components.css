@@ -1724,11 +1724,11 @@ name .popover .popover-content,
 .portlet.solid.blue-chambray > .portlet-body{border:0;color:#FFFFFF;}
 .portlet.solid.blue-chambray > .portlet-title > .caption{font-weight:400;}
 .portlet.solid.blue-chambray > .portlet-title > .caption > i{color:#FFFFFF;}
-.portlet.solid.blue-chambray > .portlet-title > .tools > a.remove{background-image:url(../img/portlet-remove-icon-white.png);}
-.portlet.solid.blue-chambray > .portlet-title > .tools > a.config{background-image:url(../img/portlet-config-icon-white.png);}
-.portlet.solid.blue-chambray > .portlet-title > .tools > a.reload{background-image:url(../img/portlet-reload-icon-white.png);}
-.portlet.solid.blue-chambray > .portlet-title > .tools > a.expand{background-image:url(../img/portlet-expand-icon-white.png);}
-.portlet.solid.blue-chambray > .portlet-title > .tools > a.collapse{background-image:url(../img/portlet-collapse-icon-white.png);}
+.portlet.solid.blue-chambray > .portlet-title > .tools > a.remove{background-image:url(../img/portlet-remove-icon.png);}
+.portlet.solid.blue-chambray > .portlet-title > .tools > a.config{background-image:url(../img/portlet-config-icon.png);}
+.portlet.solid.blue-chambray > .portlet-title > .tools > a.reload{background-image:url(../img/portlet-reload-icon.png);}
+.portlet.solid.blue-chambray > .portlet-title > .tools > a.expand{background-image:url(../img/portlet-expand-icon.png);}
+.portlet.solid.blue-chambray > .portlet-title > .tools > a.collapse{background-image:url(../img/portlet-collapse-icon.png);}
 .portlet.solid.blue-chambray > .portlet-title > .tools > a.fullscreen{color:#fdfdfd;}
 .portlet.box.blue-chambray{border:1px solid #3e5771;border-top:0;}
 .portlet.box.blue-chambray > .portlet-title{background-color:#2C3E50;}
@@ -1764,7 +1764,7 @@ name .popover .popover-content,
 .portlet.solid.blue-ebonyclay > .portlet-title > .tools > a.remove{background-image:url(../img/portlet-remove-icon-white.png);}
 .portlet.solid.blue-ebonyclay > .portlet-title > .tools > a.config{background-image:url(../img/portlet-config-icon-white.png);}
 .portlet.solid.blue-ebonyclay > .portlet-title > .tools > a.reload{background-image:url(../img/portlet-reload-icon-white.png);}
-.portlet.solid.blue-ebonyclay > .portlet-title > .tools > a.expand{background-image:url(../img/portlet-expand-icon-white.png);}
+.portlet.solid.blue-ebonyclay > .portlet-title > .tools > a.expand{background-image:url(../img/portlet-expand-icon.png);}
 .portlet.solid.blue-ebonyclay > .portlet-title > .tools > a.collapse{background-image:url(../img/portlet-collapse-icon-white.png);}
 .portlet.solid.blue-ebonyclay > .portlet-title > .tools > a.fullscreen{color:#fdfdfd;}
 .portlet.box.blue-ebonyclay{border:1px solid #344b60;border-top:0;}
@@ -1801,7 +1801,7 @@ name .popover .popover-content,
 .portlet.solid.blue-hoki > .portlet-title > .tools > a.remove{background-image:url(../img/portlet-remove-icon-white.png);}
 .portlet.solid.blue-hoki > .portlet-title > .tools > a.config{background-image:url(../img/portlet-config-icon-white.png);}
 .portlet.solid.blue-hoki > .portlet-title > .tools > a.reload{background-image:url(../img/portlet-reload-icon-white.png);}
-.portlet.solid.blue-hoki > .portlet-title > .tools > a.expand{background-image:url(../img/portlet-expand-icon-white.png);}
+.portlet.solid.blue-hoki > .portlet-title > .tools > a.expand{background-image:url(../img/portlet-expand-icon.png);}
 .portlet.solid.blue-hoki > .portlet-title > .tools > a.collapse{background-image:url(../img/portlet-collapse-icon-white.png);}
 .portlet.solid.blue-hoki > .portlet-title > .tools > a.fullscreen{color:#fdfdfd;}
 .portlet.box.blue-hoki{border:1px solid #869ab3;border-top:0;}
@@ -1838,7 +1838,7 @@ name .popover .popover-content,
 .portlet.solid.blue-steel > .portlet-title > .tools > a.remove{background-image:url(../img/portlet-remove-icon-white.png);}
 .portlet.solid.blue-steel > .portlet-title > .tools > a.config{background-image:url(../img/portlet-config-icon-white.png);}
 .portlet.solid.blue-steel > .portlet-title > .tools > a.reload{background-image:url(../img/portlet-reload-icon-white.png);}
-.portlet.solid.blue-steel > .portlet-title > .tools > a.expand{background-image:url(../img/portlet-expand-icon-white.png);}
+.portlet.solid.blue-steel > .portlet-title > .tools > a.expand{background-image:url(../img/portlet-expand-icon.png);}
 .portlet.solid.blue-steel > .portlet-title > .tools > a.collapse{background-image:url(../img/portlet-collapse-icon-white.png);}
 .portlet.solid.blue-steel > .portlet-title > .tools > a.fullscreen{color:#fdfdfd;}
 .portlet.box.blue-steel{border:1px solid #7093cc;border-top:0;}
@@ -1875,7 +1875,7 @@ name .popover .popover-content,
 .portlet.solid.blue-soft > .portlet-title > .tools > a.remove{background-image:url(../img/portlet-remove-icon-white.png);}
 .portlet.solid.blue-soft > .portlet-title > .tools > a.config{background-image:url(../img/portlet-config-icon-white.png);}
 .portlet.solid.blue-soft > .portlet-title > .tools > a.reload{background-image:url(../img/portlet-reload-icon-white.png);}
-.portlet.solid.blue-soft > .portlet-title > .tools > a.expand{background-image:url(../img/portlet-expand-icon-white.png);}
+.portlet.solid.blue-soft > .portlet-title > .tools > a.expand{background-image:url(../img/portlet-expand-icon.png);}
 .portlet.solid.blue-soft > .portlet-title > .tools > a.collapse{background-image:url(../img/portlet-collapse-icon-white.png);}
 .portlet.solid.blue-soft > .portlet-title > .tools > a.fullscreen{color:#fdfdfd;}
 .portlet.box.blue-soft{border:1px solid #71a0c7;border-top:0;}
@@ -1912,7 +1912,7 @@ name .popover .popover-content,
 .portlet.solid.blue-dark > .portlet-title > .tools > a.remove{background-image:url(../img/portlet-remove-icon-white.png);}
 .portlet.solid.blue-dark > .portlet-title > .tools > a.config{background-image:url(../img/portlet-config-icon-white.png);}
 .portlet.solid.blue-dark > .portlet-title > .tools > a.reload{background-image:url(../img/portlet-reload-icon-white.png);}
-.portlet.solid.blue-dark > .portlet-title > .tools > a.expand{background-image:url(../img/portlet-expand-icon-white.png);}
+.portlet.solid.blue-dark > .portlet-title > .tools > a.expand{background-image:url(../img/portlet-expand-icon.png);}
 .portlet.solid.blue-dark > .portlet-title > .tools > a.collapse{background-image:url(../img/portlet-collapse-icon-white.png);}
 .portlet.solid.blue-dark > .portlet-title > .tools > a.fullscreen{color:#fdfdfd;}
 .portlet.box.blue-dark{border:1px solid #788da4;border-top:0;}
@@ -1949,7 +1949,7 @@ name .popover .popover-content,
 .portlet.solid.blue-sharp > .portlet-title > .tools > a.remove{background-image:url(../img/portlet-remove-icon-white.png);}
 .portlet.solid.blue-sharp > .portlet-title > .tools > a.config{background-image:url(../img/portlet-config-icon-white.png);}
 .portlet.solid.blue-sharp > .portlet-title > .tools > a.reload{background-image:url(../img/portlet-reload-icon-white.png);}
-.portlet.solid.blue-sharp > .portlet-title > .tools > a.expand{background-image:url(../img/portlet-expand-icon-white.png);}
+.portlet.solid.blue-sharp > .portlet-title > .tools > a.expand{background-image:url(../img/portlet-expand-icon.png);}
 .portlet.solid.blue-sharp > .portlet-title > .tools > a.collapse{background-image:url(../img/portlet-collapse-icon-white.png);}
 .portlet.solid.blue-sharp > .portlet-title > .tools > a.fullscreen{color:#fdfdfd;}
 .portlet.box.blue-sharp{border:1px solid #84b3dc;border-top:0;}
@@ -1986,7 +1986,7 @@ name .popover .popover-content,
 .portlet.solid.green > .portlet-title > .tools > a.remove{background-image:url(../img/portlet-remove-icon-white.png);}
 .portlet.solid.green > .portlet-title > .tools > a.config{background-image:url(../img/portlet-config-icon-white.png);}
 .portlet.solid.green > .portlet-title > .tools > a.reload{background-image:url(../img/portlet-reload-icon-white.png);}
-.portlet.solid.green > .portlet-title > .tools > a.expand{background-image:url(../img/portlet-expand-icon-white.png);}
+.portlet.solid.green > .portlet-title > .tools > a.expand{background-image:url(../img/portlet-expand-icon-white);}
 .portlet.solid.green > .portlet-title > .tools > a.collapse{background-image:url(../img/portlet-collapse-icon-white.png);}
 .portlet.solid.green > .portlet-title > .tools > a.fullscreen{color:#fdfdfd;}
 .portlet.box.green{border:1px solid #30d0c1;border-top:0;}
@@ -2023,7 +2023,7 @@ name .popover .popover-content,
 .portlet.solid.green-meadow > .portlet-title > .tools > a.remove{background-image:url(../img/portlet-remove-icon-white.png);}
 .portlet.solid.green-meadow > .portlet-title > .tools > a.config{background-image:url(../img/portlet-config-icon-white.png);}
 .portlet.solid.green-meadow > .portlet-title > .tools > a.reload{background-image:url(../img/portlet-reload-icon-white.png);}
-.portlet.solid.green-meadow > .portlet-title > .tools > a.expand{background-image:url(../img/portlet-expand-icon-white.png);}
+.portlet.solid.green-meadow > .portlet-title > .tools > a.expand{background-image:url(../img/portlet-expand-icon.png);}
 .portlet.solid.green-meadow > .portlet-title > .tools > a.collapse{background-image:url(../img/portlet-collapse-icon-white.png);}
 .portlet.solid.green-meadow > .portlet-title > .tools > a.fullscreen{color:#fdfdfd;}
 .portlet.box.green-meadow{border:1px solid #2ae0bb;border-top:0;}
@@ -2060,7 +2060,7 @@ name .popover .popover-content,
 .portlet.solid.green-seagreen > .portlet-title > .tools > a.remove{background-image:url(../img/portlet-remove-icon-white.png);}
 .portlet.solid.green-seagreen > .portlet-title > .tools > a.config{background-image:url(../img/portlet-config-icon-white.png);}
 .portlet.solid.green-seagreen > .portlet-title > .tools > a.reload{background-image:url(../img/portlet-reload-icon-white.png);}
-.portlet.solid.green-seagreen > .portlet-title > .tools > a.expand{background-image:url(../img/portlet-expand-icon-white.png);}
+.portlet.solid.green-seagreen > .portlet-title > .tools > a.expand{background-image:url(../img/portlet-expand-icon.png);}
 .portlet.solid.green-seagreen > .portlet-title > .tools > a.collapse{background-image:url(../img/portlet-collapse-icon-white.png);}
 .portlet.solid.green-seagreen > .portlet-title > .tools > a.fullscreen{color:#fdfdfd;}
 .portlet.box.green-seagreen{border:1px solid #22cfc6;border-top:0;}
@@ -2097,7 +2097,7 @@ name .popover .popover-content,
 .portlet.solid.green-turquoise > .portlet-title > .tools > a.remove{background-image:url(../img/portlet-remove-icon-white.png);}
 .portlet.solid.green-turquoise > .portlet-title > .tools > a.config{background-image:url(../img/portlet-config-icon-white.png);}
 .portlet.solid.green-turquoise > .portlet-title > .tools > a.reload{background-image:url(../img/portlet-reload-icon-white.png);}
-.portlet.solid.green-turquoise > .portlet-title > .tools > a.expand{background-image:url(../img/portlet-expand-icon-white.png);}
+.portlet.solid.green-turquoise > .portlet-title > .tools > a.expand{background-image:url(../img/portlet-expand-icon.png);}
 .portlet.solid.green-turquoise > .portlet-title > .tools > a.collapse{background-image:url(../img/portlet-collapse-icon-white.png);}
 .portlet.solid.green-turquoise > .portlet-title > .tools > a.fullscreen{color:#fdfdfd;}
 .portlet.box.green-turquoise{border:1px solid #61dfc6;border-top:0;}
@@ -2134,7 +2134,7 @@ name .popover .popover-content,
 .portlet.solid.green-haze > .portlet-title > .tools > a.remove{background-image:url(../img/portlet-remove-icon-white.png);}
 .portlet.solid.green-haze > .portlet-title > .tools > a.config{background-image:url(../img/portlet-config-icon-white.png);}
 .portlet.solid.green-haze > .portlet-title > .tools > a.reload{background-image:url(../img/portlet-reload-icon-white.png);}
-.portlet.solid.green-haze > .portlet-title > .tools > a.expand{background-image:url(../img/portlet-expand-icon-white.png);}
+.portlet.solid.green-haze > .portlet-title > .tools > a.expand{background-image:url(../img/portlet-expand-icon.png);}
 .portlet.solid.green-haze > .portlet-title > .tools > a.collapse{background-image:url(../img/portlet-collapse-icon-white.png);}
 .portlet.solid.green-haze > .portlet-title > .tools > a.fullscreen{color:#fdfdfd;}
 .portlet.box.green-haze{border:1px solid #67c6bf;border-top:0;}
@@ -2171,7 +2171,7 @@ name .popover .popover-content,
 .portlet.solid.green-jungle > .portlet-title > .tools > a.remove{background-image:url(../img/portlet-remove-icon-white.png);}
 .portlet.solid.green-jungle > .portlet-title > .tools > a.config{background-image:url(../img/portlet-config-icon-white.png);}
 .portlet.solid.green-jungle > .portlet-title > .tools > a.reload{background-image:url(../img/portlet-reload-icon-white.png);}
-.portlet.solid.green-jungle > .portlet-title > .tools > a.expand{background-image:url(../img/portlet-expand-icon-white.png);}
+.portlet.solid.green-jungle > .portlet-title > .tools > a.expand{background-image:url(../img/portlet-expand-icon.png);}
 .portlet.solid.green-jungle > .portlet-title > .tools > a.collapse{background-image:url(../img/portlet-collapse-icon-white.png);}
 .portlet.solid.green-jungle > .portlet-title > .tools > a.fullscreen{color:#fdfdfd;}
 .portlet.box.green-jungle{border:1px solid #41da9a;border-top:0;}
@@ -2208,7 +2208,7 @@ name .popover .popover-content,
 .portlet.solid.green-sharp > .portlet-title > .tools > a.remove{background-image:url(../img/portlet-remove-icon-white.png);}
 .portlet.solid.green-sharp > .portlet-title > .tools > a.config{background-image:url(../img/portlet-config-icon-white.png);}
 .portlet.solid.green-sharp > .portlet-title > .tools > a.reload{background-image:url(../img/portlet-reload-icon-white.png);}
-.portlet.solid.green-sharp > .portlet-title > .tools > a.expand{background-image:url(../img/portlet-expand-icon-white.png);}
+.portlet.solid.green-sharp > .portlet-title > .tools > a.expand{background-image:url(../img/portlet-expand-icon.png);}
 .portlet.solid.green-sharp > .portlet-title > .tools > a.collapse{background-image:url(../img/portlet-collapse-icon-white.png);}
 .portlet.solid.green-sharp > .portlet-title > .tools > a.fullscreen{color:#fdfdfd;}
 .portlet.box.green-sharp{border:1px solid #71c2b5;border-top:0;}
@@ -2245,7 +2245,7 @@ name .popover .popover-content,
 .portlet.solid.green-soft > .portlet-title > .tools > a.remove{background-image:url(../img/portlet-remove-icon-white.png);}
 .portlet.solid.green-soft > .portlet-title > .tools > a.config{background-image:url(../img/portlet-config-icon-white.png);}
 .portlet.solid.green-soft > .portlet-title > .tools > a.reload{background-image:url(../img/portlet-reload-icon-white.png);}
-.portlet.solid.green-soft > .portlet-title > .tools > a.expand{background-image:url(../img/portlet-expand-icon-white.png);}
+.portlet.solid.green-soft > .portlet-title > .tools > a.expand{background-image:url(../img/portlet-expand-icon.png);}
 .portlet.solid.green-soft > .portlet-title > .tools > a.collapse{background-image:url(../img/portlet-collapse-icon-white.png);}
 .portlet.solid.green-soft > .portlet-title > .tools > a.fullscreen{color:#fdfdfd;}
 .portlet.box.green-soft{border:1px solid #5bc2bc;border-top:0;}
