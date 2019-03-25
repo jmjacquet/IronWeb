@@ -1,29 +1,29 @@
 <ul class="ds-btn">        
-        {% if 'cpb_ventas' in permisos_grupo %}<li>
+        {% if 'cpb_ventas_abm' in permisos_grupo %}<li>
           <a class="btn btn-sm blue-steel" href="{% url 'cpb_venta_nuevo' %}">
           <i class="icon-note pull-left"></i><span>NUEVA VENTA<br><small>CPBs de Venta</small></span></a> 
         </li>{% endif %}
-        {% if 'cpb_cobranzas' in permisos_grupo %}<li>
+        {% if 'cpb_cobranzas_abm' in permisos_grupo %}<li>
           <a class="btn btn-sm green-jungle" href="{% url 'cpb_rec_cobranza_nuevo' %}">
           <i class="icon-wallet pull-left"></i><span>NUEVO COBRO<br><small>Recibo de Cobro</small></span></a> 
         </li>{% endif %}
-        {% if 'cpb_compras' in permisos_grupo %}<li>
+        {% if 'cpb_compras_abm' in permisos_grupo %}<li>
           <a class="btn btn-sm blue-steel" href="{% url 'cpb_compra_nuevo' %}">
           <i class="icon-note pull-left"></i><span>NUEVA COMPRA<br><small>CPBs de Compra</small></span></a> 
         </li>{% endif %}
-        {% if 'cpb_pagos' in permisos_grupo %}<li>
+        {% if 'cpb_pagos_abm' in permisos_grupo %}<li>
           <a class="btn btn-sm green-jungle" href="{% url 'cpb_pago_nuevo' %}">
           <i class="icon-wallet pull-left"></i><span>NUEVO PAGO<br><small>Orden de Pago</small></span></a> 
         </li>{% endif %}
-        {% if 'cpb_presupuestos' in permisos_grupo %}<li>
+        {% if 'cpb_presup_abm' in permisos_grupo %}<li>
           <a class="btn btn-sm purple-plum" href="{% url 'cpb_presup_nuevo' %}">
           <i class="icon-briefcase pull-left"></i><span>PRESUPESTOS<br><small>Nuevo Presupuesto</small></span></a> 
         </li>{% endif %}
-        {% if 'rep_cta_cte_clientes' in permisos_grupo %}<li>
+        {% if 'rep_saldos_clientes' in permisos_grupo %}<li>
           <a class="btn btn-sm blue-hoki" href="{% url 'saldos_clientes' %}">
           <i class="icon-users pull-left"></i><span>CLIENTES<br><small>Saldos y Cta. Ctes.</small></span></a> 
         </li>{% endif %}
-        {% if 'rep_cta_cte_prov' in permisos_grupo %}<li>
+        {% if 'rep_saldos_prov' in permisos_grupo %}<li>
           <a class="btn btn-sm blue-hoki" href="{% url 'saldos_proveedores' %}">
           <i class="icon-users pull-left"></i><span>PROVEEDORES<br><small>Saldos y Cta. Ctes.</small></span></a> 
         </li>{% endif %}
