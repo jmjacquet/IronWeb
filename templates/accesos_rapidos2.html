@@ -7,7 +7,7 @@
           <a class="btn btn-sm green-jungle" href="{% url 'cpb_rec_cobranza_nuevo' %}">
           <i class="icon-wallet pull-left"></i><span>NUEVO COBRO<br><small>Recibo de Cobro</small></span></a> 
         </li>{% endif %}
-        {% if 'cpb_ventas' in permisos_grupo %}<li>
+        {% if 'cpb_compras' in permisos_grupo %}<li>
           <a class="btn btn-sm blue-steel" href="{% url 'cpb_compra_nuevo' %}">
           <i class="icon-note pull-left"></i><span>NUEVA COMPRA<br><small>CPBs de Compra</small></span></a> 
         </li>{% endif %}

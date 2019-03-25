@@ -24,7 +24,8 @@ def ver_permisos(request):
             if usuario.grupo.pk == 0:
                 permisos = UsuPermiso.objects.all().values_list('permiso_name', flat=True).distinct()
             else:
-                permisos = UsuPermiso.objects.filter(grupo=usuario.grupo).values_list('permiso_name', flat=True).distinct()               
+                #permisos = UsuPermiso.objects.filter(grupo=usuario.grupo).values_list('permiso_name', flat=True).distinct()               
+                permisos = usuario.permisos.values_list('permiso_name', flat=True).distinct()
         else:
             permisos = []
     except:
@@ -78,7 +79,7 @@ def cambiar_password(request):
         return render_to_response("general/varios/cambiar_password.html", variables)
 
 from django.views.generic import TemplateView,ListView
-from general.views import VariablesMixin
+from general.views import VariablesMixin,getVariablesMixin
 from django.utils.decorators import method_decorator
 from django.contrib.auth.decorators import login_required
 
@@ -104,57 +105,130 @@ class UsuarioList(VariablesMixin,ListView):
 
         return context
 
-class UsuarioCreateView(VariablesMixin,CreateView):
-    form_class = UsuarioForm
-    model = usu_usuario
-    template_name = 'usuarios/usuario_form.html'
-
-
-    @method_decorator(login_required)
-    def dispatch(self, *args, **kwargs):        
-        if not tiene_permiso(self.request,'gral_configuracion'):
+@login_required
+def UsuarioCreateView(request):    
+    if not tiene_permiso(request,'gral_configuracion'):
             return redirect(reverse('usuarios'))
-        return super(UsuarioCreateView, self).dispatch(*args, **kwargs)
+    context = {}
+    context = getVariablesMixin(request)    
+    try:
+        empresa = empresa_actual(request)
+    except gral_empresa.DoesNotExist:
+        empresa = None 
+      
+    usuario = usuario_actual(request)
+    if request.method == 'POST':
+        form = UsuarioForm(usuario,request.POST,request.FILES)
+        if form.is_valid():
+            post = form.save(commit=False)                                    
+            post.save()
+            form.save_m2m()                            
+            messages.success(request, u'Los datos se guardaron con éxito!')
+            return HttpResponseRedirect(reverse('usuarios'))  
+    else:
+        form = UsuarioForm(usuario=usuario)
 
-    def form_valid(self, form):                       
-        form.instance.empresa = empresa_actual(self.request)
-        messages.success(self.request, u'Los datos se guardaron con éxito!')
-        return HttpResponseRedirect(reverse('usuarios'))
+    return render(request, 'usuarios/usuario_form.html',locals())
 
-    def get_initial(self):    
-        initial = super(UsuarioCreateView, self).get_initial()               
-        return initial    
 
-    def get_form_kwargs(self):
-        kwargs = super(UsuarioCreateView, self).get_form_kwargs()
-        kwargs['request'] = self.request
-        return kwargs
 
-class UsuarioEditView(VariablesMixin,UpdateView):
-    form_class = UsuarioForm
-    model = usu_usuario
-    template_name = 'usuarios/usuario_form.html'
-    pk_url_kwarg = 'id'
+@login_required
+def UsuarioEditView(request,id):
+    if not tiene_permiso(request,'gral_configuracion'):
+            return redirect(reverse('usuarios'))
+    context = {}
+    context = getVariablesMixin(request)    
+    try:
+        empresa = empresa_actual(request)
+    except gral_empresa.DoesNotExist:
+        empresa = None 
+    usuario = usuario_actual(request)
+    
+    usr = get_object_or_404(usu_usuario, id_usuario=id)
+
+    if request.method == 'POST':
+        form = UsuarioForm(usuario,request.POST,request.FILES,instance=usr)
+        if form.is_valid():
+            post = form.save(commit=False)                                    
+            post.save()
+            form.save_m2m()
+            messages.success(request, u'Los datos se guardaron con éxito!')
+            return HttpResponseRedirect(reverse('usuarios'))                    
+    else:
+        form = UsuarioForm(usuario,instance=usr)
+
+    return render(request, 'usuarios/usuario_form.html',locals())
+
+# class UsuarioCreateView(VariablesMixin,CreateView):
+#     form_class = UsuarioForm
+#     model = usu_usuario
+#     template_name = 'usuarios/usuario_form.html'
+
+
+#     @method_decorator(login_required)
+#     def dispatch(self, *args, **kwargs):        
+#         if not tiene_permiso(self.request,'gral_configuracion'):
+#             return redirect(reverse('usuarios'))
+#         return super(UsuarioCreateView, self).dispatch(*args, **kwargs)
+   
+
+#     def form_valid(self, form):                       
+#         self.object = form.save(commit=False)
+#         for p in form.cleaned_data['permisos']:
+#             permisos = UsuPermiso()
+#             permisos.usu_usuario = self.object
+#             permisos.usu_permiso = p
+#             permisos.save()
+#         messages.success(self.request, u'Los datos se guardaron con éxito!')
+#         return HttpResponseRedirect(reverse('usuarios'))
+
+#     def get_initial(self):    
+#         initial = super(UsuarioCreateView, self).get_initial()               
+#         return initial    
+
+#     def get_form_kwargs(self):
+#         kwargs = super(UsuarioCreateView, self).get_form_kwargs()
+#         kwargs['request'] = self.request
+#         return kwargs
+
+
+
+# class UsuarioEditView(VariablesMixin,UpdateView):
+#     form_class = UsuarioForm
+#     model = usu_usuario
+#     template_name = 'usuarios/usuario_form.html'
+#     pk_url_kwarg = 'id'
     
 
-    @method_decorator(login_required)
-    def dispatch(self, *args, **kwargs):        
-        if not tiene_permiso(self.request,'gral_configuracion'):
-            return redirect(reverse('usuarios'))
-        return super(UsuarioEditView, self).dispatch(*args, **kwargs)
+#     @method_decorator(login_required)
+#     def dispatch(self, *args, **kwargs):        
+#         if not tiene_permiso(self.request,'gral_configuracion'):
+#             return redirect(reverse('usuarios'))
+#         return super(UsuarioEditView, self).dispatch(*args, **kwargs)
 
-    def form_valid(self, form):        
-        messages.success(self.request, u'Los datos se guardaron con éxito!')
-        return HttpResponseRedirect(reverse('usuarios'))
+#     def form_valid(self, form):        
+#         self.object = form.save(commit=False)
+#         perms = form.cleaned_data['permisos']
+#         print perms
+#         for p in perms:
+#             permisos = UsuPermiso()
+#             permisos.usu_usuario = self.object
+#             permisos.usu_permiso = p
+#             permisos.save()
+#         messages.success(self.request, u'Los datos se guardaron con éxito!')
+#         return HttpResponseRedirect(reverse('usuarios'))
 
-    def get_initial(self):    
-        initial = super(UsuarioEditView, self).get_initial()                      
-        return initial    
+#     def form_invalid(self, form,ventas_detalle,ventas_pi,cpb_fp):                                                       
+#         return self.render_to_response(self.get_context_data(form=form))
 
-    def get_form_kwargs(self):
-        kwargs = super(UsuarioEditView, self).get_form_kwargs()
-        kwargs['request'] = self.request
-        return kwargs
+#     def get_initial(self):    
+#         initial = super(UsuarioEditView, self).get_initial()                      
+#         return initial    
+
+#     def get_form_kwargs(self):
+#         kwargs = super(UsuarioEditView, self).get_form_kwargs()
+#         kwargs['request'] = self.request
+#         return kwargs
 
 @login_required
 def usuarios_baja_reactivar(request,id):

@@ -73,10 +73,9 @@ class UsuarioForm(forms.ModelForm):
     	model = usu_usuario	
         exclude = ['baja','password','numero_documento','tipoUsr','empresa']
 
-    def __init__(self, *args, **kwargs):
-        request = kwargs.pop('request', None)
+    def __init__(self,usuario, *args, **kwargs):        
         super(UsuarioForm, self).__init__(*args, **kwargs)            
-        self.fields['permisos'].widget=CHKMultiplePermisos(usuario_actual(request))
+        self.fields['permisos'].widget=CHKMultiplePermisos(usuario)
         
       
 class UsuarioCambiarPasswdForm(forms.Form):      
