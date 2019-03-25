@@ -570,7 +570,7 @@ def libro_iva_compras(request):
         estado = form.cleaned_data['estado'] 
         pto_vta = form.cleaned_data['pto_vta'] 
                 
-        cpbs = cpb_comprobante.objects.filter(cpb_tipo__libro_iva=True,pto_vta__in=pto_vta_habilitados_list(request),cpb_tipo__tipo__in=[1,2,3,9],cpb_tipo__compra_venta='C',empresa=empresa,fecha_imputacion__gte=fdesde,fecha_imputacion__lte=fhasta)\
+        cpbs = cpb_comprobante.objects.filter(cpb_tipo__libro_iva=True,cpb_tipo__tipo__in=[1,2,3,9],cpb_tipo__compra_venta='C',empresa=empresa,fecha_imputacion__gte=fdesde,fecha_imputacion__lte=fhasta)\
             .select_related('cpb_tipo','entidad')\
             .order_by('-fecha_imputacion','-id','entidad__codigo','entidad__apellido_y_nombre','cpb_tipo__tipo')
         
