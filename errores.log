@@ -2604,3 +2604,237 @@ Traceback (most recent call last):
   File "D:\GitHub\IronWeb\reportes\views.py", line 154, in cta_cte_clientes
     return render_to_pdf_response(request,'reportes/cta_cte/reporte_cta_cte.html',locals())
 NameError: global name 'render_to_pdf_response' is not defined
+[26/Mar/2019 12:29:30] ERROR [django.request:256] Internal Server Error: /reportes/cta_cte_proveedores/84/
+Traceback (most recent call last):
+  File "C:\Python27\lib\site-packages\django\core\handlers\base.py", line 132, in get_response
+    response = wrapped_callback(request, *callback_args, **callback_kwargs)
+  File "C:\Python27\lib\site-packages\django\contrib\auth\decorators.py", line 22, in _wrapped_view
+    return view_func(request, *args, **kwargs)
+  File "D:\GitHub\IronWeb\reportes\views.py", line 310, in cta_cte_proveedores
+    return render_to_pdf_response(request,'reportes/cta_cte/reporte_cta_cte.html',locals())
+  File "C:\Python27\lib\site-packages\easy_pdf\rendering.py", line 166, in render_to_pdf_response
+    pdf = render_to_pdf(template, context, encoding=encoding, **kwargs)
+  File "C:\Python27\lib\site-packages\easy_pdf\rendering.py", line 139, in render_to_pdf
+    return html_to_pdf(content, encoding, **kwargs)
+  File "C:\Python27\lib\site-packages\easy_pdf\rendering.py", line 65, in html_to_pdf
+    link_callback=link_callback, **kwargs)
+  File "C:\Python27\lib\site-packages\xhtml2pdf\document.py", line 89, in pisaDocument
+    encoding, context=context, xml_output=xml_output)
+  File "C:\Python27\lib\site-packages\xhtml2pdf\document.py", line 57, in pisaStory
+    pisaParser(src, context, default_css, xhtml, encoding, xml_output)
+  File "C:\Python27\lib\site-packages\xhtml2pdf\parser.py", line 685, in pisaParser
+    context.parseCSS()
+  File "C:\Python27\lib\site-packages\xhtml2pdf\context.py", line 498, in parseCSS
+    self.css = self.cssParser.parse(self.cssText)
+  File "C:\Python27\lib\site-packages\xhtml2pdf\w3c\cssParser.py", line 434, in parse
+    src, stylesheet = self._parseStylesheet(src)
+  File "C:\Python27\lib\site-packages\xhtml2pdf\w3c\cssParser.py", line 522, in _parseStylesheet
+    src, stylesheetImports = self._parseAtImports(src)
+  File "C:\Python27\lib\site-packages\xhtml2pdf\w3c\cssParser.py", line 606, in _parseAtImports
+    stylesheet = self.cssBuilder.atImport(import_, mediums, self)
+  File "C:\Python27\lib\site-packages\xhtml2pdf\w3c\css.py", line 874, in atImport
+    return cssParser.parseExternal(import_)
+  File "C:\Python27\lib\site-packages\xhtml2pdf\context.py", line 372, in parseExternal
+    cssFile = self.c.getFile(cssResourceName, relative=self.rootPath)
+  File "C:\Python27\lib\site-packages\xhtml2pdf\context.py", line 822, in getFile
+    return getFile(self._getFileDeprecated(name, relative))
+  File "C:\Python27\lib\site-packages\xhtml2pdf\util.py", line 635, in getFile
+    file = pisaFileObject(*a, **kw)
+  File "C:\Python27\lib\site-packages\xhtml2pdf\util.py", line 516, in __init__
+    uri = uri.encode('utf-8')
+AttributeError: 'NoneType' object has no attribute 'encode'
+[26/Mar/2019 12:30:36] ERROR [django.request:256] Internal Server Error: /reportes/cta_cte_proveedores/84/
+Traceback (most recent call last):
+  File "C:\Python27\lib\site-packages\django\core\handlers\base.py", line 132, in get_response
+    response = wrapped_callback(request, *callback_args, **callback_kwargs)
+  File "C:\Python27\lib\site-packages\django\contrib\auth\decorators.py", line 22, in _wrapped_view
+    return view_func(request, *args, **kwargs)
+  File "D:\GitHub\IronWeb\reportes\views.py", line 310, in cta_cte_proveedores
+    return render_to_pdf_response(request,'reportes/cta_cte/reporte_cta_cte.html',locals())
+  File "C:\Python27\lib\site-packages\easy_pdf\rendering.py", line 166, in render_to_pdf_response
+    pdf = render_to_pdf(template, context, encoding=encoding, **kwargs)
+  File "C:\Python27\lib\site-packages\easy_pdf\rendering.py", line 139, in render_to_pdf
+    return html_to_pdf(content, encoding, **kwargs)
+  File "C:\Python27\lib\site-packages\easy_pdf\rendering.py", line 65, in html_to_pdf
+    link_callback=link_callback, **kwargs)
+  File "C:\Python27\lib\site-packages\xhtml2pdf\document.py", line 89, in pisaDocument
+    encoding, context=context, xml_output=xml_output)
+  File "C:\Python27\lib\site-packages\xhtml2pdf\document.py", line 57, in pisaStory
+    pisaParser(src, context, default_css, xhtml, encoding, xml_output)
+  File "C:\Python27\lib\site-packages\xhtml2pdf\parser.py", line 685, in pisaParser
+    context.parseCSS()
+  File "C:\Python27\lib\site-packages\xhtml2pdf\context.py", line 498, in parseCSS
+    self.css = self.cssParser.parse(self.cssText)
+  File "C:\Python27\lib\site-packages\xhtml2pdf\w3c\cssParser.py", line 434, in parse
+    src, stylesheet = self._parseStylesheet(src)
+  File "C:\Python27\lib\site-packages\xhtml2pdf\w3c\cssParser.py", line 522, in _parseStylesheet
+    src, stylesheetImports = self._parseAtImports(src)
+  File "C:\Python27\lib\site-packages\xhtml2pdf\w3c\cssParser.py", line 606, in _parseAtImports
+    stylesheet = self.cssBuilder.atImport(import_, mediums, self)
+  File "C:\Python27\lib\site-packages\xhtml2pdf\w3c\css.py", line 874, in atImport
+    return cssParser.parseExternal(import_)
+  File "C:\Python27\lib\site-packages\xhtml2pdf\context.py", line 372, in parseExternal
+    cssFile = self.c.getFile(cssResourceName, relative=self.rootPath)
+  File "C:\Python27\lib\site-packages\xhtml2pdf\context.py", line 822, in getFile
+    return getFile(self._getFileDeprecated(name, relative))
+  File "C:\Python27\lib\site-packages\xhtml2pdf\util.py", line 635, in getFile
+    file = pisaFileObject(*a, **kw)
+  File "C:\Python27\lib\site-packages\xhtml2pdf\util.py", line 516, in __init__
+    uri = uri.encode('utf-8')
+AttributeError: 'NoneType' object has no attribute 'encode'
+[26/Mar/2019 12:34:41] ERROR [django.request:256] Internal Server Error: /reportes/cta_cte_proveedores/84/
+Traceback (most recent call last):
+  File "C:\Python27\lib\site-packages\django\core\handlers\base.py", line 132, in get_response
+    response = wrapped_callback(request, *callback_args, **callback_kwargs)
+  File "C:\Python27\lib\site-packages\django\contrib\auth\decorators.py", line 22, in _wrapped_view
+    return view_func(request, *args, **kwargs)
+  File "D:\GitHub\IronWeb\reportes\views.py", line 310, in cta_cte_proveedores
+    return render_to_pdf_response(request,'reportes/cta_cte/reporte_cta_cte.html',locals())
+  File "C:\Python27\lib\site-packages\easy_pdf\rendering.py", line 166, in render_to_pdf_response
+    pdf = render_to_pdf(template, context, encoding=encoding, **kwargs)
+  File "C:\Python27\lib\site-packages\easy_pdf\rendering.py", line 139, in render_to_pdf
+    return html_to_pdf(content, encoding, **kwargs)
+  File "C:\Python27\lib\site-packages\easy_pdf\rendering.py", line 65, in html_to_pdf
+    link_callback=link_callback, **kwargs)
+  File "C:\Python27\lib\site-packages\xhtml2pdf\document.py", line 89, in pisaDocument
+    encoding, context=context, xml_output=xml_output)
+  File "C:\Python27\lib\site-packages\xhtml2pdf\document.py", line 57, in pisaStory
+    pisaParser(src, context, default_css, xhtml, encoding, xml_output)
+  File "C:\Python27\lib\site-packages\xhtml2pdf\parser.py", line 685, in pisaParser
+    context.parseCSS()
+  File "C:\Python27\lib\site-packages\xhtml2pdf\context.py", line 498, in parseCSS
+    self.css = self.cssParser.parse(self.cssText)
+  File "C:\Python27\lib\site-packages\xhtml2pdf\w3c\cssParser.py", line 434, in parse
+    src, stylesheet = self._parseStylesheet(src)
+  File "C:\Python27\lib\site-packages\xhtml2pdf\w3c\cssParser.py", line 522, in _parseStylesheet
+    src, stylesheetImports = self._parseAtImports(src)
+  File "C:\Python27\lib\site-packages\xhtml2pdf\w3c\cssParser.py", line 606, in _parseAtImports
+    stylesheet = self.cssBuilder.atImport(import_, mediums, self)
+  File "C:\Python27\lib\site-packages\xhtml2pdf\w3c\css.py", line 874, in atImport
+    return cssParser.parseExternal(import_)
+  File "C:\Python27\lib\site-packages\xhtml2pdf\context.py", line 372, in parseExternal
+    cssFile = self.c.getFile(cssResourceName, relative=self.rootPath)
+  File "C:\Python27\lib\site-packages\xhtml2pdf\context.py", line 822, in getFile
+    return getFile(self._getFileDeprecated(name, relative))
+  File "C:\Python27\lib\site-packages\xhtml2pdf\util.py", line 635, in getFile
+    file = pisaFileObject(*a, **kw)
+  File "C:\Python27\lib\site-packages\xhtml2pdf\util.py", line 516, in __init__
+    uri = uri.encode('utf-8')
+AttributeError: 'NoneType' object has no attribute 'encode'
+[26/Mar/2019 12:37:36] ERROR [django.request:256] Internal Server Error: /reportes/cta_cte_proveedores/84/
+Traceback (most recent call last):
+  File "C:\Python27\lib\site-packages\django\core\handlers\base.py", line 132, in get_response
+    response = wrapped_callback(request, *callback_args, **callback_kwargs)
+  File "C:\Python27\lib\site-packages\django\contrib\auth\decorators.py", line 22, in _wrapped_view
+    return view_func(request, *args, **kwargs)
+  File "D:\GitHub\IronWeb\reportes\views.py", line 310, in cta_cte_proveedores
+    return render_to_pdf_response(request,'reportes/cta_cte/reporte_cta_cte.html',locals())
+  File "C:\Python27\lib\site-packages\easy_pdf\rendering.py", line 166, in render_to_pdf_response
+    pdf = render_to_pdf(template, context, encoding=encoding, **kwargs)
+  File "C:\Python27\lib\site-packages\easy_pdf\rendering.py", line 139, in render_to_pdf
+    return html_to_pdf(content, encoding, **kwargs)
+  File "C:\Python27\lib\site-packages\easy_pdf\rendering.py", line 65, in html_to_pdf
+    link_callback=link_callback, **kwargs)
+  File "C:\Python27\lib\site-packages\xhtml2pdf\document.py", line 89, in pisaDocument
+    encoding, context=context, xml_output=xml_output)
+  File "C:\Python27\lib\site-packages\xhtml2pdf\document.py", line 57, in pisaStory
+    pisaParser(src, context, default_css, xhtml, encoding, xml_output)
+  File "C:\Python27\lib\site-packages\xhtml2pdf\parser.py", line 685, in pisaParser
+    context.parseCSS()
+  File "C:\Python27\lib\site-packages\xhtml2pdf\context.py", line 498, in parseCSS
+    self.css = self.cssParser.parse(self.cssText)
+  File "C:\Python27\lib\site-packages\xhtml2pdf\w3c\cssParser.py", line 434, in parse
+    src, stylesheet = self._parseStylesheet(src)
+  File "C:\Python27\lib\site-packages\xhtml2pdf\w3c\cssParser.py", line 522, in _parseStylesheet
+    src, stylesheetImports = self._parseAtImports(src)
+  File "C:\Python27\lib\site-packages\xhtml2pdf\w3c\cssParser.py", line 606, in _parseAtImports
+    stylesheet = self.cssBuilder.atImport(import_, mediums, self)
+  File "C:\Python27\lib\site-packages\xhtml2pdf\w3c\css.py", line 874, in atImport
+    return cssParser.parseExternal(import_)
+  File "C:\Python27\lib\site-packages\xhtml2pdf\context.py", line 372, in parseExternal
+    cssFile = self.c.getFile(cssResourceName, relative=self.rootPath)
+  File "C:\Python27\lib\site-packages\xhtml2pdf\context.py", line 822, in getFile
+    return getFile(self._getFileDeprecated(name, relative))
+  File "C:\Python27\lib\site-packages\xhtml2pdf\util.py", line 635, in getFile
+    file = pisaFileObject(*a, **kw)
+  File "C:\Python27\lib\site-packages\xhtml2pdf\util.py", line 516, in __init__
+    uri = uri.encode('utf-8')
+AttributeError: 'NoneType' object has no attribute 'encode'
+[26/Mar/2019 12:57:24] ERROR [django.request:256] Internal Server Error: /reportes/cta_cte_clientes/
+Traceback (most recent call last):
+  File "C:\Python27\lib\site-packages\django\core\handlers\base.py", line 132, in get_response
+    response = wrapped_callback(request, *callback_args, **callback_kwargs)
+  File "C:\Python27\lib\site-packages\django\contrib\auth\decorators.py", line 22, in _wrapped_view
+    return view_func(request, *args, **kwargs)
+  File "D:\GitHub\IronWeb\reportes\views.py", line 156, in cta_cte_clientes
+    return render_to_pdf_response(request,'reportes/cta_cte/reporte_cta_cte.html',locals())
+  File "C:\Python27\lib\site-packages\easy_pdf\rendering.py", line 166, in render_to_pdf_response
+    pdf = render_to_pdf(template, context, encoding=encoding, **kwargs)
+  File "C:\Python27\lib\site-packages\easy_pdf\rendering.py", line 139, in render_to_pdf
+    return html_to_pdf(content, encoding, **kwargs)
+  File "C:\Python27\lib\site-packages\easy_pdf\rendering.py", line 65, in html_to_pdf
+    link_callback=link_callback, **kwargs)
+  File "C:\Python27\lib\site-packages\xhtml2pdf\document.py", line 89, in pisaDocument
+    encoding, context=context, xml_output=xml_output)
+  File "C:\Python27\lib\site-packages\xhtml2pdf\document.py", line 57, in pisaStory
+    pisaParser(src, context, default_css, xhtml, encoding, xml_output)
+  File "C:\Python27\lib\site-packages\xhtml2pdf\parser.py", line 685, in pisaParser
+    context.parseCSS()
+  File "C:\Python27\lib\site-packages\xhtml2pdf\context.py", line 498, in parseCSS
+    self.css = self.cssParser.parse(self.cssText)
+  File "C:\Python27\lib\site-packages\xhtml2pdf\w3c\cssParser.py", line 434, in parse
+    src, stylesheet = self._parseStylesheet(src)
+  File "C:\Python27\lib\site-packages\xhtml2pdf\w3c\cssParser.py", line 522, in _parseStylesheet
+    src, stylesheetImports = self._parseAtImports(src)
+  File "C:\Python27\lib\site-packages\xhtml2pdf\w3c\cssParser.py", line 606, in _parseAtImports
+    stylesheet = self.cssBuilder.atImport(import_, mediums, self)
+  File "C:\Python27\lib\site-packages\xhtml2pdf\w3c\css.py", line 874, in atImport
+    return cssParser.parseExternal(import_)
+  File "C:\Python27\lib\site-packages\xhtml2pdf\context.py", line 372, in parseExternal
+    cssFile = self.c.getFile(cssResourceName, relative=self.rootPath)
+  File "C:\Python27\lib\site-packages\xhtml2pdf\context.py", line 822, in getFile
+    return getFile(self._getFileDeprecated(name, relative))
+  File "C:\Python27\lib\site-packages\xhtml2pdf\util.py", line 635, in getFile
+    file = pisaFileObject(*a, **kw)
+  File "C:\Python27\lib\site-packages\xhtml2pdf\util.py", line 516, in __init__
+    uri = uri.encode('utf-8')
+AttributeError: 'NoneType' object has no attribute 'encode'
+[26/Mar/2019 12:58:01] ERROR [django.request:256] Internal Server Error: /reportes/cta_cte_clientes/
+Traceback (most recent call last):
+  File "C:\Python27\lib\site-packages\django\core\handlers\base.py", line 132, in get_response
+    response = wrapped_callback(request, *callback_args, **callback_kwargs)
+  File "C:\Python27\lib\site-packages\django\contrib\auth\decorators.py", line 22, in _wrapped_view
+    return view_func(request, *args, **kwargs)
+  File "D:\GitHub\IronWeb\reportes\views.py", line 156, in cta_cte_clientes
+    return render_to_pdf_response(request,'reportes/cta_cte/reporte_cta_cte.html',locals())
+  File "C:\Python27\lib\site-packages\easy_pdf\rendering.py", line 166, in render_to_pdf_response
+    pdf = render_to_pdf(template, context, encoding=encoding, **kwargs)
+  File "C:\Python27\lib\site-packages\easy_pdf\rendering.py", line 139, in render_to_pdf
+    return html_to_pdf(content, encoding, **kwargs)
+  File "C:\Python27\lib\site-packages\easy_pdf\rendering.py", line 65, in html_to_pdf
+    link_callback=link_callback, **kwargs)
+  File "C:\Python27\lib\site-packages\xhtml2pdf\document.py", line 89, in pisaDocument
+    encoding, context=context, xml_output=xml_output)
+  File "C:\Python27\lib\site-packages\xhtml2pdf\document.py", line 57, in pisaStory
+    pisaParser(src, context, default_css, xhtml, encoding, xml_output)
+  File "C:\Python27\lib\site-packages\xhtml2pdf\parser.py", line 685, in pisaParser
+    context.parseCSS()
+  File "C:\Python27\lib\site-packages\xhtml2pdf\context.py", line 498, in parseCSS
+    self.css = self.cssParser.parse(self.cssText)
+  File "C:\Python27\lib\site-packages\xhtml2pdf\w3c\cssParser.py", line 434, in parse
+    src, stylesheet = self._parseStylesheet(src)
+  File "C:\Python27\lib\site-packages\xhtml2pdf\w3c\cssParser.py", line 522, in _parseStylesheet
+    src, stylesheetImports = self._parseAtImports(src)
+  File "C:\Python27\lib\site-packages\xhtml2pdf\w3c\cssParser.py", line 606, in _parseAtImports
+    stylesheet = self.cssBuilder.atImport(import_, mediums, self)
+  File "C:\Python27\lib\site-packages\xhtml2pdf\w3c\css.py", line 874, in atImport
+    return cssParser.parseExternal(import_)
+  File "C:\Python27\lib\site-packages\xhtml2pdf\context.py", line 372, in parseExternal
+    cssFile = self.c.getFile(cssResourceName, relative=self.rootPath)
+  File "C:\Python27\lib\site-packages\xhtml2pdf\context.py", line 822, in getFile
+    return getFile(self._getFileDeprecated(name, relative))
+  File "C:\Python27\lib\site-packages\xhtml2pdf\util.py", line 635, in getFile
+    file = pisaFileObject(*a, **kw)
+  File "C:\Python27\lib\site-packages\xhtml2pdf\util.py", line 516, in __init__
+    uri = uri.encode('utf-8')
+AttributeError: 'NoneType' object has no attribute 'encode'
