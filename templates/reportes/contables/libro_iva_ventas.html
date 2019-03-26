@@ -20,7 +20,7 @@
                                 <div class="col-sm-4">{% bootstrap_field form.entidad  %}</div>
                                 <div class="col-sm-1">{% bootstrap_field form.fdesde  %}</div>                                
                                 <div class="col-sm-1">{% bootstrap_field form.fhasta  %}</div>       
-                                <div class="col-sm-2">{% bootstrap_field form.pto_vta  %}</div>
+                                <div class="col-sm-1">{% bootstrap_field form.pto_vta  %}</div>
                                 <div class="col-sm-1">{% bootstrap_field form.fact_x  %}</div>
                                 <div class="col-sm-1">{% bootstrap_field form.cae  %}</div>
                                 <div class="col-sm-1">{% bootstrap_field form.estado  %}</div>                             
@@ -56,7 +56,7 @@
                         <tbody>
                             {% for cpb in cpbs %}
                             <tr>                                
-                                <td title="{{cpb.pk|safe}}" class="text-center">{{ cpb.fecha_imputacion|date:'d/m/Y' }}</td>
+                                <td title="{{cpb.id|safe}}" class="text-center">{{ cpb.fecha_imputacion|date:'d/m/Y' }}</td>
                                 <td title="{{ cpb.cpb_tipo}}">{{ cpb.cpb_tipo.codigo|default_if_none:'' }}</td>
                                 <td >{{ cpb.get_cpb }}</td>                                
                                 <td  {% if cpb.cae %}title="Vencimiento CAE: {{cpb.cae_vto|date:'d/m/Y'}}" class="listado_estado success"{% endif %}> {{cpb.cae|default_if_none:''}}</td>       
@@ -113,11 +113,6 @@ $.fn.datepicker.dates['es'] = {
           todayHighlight: true
     }); 
 
-     $("#id_entidad").chosen({
-          no_results_text: "Cliente inexistente...",
-          placeholder_text_single:"Seleccione un Cliente",
-          allow_single_deselect: true,
-      });   
      
 moment.locale('es');
 $.fn.dataTable.moment('DD/MM/YYYY'); 
@@ -160,7 +155,7 @@ var tabla = $('#dataTables-cpb_venta').DataTable({
            "searching": true,
             fixedHeader: {
               header: false,
-              footer: true
+              footer: false
               },
             responsive: false,
             dom: 'Bfrtlip',

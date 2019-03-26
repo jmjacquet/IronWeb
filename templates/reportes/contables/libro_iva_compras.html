@@ -20,7 +20,8 @@
                                 <div class="col-sm-5">{% bootstrap_field form.entidad  %}</div>
                                 <div class="col-sm-1">{% bootstrap_field form.fdesde  %}</div>                                
                                 <div class="col-sm-1">{% bootstrap_field form.fhasta  %}</div>       
-                                <div class="col-sm-2">{% bootstrap_field form.pto_vta  %}</div>
+                                <div class="col-sm-1">{% bootstrap_field form.pto_vta  %}</div>
+                                <div class="col-sm-1">{% bootstrap_field form.fact_x  %}</div>
                                 <div class="col-sm-1">{% bootstrap_field form.estado  %}</div>                             
                                 <div class="col-sm-1"><button class="btn btn-sm blue-hoki" type="submit">Buscar</button></div>
                             </div>     
@@ -106,12 +107,7 @@ $.fn.datepicker.dates['es'] = {
           autoclose: true,
           todayHighlight: true
     }); 
-
-     $("#id_entidad").chosen({
-          no_results_text: "Cliente inexistente...",
-          placeholder_text_single:"Seleccione un Cliente",
-          allow_single_deselect: true,
-      });   
+  
      
 moment.locale('es');
 $.fn.dataTable.moment('DD/MM/YYYY'); 
@@ -154,7 +150,7 @@ var tabla = $('#dataTables-cpb_venta').DataTable({
            "searching": true,
             fixedHeader: {
               header: false,
-              footer: true
+              footer: false
               },
             responsive: false,
             dom: 'Bfrtlip',

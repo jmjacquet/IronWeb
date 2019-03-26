@@ -1,0 +1,3 @@
+
+<a href="{% url 'entidad_ver' id=cpb.entidad.id %}"  title="{{ cpb.entidad.detalle_entidad}}" class="modal-detail" data-modal-head="DETALLE {{cpb.entidad.get_tipo_entidad_display|upper}} {{cpb.entidad.codigo}}" data-fm-callback="reload">
+	<strong>{{ cpb.entidad.detalle_entidad|truncatechars:60 }}</strong></a>

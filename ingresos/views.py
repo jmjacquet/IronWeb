@@ -78,7 +78,7 @@ class CPBSVentasList(VariablesMixin,ListView):
             if entidad:
                 comprobantes= comprobantes.filter(entidad__apellido_y_nombre__icontains=entidad)
             if vendedor:
-                comprobantes= comprobantes.filter(vendedor=vendedor)
+                comprobantes= comprobantes.filter(vendedor__apellido_y_nombre__icontains=vendedor)
             if pto_vta:
                 comprobantes= comprobantes.filter(pto_vta=pto_vta) 
             if letra:
@@ -921,7 +921,8 @@ class CPBRemitoViewList(VariablesMixin,ListView):
             if fhasta:
                 comprobantes= comprobantes.filter(Q(fecha_cpb__lte=fhasta))  
             if entidad:
-                comprobantes= comprobantes.filter(Q(entidad__apellido_y_nombre__icontains=entidad))            
+                comprobantes= comprobantes.filter(entidad__apellido_y_nombre__icontains=entidad)
+                  
             if pto_vta:
                 comprobantes= comprobantes.filter(Q(pto_vta=pto_vta)) 
         else:

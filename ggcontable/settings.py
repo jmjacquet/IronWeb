@@ -5,8 +5,8 @@ PROJECT_ROOT = os.path.join(os.path.dirname(__file__), '..') #every dot represen
 
 SITE_ROOT = PROJECT_ROOT
 
-# DEBUG = True
-DEBUG = False
+DEBUG = True
+# DEBUG = False
 
 TEMPLATE_DEBUG = DEBUG
 
@@ -64,7 +64,8 @@ ADMIN_MEDIA_PREFIX = os.path.join(SITE_ROOT, '/static/admin/')
 STATICFILES_FINDERS = (
     'django.contrib.staticfiles.finders.FileSystemFinder',
     'django.contrib.staticfiles.finders.AppDirectoriesFinder',
-#    'django.contrib.staticfiles.finders.DefaultStorageFinder',
+#    'django.contrib.staticfiles.finders.DefaultStorageFinder',    
+    'compressor.finders.CompressorFinder',
 )
 TEMPLATE_CONTEXT_PROCESSORS =   (
     'django.contrib.auth.context_processors.auth',
@@ -93,7 +94,7 @@ MIDDLEWARE_CLASSES = (
     'django.contrib.messages.middleware.MessageMiddleware',
     # Uncomment the next line for simple clickjacking protection:
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
-    # 'debug_toolbar.middleware.DebugToolbarMiddleware',#Barra DEBUG
+    'debug_toolbar.middleware.DebugToolbarMiddleware',#Barra DEBUG
 )
 
 ROOT_URLCONF = 'ggcontable.urls'
@@ -115,7 +116,7 @@ INSTALLED_APPS = (
     'crispy_forms',
     'fm',
     'django_extensions',
-    # 'debug_toolbar',
+    'debug_toolbar',
     'localflavor',
     'modal',    
     'general',
@@ -128,7 +129,8 @@ INSTALLED_APPS = (
     'trabajos',
     'reportes',
     'felectronica',
-    'djangosecure'
+    'djangosecure',
+    'compressor'   ,
 )
 
 
@@ -279,3 +281,14 @@ MESSAGE_TAGS = {message_constants.DEBUG: 'debug',
 
 
 
+COMPRESS_ENABLED = True
+
+COMPRESS_OUTPUT_DIR = '/'
+COMPRESS_CSS_FILTERS = [
+    'compressor.filters.cssmin.CSSMinFilter',
+    'compressor.filters.css_default.CssAbsoluteFilter',
+    'compressor.filters.datauri.CssDataUriFilter',
+]
+COMPRESS_JS_FILTERS = [
+    'compressor.filters.jsmin.JSMinFilter'
+]

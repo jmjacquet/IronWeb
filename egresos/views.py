@@ -47,7 +47,7 @@ class CPBCompraViewList(VariablesMixin,ListView):
             empresa = empresa_actual(self.request)
         except gral_empresa.DoesNotExist:
             empresa = None 
-        form = ConsultaCpbsCompras(self.request.POST or None,empresa=empresa,request=self.request)   
+        form = ConsultaCpbsCompras(self.request.POST or None)   
         comprobantes = cpb_comprobante.objects.filter(cpb_tipo__tipo__in=[1,2,3,9],estado__in=[1,2],cpb_tipo__compra_venta='C',empresa=empresa).order_by('-fecha_cpb','-id','-fecha_creacion').select_related('estado','cpb_tipo','entidad','vendedor')
         if form.is_valid():                                
             entidad = form.cleaned_data['entidad']                                                              
@@ -65,8 +65,10 @@ class CPBCompraViewList(VariablesMixin,ListView):
                 comprobantes= comprobantes.filter(fecha_cpb__gte=fdesde)
             if fhasta:
                 comprobantes= comprobantes.filter(fecha_cpb__lte=fhasta)
+            
             if entidad:
-                comprobantes= comprobantes.filter(entidad__apellido_y_nombre__icontains=entidad)         
+                comprobantes= comprobantes.filter(entidad__apellido_y_nombre__icontains=entidad)
+
             if pto_vta:
                 comprobantes= comprobantes.filter(pto_vta=pto_vta)
             if letra:
@@ -428,9 +430,11 @@ class CPBPagosViewList(VariablesMixin,ListView):
             if fdesde:
                 comprobantes= comprobantes.filter(Q(fecha_cpb__gte=fdesde))
             if fhasta:
-                comprobantes= comprobantes.filter(Q(fecha_cpb__lte=fhasta))  
+                comprobantes= comprobantes.filter(Q(fecha_cpb__lte=fhasta))              
+
             if entidad:
-                comprobantes= comprobantes.filter(Q(entidad__apellido_y_nombre__icontains=entidad))            
+                comprobantes= comprobantes.filter(entidad__apellido_y_nombre__icontains=entidad)            
+
             if pto_vta:
                 comprobantes= comprobantes.filter(Q(pto_vta=pto_vta)) 
         else:
@@ -853,7 +857,8 @@ class CPBRemitoCViewList(VariablesMixin,ListView):
             if fhasta:
                 comprobantes= comprobantes.filter(Q(fecha_cpb__lte=fhasta))  
             if entidad:
-                comprobantes= comprobantes.filter(Q(entidad__apellido_y_nombre__icontains=entidad))            
+                comprobantes= comprobantes.filter(entidad__apellido_y_nombre__icontains=entidad)
+                     
             if pto_vta:
                 comprobantes= comprobantes.filter(Q(pto_vta=pto_vta)) 
         else:

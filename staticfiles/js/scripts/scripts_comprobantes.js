@@ -135,6 +135,11 @@ var tabla = $('#dataTables-cpb_venta').DataTable({
                     className: 'btnToolbar',                    
                 },
             ],
+            PreDrawCallback:function(){
+            $("#cargando").show();
+            },
+    
+           
             initComplete: function () {
                // this.api().columns().every( function () {[0, 1, 9]
                 this.api().columns([3,6]).every( function () {
@@ -156,6 +161,9 @@ var tabla = $('#dataTables-cpb_venta').DataTable({
                         select.append( '<option value="'+d+'">'+d+'</option>' )
                     } );
                 } );
+                $("#dataTables-cpb_venta").show();
+                  this.fnAdjustColumnSizing();
+                $("#cargando").hide();
 
             },
             "footerCallback": function ( row, data, start, end, display ) {

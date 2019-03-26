@@ -73,33 +73,29 @@ class ConsultaSaldosProv(forms.Form):
 #############################################################################	
 
 class ConsultaLibroIVAVentas(forms.Form):               
-    entidad = chosenforms.ChosenModelChoiceField(label='Cliente',queryset=egr_entidad.objects.filter(tipo_entidad=1,baja=False),empty_label=label_todos,required = False)   
+    entidad = forms.CharField(label='Cliente/Proveedor',max_length=100,widget=forms.TextInput(attrs={'class':'form-control','text-transform': 'uppercase'}),required=False)    
     fdesde =  forms.DateField(label='Fecha Desde',widget=forms.DateInput(attrs={'class': 'form-control datepicker'}),initial=inicioMes(),required = True)
     fhasta =  forms.DateField(label='Fecha Hasta',widget=forms.DateInput(attrs={'class': 'form-control datepicker'}),initial=finMes(),required = True)
     estado = forms.ChoiceField(label='Estado',choices=ESTADO_,required=False,initial=0)	
     cae = forms.ChoiceField(label='CAE',choices=SINO,required=False,initial=0)	
-    pto_vta = forms.ChoiceField(label='Pto. Vta.',choices=[(pto.numero, pto.__unicode__()) for pto in cpb_pto_vta.objects.filter(baja=False)],required = False)
+    pto_vta = forms.IntegerField(label='Pto. Vta.',required = False)
     fact_x = forms.ChoiceField(label='Completo',choices=FACTURAS_X,required=True,initial=1)	
-    def __init__(self, *args, **kwargs):
-		empresa = kwargs.pop('empresa', None)  
+    def __init__(self, *args, **kwargs):		
 		request = kwargs.pop('request', None)  
-		super(ConsultaLibroIVAVentas, self).__init__(*args, **kwargs)
-		self.fields['entidad'].queryset = egr_entidad.objects.filter(tipo_entidad=1,baja=False,empresa__id__in=empresas_habilitadas(request)).order_by('apellido_y_nombre')
-		pto_vta = pto_vta_buscador(request)
-		self.fields['pto_vta'].choices = pto_vta		
+		super(ConsultaLibroIVAVentas, self).__init__(*args, **kwargs)				
 
 
 class ConsultaLibroIVACompras(forms.Form):               
-    entidad = chosenforms.ChosenModelChoiceField(label='Proveedor',queryset=egr_entidad.objects.filter(tipo_entidad=2,baja=False),empty_label=label_todos,required = False)   
+    entidad = forms.CharField(label='Proveedor',max_length=100,widget=forms.TextInput(attrs={'class':'form-control','text-transform': 'uppercase'}),required=False)    
     fdesde =  forms.DateField(label='Fecha Desde',widget=forms.DateInput(attrs={'class': 'form-control datepicker'}),initial=inicioMes(),required = True)
     fhasta =  forms.DateField(label='Fecha Hasta',widget=forms.DateInput(attrs={'class': 'form-control datepicker'}),initial=finMes(),required = True)
     estado = forms.ChoiceField(label='Estado',choices=ESTADO_,required=False,initial=0)	    
     pto_vta = forms.IntegerField(label='Pto. Vta.',required = False)    
-    def __init__(self, *args, **kwargs):
-		empresa = kwargs.pop('empresa', None) 
+    fact_x = forms.ChoiceField(label='Completo',choices=FACTURAS_X,required=True,initial=1)	
+    def __init__(self, *args, **kwargs):		
 		request = kwargs.pop('request', None)   
 		super(ConsultaLibroIVACompras, self).__init__(*args, **kwargs)
-		self.fields['entidad'].queryset = egr_entidad.objects.filter(tipo_entidad=2,baja=False,empresa__id__in=empresas_habilitadas(request)).order_by('apellido_y_nombre')				
+		
 
 
 #############################################################################	
@@ -135,7 +131,7 @@ class ConsultaSaldosCuentas(forms.Form):
 
 
 class ConsultaVencimientos(forms.Form):               
-	entidad = forms.CharField(label='Cliente',max_length=100,widget=forms.TextInput(attrs={'class':'form-control','text-transform': 'uppercase'}),required=False)
+	entidad = forms.CharField(label='Cliente/Proveedor',max_length=100,widget=forms.TextInput(attrs={'class':'form-control','text-transform': 'uppercase'}),required=False)
 	fdesde =  forms.DateField(label='Fecha Desde',widget=forms.DateInput(attrs={'class': 'form-control datepicker'}),required = False,initial=inicioMes())
 	fhasta =  forms.DateField(label='Fecha Hasta',widget=forms.DateInput(attrs={'class': 'form-control datepicker'}),required = False,initial=finMes())    	
 	pto_vta = forms.IntegerField(label='Pto. Vta.',required = False)

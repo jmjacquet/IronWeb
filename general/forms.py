@@ -76,8 +76,8 @@ class ConsultaCpbs(forms.Form):
 	entidad = forms.CharField(label='Cliente',max_length=100,widget=forms.TextInput(attrs={'class':'form-control','text-transform': 'uppercase'}),required=False)
 	fdesde =  forms.DateField(label='Fecha Desde',widget=forms.DateInput(attrs={'class': 'form-control datepicker'}),initial=inicioMesAnt(),required = False)
 	fhasta =  forms.DateField(label='Fecha Hasta',widget=forms.DateInput(attrs={'class': 'form-control datepicker'}),initial=finMes(),required = False)    
-	vendedor = forms.ModelChoiceField(label='Vendedor',queryset=egr_entidad.objects.filter(tipo_entidad=3,baja=False),empty_label=label_todos,required = False)
-	pto_vta = forms.ChoiceField(label='Pto. Vta.',choices=[(pto.numero, pto.__unicode__()) for pto in cpb_pto_vta.objects.filter(baja=False)],required = False)
+	vendedor = forms.CharField(label='Vendedor',max_length=100,widget=forms.TextInput(attrs={'class':'form-control','text-transform': 'uppercase'}),required=False)
+	pto_vta = forms.IntegerField(label='Pto. Vta.',required = False)
 	letra = forms.ChoiceField(label='Letra',choices=COMPROB_FISCAL_,required=False,initial='')	
 	estado = forms.ChoiceField(label='Estado',choices=ESTADO_,required=False,initial=0)	
 	cae = forms.ChoiceField(label='CAE',choices=SINO,required=False,initial=0)
@@ -86,15 +86,12 @@ class ConsultaCpbs(forms.Form):
 		request = kwargs.pop('request', None)  
 		empresa = kwargs.pop('empresa', None)  
 		super(ConsultaCpbs, self).__init__(*args, **kwargs)				
-		self.fields['vendedor'].queryset = egr_entidad.objects.filter(tipo_entidad=3,baja=False,empresa__id__in=empresas_habilitadas(request))
-		pto_vta = pto_vta_buscador(request)
-		self.fields['pto_vta'].choices = pto_vta
 
 class ConsultaCpbsCompras(forms.Form):               
 	entidad = forms.CharField(label='Proveedor',max_length=100,widget=forms.TextInput(attrs={'class':'form-control','text-transform': 'uppercase'}),required=False)
 	fdesde =  forms.DateField(label='Fecha Desde',widget=forms.DateInput(attrs={'class': 'form-control datepicker'}),initial=inicioMesAnt(),required = False)
 	fhasta =  forms.DateField(label='Fecha Hasta',widget=forms.DateInput(attrs={'class': 'form-control datepicker'}),initial=finMes(),required = False)    
-	vendedor = forms.ModelChoiceField(label='Vendedor',queryset=egr_entidad.objects.filter(tipo_entidad=3,baja=False),empty_label=label_todos,required = False)
+	vendedor = forms.CharField(label='Vendedor',max_length=100,widget=forms.TextInput(attrs={'class':'form-control','text-transform': 'uppercase'}),required=False)
 	pto_vta = forms.IntegerField(label='Pto. Vta.',required = False)
 	letra = forms.ChoiceField(label='Letra',choices=COMPROB_FISCAL_,required=False,initial='')	
 	estado = forms.ChoiceField(label='Estado',choices=ESTADO_,required=False,initial=0)	

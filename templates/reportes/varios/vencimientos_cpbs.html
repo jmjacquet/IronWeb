@@ -8,7 +8,10 @@
 {% endblock %}
 
 {% block main %} 
-    
+          <div id="cargando" class="cargando" >
+                <span class="cargando-txt">CARGANDO...</span>
+                <img class="cargando-img" src="{% static 'img/loading-bars.svg' %}">
+        </div>
 
           <div class="col-md-12">   
             <div class="portlet box toolbar_blue">
@@ -67,14 +70,12 @@
                                     <td class="listado_estado {{cpb.estado.color}}">{{cpb.estado.nombre}}</td>
                                     <td class="text-center">{{cpb.fecha_vto|date:'d/m/Y'}}</td>                                                                 
                                     <td>{% include "general/varios/cpb_ver.html" %}{{ cpb}}</td> 
-                                    <td class="text-center" title="{{ cpb.cpb_tipo|default_if_none:'' }}">{{ cpb.cpb_tipo.codigo|default_if_none:'' }}</td>
-                                    <td title="{{ cpb.detalle_entidad}}" >{% if cpb.entidad.tipo_entidad == 1 %}
-                                    {% include "entidades/cliente_ver.html" %} {% else %}
-                                    {% include "entidades/proveedor_ver.html" %} {% endif %}</td>
+                                    <td class="text-center" title="{{ cpb.cpb_tipo.nombre|default_if_none:'' }}">{{ cpb.cpb_tipo.codigo|default_if_none:'' }}</td>
+                                    <td>{% include "entidades/entidad_ver.html" %}</td>
                                     <td class="importe">${{cpb.get_importe_total|default_if_none:0|floatformat:2}}</td> 
                                     <td {% if cpb.cae %}title="Vencimiento CAE: {{cpb.cae_vto|date:'d/m/Y'}}" class="listado_estado success"{% endif %}>{{ cpb.cae|default_if_none:'' }}</td>
-                                    <td title="{{ cpb.descripcion}} {{ cpb.seguimiento|default_if_none:''}}">{{ cpb.descripcion|default_if_none:''|truncatechars:40 }}{% if cpb.seguimiento %} - {{ cpb.seguimiento|default_if_none:''|truncatechars:40 }} {% endif %}</td>                                    
-                                    <td title="{{ cpb.vendedor}}">{{ cpb.vendedor|default_if_none:''|truncatechars:40 }}</td>
+                                    <td title="{{ cpb.observacion}} {{ cpb.seguimiento|default_if_none:''}}">{{ cpb.observacion|default_if_none:''|truncatechars:40 }}{% if cpb.seguimiento %} - {{ cpb.seguimiento|default_if_none:''|truncatechars:40 }} {% endif %}</td>                                    
+                                    <td title="{{ cpb.vendedor.apellido_y_nombre}}">{{ cpb.vendedor.apellido_y_nombre|default_if_none:''|truncatechars:40 }}</td>
                                 </tr>
                             {% endfor %}
                         </tbody>

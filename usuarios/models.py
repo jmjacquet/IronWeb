@@ -40,11 +40,6 @@ class UsuPermiso(models.Model):
     def __unicode__(self):
         return u'{0}'.format(self.permiso)
 
-def get_image_name_usr(instance, filename):
-    f, ext = os.path.splitext(filename)    
-    archivo = filename
-    return os.path.join('usuarios', archivo) 
-
 
 class usu_usuario(models.Model):
     id_usuario = models.AutoField(db_column='ID_USUARIO', primary_key=True,unique=True) # Field name made lowercase.    
@@ -54,7 +49,7 @@ class usu_usuario(models.Model):
     empresa =  models.ForeignKey('general.gral_empresa', db_column='empresa',blank=True, null=True,on_delete=models.SET_NULL)
     tipoUsr = models.IntegerField(choices=TIPO_USR,default=0)
     nro_doc = models.CharField(u'Número',max_length=50,blank=True, null=True)       
-    ruta_img = models.ImageField(upload_to=get_image_name_usr,db_column='RUTA_IMG', max_length=100, blank=True) # Field name made lowercase.    
+    #ruta_img = models.ImageField(upload_to=get_image_name_usr,db_column='RUTA_IMG', max_length=100, blank=True) # Field name made lowercase.    
     grupo = models.ForeignKey(UsuGrupo, db_column='GRUPO', blank=True, null=True,on_delete=models.SET_NULL) # Field name made lowercase.
     email = models.CharField('E-Mail',db_column='EMAIL', max_length=100, blank=True) # Field name made lowercase.
     permisos = models.ManyToManyField(UsuPermiso)    

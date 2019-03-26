@@ -14,8 +14,8 @@ urlpatterns = patterns('usuarios.views',
   url(r'^usuarios_conectados/$', get_usuarios_conectados, name='usuarios_conectados'),
   
   url(r'^$', UsuarioList.as_view(),name="usuarios"),
-  url(r'^usuarios/nuevo/$', UsuarioCreateView.as_view(), name="usuarios_nuevo"),
-  url(r'^usuarios/editar/(?P<id>\d+)/$', UsuarioEditView.as_view(), name="usuarios_editar"),
+  url(r'^usuarios/nuevo/$', UsuarioCreateView, name="usuarios_nuevo"),
+  url(r'^usuarios/editar/(?P<id>\d+)/$', UsuarioEditView, name="usuarios_editar"),
   # url(r'^usuarios/eliminar/(?P<id>[\w-]+)/$', UsuarioDeleteView.as_view(), name="usuarios_eliminar"),
 
   url(r'^usuarios/baja_reactivar/(?P<id>\d+)/$', usuarios_baja_reactivar, name='usuarios_baja_reactivar'),

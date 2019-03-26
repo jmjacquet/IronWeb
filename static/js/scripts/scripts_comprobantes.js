@@ -49,7 +49,7 @@ var tabla = $('#dataTables-cpb_venta').DataTable({
                   "targets"  : 'no-sort',
                   "orderable": false,
                 }],          
-           "paging":   false,
+           "paging":   true,
            "lengthMenu": [[20, 50, -1], [20, 50, "Todos"]],
            "autoWidth": false,
            "order": [],
@@ -57,7 +57,7 @@ var tabla = $('#dataTables-cpb_venta').DataTable({
            "searching": true,
             fixedHeader: {
               header: false,
-              footer: true
+              footer: false
               },
             responsive: true,
             dom: 'Bfrtlip',
@@ -79,7 +79,7 @@ var tabla = $('#dataTables-cpb_venta').DataTable({
                     extend:    'excel',
                     text:      '<i class="fa fa-file-excel-o"></i>',
                     titleAttr: 'Excel',
-                    filename: 'VENCIMIENTO_COMPROBANTES',                    
+                    filename: 'COMPROBANTES',                    
                     exportOptions: {  modifier: {
                                         page: 'current'
                                     }, 
@@ -135,9 +135,14 @@ var tabla = $('#dataTables-cpb_venta').DataTable({
                     className: 'btnToolbar',                    
                 },
             ],
+            PreDrawCallback:function(){
+            $("#cargando").show();
+            },
+    
+           
             initComplete: function () {
                // this.api().columns().every( function () {[0, 1, 9]
-                this.api().columns([3,7]).every( function () {
+                this.api().columns([3,6]).every( function () {
                     var column = this;
                     var select = $('<select class="form-control"><option value=""></option></select>')
                         .appendTo( $(column.footer()).empty() )
@@ -156,6 +161,9 @@ var tabla = $('#dataTables-cpb_venta').DataTable({
                         select.append( '<option value="'+d+'">'+d+'</option>' )
                     } );
                 } );
+                $("#dataTables-cpb_venta").show();
+                  this.fnAdjustColumnSizing();
+                $("#cargando").hide();
 
             },
             "footerCallback": function ( row, data, start, end, display ) {
@@ -188,8 +196,8 @@ var tabla = $('#dataTables-cpb_venta').DataTable({
             };
                         
             
-            pageTotal1 = api.column(9, { page: 'current'} ).data().reduce( function (a, b) {return floatVal(a) + floatVal(b);}, 0 );            
-            $( api.column(9).footer() ).html('$'+pageTotal1.toFixed(2));            
+            pageTotal1 = api.column(8, { page: 'current'} ).data().reduce( function (a, b) {return floatVal(a) + floatVal(b);}, 0 );            
+            $( api.column(8).footer() ).html('$'+pageTotal1.toFixed(2));            
             },
                                   
         });

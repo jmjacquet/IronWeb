@@ -28,4 +28,6 @@ urlpatterns = patterns('entidades.views',
     url(r'^vendedores/vendedor_editar/(?P<id>\d+)/$', VendedoresEditView.as_view(), name="vendedor_editar"),
     url(r'^vendedores/vendedor_eliminar/(?P<id>[\w-]+)/$', VendedoresDeleteView.as_view(), name="vendedor_eliminar"),
     url(r'^vendedores/vendedor_ver/(?P<id>\d+)/$', VendedoresVerView.as_view(), name="vendedor_ver"),
+
+    url(r'^entidad_ver/(?P<id>\d+)/$', EntidadVerView.as_view(), name="entidad_ver"),
     )

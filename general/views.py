@@ -223,7 +223,7 @@ class PrincipalView(VariablesMixin,TemplateView):
         
         context['ultimas_ventas'] = ventas.filter(cpb_tipo__id__in=[1,3,5,14]).order_by('-fecha_cpb','-fecha_creacion','-id').select_related('entidad','cpb_tipo','estado')[:10]
         context['ultimas_compras'] = compras.filter(cpb_tipo__id__in=[2,4,6,18],estado__in=[1,2]).order_by('-fecha_cpb','-fecha_creacion','-id').select_related('entidad','cpb_tipo','estado')[:10]
-        context['ultimos_presup'] = comprobantes.filter(cpb_tipo__id=11).order_by('-fecha_cpb','-fecha_creacion','-id').select_related('entidad','cpb_tipo','estado','presup_aprobacion','presup_aprobacion')[:10]
+        # context['ultimos_presup'] = comprobantes.filter(cpb_tipo__id=11).order_by('-fecha_cpb','-fecha_creacion','-id').select_related('entidad','cpb_tipo','estado','presup_aprobacion','presup_aprobacion')[:10]
         
         if usr.tipoUsr==0:
             context['tareas'] = gral_tareas.objects.filter(empresa__id__in=empresas).select_related('usuario_creador','usuario_asignado').order_by('-fecha','-fecha_creacion','-id')                

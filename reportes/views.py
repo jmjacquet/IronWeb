@@ -27,6 +27,7 @@ from django.contrib.messages.views import SuccessMessageMixin
 from django.core.serializers.json import DjangoJSONEncoder
 from comprobantes.views import ultimoNro,buscarDatosProd,presup_aprobacion,cobros_cpb
 from django.db.models import DateTimeField, ExpressionWrapper, F,DecimalField
+from easy_pdf.rendering import render_to_pdf_response
 
 ################################################################
 def cuenta_corriente(request,compra_venta,entidad,fdesde,fhasta,estado,empresa):
@@ -146,6 +147,13 @@ def cta_cte_clientes(request,id=None):
     context['saldo_anterior_debe'] = saldo_anterior_debe
     context['saldo_anterior_haber'] = saldo_anterior_haber
     context['saldo_anterior'] = saldo_anterior
+
+    if (request.POST.get('submit') == 'Imprimir') and datos:
+        context = Context()         
+        cpbs = datos
+        cant = len(cpbs)
+        entidad = entidad  
+        return render_to_pdf_response(request,'reportes/cta_cte/reporte_cta_cte.html',locals())  
 
     return render(request,'reportes/cta_cte/cta_cte_clientes.html',context )
 
@@ -293,6 +301,14 @@ def cta_cte_proveedores(request,id=None):
         context['saldo_anterior_debe'] = saldo_anterior_debe
         context['saldo_anterior_haber'] = saldo_anterior_haber
         context['saldo_anterior'] = saldo_anterior
+
+        if (request.POST.get('submit') == 'Imprimir') and datos:
+            context = Context()         
+            cpbs = datos
+            cant = len(cpbs)
+            entidad = entidad  
+            return render_to_pdf_response(request,'reportes/cta_cte/reporte_cta_cte.html',locals()) 
+
         return render(request,'reportes/cta_cte/cta_cte_proveedores.html',context )
     
 
@@ -339,13 +355,19 @@ import StringIO
 def generarCITI(cpbs,ventas_compras,tipo_archivo):
     #ventascompras = V/C
     #tipo_archivo = cpbs/alicuotas
+    import time
+    start = time.time()
     archivo = StringIO.StringIO()
+    nafip = None
     if (ventas_compras=='V'):
        if tipo_archivo=='cpbs': 
         for c in cpbs:
+            nafip=c.get_nro_afip()            
+            if nafip==None:
+                continue
             linea=""
             linea += str(c.fecha_imputacion.strftime("%Y%m%d")).encode('utf-8').rjust(8, "0") #FECHA
-            linea += str(c.get_nro_afip()).encode('utf-8').rjust(3, "0") #CODIGO CPB AFIP
+            linea += str(nafip).encode('utf-8').rjust(3, "0") #CODIGO CPB AFIP
             linea += str(c.pto_vta).encode('utf-8').rjust(5, "0") #PTO VTA
             linea += str(c.numero).encode('utf-8').rjust(20, "0") #NRO CPB
             linea += str(c.numero).encode('utf-8').rjust(20, "0") #NRO CPB HASTA
@@ -394,10 +416,13 @@ def generarCITI(cpbs,ventas_compras,tipo_archivo):
 
        elif tipo_archivo=='alicuotas':
          for c in cpbs:
+            nafip=c.get_nro_afip()
+            if nafip==None:
+                continue
             cpb_iva = cpb_comprobante_tot_iva.objects.filter(cpb_comprobante=c)
             for ci in cpb_iva:            
                 linea="" 
-                linea += str(c.get_nro_afip()).encode('utf-8').rjust(3, "0") #CODIGO CPB AFIP
+                linea += str(nafip).encode('utf-8').rjust(3, "0") #CODIGO CPB AFIP
                 linea += str(c.pto_vta).encode('utf-8').rjust(5, "0") #PTO VTA
                 linea += str(c.numero).encode('utf-8').rjust(20, "0") #NRO CPB                
                 linea += str(ci.importe_base).encode('utf-8').replace(".","").rjust(15, "0") #importe_neto
@@ -407,9 +432,12 @@ def generarCITI(cpbs,ventas_compras,tipo_archivo):
     else:
         if tipo_archivo=='cpbs':
          for c in cpbs:
+            nafip=c.get_nro_afip()
+            if nafip==None:
+                continue
             linea=""
             linea += str(c.fecha_imputacion.strftime("%Y%m%d")).encode('utf-8').rjust(8, "0") #FECHA
-            linea += str(c.get_nro_afip()).encode('utf-8').rjust(3, "0") #CODIGO CPB AFIP
+            linea += str(nafip).encode('utf-8').rjust(3, "0") #CODIGO CPB AFIP
             linea += str(c.pto_vta).encode('utf-8').rjust(5, "0") #PTO VTA
             linea += str(c.numero).encode('utf-8').rjust(20, "0") #NRO CPB
             linea += str('').encode('utf-8').ljust(16, " ") #NRO DESPACHO IMPORTACION
@@ -460,6 +488,9 @@ def generarCITI(cpbs,ventas_compras,tipo_archivo):
             archivo.write(linea+'\r\n')
         elif tipo_archivo=='alicuotas':         
          for c in cpbs:
+            nafip=c.get_nro_afip()
+            if nafip==None:
+                continue
             cpb_iva = cpb_comprobante_tot_iva.objects.filter(cpb_comprobante=c)
             tipo_doc=c.entidad.tipo_doc
             if tipo_doc == 99:
@@ -472,7 +503,7 @@ def generarCITI(cpbs,ventas_compras,tipo_archivo):
                 nro_doc = c.entidad.fact_cuit
             for ci in cpb_iva:            
                 linea="" 
-                linea += str(c.get_nro_afip()).encode('utf-8').rjust(3, "0") #CODIGO CPB AFIP
+                linea += str(nafip).encode('utf-8').rjust(3, "0") #CODIGO CPB AFIP
                 linea += str(c.pto_vta).encode('utf-8').rjust(5, "0") #PTO VTA
                 linea += str(c.numero).encode('utf-8').rjust(20, "0") #NRO CPB                
                 linea += str(tipo_doc).encode('utf-8').rjust(2, "0") #TIPO DOC
@@ -481,10 +512,9 @@ def generarCITI(cpbs,ventas_compras,tipo_archivo):
                 linea += str(ci.tasa_iva.id_afip).encode('utf-8').rjust(4, "0") #CODIGO IVA AFIP
                 linea += str(ci.importe_total).encode('utf-8').replace(".","").rjust(15, "0") #importe IVA            
                 archivo.write(linea+'\r\n')        
-
+    
     contents = archivo.getvalue()
-    archivo.close()
-
+    archivo.close()    
     return contents
 
 
@@ -499,7 +529,7 @@ def libro_iva_ventas(request):
         empresa = empresa_actual(request)
     except gral_empresa.DoesNotExist:
         empresa = None 
-    form = ConsultaLibroIVAVentas(request.POST or None,empresa=empresa,request=request)            
+    form = ConsultaLibroIVAVentas(request.POST or None,request=request)            
     fecha = date.today()
     cpbs = None
     if form.is_valid():                                
@@ -511,9 +541,13 @@ def libro_iva_ventas(request):
         fact_x = form.cleaned_data['fact_x']  
         cae = form.cleaned_data['cae']  
         total = 0                    
-        cpbs = cpb_comprobante.objects.filter(cpb_tipo__compra_venta='V',pto_vta__in=pto_vta_habilitados_list(request),cpb_tipo__tipo__in=[1,2,3,9,14],empresa=empresa,fecha_imputacion__gte=fdesde,fecha_imputacion__lte=fhasta)\
+        cpbs = cpb_comprobante.objects.filter(cpb_tipo__compra_venta='V',pto_vta__in=pto_vta_habilitados_list(request),cpb_tipo__tipo__in=[1,2,3,9,14],empresa=empresa,fecha_imputacion__gte=fdesde,fecha_imputacion__lte=fhasta).exclude(letra='X')\
             .select_related('cpb_tipo','entidad')\
-            .order_by('-fecha_imputacion','-id','entidad__codigo','entidad__apellido_y_nombre','cpb_tipo__tipo')
+            .only('id','pto_vta','letra','numero','fecha_imputacion','cpb_tipo__codigo','cpb_tipo__nombre','cpb_tipo__tipo','cpb_tipo__signo_ctacte','cae_vto','cae',\
+            'entidad__id','entidad__apellido_y_nombre','entidad__tipo_entidad','entidad__codigo','entidad__fact_cuit','entidad__nro_doc','entidad__fact_categFiscal',\
+            'importe_gravado','importe_iva','importe_perc_imp','importe_no_gravado','importe_exento','importe_total')\
+            .order_by('-fecha_imputacion','-id','entidad__codigo','entidad__apellido_y_nombre','cpb_tipo__tipo')            
+            
         
         if int(estado) == 0:                
             cpbs=cpbs.filter(estado__in=[1,2])                
@@ -522,9 +556,9 @@ def libro_iva_ventas(request):
         else:                
             cpbs=cpbs.filter(estado__in=[1,2,3])
         
-
         if entidad:
-               cpbs= cpbs.filter(entidad=entidad)
+                cpbs= cpbs.filter(entidad__apellido_y_nombre__icontains=entidad)
+        
         if pto_vta:
                cpbs= cpbs.filter(pto_vta=pto_vta)        
 
@@ -560,7 +594,7 @@ def libro_iva_compras(request):
         empresa = empresa_actual(request)
     except gral_empresa.DoesNotExist:
         empresa = None 
-    form = ConsultaLibroIVACompras(request.POST or None,empresa=empresa,request=request)            
+    form = ConsultaLibroIVACompras(request.POST or None,request=request)            
     fecha = date.today()
     cpbs = None
     if form.is_valid():                                
@@ -568,10 +602,14 @@ def libro_iva_compras(request):
         fdesde = form.cleaned_data['fdesde']   
         fhasta = form.cleaned_data['fhasta']   
         estado = form.cleaned_data['estado'] 
+        fact_x = form.cleaned_data['fact_x']  
         pto_vta = form.cleaned_data['pto_vta'] 
                 
         cpbs = cpb_comprobante.objects.filter(cpb_tipo__libro_iva=True,cpb_tipo__tipo__in=[1,2,3,9],cpb_tipo__compra_venta='C',empresa=empresa,fecha_imputacion__gte=fdesde,fecha_imputacion__lte=fhasta)\
             .select_related('cpb_tipo','entidad')\
+            .only('id','pto_vta','letra','numero','fecha_imputacion','cpb_tipo__codigo','cpb_tipo__nombre','cpb_tipo__tipo','cpb_tipo__signo_ctacte','cae_vto','cae',\
+            'entidad__id','entidad__apellido_y_nombre','entidad__tipo_entidad','entidad__codigo','entidad__fact_cuit','entidad__nro_doc','entidad__fact_categFiscal',\
+            'importe_gravado','importe_iva','importe_perc_imp','importe_no_gravado','importe_exento','importe_total')\
             .order_by('-fecha_imputacion','-id','entidad__codigo','entidad__apellido_y_nombre','cpb_tipo__tipo')
         
         if int(estado) == 0:                
@@ -581,9 +619,12 @@ def libro_iva_compras(request):
         else:                
             cpbs=cpbs.filter(estado__in=[1,2,3])
         if entidad:
-               cpbs= cpbs.filter(entidad=entidad)
+                cpbs= cpbs.filter(entidad__apellido_y_nombre__icontains=entidad)
         if pto_vta:
                cpbs= cpbs.filter(pto_vta=pto_vta)                   
+
+        if int(fact_x)==1:
+            cpbs= cpbs.filter(cpb_tipo__libro_iva=True).exclude(letra='X')
         
         if ('cpbs' in request.POST)and(cpbs):                
             response = HttpResponse(generarCITI(cpbs,'C','cpbs'),content_type='text/plain')
@@ -598,6 +639,8 @@ def libro_iva_compras(request):
     context['cpbs'] = cpbs
     context['fecha'] = fecha          
     return render(request,'reportes/contables/libro_iva_compras.html',context )
+
+
 ################################################################
 
 class caja_diaria(VariablesMixin,ListView):
@@ -845,7 +888,10 @@ class vencimientos_cpbs(VariablesMixin,ListView):
         form = ConsultaVencimientos(self.request.POST or None,empresa=empresa,request=self.request)            
         fecha = date.today()        
 
-        comprobantes = cpb_comprobante.objects.filter(cpb_tipo__tipo__in=[1,2,3,4,5,6,7,9,14],empresa=empresa).order_by('-fecha_vto','-fecha_cpb','-id').select_related('cpb_tipo','estado','entidad')        
+        comprobantes = cpb_comprobante.objects.filter(cpb_tipo__tipo__in=[1,2,3,4,5,6,7,9,14],empresa=empresa).order_by('-fecha_vto','-fecha_cpb','-id')\
+        .select_related('estado','entidad','cpb_tipo','vendedor')\
+        .only('id','pto_vta','letra','numero','importe_total','fecha_cpb','estado','fecha_vto','cpb_tipo__codigo','cpb_tipo__nombre','cpb_tipo__tipo','cpb_tipo__signo_ctacte','cae_vto','cae','observacion','seguimiento','vendedor__apellido_y_nombre',\
+            'entidad__id','entidad__apellido_y_nombre','entidad__tipo_entidad','entidad__codigo','entidad__fact_cuit','entidad__nro_doc','entidad__fact_categFiscal')
                 
         if form.is_valid():                                
             entidad = form.cleaned_data['entidad']                                                              
@@ -877,7 +923,7 @@ class vencimientos_cpbs(VariablesMixin,ListView):
 
             if int(cae)!=0:
                 no_tiene = (cae=='2')                
-                comprobantes= comprobantes.filter(cae_vto__isnull=no_tiene)
+                comprobantes= comprobantes.filter(cae_vto__isnull=no_tiene)           
         else:
             comprobantes = None
 
