@@ -128,7 +128,8 @@ def UsuarioCreateView(request):
     else:
         form = UsuarioForm(usuario=usuario)
 
-    return render(request, 'usuarios/usuario_form.html',locals())
+    context['form'] = form
+    return render(request, 'usuarios/usuario_form.html',context)
 
 
 
@@ -157,7 +158,8 @@ def UsuarioEditView(request,id):
     else:
         form = UsuarioForm(usuario,instance=usr)
 
-    return render(request, 'usuarios/usuario_form.html',locals())
+    context['form'] = form
+    return render(request, 'usuarios/usuario_form.html',context)
 
 # class UsuarioCreateView(VariablesMixin,CreateView):
 #     form_class = UsuarioForm

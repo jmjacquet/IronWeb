@@ -2549,3 +2549,58 @@ OfflineGenerationError: You have offline compression enabled but key "fdd55f1019
 	<link rel="stylesheet" href="/staticfiles/css/login.css?20190322" type="text/css" />
           
         
+[26/Mar/2019 08:13:48] ERROR [django.request:256] Internal Server Error: /login/
+Traceback (most recent call last):
+  File "C:\Python27\lib\site-packages\django\core\handlers\base.py", line 223, in get_response
+    response = middleware_method(request, response)
+  File "C:\Python27\lib\site-packages\django\contrib\sessions\middleware.py", line 49, in process_response
+    request.session.save()
+  File "C:\Python27\lib\site-packages\django\contrib\sessions\backends\db.py", line 64, in save
+    obj.save(force_insert=must_create, using=using)
+  File "C:\Python27\lib\site-packages\django\db\models\base.py", line 710, in save
+    force_update=force_update, update_fields=update_fields)
+  File "C:\Python27\lib\site-packages\django\db\models\base.py", line 738, in save_base
+    updated = self._save_table(raw, cls, force_insert, force_update, using, update_fields)
+  File "C:\Python27\lib\site-packages\django\db\models\base.py", line 822, in _save_table
+    result = self._do_insert(cls._base_manager, using, fields, update_pk, raw)
+  File "C:\Python27\lib\site-packages\django\db\models\base.py", line 861, in _do_insert
+    using=using, raw=raw)
+  File "C:\Python27\lib\site-packages\django\db\models\manager.py", line 127, in manager_method
+    return getattr(self.get_queryset(), name)(*args, **kwargs)
+  File "C:\Python27\lib\site-packages\django\db\models\query.py", line 920, in _insert
+    return query.get_compiler(using=using).execute_sql(return_id)
+  File "C:\Python27\lib\site-packages\django\db\models\sql\compiler.py", line 963, in execute_sql
+    cursor.execute(sql, params)
+  File "C:\Python27\lib\site-packages\django\db\backends\utils.py", line 79, in execute
+    return super(CursorDebugWrapper, self).execute(sql, params)
+  File "C:\Python27\lib\site-packages\django\db\backends\utils.py", line 64, in execute
+    return self.cursor.execute(sql, params)
+  File "C:\Python27\lib\site-packages\django\db\utils.py", line 97, in __exit__
+    six.reraise(dj_exc_type, dj_exc_value, traceback)
+  File "C:\Python27\lib\site-packages\django\db\backends\utils.py", line 64, in execute
+    return self.cursor.execute(sql, params)
+  File "C:\Python27\lib\site-packages\django\db\backends\mysql\base.py", line 124, in execute
+    return self.cursor.execute(query, args)
+  File "C:\Python27\lib\site-packages\MySQLdb\cursors.py", line 226, in execute
+    self.errorhandler(self, exc, value)
+  File "C:\Python27\lib\site-packages\MySQLdb\connections.py", line 36, in defaulterrorhandler
+    raise errorvalue
+OperationalError: (1213, 'Deadlock found when trying to get lock; try restarting transaction')
+[26/Mar/2019 11:11:52] ERROR [django.request:256] Internal Server Error: /reportes/cta_cte_clientes/
+Traceback (most recent call last):
+  File "C:\Python27\lib\site-packages\django\core\handlers\base.py", line 132, in get_response
+    response = wrapped_callback(request, *callback_args, **callback_kwargs)
+  File "C:\Python27\lib\site-packages\django\contrib\auth\decorators.py", line 22, in _wrapped_view
+    return view_func(request, *args, **kwargs)
+  File "D:\GitHub\IronWeb\reportes\views.py", line 154, in cta_cte_clientes
+    return render_to_pdf_response(request,'reportes/cta_cte/reporte_cta_cte.html',locals())
+NameError: global name 'render_to_pdf_response' is not defined
+[26/Mar/2019 11:12:06] ERROR [django.request:256] Internal Server Error: /reportes/cta_cte_clientes/
+Traceback (most recent call last):
+  File "C:\Python27\lib\site-packages\django\core\handlers\base.py", line 132, in get_response
+    response = wrapped_callback(request, *callback_args, **callback_kwargs)
+  File "C:\Python27\lib\site-packages\django\contrib\auth\decorators.py", line 22, in _wrapped_view
+    return view_func(request, *args, **kwargs)
+  File "D:\GitHub\IronWeb\reportes\views.py", line 154, in cta_cte_clientes
+    return render_to_pdf_response(request,'reportes/cta_cte/reporte_cta_cte.html',locals())
+NameError: global name 'render_to_pdf_response' is not defined

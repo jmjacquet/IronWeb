@@ -1,0 +1,93 @@
+{% load static from staticfiles %}
+{% load humanize %} 
+{% load comprobantes_filters %}
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<title>{{cpb|upper}}</title>
+<link rel="stylesheet" href="{% static 'css/reportes_factura.css' %}" type="text/css" />
+<style type="text/css">
+ @page {
+         margin: 0.5cm 0.5cm 1cm 0.5cm;
+         padding: 0;         
+         @frame footer {
+                        -pdf-frame-content: page-footer;
+                        bottom: 0cm;
+                        height: 1 cm;
+                        margin-right: 0.5cm;                        
+                        margin-left: 0.5cm;                        
+                    }
+        
+         }
+          @frame header_frame  {
+                        -pdf-frame-content: page-header;
+                        margin-top: 0cm;
+                        margin-right: 1cm;                        
+                        margin-left: 1cm;
+                        margin-bottom: 1cm;
+                        height: 4cm;                      
+                    }
+</style>
+</head>
+
+<body>  
+<div id="page-header">
+  {% include 'general/varios/encabezado_gral.html'%}
+  <h3 class="nombre_cpb">{{entidad}}</h3>
+</div>
+<table class="tabla" align="center" border="0" width="100%" cellspacing="0" > 
+  <thead>
+    <th class="borde_izq borde_arriba borde_abajo tabla_header" width="15%">Fecha</th>     
+    <th class="borde_arriba borde_abajo tabla_header" width="20%">Comprobante</th>         
+    <th class="borde_arriba borde_abajo tabla_header" width="20%">Tipo</th>        
+    <th class="borde_arriba borde_abajo tabla_header" align="right" width="15%">Debe</th>
+    <th class="borde_arriba borde_abajo tabla_header" align="right" width="15%">Haber</th>
+    <th class="borde_der  borde_arriba borde_abajo tabla_header" align="right"width="15%">Saldo</th>    
+  </thead>
+    {% if saldo_anterior != 0 %}
+    <tr >                                        
+        <td></td> 
+        <td class="listado_centro"><strong>SALDO ANTERIOR</strong></td>                             
+        <td></td>
+        <td class="listado_der">${{saldo_anterior_debe|default_if_none:0|floatformat:2}}</td>                                 
+        <td class="listado_der">${{saldo_anterior_haber|default_if_none:0|floatformat:2}}</td>                                
+        <td class="listado_der">${{saldo_anterior|default_if_none:0|floatformat:2}}</td>
+    </tr>
+    {% endif %}
+    {% for cpb in cpbs %}
+      <tr>                                
+        <td class="listado_centro">{{cpb.fecha_cpb|date:'d/m/Y'}}</td>                              
+        <td class="listado_centro">{{ cpb.get_cpb}}</td> 
+        <td class="listado_centro">{{ cpb.cpb_tipo|default_if_none:'' }}</td>                                     
+        {% if cpb.signo_ctacte > 0 %}
+            <td class="listado_der">${{cpb.importe_total|default_if_none:0|floatformat:2}}</td>                                 
+            <td class="listado_der">$0.00</td>
+        {% else %}
+            <td class="listado_der">$0.00</td>
+            <td class="listado_der">${{cpb.importe_total|default_if_none:0|floatformat:2}}</td>                                 
+        {% endif %}
+        <td class="listado_der">${{cpb.saldo|default_if_none:0|floatformat:2}}</td>
+    </tr>
+    {% endfor cpbs %}
+    
+    <tr valign="middle" >
+      <td colspan="6" bordercolor="#000000" style="border-top:1px;"><hr></td>
+    </tr>
+    <tr valign="middle" >          
+      <td colspan="6" bordercolor="#000000" style="border-top:1px;" class="listado_subtot_imp">Saldo Total:  $ {{saldo|default_if_none:0|floatformat:2}}</td>
+    </tr>
+</table>
+
+<div id="page-footer">
+  <table class="tabla" width="100%" border="0" cellspacing="0">
+    <tr>
+      <td width="90%" class="pie_sistema"><img alt="" class="pie_logo" src="{% static 'images/logo_iron.png' %}"/>&nbsp;&nbsp;IRONweb Gestión & Facturación - {{fecha|date:'d/m/Y'}} </td>
+      <td width="10%" class="pie_texto"><pdf:pagenumber /> de <pdf:pagecount/> </td>
+    </tr>
+  </table>    
+</div>
+
+</body>
+</html>

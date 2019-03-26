@@ -27,6 +27,7 @@ from django.contrib.messages.views import SuccessMessageMixin
 from django.core.serializers.json import DjangoJSONEncoder
 from comprobantes.views import ultimoNro,buscarDatosProd,presup_aprobacion,cobros_cpb
 from django.db.models import DateTimeField, ExpressionWrapper, F,DecimalField
+from easy_pdf.rendering import render_to_pdf_response
 
 ################################################################
 def cuenta_corriente(request,compra_venta,entidad,fdesde,fhasta,estado,empresa):
@@ -146,6 +147,13 @@ def cta_cte_clientes(request,id=None):
     context['saldo_anterior_debe'] = saldo_anterior_debe
     context['saldo_anterior_haber'] = saldo_anterior_haber
     context['saldo_anterior'] = saldo_anterior
+
+    if (request.POST.get('submit') == 'Imprimir') and datos:
+        context = Context()         
+        cpbs = datos
+        cant = len(cpbs)
+        entidad = entidad  
+        return render_to_pdf_response(request,'reportes/cta_cte/reporte_cta_cte.html',locals())  
 
     return render(request,'reportes/cta_cte/cta_cte_clientes.html',context )
 
@@ -293,6 +301,14 @@ def cta_cte_proveedores(request,id=None):
         context['saldo_anterior_debe'] = saldo_anterior_debe
         context['saldo_anterior_haber'] = saldo_anterior_haber
         context['saldo_anterior'] = saldo_anterior
+
+        if (request.POST.get('submit') == 'Imprimir') and datos:
+            context = Context()         
+            cpbs = datos
+            cant = len(cpbs)
+            entidad = entidad  
+            return render_to_pdf_response(request,'reportes/cta_cte/reporte_cta_cte.html',locals()) 
+
         return render(request,'reportes/cta_cte/cta_cte_proveedores.html',context )
     
 
