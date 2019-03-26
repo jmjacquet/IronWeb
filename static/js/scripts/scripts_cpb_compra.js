@@ -72,11 +72,19 @@ function calcularProd(i){
     importe_iva = importe_parcial * coef_iva;
     importe_subtotal = importe_parcial;
     importe_total = importe_subtotal + importe_iva;    
-  }else{    
-    importe_iva = importe_parcial-(importe_parcial/(1+coef_iva))
+   }else
+  {if  (letra=='X') {    
+    importe_iva = 0
     importe_total = importe_parcial; 
     importe_subtotal = importe_total - importe_iva;
   }  
+  else{    
+    importe_iva = importe_parcial-(importe_parcial/(1+coef_iva))
+    importe_total = importe_parcial; 
+    importe_subtotal = importe_total - importe_iva;
+  }}  
+
+
   $("input[name='formDetalle-"+i+"-importe_subtotal']").val(importe_subtotal.toFixed(2));  
   $("input[name='formDetalle-"+i+"-importe_total']").val(importe_total.toFixed(2)); 
   $("input[name='formDetalle-"+i+"-importe_iva']").val(importe_iva.toFixed(2));

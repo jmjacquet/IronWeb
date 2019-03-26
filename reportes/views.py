@@ -148,8 +148,7 @@ def cta_cte_clientes(request,id=None):
     context['saldo_anterior_haber'] = saldo_anterior_haber
     context['saldo_anterior'] = saldo_anterior
 
-    if (request.POST.get('submit') == 'Imprimir') and datos:
-        context = Context()         
+    if (request.POST.get('submit') == 'Imprimir') and datos:        
         cpbs = datos
         cant = len(cpbs)
         entidad = entidad  
@@ -303,7 +302,6 @@ def cta_cte_proveedores(request,id=None):
         context['saldo_anterior'] = saldo_anterior
 
         if (request.POST.get('submit') == 'Imprimir') and datos:
-            context = Context()         
             cpbs = datos
             cant = len(cpbs)
             entidad = entidad  
