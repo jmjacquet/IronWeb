@@ -920,6 +920,12 @@ class BancosView(VariablesMixin,ListView):
         if not tiene_permiso(self.request,'gral_configuracion'):
             return redirect(reverse('principal'))
         return super(BancosView, self).dispatch(*args, **kwargs)
+    def get_queryset(self):
+        try:            
+            queryset = cpb_banco.objects.filter(empresa__id__in=empresas_habilitadas(self.request))
+        except:
+            queryset = cpb_banco.objects.none()
+        return queryset
 
 class BancosCreateView(VariablesMixin,AjaxCreateView):
     form_class = BancosForm
@@ -1330,8 +1336,7 @@ class PercImpView(VariablesMixin,ListView):
         return super(PercImpView, self).dispatch(*args, **kwargs)
 
     def get_queryset(self):
-        try:
-            empresa = empresa_actual(self.request)
+        try:            
             queryset = cpb_perc_imp.objects.filter(empresa__id__in=empresas_habilitadas(self.request))
         except:
             queryset = cpb_perc_imp.objects.none()
@@ -1614,8 +1619,7 @@ class DispoView(VariablesMixin,ListView):
         return context
 
     def get_queryset(self):
-        try:
-            empresa = empresa_actual(self.request)
+        try:            
             queryset = cpb_cuenta.objects.filter(empresa__id__in=empresas_habilitadas(self.request))
         except:
             queryset = cpb_cuenta.objects.none()

@@ -35,19 +35,22 @@
                                 <tr {% if p.baja %}
                                     class='danger'
                                  {% endif %}>
-                                    <td>{% if not p.interno %}
-                                        <div class="btn-group">
-                                           <button type="button" class="btn btn-xs color_barra" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                                            <i class="icon-settings"> </i> <span class="caret"></span>
-                                          </button>                                    
-                                           <ul class="dropdown-menu dropdown-menu-default">
-                                            <li><a href="{% url 'pto_vta_editar' id=p.pk %}"  class="fm-update " title="Editar" data-fm-callback="reload" data-fm-head="EDITAR PUNTO DE VENTA"data-fm-target="#object-{{ p.pk }}"><i class="icon-note"></i> Editar</a></li>
-                                            <li><a href="#" 
-                                                onClick="alerta= alertify.dialog('confirm').set({'labels':{ok:'Aceptar', cancel:'Cancelar'},'message': '¿DESEA DAR DE BAJA/REACTIVAR EL REGISTRO ACTUAL?',transition:'fade','onok': function(){ window.location.href = '{% url 'pto_vta_baja_reactivar' id=p.pk  %}'; },'oncancel': function(){ return true;} }); alerta.setting('modal', true); alerta.setHeader('BAJA/REACTIVAR'); alerta.show(); return true;" ><i class="icon-dislike"></i><i class="icon-like"></i>Baja/Reactivar</a>
-                                            </li>                                            
-                                          </ul>      
-                                        </div>
-                                         {% endif %}
+                                    <td>
+                                        {% if not p.interno %}
+                                            {% if empresa.id == p.empresa.id %}
+                                            <div class="btn-group">
+                                               <button type="button" class="btn btn-xs color_barra" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                                <i class="icon-settings"> </i> <span class="caret"></span>
+                                              </button>                                    
+                                               <ul class="dropdown-menu dropdown-menu-default">
+                                                <li><a href="{% url 'pto_vta_editar' id=p.pk %}"  class="fm-update " title="Editar" data-fm-callback="reload" data-fm-head="EDITAR PUNTO DE VENTA"data-fm-target="#object-{{ p.pk }}"><i class="icon-note"></i> Editar</a></li>
+                                                <li><a href="#" 
+                                                    onClick="alerta= alertify.dialog('confirm').set({'labels':{ok:'Aceptar', cancel:'Cancelar'},'message': '¿DESEA DAR DE BAJA/REACTIVAR EL REGISTRO ACTUAL?',transition:'fade','onok': function(){ window.location.href = '{% url 'pto_vta_baja_reactivar' id=p.pk  %}'; },'oncancel': function(){ return true;} }); alerta.setting('modal', true); alerta.setHeader('BAJA/REACTIVAR'); alerta.show(); return true;" ><i class="icon-dislike"></i><i class="icon-like"></i>Baja/Reactivar</a>
+                                                </li>                                            
+                                              </ul>      
+                                            </div>
+                                            {% endif %}
+                                        {% endif %}
                                     </td>
                                     <td>{{p.numero|default_if_none:''}}</td>
                                     <td>{{p.nombre|default_if_none:'' }}</td>                                

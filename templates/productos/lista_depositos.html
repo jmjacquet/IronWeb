@@ -29,7 +29,9 @@
                                 class='danger'
                              {% endif %}>
                                 
-                                <td><div class="btn-group">
+                                <td>
+                                     {% if empresa.id == d.empresa.id %}
+                                    <div class="btn-group">
                                        <button type="button" class="btn btn-xs color_barra" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                                         <i class="icon-settings"> </i> <span class="caret"></span>
                                       </button>                                    
@@ -38,9 +40,9 @@
                                         <li><a href="#" 
                                             onClick="alerta= alertify.dialog('confirm').set({'labels':{ok:'Aceptar', cancel:'Cancelar'},'message': '¿DESEA DAR DE BAJA/REACTIVAR EL REGISTRO ACTUAL?',transition:'fade','onok': function(){ window.location.href = '{% url 'deposito_baja_reactivar' id=d.pk  %}'; },'oncancel': function(){ return true;} }); alerta.setting('modal', true); alerta.setHeader('BAJA/REACTIVAR'); alerta.show(); return true;" ><i class="icon-dislike"></i><i class="icon-like"></i>Baja/Reactivar</a>
                                         </li>      
-                                                                        
                                       </ul>      
                                     </div>
+                                    {% endif %}
                                 </td>
                                 <td class="text-right">{{ d.id|default_if_none:'' }}</td>
                                 <td>{{ d.nombre|default_if_none:'' }}</td>

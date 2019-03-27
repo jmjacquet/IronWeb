@@ -225,8 +225,12 @@ class CategoriasView(VariablesMixin,ListView):
     template_name = 'productos/lista_categorias.html'
     context_object_name = 'categorias'
 
-    def get_queryset(self):        
-        return prod_categoria.objects.filter(empresa=empresa_actual(self.request))
+    def get_queryset(self):
+        try:            
+            queryset = prod_categoria.objects.filter(empresa__id__in=empresas_habilitadas(self.request))
+        except:
+            queryset = prod_categoria.objects.none()
+        return queryset
 
     @method_decorator(login_required)
     def dispatch(self, *args, **kwargs):        
@@ -306,10 +310,14 @@ def categoria_baja_reactivar(request,id):
 class DepositosView(VariablesMixin,ListView):
     model = prod_ubicacion
     template_name = 'productos/lista_depositos.html'
-    context_object_name = 'depositos'
+    context_object_name = 'depositos'    
 
-    def get_queryset(self):        
-        return prod_ubicacion.objects.filter(empresa=empresa_actual(self.request))
+    def get_queryset(self):
+        try:            
+            queryset = prod_ubicacion.objects.filter(empresa__id__in=empresas_habilitadas(self.request))
+        except:
+            queryset = prod_ubicacion.objects.none()
+        return queryset
 
     @method_decorator(login_required)
     def dispatch(self, *args, **kwargs):        
@@ -379,8 +387,12 @@ class LPreciosView(VariablesMixin,ListView):
     template_name = 'productos/lista_lprecios.html'
     context_object_name = 'lista_precios'
 
-    def get_queryset(self):        
-        return prod_lista_precios.objects.filter(empresa=empresa_actual(self.request))
+    def get_queryset(self):
+        try:            
+            queryset = prod_lista_precios.objects.filter(empresa__id__in=empresas_habilitadas(self.request))
+        except:
+            queryset = prod_lista_precios.objects.none()
+        return queryset
 
     @method_decorator(login_required)
     def dispatch(self, *args, **kwargs):        

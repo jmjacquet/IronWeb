@@ -27,19 +27,24 @@
                             {% for c in cuenta %}
                             <tr>
                                 
-                                <td>{% if c.modificable %}<div class="btn-group">
-                                       <button type="button" class="btn btn-xs color_barra" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                                        <i class="icon-settings"> </i> <span class="caret"></span>
-                                      </button>                                    
-                                       <ul class="dropdown-menu dropdown-menu-default">                                        
-                                        
-                                        <li><a href="{% url 'disponibilidades_editar' id=c.pk %}"  class="fm-update " title="Editar" data-fm-callback="reload" data-fm-head="EDITAR CUENTA/DISPONIBILIDAD"data-fm-target="#object-{{ c.pk }}"><i class="icon-note"></i> Editar</a></li>
-                                        <li>
-                                            <a href="{% url 'disponibilidades_eliminar' id=c.pk %}" class="fm-delete " data-fm-head="¿DESEA ELIMINAR EL REGISTRO SELECCIONADO?" data-fm-callback="reload" data-fm-target="#object-{{ c.pk }}" title="Quitar"> <i class="icon-trash"></i> Eliminar </a> 
-                                        </li>
-                                                                         
-                                      </ul>      
-                                    </div>{% endif %}
+                                <td>
+                                    {% if empresa.id == c.empresa.id %}
+                                        {% if c.modificable %}
+                                        <div class="btn-group">
+                                           <button type="button" class="btn btn-xs color_barra" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                            <i class="icon-settings"> </i> <span class="caret"></span>
+                                          </button>                                    
+                                           <ul class="dropdown-menu dropdown-menu-default">                                        
+                                            
+                                            <li><a href="{% url 'disponibilidades_editar' id=c.pk %}"  class="fm-update " title="Editar" data-fm-callback="reload" data-fm-head="EDITAR CUENTA/DISPONIBILIDAD"data-fm-target="#object-{{ c.pk }}"><i class="icon-note"></i> Editar</a></li>
+                                            <li>
+                                                <a href="{% url 'disponibilidades_eliminar' id=c.pk %}" class="fm-delete " data-fm-head="¿DESEA ELIMINAR EL REGISTRO SELECCIONADO?" data-fm-callback="reload" data-fm-target="#object-{{ c.pk }}" title="Quitar"> <i class="icon-trash"></i> Eliminar </a> 
+                                            </li>
+                                                                             
+                                          </ul>      
+                                        </div>
+                                        {% endif %}
+                                    {% endif %}
                                 </td>
                                 <td>{{c.codigo|default_if_none:''}}</td>
                                 <td>{{c.nombre|default_if_none:'' }}</td>                                

@@ -27,7 +27,9 @@
                             {% for d in formapago %}
                             <tr>
                                 
-                                <td><div class="btn-group">
+                                <td>
+                                    {% if empresa.id == d.empresa.id %}
+                                    <div class="btn-group">
                                        <button type="button" class="btn btn-xs color_barra" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                                         <i class="icon-settings"> </i> <span class="caret"></span>
                                       </button>                                    
@@ -39,6 +41,7 @@
                                                                         
                                       </ul>      
                                     </div>
+                                    {% endif %}
                                 </td>
                                 <td class="text-right">{{ d.codigo|default_if_none:'' }}</td>
                                 <td>{{ d.nombre|default_if_none:'' }}</td>                                
