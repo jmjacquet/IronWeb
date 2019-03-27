@@ -1535,7 +1535,7 @@ class CPBRecCobranzaEditView(VariablesMixin,CreateView):
         for cpb in cpbs_cobro:
             c = cpb.cpb_factura
             entidad = c.entidad                                
-            d.append({'detalle_cpb': c.get_cpb_tipo(),'desc_rec':'0','importe_total':cpb.importe_total,'saldo':c.saldo,'id_cpb_factura':c.id,'cpb_factura':c})                    
+            d.append({'detalle_cpb': c.get_cpb_tipo,'desc_rec':'0','importe_total':cpb.importe_total,'saldo':c.saldo,'id_cpb_factura':c.id,'cpb_factura':c})                    
         cpbs = RecCobranzaCPBFormSet(prefix='formCPB',initial=d)      
         return self.render_to_response(self.get_context_data(form=form,cpb_fp=cpb_fp,cpbs=cpbs))
         
@@ -1545,7 +1545,7 @@ class CPBRecCobranzaEditView(VariablesMixin,CreateView):
         #     for cpb in cpbs_cobro:
         #         c = cpb.cpb_factura
         #         entidad = c.entidad                                
-        #         d.append({'detalle_cpb': c.get_cpb_tipo(),'desc_rec':'0','importe_total':cpb.importe_total,'saldo':c.saldo,'id_cpb_factura':c.id,'cpb_factura':c})            
+        #         d.append({'detalle_cpb': c.get_cpb_tipo,'desc_rec':'0','importe_total':cpb.importe_total,'saldo':c.saldo,'id_cpb_factura':c.id,'cpb_factura':c})            
         #     cpbs = RecCobranzaCPBFormSet(prefix='formCPB',initial=d)      
         #     return self.render_to_response(self.get_context_data(form=form,cpb_fp=cpb_fp,cpbs=cpbs))
         # else:     
@@ -1655,7 +1655,7 @@ class CPBCobrarCreateView(VariablesMixin,CreateView):
             for cpb in cpbs_cobro:
                 c = cpb_comprobante.objects.get(id=cpb['id_cpb_factura'])
                 entidad = c.entidad                
-                d.append({'detalle_cpb': c.get_cpb_tipo(),'desc_rec':'0','importe_total':cpb['importe_total'],'saldo':c.saldo,'id_cpb_factura':c.id,'cpb_factura':c})            
+                d.append({'detalle_cpb': c.get_cpb_tipo,'desc_rec':'0','importe_total':cpb['importe_total'],'saldo':c.saldo,'id_cpb_factura':c.id,'cpb_factura':c})            
                 total += Decimal(cpb['importe_total'])
             cpbs = RecCobranzaCPBFormSet(prefix='formCPB',initial=d)
             if entidad:
@@ -1723,7 +1723,7 @@ class CPBCobrarCreateView(VariablesMixin,CreateView):
             for cpb in cpbs_cobro:
                 c = cpb_comprobante.objects.get(id=cpb['id_cpb_factura'])
                 entidad = c.entidad                
-                d.append({'detalle_cpb': c.get_cpb_tipo(),'desc_rec':'0','importe_total':cpb['importe_total'],'saldo':c.saldo,'id_cpb_factura':c.id,'cpb_factura':c})            
+                d.append({'detalle_cpb': c.get_cpb_tipo,'desc_rec':'0','importe_total':cpb['importe_total'],'saldo':c.saldo,'id_cpb_factura':c.id,'cpb_factura':c})            
             cpbs = RecCobranzaCPBFormSet(prefix='formCPB',initial=d)
             if entidad:
                 form.fields['entidad'].initial = entidad   
@@ -1758,7 +1758,7 @@ def CPBCobrosSeleccionarView(request):
         for c in cpbs:            
             saldo = (c.saldo * c.cpb_tipo.signo_ctacte)
             total += saldo
-            d.append({'detalle_cpb': c.get_cpb_tipo(),'desc_rec':'0','importe_total':saldo,'saldo':saldo,'id_cpb_factura':c.id})
+            d.append({'detalle_cpb': c.get_cpb_tipo,'desc_rec':'0','importe_total':saldo,'saldo':saldo,'id_cpb_factura':c.id})
         CPBSFormSet = formset_factory(CPBSeleccionados, max_num=cant_cpbs,can_delete=False)
         comprobantes = CPBSFormSet(prefix='comprobantes',initial=d)
         variables = RequestContext(request, {'comprobantes':comprobantes,'total':total})        

@@ -26,6 +26,7 @@ def ver_permisos(request):
             else:
                 #permisos = UsuPermiso.objects.filter(grupo=usuario.grupo).values_list('permiso_name', flat=True).distinct()               
                 permisos = usuario.permisos.values_list('permiso_name', flat=True).distinct()
+            print permisos
         else:
             permisos = []
     except:

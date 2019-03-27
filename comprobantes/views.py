@@ -897,7 +897,7 @@ def mandarEmail(request,id):
         
                 
         backend = EmailBackend(host=mail_servidor, port=mail_puerto, username=mail_usuario,password=mail_password,fail_silently=False)        
-        email = EmailMessage( subject=u'%s' % (cpb.get_cpb_tipo()),body=html_content,from_email=mail_origen,to=mail_destino,connection=backend)                
+        email = EmailMessage( subject=u'%s' % (cpb.get_cpb_tipo),body=html_content,from_email=mail_origen,to=mail_destino,connection=backend)                
         email.attach(u'%s.pdf' %nombre,post_pdf, "application/pdf")
         email.content_subtype = 'html'
         email.send()        

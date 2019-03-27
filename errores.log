@@ -2838,3 +2838,21 @@ Traceback (most recent call last):
   File "C:\Python27\lib\site-packages\xhtml2pdf\util.py", line 516, in __init__
     uri = uri.encode('utf-8')
 AttributeError: 'NoneType' object has no attribute 'encode'
+[27/mar/2019 08:45:22] ERROR [django.request:256] Internal Server Error: /ingresos/cobranza/comprobantes/
+Traceback (most recent call last):
+  File "C:\Python27\lib\site-packages\django\core\handlers\base.py", line 132, in get_response
+    response = wrapped_callback(request, *callback_args, **callback_kwargs)
+  File "C:\Python27\lib\site-packages\django\contrib\auth\decorators.py", line 22, in _wrapped_view
+    return view_func(request, *args, **kwargs)
+  File "D:\GitHub\IronWeb\ingresos\views.py", line 1761, in CPBCobrosSeleccionarView
+    d.append({'detalle_cpb': c.get_cpb_tipo(),'desc_rec':'0','importe_total':saldo,'saldo':saldo,'id_cpb_factura':c.id})
+TypeError: 'unicode' object is not callable
+[27/mar/2019 08:45:36] ERROR [django.request:256] Internal Server Error: /ingresos/cobranza/comprobantes/
+Traceback (most recent call last):
+  File "C:\Python27\lib\site-packages\django\core\handlers\base.py", line 132, in get_response
+    response = wrapped_callback(request, *callback_args, **callback_kwargs)
+  File "C:\Python27\lib\site-packages\django\contrib\auth\decorators.py", line 22, in _wrapped_view
+    return view_func(request, *args, **kwargs)
+  File "D:\GitHub\IronWeb\ingresos\views.py", line 1761, in CPBCobrosSeleccionarView
+    d.append({'detalle_cpb': c.get_cpb_tipo(),'desc_rec':'0','importe_total':saldo,'saldo':saldo,'id_cpb_factura':c.id})
+TypeError: 'unicode' object is not callable
