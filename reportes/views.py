@@ -1005,7 +1005,7 @@ class ProdHistoricoView(VariablesMixin,ListView):
             empresa = None 
         fecha = date.today()
         
-        form = ConsultaHistStockProd(self.request.POST or None,empresa=empresas)   
+        form = ConsultaHistStockProd(self.request.POST or None)   
 
         movimientos = cpb_comprobante_detalle.objects.none()
         #movimientos = cpb_comprobante_detalle.objects.filter(cpb_comprobante__empresa=empresa,cpb_comprobante__fecha_cpb=hoy()).select_related('producto','cpb_comprobante').order_by('producto')
