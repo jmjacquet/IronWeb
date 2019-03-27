@@ -469,7 +469,7 @@ class ProdLPreciosView(VariablesMixin,ListView):
         precios = prod_producto_lprecios.objects.none()
         
         if form.is_valid():                                
-            precios = prod_producto_lprecios.objects.filter(producto__empresa=empresa,lista_precios___empresa__id__in=empresas_habilitadas(self.request)).select_related('producto','producto__categoria').order_by('producto','lista_precios')
+            precios = prod_producto_lprecios.objects.filter(producto__empresa=empresa,lista_precios__empresa__in=empresas_habilitadas(self.request)).select_related('producto','producto__categoria').order_by('producto','lista_precios')
             producto = form.cleaned_data['producto']                                                              
             lista_precios = form.cleaned_data['lista_precios']                                                              
             categoria = form.cleaned_data['categoria']   
