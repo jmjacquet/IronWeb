@@ -1399,9 +1399,8 @@ class FPView(VariablesMixin,ListView):
         return super(FPView, self).dispatch(*args, **kwargs)
 
     def get_queryset(self):
-        try:
-            empresa = empresa_actual(self.request)
-            queryset = cpb_tipo_forma_pago.objects.filter(empresa__id__in=empresas_habilitadas(request))
+        try:            
+            queryset = cpb_tipo_forma_pago.objects.filter(empresa__id__in=empresas_habilitadas(self.request))
         except:
             queryset = cpb_tipo_forma_pago.objects.none()
         return queryset
