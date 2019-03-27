@@ -279,9 +279,7 @@ MESSAGE_TAGS = {message_constants.DEBUG: 'debug',
                 message_constants.ERROR: 'error',} 
 
 
-
-
-COMPRESS_ENABLED = True
+COMPRESS_ENABLED = False
 
 COMPRESS_OUTPUT_DIR = '/'
 COMPRESS_CSS_FILTERS = [

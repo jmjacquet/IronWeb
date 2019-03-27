@@ -514,8 +514,6 @@ class ProdLPreciosEditView(VariablesMixin,AjaxUpdateView):
         initial = super(ProdLPreciosEditView, self).get_initial()                      
         return initial          
 
-
-
 def actualizar_precios(tipo_op,tipo_precio,valor,porc,coef,lista,recalcular):   
    try: 
     if lista:
@@ -570,7 +568,6 @@ def actualizar_precios(tipo_op,tipo_precio,valor,porc,coef,lista,recalcular):
    except:
     cant = 0 
    return cant
-
 
 @login_required 
 def prod_precios_actualizar(request):        
@@ -632,7 +629,7 @@ class ProdStockView(VariablesMixin,ListView):
             categoria = form.cleaned_data['categoria']   
             tipo_prod = int(form.cleaned_data['tipo_prod'])             
             lleva_stock = form.cleaned_data['lleva_stock']                         
-            productos = prod_producto_ubicac.objects.filter(producto__empresa=empresa,ubicacion__empresa__id__in=empresas_habilitadas(self.request)).select_related('producto','producto__categoria')            
+            productos = prod_producto_ubicac.objects.filter(producto__empresa=empresa,ubicacion__empresa__in=empresas_habilitadas(self.request)).select_related('producto','producto__categoria')            
         
             if producto:
                 productos = productos.filter(producto__nombre__icontains=producto)
