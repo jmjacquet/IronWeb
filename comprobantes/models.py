@@ -244,8 +244,8 @@ class cpb_comprobante(models.Model):
         return cpb_cobranza.objects.filter(cpb_comprobante=self).count() > 0 
         
 
-    def get_listado(self):
-        if self.cpb_tipo.pk in [1,3,5,14,20]:
+    def get_listado(self):        
+        if self.cpb_tipo.pk in [1,3,5,14,20,23]:
             return reverse('cpb_venta_listado')
         elif self.cpb_tipo.pk in [2,4,6,18,19]:
             return reverse('cpb_compra_listado')
@@ -259,7 +259,7 @@ class cpb_comprobante(models.Model):
             return reverse('cpb_pago_listado')
         elif self.cpb_tipo.pk == 11:
             return reverse('cpb_presup_listado')
-        elif self.cpb_tipo.pk == 13:
+        elif self.cpb_tipo.pk in [13]:
             return reverse('movimientos_listado')
         else:
             return reverse('principal')

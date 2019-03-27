@@ -19,6 +19,7 @@ from django.utils.functional import curry
 from usuarios.views import tiene_permiso
 from django.utils.functional import curry 
 from django.db.models.expressions import RawSQL
+from comprobantes.models import actualizar_stock_multiple,actualizar_stock
 
 #************* PRODUCTOS **************
 class ProductosView(VariablesMixin,ListView):
@@ -670,7 +671,7 @@ class ProdStockEditView(VariablesMixin,AjaxUpdateView):
         initial = super(ProdStockEditView, self).get_initial()                      
         return initial     
 
-from comprobantes.models import actualizar_stock_multiple
+
 
 @login_required 
 def prod_stock_actualizar(request):        
