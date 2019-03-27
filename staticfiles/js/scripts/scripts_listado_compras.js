@@ -149,7 +149,7 @@ var tabla = $('#dataTables-cpb_compra').DataTable({
                // this.api().columns().every( function () {[0, 1, 9]
                 this.api().columns([3,5]).every( function () {
                     var column = this;
-                    var select = $('<select class="form-control"><option value=""></option></select>')
+                    var select = $('<select class="form-control"><option value="">Todos</option></select>')
                         .appendTo( $(column.footer()).empty() )
                         .on( 'change', function () {
                             var val = $.fn.dataTable.util.escapeRegex(

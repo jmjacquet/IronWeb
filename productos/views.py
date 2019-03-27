@@ -478,7 +478,7 @@ class ProdLPreciosView(VariablesMixin,ListView):
             mostrar_en = form.cleaned_data['mostrar_en']
                     
             if int(tipo_prod)>0:                
-                precios= precios.filter(Q(producto__tipo_prod=tipo_prod)) 
+                precios= precios.filter(Q(producto__tipo_producto=tipo_prod)) 
             if int(mostrar_en)>0:                
                 precios= precios.filter(Q(producto__mostrar_en=mostrar_en)) 
             if producto:
@@ -635,7 +635,7 @@ class ProdStockView(VariablesMixin,ListView):
             if producto:
                 productos = productos.filter(producto__nombre__icontains=producto)
             if tipo_prod>0:                
-                productos= productos.filter(producto__tipo_prod=tipo_prod)
+                productos= productos.filter(producto__tipo_producto=tipo_prod)
             if int(lleva_stock)>0:
                 lleva= (int(lleva_stock)==1)                
                 productos= productos.filter(producto__llevar_stock=lleva)
