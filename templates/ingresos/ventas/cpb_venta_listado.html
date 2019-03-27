@@ -77,8 +77,10 @@
                                             <li><a href="{% url 'mandarEmail' id=cpb.pk %}"><i class="icon-envelope-open"></i> Enviar por Email</a></li>
                                             <li role="separator" class="divider"></li>
                                             {% if 'cpb_ventas_abm' in permisos_grupo %}
-                                             <li><a href="{% url 'cpb_venta_clonar' id=cpb.pk %}"  title="Clonar" data-fm-callback="reload" ><i class="icon-book-open"></i> Clonar</a></li>
-                                             {% endif %}
+                                                {% if cpb.cpb_tipo.tipo != 14 %}
+                                                <li><a href="{% url 'cpb_venta_clonar' id=cpb.pk %}"  title="Clonar" data-fm-callback="reload" ><i class="icon-book-open"></i> Clonar</a></li>
+                                                {% endif %}
+                                            {% endif %}
                                             {% if not cpb.cae %}                                            
                                                {% if 'cpb_ventas_abm' in permisos_grupo %}
                                                 {% if cpb.cpb_tipo.tipo == 14 %}
@@ -98,11 +100,11 @@
 
                                                 {% elif cpb.estado.pk < 3 %}
                                                     {% if cpb.cobranzas == 0 %}
-                                                    <li><a href="#" 
-                                                    onClick="alerta= alertify.dialog('confirm').set({'labels':{ok:'Aceptar', cancel:'Cancelar'},'message': '¿DESEA ANULAR EL COMPROBANTE ACTUAL?',transition:'fade','onok': function(){ window.location.href = '{% url 'cpb_anular_reactivar' id=cpb.pk estado=3  %}'; },'oncancel': function(){ return true;} }); alerta.setting('modal', true); alerta.setHeader('ANULAR/REACTIVAR COMPROBANTE'); alerta.show(); return true;" ><i class="icon-dislike"></i>Anular</a></li>
+                                                        <li><a href="#" 
+                                                        onClick="alerta= alertify.dialog('confirm').set({'labels':{ok:'Aceptar', cancel:'Cancelar'},'message': '¿DESEA ANULAR EL COMPROBANTE ACTUAL?',transition:'fade','onok': function(){ window.location.href = '{% url 'cpb_anular_reactivar' id=cpb.pk estado=3  %}'; },'oncancel': function(){ return true;} }); alerta.setting('modal', true); alerta.setHeader('ANULAR/REACTIVAR COMPROBANTE'); alerta.show(); return true;" ><i class="icon-dislike"></i>Anular</a></li>
                                                     {% endif %}
-                                                    {% if cpb_ventas_cae in permisos_grupo %} 
-                                                        {% if cpb.cpb_tipo.facturable %}
+                                                    {% if cpb.cpb_tipo.facturable %}
+                                                        {% if 'cpb_ventas_cae' in permisos_grupo %}
                                                             <li role="separator" class="divider"></li>
                                                             <li>
                                                                 <a href="#"  value="{{cpb.pk|safe}}" id="fact_{{cpb.pk|safe}}" name="btn_facturacion"><i class="icon-cloud-upload"></i>Obtener CAE/Factura Electrónica</a>
@@ -110,9 +112,9 @@
                                                             <li><a href="#" 
                                                             onClick="alerta= alertify.dialog('confirm').set({'labels':{ok:'Aceptar', cancel:'Cancelar'},'message': '¿DESEA MARCAR EL CPB COMO FACTURADO?',transition:'fade','onok': function(){ 
                                                             alertify.prompt('FACTURAR COMPROBANTE AFIP','Ingrese el Número de CAE:',0000000000000,function(evt, value) {var nro = value;window.location.href = '/comprobantes/cpb_facturar/{{cpb.id|safe}}/'+nro;},function(){} ).set('labels', {ok:'Aceptar', cancel:'Cancelar'}).set('type', 'number'); 
-                                                            },'oncancel': function(){ return true;} }); alerta.setting('modal', true); alerta.setHeader('FACTURAR COMPROBANTE'); alerta.show(); return true;" ><i class="icon-cloud-upload"></i>Marcar Facturado (CAE manual)</a></li>                                                    
+                                                            },'oncancel': function(){ return true;} }); alerta.setting('modal', true); alerta.setHeader('FACTURAR COMPROBANTE'); alerta.show(); return true;" ><i class="icon-cloud-upload"></i>Marcar Facturado (CAE manual)</a></li>
                                                         {% endif %}
-                                                    {% endif %}                                             
+                                                    {% endif %}
                                                 {% endif %} 
                                                 {% if cpb.cobranzas == 0 %}
                                                      <li><a href="#" 
@@ -130,11 +132,11 @@
                                                 <li><a href="{% url 'cpb_venta_nc_nuevo' id=cpb.pk %}"  title="Nota de Crédito"><i class="icon-note"></i> Generar Nota de Crédito</a></li>
                                              {% endif %}
                                             {% endif %} 
-                                                {% if 'cpb_ventas_cobrar' in permisos_grupo %}
+                                            {% if 'cpb_ventas_cobrar' in permisos_grupo %}
                                                 {% if cpb.saldo > 0 and cpb.cpb_tipo.usa_forma_pago %}
                                                     <li><a onclick="return abrir_modal('/ingresos/cobranza/comprobantes/?id_cpb={{cpb.id|safe}}');"><i class=" icon-wallet"></i> Recibo Cobranza</a></li>
                                                 {% endif %}
-                                                {% endif %}
+                                            {% endif %}
                                             {% if 'cpb_remitos_abm' in permisos_grupo %}
                                             <li><a href="{% url 'cpb_remito_nuevo' id=cpb.pk %}"  title="Generar Remito" ><i class="fa  fa-truck"></i> Generar Remito</a></li>
                                             <li role="separator" class="divider"></li>

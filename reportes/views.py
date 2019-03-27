@@ -955,7 +955,7 @@ class seguimiento_cheques(VariablesMixin,ListView):
         
         fecha = hoy()
         
-        form = ConsultaHistStockProd(self.request.POST or None,empresa=empresa,request=self.request)   
+        form = ConsultaHistStockProd(self.request.POST or None)   
         
         cheques = cpb_comprobante_fp.objects.filter(cpb_comprobante__empresa=empresa,tipo_forma_pago__cuenta__tipo=2,cpb_comprobante__estado__in=[1,2]).order_by('-fecha_creacion','-mdcp_fecha')\
             .select_related('cpb_comprobante','cta_ingreso','cta_egreso','tipo_forma_pago','mdcp_banco','cpb_comprobante__cpb_tipo','cpb_comprobante__entidad','mdcp_salida__cta_ingreso','mdcp_salida__cpb_comprobante__cpb_tipo')
