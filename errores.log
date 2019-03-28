@@ -2838,3 +2838,12 @@ Traceback (most recent call last):
   File "C:\Python27\lib\site-packages\xhtml2pdf\util.py", line 516, in __init__
     uri = uri.encode('utf-8')
 AttributeError: 'NoneType' object has no attribute 'encode'
+[28/mar/2019 09:27:39] ERROR [django.request:256] Internal Server Error: /reportes/libro_iva_ventas/
+Traceback (most recent call last):
+  File "C:\Python27\lib\site-packages\django\core\handlers\base.py", line 132, in get_response
+    response = wrapped_callback(request, *callback_args, **callback_kwargs)
+  File "C:\Python27\lib\site-packages\django\contrib\auth\decorators.py", line 22, in _wrapped_view
+    return view_func(request, *args, **kwargs)
+  File "D:\GitHub\IronWeb\reportes\views.py", line 543, in libro_iva_ventas
+    .exclude(letra='X').filter(Q(pto_vta__in=pto_vta_habilitados_list(self.request)) | Q(cpb_tipo__tipo=14)).select_related('cpb_tipo','entidad')\
+NameError: global name 'self' is not defined

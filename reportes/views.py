@@ -539,8 +539,8 @@ def libro_iva_ventas(request):
         fact_x = form.cleaned_data['fact_x']  
         cae = form.cleaned_data['cae']  
         total = 0                    
-        cpbs = cpb_comprobante.objects.filter(cpb_tipo__compra_venta='V',pto_vta__in=pto_vta_habilitados_list(request),cpb_tipo__tipo__in=[1,2,3,9,14],empresa=empresa,fecha_imputacion__gte=fdesde,fecha_imputacion__lte=fhasta).exclude(letra='X')\
-            .select_related('cpb_tipo','entidad')\
+        cpbs = cpb_comprobante.objects.filter(cpb_tipo__compra_venta='V',cpb_tipo__tipo__in=[1,2,3,9,14],empresa=empresa,fecha_imputacion__gte=fdesde,fecha_imputacion__lte=fhasta)\
+            .exclude(letra='X').filter(Q(pto_vta__in=pto_vta_habilitados_list(request)) | Q(cpb_tipo__tipo=14)).select_related('cpb_tipo','entidad')\
             .only('id','pto_vta','letra','numero','fecha_imputacion','cpb_tipo__codigo','cpb_tipo__nombre','cpb_tipo__tipo','cpb_tipo__signo_ctacte','cae_vto','cae',\
             'entidad__id','entidad__apellido_y_nombre','entidad__tipo_entidad','entidad__codigo','entidad__fact_cuit','entidad__nro_doc','entidad__fact_categFiscal',\
             'importe_gravado','importe_iva','importe_perc_imp','importe_no_gravado','importe_exento','importe_total')\
