@@ -386,10 +386,34 @@ def generarCITI(cpbs,ventas_compras,tipo_archivo):
             linea += str(c.importe_no_gravado).encode('utf-8').replace(".","").rjust(15, "0") #importe_ng
             linea += str(0).replace(".","").rjust(15, "0") #perc_nc
             linea += str(c.importe_exento).encode('utf-8').replace(".","").rjust(15, "0") #importe_exento
-            linea += str(0).replace(".","").rjust(15, "0") #perc_impuestosNac
-            linea += str(0).replace(".","").rjust(15, "0") #perc_IIBB
-            linea += str(0).replace(".","").rjust(15, "0") #perc_impMunicip
-            linea += str(0).replace(".","").rjust(15, "0") #importe_impuestosInt
+            
+            perc_impuestosNac=0.00
+            perc_IIBB=0.00
+            perc_impMunicip=0.00
+            importe_impuestosInt=0.00
+            otros_perc_imp=0.00
+            try:
+                cpb_perc = cpb_comprobante_perc_imp.objects.filter(cpb_comprobante=c)
+                for p in cpb_perc: 
+                    id = p.perc_imp.id 
+                    if id==1:
+                        perc_impuestosNac+=p.importe_total
+                    elif id in [2,8]:
+                        perc_impMunicip+=p.importe_total                        
+                    elif id==3:
+                        importe_impuestosInt+=p.importe_total
+                    elif id in [5,7]:
+                        perc_IIBB+=p.importe_total
+                    else:
+                        otros_perc_imp+=p.importe_total                             
+            except:
+                pass
+
+            linea += str(perc_impuestosNac).replace(".","").rjust(15, "0") #perc_impuestosNac
+            linea += str(perc_IIBB).replace(".","").rjust(15, "0") #perc_IIBB
+            linea += str(perc_impMunicip).replace(".","").rjust(15, "0") #perc_impMunicip
+            linea += str(importe_impuestosInt).replace(".","").rjust(15, "0") #importe_impuestosInt
+
             linea += str('PES').encode('utf-8') #Moneda
             linea += str('0001000000').encode('utf-8')#tipo_cambio
             try:
@@ -455,11 +479,34 @@ def generarCITI(cpbs,ventas_compras,tipo_archivo):
             linea += str(c.importe_total).replace(".","").encode('utf-8').rjust(15, "0") #importe_total
             linea += str(c.importe_no_gravado).encode('utf-8').replace(".","").rjust(15, "0") #importe_ng            
             linea += str(c.importe_exento).encode('utf-8').replace(".","").rjust(15, "0") #importe_exento
-            linea += str(0).replace(".","").rjust(15, "0") #perc_impuestosNac
-            linea += str(0).replace(".","").rjust(15, "0") #perc_impuestosNac
-            linea += str(0).replace(".","").rjust(15, "0") #perc_IIBB
-            linea += str(0).replace(".","").rjust(15, "0") #perc_impMunicip
-            linea += str(0).replace(".","").rjust(15, "0") #importe_impuestosInt
+            
+            perc_impuestosNac=0.00
+            perc_IIBB=0.00
+            perc_impMunicip=0.00
+            importe_impuestosInt=0.00
+            otros_perc_imp=0.00
+            try:
+                cpb_perc = cpb_comprobante_perc_imp.objects.filter(cpb_comprobante=c)
+                for p in cpb_perc: 
+                    id = p.perc_imp.id 
+                    if id==1:
+                        perc_impuestosNac+=p.importe_total
+                    elif id in [2,8]:
+                        perc_impMunicip+=p.importe_total                        
+                    elif id==3:
+                        importe_impuestosInt+=p.importe_total
+                    elif id in [5,7]:
+                        perc_IIBB+=p.importe_total
+                    else:
+                        otros_perc_imp+=p.importe_total                             
+            except:
+                pass
+
+            linea += str(perc_impuestosNac).replace(".","").rjust(15, "0") #perc_impuestosNac
+            linea += str(perc_IIBB).replace(".","").rjust(15, "0") #perc_IIBB
+            linea += str(perc_impMunicip).replace(".","").rjust(15, "0") #perc_impMunicip
+            linea += str(importe_impuestosInt).replace(".","").rjust(15, "0") #importe_impuestosInt
+            
             linea += str('PES').encode('utf-8') #Moneda
             linea += str('0001000000').encode('utf-8')#tipo_cambio            
             try:
