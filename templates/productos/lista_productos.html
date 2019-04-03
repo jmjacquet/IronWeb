@@ -22,7 +22,9 @@
                 </div> 
             </div>  
                     {% include "productos/barra_busqueda.html" %}
+                    {% if 'prod_productos_abm' in permisos_grupo %}
                     <a class="btn btn-sm blue-hoki" style="float:left;margin-right:20px;" href="{% url 'producto_nuevo' %}">Nuevo Producto</a>
+                    {% endif %} 
                     <table width="100%" id="dataTables-primary" class="table table-striped compact table-hover table-no-bordered tabla_nueva nowrap">         
                         <thead>
                             <tr>
@@ -50,11 +52,12 @@
                                       <ul class="dropdown-menu dropdown-menu-default">
                                         <li><a href="{% url 'producto_ver' id=prod.pk %}" class="modal-detail" data-modal-head="DETALLE PRODUCTO {{prod.codigo}}" data-fm-callback="reload">
                                         <i class=" icon-screen-desktop"></i> Detalle</a></li>
+                                        {% if 'prod_productos_abm' in permisos_grupo %}
                                         <li><a href="{% url 'producto_editar' id=prod.pk %}"  title="Editar"><i class="icon-note"></i> Editar</a></li>
                                         <li><a href="#" 
                                             onClick="alerta= alertify.dialog('confirm').set({'labels':{ok:'Aceptar', cancel:'Cancelar'},'message': '¿DESEA DAR DE BAJA/REACTIVAR EL REGISTRO ACTUAL?',transition:'fade','onok': function(){ window.location.href = '{% url 'producto_baja_reactivar' id=prod.pk  %}'; },'oncancel': function(){ return true;} }); alerta.setting('modal', true); alerta.setHeader('BAJA/REACTIVAR'); alerta.show(); return true;" ><i class="icon-dislike"></i><i class="icon-like"></i>Baja/Reactivar</a>
                                         </li>      
-                                                                        
+                                        {% endif %}                                 
                                       </ul>                                      
                                     </div>
                                 </td>
