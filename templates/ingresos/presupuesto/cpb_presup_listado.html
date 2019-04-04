@@ -61,7 +61,7 @@
                                             <li><a href="#" 
                                                         onClick="alerta= alertify.dialog('confirm').set({'labels':{ok:'Aceptar', cancel:'Cancelar'},'message': '¿DESEA ELIMINAR EL PRESUPUESTO SELECCIONADO?',transition:'fade','onok': function(){ window.location.href = '{% url 'cpb_presup_eliminar' id=cpb.pk %}'; },'oncancel': function(){ return true;} }); alerta.setting('modal', true); alerta.setHeader('ELIMINAR COMPROBANTE'); alerta.show(); return true;"><i class="icon-trash"></i>Eliminar</a>
                                             </li>       
-                                            <li role="separator" class="divider"></li>
+                                            
                                         
                                         
 
