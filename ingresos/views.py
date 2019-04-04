@@ -276,7 +276,9 @@ class CPBVentaPresupCreateView(VariablesMixin,CreateView):
         estado=cpb_estado.objects.get(pk=1)
         self.object.estado=estado   
         self.object.empresa = empresa_actual(self.request)        
-        self.object.usuario = usuario_actual(self.request)
+        self.object.usuario = usuario_actual(self.request)        
+        presup=self.get_object()
+        self.object.id_cpb_padre=presup
         self.object.fecha_imputacion=self.object.fecha_cpb
         if not self.object.fecha_vto:
             self.object.fecha_vto=self.object.fecha_cpb
@@ -303,6 +305,11 @@ class CPBVentaPresupCreateView(VariablesMixin,CreateView):
             self.object.estado=estado
             cpb_fp.save() 
             self.object.save()
+        facturado=cpb_estado.objects.get(pk=4)
+        presup.estado=facturado
+        facturado=cpb_estado.objects.get(pk=14)
+        presup.presup_aprobacion=facturado
+        presup.save()   
 
         recalcular_saldo_cpb(self.object.pk)        
         messages.success(self.request, u'Los datos se guardaron con éxito!')
@@ -1115,7 +1122,7 @@ class CPBPresupViewList(VariablesMixin,ListView):
         except gral_empresa.DoesNotExist:
             empresa = None 
         form = ConsultaCpbsCompras(self.request.POST or None,empresa=empresa,request=self.request)   
-        comprobantes = cpb_comprobante.objects.filter(cpb_tipo__tipo=6,empresa=empresa,estado__in=[1,2],pto_vta__in=pto_vta_habilitados_list(self.request)).order_by('-fecha_cpb','-id').select_related('estado','cpb_tipo','entidad')
+        comprobantes = cpb_comprobante.objects.filter(cpb_tipo__tipo=6,empresa=empresa,estado__in=[1,2,4],pto_vta__in=pto_vta_habilitados_list(self.request)).order_by('-fecha_cpb','-id').select_related('estado','cpb_tipo','entidad')
         if form.is_valid():                                
             entidad = form.cleaned_data['entidad']                                                              
             fdesde = form.cleaned_data['fdesde']   
@@ -1125,7 +1132,7 @@ class CPBPresupViewList(VariablesMixin,ListView):
             estado = form.cleaned_data['estado']
 
             if int(estado) == 1:                
-                comprobantes = cpb_comprobante.objects.filter(cpb_tipo__tipo=6,empresa=empresa,estado__in=[1,2,3]).order_by('-fecha_cpb','-id').select_related('estado','cpb_tipo','entidad')
+                comprobantes = cpb_comprobante.objects.filter(cpb_tipo__tipo=6,empresa=empresa,estado__in=[1,2,3,4]).order_by('-fecha_cpb','-id').select_related('estado','cpb_tipo','entidad')
             if fdesde:
                 comprobantes= comprobantes.filter(Q(fecha_cpb__gte=fdesde))
             if fhasta:
