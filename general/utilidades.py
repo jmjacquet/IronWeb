@@ -279,15 +279,7 @@ PERIODOS = (
 
 # URL_API = "https://soa.afip.gob.ar/sr-padron/v2/persona/"
 URL_API = "http://afip.grupoguadalupe.com.ar/?cuit="
-
-
-MESSAGE_TAGS = {message_constants.DEBUG: 'debug',
-                message_constants.INFO: 'info',
-                message_constants.SUCCESS: 'success',
-                message_constants.WARNING: 'warning',
-                message_constants.ERROR: 'danger',}
-
-
+EMAIL_CONTACTO = 'contacto@ironweb.com.ar'
 
 def usuario_actual(request):    
     return request.user.userprofile.id_usuario
@@ -559,3 +551,9 @@ def get_image_name(instance, filename):
     archivo = filename
     return os.path.join('empresa', archivo) 
     
+
+MESSAGE_TAGS = {message_constants.DEBUG: 'debug',
+                message_constants.INFO: 'info',
+                message_constants.SUCCESS: 'success',
+                message_constants.WARNING: 'warning',
+                message_constants.ERROR: 'danger',}

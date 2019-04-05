@@ -97,7 +97,7 @@ def getVariablesMixin(request):
     context['permisos_productos'] = ('prod_productos' in permisos_grupo)or('prod_productos_abm' in permisos_grupo)
     context['sitio_mobile'] = mobile(request)
     context['hoy'] =  hoy()
-    context['homologacion'] = empresa.homologacion
+    context['EMAIL_CONTACTO'] = EMAIL_CONTACTO 
        
     return context
 
@@ -147,6 +147,7 @@ class VariablesMixin(object):
         context['homologacion'] = empresa.homologacion
         context['sitio_mobile'] = mobile(self.request)
         context['hoy'] =  hoy()
+        context['EMAIL_CONTACTO'] = EMAIL_CONTACTO 
         
                 
         return context

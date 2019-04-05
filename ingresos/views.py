@@ -1746,7 +1746,9 @@ def CPBCobrosSeleccionarView(request):
             d=[]
             for c in comprobantes:
                 f = c.cleaned_data                  
-                d.append({'detalle_cpb':f['detalle_cpb'],'desc_rec':'0','id_cpb_factura':f['id_cpb_factura'],'importe_total':f['importe_total'],'saldo':f['saldo']})                        
+                #Traigo solo aquellos comprobantes que tienen importe cargado (+/-)
+                if f['importe_total']!=0:
+                    d.append({'detalle_cpb':f['detalle_cpb'],'desc_rec':'0','id_cpb_factura':f['id_cpb_factura'],'importe_total':f['importe_total'],'saldo':f['saldo']})                        
             d = json.dumps(d,default=default)
             request.session['cpbs_cobranza'] = d
             response = {'status': 1, 'message': "Ok"} # for ok        
