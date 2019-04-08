@@ -383,7 +383,7 @@ class cpb_retenciones(models.Model):
     grupo = models.IntegerField('Grupo',choices=TIPO_RETENCIONES, blank=True, null=True,default=1)
     empresa =  models.ForeignKey('general.gral_empresa',db_column='empresa',blank=True, null=True,on_delete=models.SET_NULL)
     class Meta:
-        db_table = 'cpb_perc_imp'
+        db_table = 'cpb_retenciones'
     
     def __unicode__(self):
         return u'%s' % (self.nombre) 
