@@ -13,17 +13,18 @@
 
                 </div> 
             </div>  
-                    <a class="btn btn-sm blue-hoki fm-create" style="float:left;margin-right:20px;" href="{% url 'percimp_nuevo' %}" data-fm-head="AGREGAR RETENCION" data-fm-callback="reload">Nueva Retención</a>
+                    <a class="btn btn-sm blue-hoki fm-create" style="float:left;margin-right:20px;" href="{% url 'retenc_nuevo' %}" data-fm-head="AGREGAR RETENCION" data-fm-callback="reload">Nueva Retención</a>
                     <table width="100%" id="dataTables-primary" class="table table-striped table-hover table-condensed table-no-bordered tabla_nueva">         
                         <thead>
                             <tr>
                                 <th width="5%" ></th>
                                 <th>Nombre</th>
+                                <th>Grupo</th>
                                 <th>Descripción</th>               
                             </tr>
                         </thead>
                         <tbody>
-                            {% for d in perc_imp %}
+                            {% for d in retenc %}
                             <tr>
                                 
                                 <td>
@@ -43,12 +44,14 @@
                                     {% endif %}
                                 </td>
                                 <td>{{d.nombre|default_if_none:''}}</td>
+                                <td>{{d.get_grupo_display|default_if_none:''}}</td>
                                 <td>{{d.descripcion|default_if_none:''}}</td>                                
                             </tr>
                             {% endfor %}
                         </tbody>
                         <tfoot>
                             <tr>                                
+                                <th></th> 
                                 <th></th> 
                                 <th></th>                                
                                 <th></th>        
