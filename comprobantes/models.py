@@ -140,6 +140,7 @@ class cpb_comprobante(models.Model):
     importe_no_gravado = models.DecimalField(max_digits=15, decimal_places=2, blank=True, null=True,default=0)#Suma de TiposIVA No Gravados
     importe_exento = models.DecimalField(max_digits=15, decimal_places=2, blank=True, null=True,default=0)#Suma de TiposIVA Exentos
     importe_perc_imp = models.DecimalField(max_digits=15, decimal_places=2, blank=True, null=True,default=0)#Suma de Percepciones e Impuestos
+    importe_ret = models.DecimalField(max_digits=15, decimal_places=2, blank=True, null=True,default=0)#Suma de Percepciones e Impuestos
     importe_total = models.DecimalField(max_digits=15, decimal_places=2, blank=True, null=True,default=0)#Suma de todo
     estado = models.ForeignKey('cpb_estado',related_name='estado',blank=True, null=True,on_delete=models.SET_NULL)
     anulacion_motivo = models.CharField(u'Motivo Anulación',max_length=200,blank=True, null=True)

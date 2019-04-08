@@ -151,7 +151,7 @@
 						                              <th style="width: 10%;" class="remove-sorting"></th>
 						                          </tr>
 						                    </thead>					                    
-		  			                        <tbody class='form-detallesPI'>       											                    	
+		  			                        <tbody class='form-detallesRet'>       											                    	
 						                    	{{ compras_ret.management_form }}
 						                    	{{ compras_ret.non_form_errors }}
 						                    	{% for form3 in compras_ret.forms %}					                      								                      	
@@ -189,7 +189,7 @@
 							         		<div class="col-sm-8 col-xs-7"><span class="totales_comprobante">Total Bruto</span></div> <div class="col-sm-4 col-xs-5">{% bootstrap_field form.importe_subtotal show_label=False%}</div> 
 							         	</div>
 							         	<div class="col-xs-12"> 
-							         		<div class="col-sm-8 col-xs-7"><span class="totales_comprobante">Total Impuestos</span></div> <div class="col-sm-4 col-xs-5">{% bootstrap_field form.importe_imp_perc show_label=False%}</div> 
+							         		<div class="col-sm-8 col-xs-7"><span class="totales_comprobante">Total Retenciones</span></div> <div class="col-sm-4 col-xs-5">{% bootstrap_field form.importe_ret show_label=False%}</div> 
 							         	</div>
 							         	<div class="col-xs-12"> 
 							         		<div class="col-sm-8 col-xs-7"><span class="totales_comprobante">Total Pago</span></div> <div class="col-sm-4 col-xs-5">{% bootstrap_field form.importe_total show_label=False%}</div> 
