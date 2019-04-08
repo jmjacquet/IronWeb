@@ -375,6 +375,31 @@ class cpb_comprobante_perc_imp(models.Model):
     def __unicode__(self):
         return u'%s-%s' % (self.perc_imp,self.importe_total)  
 
+class cpb_retenciones(models.Model):
+    id = models.AutoField(primary_key=True,db_index=True)
+    nombre = models.CharField(u'Nombre',max_length=100)
+    descripcion = models.CharField(u'Descripción',max_length=200,blank=True, null=True)  
+    codigo = models.CharField(u'Código',max_length=2,blank=True, null=True) 
+    grupo = models.IntegerField('Grupo',choices=TIPO_RETENCIONES, blank=True, null=True,default=1)
+    empresa =  models.ForeignKey('general.gral_empresa',db_column='empresa',blank=True, null=True,on_delete=models.SET_NULL)
+    class Meta:
+        db_table = 'cpb_perc_imp'
+    
+    def __unicode__(self):
+        return u'%s' % (self.nombre) 
+
+class cpb_comprobante_retenciones(models.Model):
+    id = models.AutoField(primary_key=True,db_index=True)
+    cpb_comprobante = models.ForeignKey('cpb_comprobante',verbose_name=u'CPB', db_column='cpb_comprobante',blank=True, null=True,on_delete=models.CASCADE)
+    retencion = models.ForeignKey('cpb_retenciones',db_column='retencion',blank=True, null=True,on_delete=models.SET_NULL) #Cliente/Proveedor    
+    detalle = models.TextField(max_length=500,blank=True, null=True) # Field name made lowercase.   
+    importe_total = models.DecimalField(max_digits=15, decimal_places=2, blank=True, null=True,default=0)    
+    class Meta:
+        db_table = 'cpb_comprobante_retenciones'
+    
+    def __unicode__(self):
+        return u'%s-%s' % (self.retencion,self.importe_total) 
+
 class cpb_comprobante_tot_iva(models.Model):
     id = models.AutoField(primary_key=True,db_index=True)
     cpb_comprobante = models.ForeignKey('cpb_comprobante',verbose_name=u'CPB', db_column='cpb_comprobante',blank=True, null=True,on_delete=models.CASCADE)
@@ -603,7 +628,6 @@ def recalcular_saldo_cpb(idCpb):# pragma: no cover
             tasa = gral_tipo_iva.objects.get(pk=cc['tasa_iva'])       
             cpb_ti = cpb_comprobante_tot_iva(cpb_comprobante=cpb,tasa_iva=tasa,importe_total=cc['importe_total'],importe_base=cc['importe_base'])
             cpb_ti.save()
-    
 
 def ultimoNro(tipoCpb,ptoVenta,letra,entidad=None):    
     try:    

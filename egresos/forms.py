@@ -309,6 +309,23 @@ class CPBPagoCPBForm(forms.ModelForm):
 	def __init__(self, *args, **kwargs):
 		super(CPBPagoCPBForm, self).__init__(*args, **kwargs)
 
+class CPBPagoRetForm(forms.ModelForm):
+	retencion = forms.ModelChoiceField(label='Retenciones',queryset=cpb_retenciones.objects.all(),empty_label='---',required = False)
+	detalle = forms.CharField(label='Detalle',widget=forms.Textarea(attrs={ 'class':'form-control','rows': 3}),required = False)		
+	importe_total = forms.DecimalField(widget=PrependWidget(attrs={'class':'form-control','step':0.00},base_widget=NumberInput, data='$'),initial=0.00,decimal_places=2,required = False)
+	cpb_comprobante = forms.IntegerField(widget = forms.HiddenInput(), required = False)	
+	class Meta:
+			model = cpb_comprobante_retenciones
+			exclude = ['id']
+
+	def __init__(self, *args, **kwargs):
+		request = kwargs.pop('request', None)
+		super(CPBPagoRetForm, self).__init__(*args, **kwargs)
+		try:
+			empresa = empresa_actual(request)
+			self.fields['retencion'].queryset = cpb_retenciones.objects.filter(empresa__id__in=empresas_habilitadas(request))			
+		except:
+			empresa = None	
 
 #############################################################################
 
