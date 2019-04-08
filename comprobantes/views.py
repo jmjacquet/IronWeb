@@ -1383,9 +1383,9 @@ class RetencView(VariablesMixin,ListView):
 
     def get_queryset(self):
         try:            
-            queryset = cpb_retenc.objects.filter(empresa__id__in=empresas_habilitadas(self.request))
+            queryset = cpb_retenciones.objects.filter(empresa__id__in=empresas_habilitadas(self.request))
         except:
-            queryset = cpb_retenc.objects.none()
+            queryset = cpb_retenciones.objects.none()
         return queryset
 
 class RetencCreateView(VariablesMixin,AjaxCreateView):

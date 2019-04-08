@@ -152,11 +152,11 @@
 						                          </tr>
 						                    </thead>					                    
 		  			                        <tbody class='form-detallesRet'>       											                    	
-						                    	{{ compras_ret.management_form }}
-						                    	{{ compras_ret.non_form_errors }}
-						                    	{% for form3 in compras_ret.forms %}					                      								                      	
+						                    	{{ cpb_ret.management_form }}
+						                    	{{ cpb_ret.non_form_errors }}
+						                    	{% for form3 in cpb_ret.forms %}					                      								                      	
 							                      	{{ form3.non_field_errors }}
-							                      	<tr class="{{ compras_ret.prefix }}">           					                      	
+							                      	<tr class="{{ cpb_ret.prefix }}">           					                      	
 								                      	<td>{% bootstrap_field form3.retencion show_label=False%}</td>
 								                      	<td>{% bootstrap_field form3.detalle show_label=False%}</td>
 								                      	<td>{% bootstrap_field form3.importe_total show_label=False%}</td>								                      	
