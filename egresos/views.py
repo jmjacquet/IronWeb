@@ -546,8 +546,7 @@ class CPBPagoEditView(VariablesMixin,CreateView):
     form_class = CPBPagoForm
     template_name = 'egresos/ordenpago/cpb_rec_pago_form.html' 
     model = cpb_comprobante   
-    pk_url_kwarg = 'id'      
-    success_message = "CPB was created successfully"
+    pk_url_kwarg = 'id'          
 
     @method_decorator(login_required)
     def dispatch(self, *args, **kwargs):            
