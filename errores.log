@@ -2838,12 +2838,302 @@ Traceback (most recent call last):
   File "C:\Python27\lib\site-packages\xhtml2pdf\util.py", line 516, in __init__
     uri = uri.encode('utf-8')
 AttributeError: 'NoneType' object has no attribute 'encode'
-[28/mar/2019 09:27:39] ERROR [django.request:256] Internal Server Error: /reportes/libro_iva_ventas/
+
+[27/mar/2019 08:45:22] ERROR [django.request:256] Internal Server Error: /ingresos/cobranza/comprobantes/
 Traceback (most recent call last):
   File "C:\Python27\lib\site-packages\django\core\handlers\base.py", line 132, in get_response
     response = wrapped_callback(request, *callback_args, **callback_kwargs)
   File "C:\Python27\lib\site-packages\django\contrib\auth\decorators.py", line 22, in _wrapped_view
     return view_func(request, *args, **kwargs)
-  File "D:\GitHub\IronWeb\reportes\views.py", line 543, in libro_iva_ventas
-    .exclude(letra='X').filter(Q(pto_vta__in=pto_vta_habilitados_list(self.request)) | Q(cpb_tipo__tipo=14)).select_related('cpb_tipo','entidad')\
-NameError: global name 'self' is not defined
+  File "D:\GitHub\IronWeb\ingresos\views.py", line 1761, in CPBCobrosSeleccionarView
+    d.append({'detalle_cpb': c.get_cpb_tipo(),'desc_rec':'0','importe_total':saldo,'saldo':saldo,'id_cpb_factura':c.id})
+TypeError: 'unicode' object is not callable
+[27/mar/2019 08:45:36] ERROR [django.request:256] Internal Server Error: /ingresos/cobranza/comprobantes/
+Traceback (most recent call last):
+  File "C:\Python27\lib\site-packages\django\core\handlers\base.py", line 132, in get_response
+    response = wrapped_callback(request, *callback_args, **callback_kwargs)
+  File "C:\Python27\lib\site-packages\django\contrib\auth\decorators.py", line 22, in _wrapped_view
+    return view_func(request, *args, **kwargs)
+  File "D:\GitHub\IronWeb\ingresos\views.py", line 1761, in CPBCobrosSeleccionarView
+    d.append({'detalle_cpb': c.get_cpb_tipo(),'desc_rec':'0','importe_total':saldo,'saldo':saldo,'id_cpb_factura':c.id})
+TypeError: 'unicode' object is not callable
+[27/Mar/2019 09:05:10] ERROR [django.request:256] Internal Server Error: /productos/prod_precios/
+Traceback (most recent call last):
+  File "C:\Python27\lib\site-packages\django\core\handlers\base.py", line 132, in get_response
+    response = wrapped_callback(request, *callback_args, **callback_kwargs)
+  File "C:\Python27\lib\site-packages\django\views\generic\base.py", line 71, in view
+    return self.dispatch(request, *args, **kwargs)
+  File "C:\Python27\lib\site-packages\django\utils\decorators.py", line 34, in _wrapper
+    return bound_func(*args, **kwargs)
+  File "C:\Python27\lib\site-packages\django\contrib\auth\decorators.py", line 22, in _wrapped_view
+    return view_func(request, *args, **kwargs)
+  File "C:\Python27\lib\site-packages\django\utils\decorators.py", line 30, in bound_func
+    return func.__get__(self, type(self))(*args2, **kwargs2)
+  File "D:\GitHub\IronWeb\productos\views.py", line 458, in dispatch
+    return super(ProdLPreciosView, self).dispatch(*args,**kwargs)
+  File "C:\Python27\lib\site-packages\django\views\generic\base.py", line 89, in dispatch
+    return handler(request, *args, **kwargs)
+  File "D:\GitHub\IronWeb\productos\views.py", line 494, in post
+    return self.get(*args, **kwargs)
+  File "C:\Python27\lib\site-packages\django\views\generic\list.py", line 174, in get
+    context = self.get_context_data()
+  File "D:\GitHub\IronWeb\productos\views.py", line 472, in get_context_data
+    precios = prod_producto_lprecios.objects.filter(producto__empresa=empresa,lista_precios___empresa__in=empresas_habilitadas(self.request)).select_related('producto','producto__categoria').order_by('producto','lista_precios')
+  File "C:\Python27\lib\site-packages\django\db\models\manager.py", line 127, in manager_method
+    return getattr(self.get_queryset(), name)(*args, **kwargs)
+  File "C:\Python27\lib\site-packages\django\db\models\query.py", line 679, in filter
+    return self._filter_or_exclude(False, *args, **kwargs)
+  File "C:\Python27\lib\site-packages\django\db\models\query.py", line 697, in _filter_or_exclude
+    clone.query.add_q(Q(*args, **kwargs))
+  File "C:\Python27\lib\site-packages\django\db\models\sql\query.py", line 1301, in add_q
+    clause, require_inner = self._add_q(where_part, self.used_aliases)
+  File "C:\Python27\lib\site-packages\django\db\models\sql\query.py", line 1328, in _add_q
+    current_negated=current_negated, connector=connector, allow_joins=allow_joins)
+  File "C:\Python27\lib\site-packages\django\db\models\sql\query.py", line 1191, in build_filter
+    lookups, value)
+  File "C:\Python27\lib\site-packages\django\db\models\fields\related.py", line 1709, in get_lookup_constraint
+    raise exceptions.FieldError('Relation fields do not support nested lookups')
+FieldError: Relation fields do not support nested lookups
+[27/Mar/2019 09:05:34] ERROR [django.request:256] Internal Server Error: /productos/prod_precios/
+Traceback (most recent call last):
+  File "C:\Python27\lib\site-packages\django\core\handlers\base.py", line 132, in get_response
+    response = wrapped_callback(request, *callback_args, **callback_kwargs)
+  File "C:\Python27\lib\site-packages\django\views\generic\base.py", line 71, in view
+    return self.dispatch(request, *args, **kwargs)
+  File "C:\Python27\lib\site-packages\django\utils\decorators.py", line 34, in _wrapper
+    return bound_func(*args, **kwargs)
+  File "C:\Python27\lib\site-packages\django\contrib\auth\decorators.py", line 22, in _wrapped_view
+    return view_func(request, *args, **kwargs)
+  File "C:\Python27\lib\site-packages\django\utils\decorators.py", line 30, in bound_func
+    return func.__get__(self, type(self))(*args2, **kwargs2)
+  File "D:\GitHub\IronWeb\productos\views.py", line 458, in dispatch
+    return super(ProdLPreciosView, self).dispatch(*args,**kwargs)
+  File "C:\Python27\lib\site-packages\django\views\generic\base.py", line 89, in dispatch
+    return handler(request, *args, **kwargs)
+  File "D:\GitHub\IronWeb\productos\views.py", line 494, in post
+    return self.get(*args, **kwargs)
+  File "C:\Python27\lib\site-packages\django\views\generic\list.py", line 174, in get
+    context = self.get_context_data()
+  File "D:\GitHub\IronWeb\productos\views.py", line 472, in get_context_data
+    precios = prod_producto_lprecios.objects.filter(producto__empresa=empresa,lista_precios___empresa__in=empresas_habilitadas(self.request)).select_related('producto','producto__categoria').order_by('producto','lista_precios')
+  File "C:\Python27\lib\site-packages\django\db\models\manager.py", line 127, in manager_method
+    return getattr(self.get_queryset(), name)(*args, **kwargs)
+  File "C:\Python27\lib\site-packages\django\db\models\query.py", line 679, in filter
+    return self._filter_or_exclude(False, *args, **kwargs)
+  File "C:\Python27\lib\site-packages\django\db\models\query.py", line 697, in _filter_or_exclude
+    clone.query.add_q(Q(*args, **kwargs))
+  File "C:\Python27\lib\site-packages\django\db\models\sql\query.py", line 1301, in add_q
+    clause, require_inner = self._add_q(where_part, self.used_aliases)
+  File "C:\Python27\lib\site-packages\django\db\models\sql\query.py", line 1328, in _add_q
+    current_negated=current_negated, connector=connector, allow_joins=allow_joins)
+  File "C:\Python27\lib\site-packages\django\db\models\sql\query.py", line 1191, in build_filter
+    lookups, value)
+  File "C:\Python27\lib\site-packages\django\db\models\fields\related.py", line 1709, in get_lookup_constraint
+    raise exceptions.FieldError('Relation fields do not support nested lookups')
+FieldError: Relation fields do not support nested lookups
+[27/Mar/2019 09:05:46] ERROR [django.request:256] Internal Server Error: /productos/prod_precios/
+Traceback (most recent call last):
+  File "C:\Python27\lib\site-packages\django\core\handlers\base.py", line 132, in get_response
+    response = wrapped_callback(request, *callback_args, **callback_kwargs)
+  File "C:\Python27\lib\site-packages\django\views\generic\base.py", line 71, in view
+    return self.dispatch(request, *args, **kwargs)
+  File "C:\Python27\lib\site-packages\django\utils\decorators.py", line 34, in _wrapper
+    return bound_func(*args, **kwargs)
+  File "C:\Python27\lib\site-packages\django\contrib\auth\decorators.py", line 22, in _wrapped_view
+    return view_func(request, *args, **kwargs)
+  File "C:\Python27\lib\site-packages\django\utils\decorators.py", line 30, in bound_func
+    return func.__get__(self, type(self))(*args2, **kwargs2)
+  File "D:\GitHub\IronWeb\productos\views.py", line 458, in dispatch
+    return super(ProdLPreciosView, self).dispatch(*args,**kwargs)
+  File "C:\Python27\lib\site-packages\django\views\generic\base.py", line 89, in dispatch
+    return handler(request, *args, **kwargs)
+  File "D:\GitHub\IronWeb\productos\views.py", line 494, in post
+    return self.get(*args, **kwargs)
+  File "C:\Python27\lib\site-packages\django\views\generic\list.py", line 174, in get
+    context = self.get_context_data()
+  File "D:\GitHub\IronWeb\productos\views.py", line 472, in get_context_data
+    precios = prod_producto_lprecios.objects.filter(producto__empresa=empresa,lista_precios___empresa__in=empresas_habilitadas(self.request)).select_related('producto','producto__categoria').order_by('producto','lista_precios')
+  File "C:\Python27\lib\site-packages\django\db\models\manager.py", line 127, in manager_method
+    return getattr(self.get_queryset(), name)(*args, **kwargs)
+  File "C:\Python27\lib\site-packages\django\db\models\query.py", line 679, in filter
+    return self._filter_or_exclude(False, *args, **kwargs)
+  File "C:\Python27\lib\site-packages\django\db\models\query.py", line 697, in _filter_or_exclude
+    clone.query.add_q(Q(*args, **kwargs))
+  File "C:\Python27\lib\site-packages\django\db\models\sql\query.py", line 1301, in add_q
+    clause, require_inner = self._add_q(where_part, self.used_aliases)
+  File "C:\Python27\lib\site-packages\django\db\models\sql\query.py", line 1328, in _add_q
+    current_negated=current_negated, connector=connector, allow_joins=allow_joins)
+  File "C:\Python27\lib\site-packages\django\db\models\sql\query.py", line 1191, in build_filter
+    lookups, value)
+  File "C:\Python27\lib\site-packages\django\db\models\fields\related.py", line 1709, in get_lookup_constraint
+    raise exceptions.FieldError('Relation fields do not support nested lookups')
+FieldError: Relation fields do not support nested lookups
+[27/Mar/2019 09:12:55] ERROR [django.request:256] Internal Server Error: /productos/prod_precios/
+Traceback (most recent call last):
+  File "C:\Python27\lib\site-packages\django\core\handlers\base.py", line 132, in get_response
+    response = wrapped_callback(request, *callback_args, **callback_kwargs)
+  File "C:\Python27\lib\site-packages\django\views\generic\base.py", line 71, in view
+    return self.dispatch(request, *args, **kwargs)
+  File "C:\Python27\lib\site-packages\django\utils\decorators.py", line 34, in _wrapper
+    return bound_func(*args, **kwargs)
+  File "C:\Python27\lib\site-packages\django\contrib\auth\decorators.py", line 22, in _wrapped_view
+    return view_func(request, *args, **kwargs)
+  File "C:\Python27\lib\site-packages\django\utils\decorators.py", line 30, in bound_func
+    return func.__get__(self, type(self))(*args2, **kwargs2)
+  File "D:\GitHub\IronWeb\productos\views.py", line 458, in dispatch
+    return super(ProdLPreciosView, self).dispatch(*args,**kwargs)
+  File "C:\Python27\lib\site-packages\django\views\generic\base.py", line 89, in dispatch
+    return handler(request, *args, **kwargs)
+  File "D:\GitHub\IronWeb\productos\views.py", line 494, in post
+    return self.get(*args, **kwargs)
+  File "C:\Python27\lib\site-packages\django\views\generic\list.py", line 174, in get
+    context = self.get_context_data()
+  File "D:\GitHub\IronWeb\productos\views.py", line 472, in get_context_data
+    precios = prod_producto_lprecios.objects.filter(producto__empresa=empresa,lista_precios___empresa=empresa).select_related('producto','producto__categoria').order_by('producto','lista_precios')
+  File "C:\Python27\lib\site-packages\django\db\models\manager.py", line 127, in manager_method
+    return getattr(self.get_queryset(), name)(*args, **kwargs)
+  File "C:\Python27\lib\site-packages\django\db\models\query.py", line 679, in filter
+    return self._filter_or_exclude(False, *args, **kwargs)
+  File "C:\Python27\lib\site-packages\django\db\models\query.py", line 697, in _filter_or_exclude
+    clone.query.add_q(Q(*args, **kwargs))
+  File "C:\Python27\lib\site-packages\django\db\models\sql\query.py", line 1301, in add_q
+    clause, require_inner = self._add_q(where_part, self.used_aliases)
+  File "C:\Python27\lib\site-packages\django\db\models\sql\query.py", line 1328, in _add_q
+    current_negated=current_negated, connector=connector, allow_joins=allow_joins)
+  File "C:\Python27\lib\site-packages\django\db\models\sql\query.py", line 1170, in build_filter
+    self.check_related_objects(field, value, opts)
+  File "C:\Python27\lib\site-packages\django\db\models\sql\query.py", line 1068, in check_related_objects
+    self.check_query_object_type(value, opts)
+  File "C:\Python27\lib\site-packages\django\db\models\sql\query.py", line 1052, in check_query_object_type
+    (value, opts.object_name))
+ValueError: Cannot query "COPYFAST": Must be "prod_lista_precios" instance.
+[03/abr/2019 19:38:51] ERROR [django.request:256] Internal Server Error: /usuarios/usuarios/editar/5/
+Traceback (most recent call last):
+  File "C:\Python27\lib\site-packages\django\core\handlers\base.py", line 132, in get_response
+    response = wrapped_callback(request, *callback_args, **callback_kwargs)
+  File "C:\Python27\lib\site-packages\django\contrib\auth\decorators.py", line 22, in _wrapped_view
+    return view_func(request, *args, **kwargs)
+  File "D:\Repo\ironStable\usuarios\views.py", line 155, in UsuarioEditView
+    form.save_m2m()
+  File "C:\Python27\lib\site-packages\django\forms\models.py", line 102, in save_m2m
+    f.save_form_data(instance, cleaned_data[f.name])
+  File "C:\Python27\lib\site-packages\django\db\models\fields\related.py", line 2590, in save_form_data
+    setattr(instance, self.attname, data)
+  File "C:\Python27\lib\site-packages\django\db\models\fields\related.py", line 1262, in __set__
+    manager.add(*value)
+  File "C:\Python27\lib\site-packages\django\db\models\fields\related.py", line 972, in add
+    self._add_items(self.source_field_name, self.target_field_name, *objs)
+  File "C:\Python27\lib\site-packages\django\db\models\fields\related.py", line 1096, in _add_items
+    for obj_id in new_ids
+  File "C:\Python27\lib\site-packages\django\db\models\query.py", line 392, in bulk_create
+    self._batched_insert(objs_without_pk, fields, batch_size)
+  File "C:\Python27\lib\site-packages\django\db\models\query.py", line 937, in _batched_insert
+    using=self.db)
+  File "C:\Python27\lib\site-packages\django\db\models\manager.py", line 127, in manager_method
+    return getattr(self.get_queryset(), name)(*args, **kwargs)
+  File "C:\Python27\lib\site-packages\django\db\models\query.py", line 920, in _insert
+    return query.get_compiler(using=using).execute_sql(return_id)
+  File "C:\Python27\lib\site-packages\django\db\models\sql\compiler.py", line 974, in execute_sql
+    cursor.execute(sql, params)
+  File "C:\Python27\lib\site-packages\django\db\backends\utils.py", line 79, in execute
+    return super(CursorDebugWrapper, self).execute(sql, params)
+  File "C:\Python27\lib\site-packages\django\db\backends\utils.py", line 64, in execute
+    return self.cursor.execute(sql, params)
+  File "C:\Python27\lib\site-packages\django\db\utils.py", line 97, in __exit__
+    six.reraise(dj_exc_type, dj_exc_value, traceback)
+  File "C:\Python27\lib\site-packages\django\db\backends\utils.py", line 64, in execute
+    return self.cursor.execute(sql, params)
+  File "C:\Python27\lib\site-packages\django\db\backends\mysql\base.py", line 124, in execute
+    return self.cursor.execute(query, args)
+  File "C:\Python27\lib\site-packages\MySQLdb\cursors.py", line 226, in execute
+    self.errorhandler(self, exc, value)
+  File "C:\Python27\lib\site-packages\MySQLdb\connections.py", line 36, in defaulterrorhandler
+    raise errorvalue
+IntegrityError: (1062, "Duplicate entry '1' for key 'usuusuario_id'")
+[03/abr/2019 19:40:24] ERROR [django.request:256] Internal Server Error: /usuarios/usuarios/editar/5/
+Traceback (most recent call last):
+  File "C:\Python27\lib\site-packages\django\core\handlers\base.py", line 132, in get_response
+    response = wrapped_callback(request, *callback_args, **callback_kwargs)
+  File "C:\Python27\lib\site-packages\django\contrib\auth\decorators.py", line 22, in _wrapped_view
+    return view_func(request, *args, **kwargs)
+  File "D:\Repo\ironStable\usuarios\views.py", line 155, in UsuarioEditView
+    form.save_m2m()
+  File "C:\Python27\lib\site-packages\django\forms\models.py", line 102, in save_m2m
+    f.save_form_data(instance, cleaned_data[f.name])
+  File "C:\Python27\lib\site-packages\django\db\models\fields\related.py", line 2590, in save_form_data
+    setattr(instance, self.attname, data)
+  File "C:\Python27\lib\site-packages\django\db\models\fields\related.py", line 1262, in __set__
+    manager.add(*value)
+  File "C:\Python27\lib\site-packages\django\db\models\fields\related.py", line 972, in add
+    self._add_items(self.source_field_name, self.target_field_name, *objs)
+  File "C:\Python27\lib\site-packages\django\db\models\fields\related.py", line 1096, in _add_items
+    for obj_id in new_ids
+  File "C:\Python27\lib\site-packages\django\db\models\query.py", line 392, in bulk_create
+    self._batched_insert(objs_without_pk, fields, batch_size)
+  File "C:\Python27\lib\site-packages\django\db\models\query.py", line 937, in _batched_insert
+    using=self.db)
+  File "C:\Python27\lib\site-packages\django\db\models\manager.py", line 127, in manager_method
+    return getattr(self.get_queryset(), name)(*args, **kwargs)
+  File "C:\Python27\lib\site-packages\django\db\models\query.py", line 920, in _insert
+    return query.get_compiler(using=using).execute_sql(return_id)
+  File "C:\Python27\lib\site-packages\django\db\models\sql\compiler.py", line 974, in execute_sql
+    cursor.execute(sql, params)
+  File "C:\Python27\lib\site-packages\django\db\backends\utils.py", line 79, in execute
+    return super(CursorDebugWrapper, self).execute(sql, params)
+  File "C:\Python27\lib\site-packages\django\db\backends\utils.py", line 64, in execute
+    return self.cursor.execute(sql, params)
+  File "C:\Python27\lib\site-packages\django\db\utils.py", line 97, in __exit__
+    six.reraise(dj_exc_type, dj_exc_value, traceback)
+  File "C:\Python27\lib\site-packages\django\db\backends\utils.py", line 64, in execute
+    return self.cursor.execute(sql, params)
+  File "C:\Python27\lib\site-packages\django\db\backends\mysql\base.py", line 124, in execute
+    return self.cursor.execute(query, args)
+  File "C:\Python27\lib\site-packages\MySQLdb\cursors.py", line 226, in execute
+    self.errorhandler(self, exc, value)
+  File "C:\Python27\lib\site-packages\MySQLdb\connections.py", line 36, in defaulterrorhandler
+    raise errorvalue
+IntegrityError: (1062, "Duplicate entry '1' for key 'usuusuario_id'")
+[03/abr/2019 19:41:18] ERROR [django.request:256] Internal Server Error: /usuarios/usuarios/editar/5/
+Traceback (most recent call last):
+  File "C:\Python27\lib\site-packages\django\core\handlers\base.py", line 132, in get_response
+    response = wrapped_callback(request, *callback_args, **callback_kwargs)
+  File "C:\Python27\lib\site-packages\django\contrib\auth\decorators.py", line 22, in _wrapped_view
+    return view_func(request, *args, **kwargs)
+  File "D:\Repo\ironStable\usuarios\views.py", line 155, in UsuarioEditView
+    form.save_m2m()
+  File "C:\Python27\lib\site-packages\django\forms\models.py", line 102, in save_m2m
+    f.save_form_data(instance, cleaned_data[f.name])
+  File "C:\Python27\lib\site-packages\django\db\models\fields\related.py", line 2590, in save_form_data
+    setattr(instance, self.attname, data)
+  File "C:\Python27\lib\site-packages\django\db\models\fields\related.py", line 1262, in __set__
+    manager.add(*value)
+  File "C:\Python27\lib\site-packages\django\db\models\fields\related.py", line 972, in add
+    self._add_items(self.source_field_name, self.target_field_name, *objs)
+  File "C:\Python27\lib\site-packages\django\db\models\fields\related.py", line 1096, in _add_items
+    for obj_id in new_ids
+  File "C:\Python27\lib\site-packages\django\db\models\query.py", line 392, in bulk_create
+    self._batched_insert(objs_without_pk, fields, batch_size)
+  File "C:\Python27\lib\site-packages\django\db\models\query.py", line 937, in _batched_insert
+    using=self.db)
+  File "C:\Python27\lib\site-packages\django\db\models\manager.py", line 127, in manager_method
+    return getattr(self.get_queryset(), name)(*args, **kwargs)
+  File "C:\Python27\lib\site-packages\django\db\models\query.py", line 920, in _insert
+    return query.get_compiler(using=using).execute_sql(return_id)
+  File "C:\Python27\lib\site-packages\django\db\models\sql\compiler.py", line 974, in execute_sql
+    cursor.execute(sql, params)
+  File "C:\Python27\lib\site-packages\django\db\backends\utils.py", line 79, in execute
+    return super(CursorDebugWrapper, self).execute(sql, params)
+  File "C:\Python27\lib\site-packages\django\db\backends\utils.py", line 64, in execute
+    return self.cursor.execute(sql, params)
+  File "C:\Python27\lib\site-packages\django\db\utils.py", line 97, in __exit__
+    six.reraise(dj_exc_type, dj_exc_value, traceback)
+  File "C:\Python27\lib\site-packages\django\db\backends\utils.py", line 64, in execute
+    return self.cursor.execute(sql, params)
+  File "C:\Python27\lib\site-packages\django\db\backends\mysql\base.py", line 124, in execute
+    return self.cursor.execute(query, args)
+  File "C:\Python27\lib\site-packages\MySQLdb\cursors.py", line 226, in execute
+    self.errorhandler(self, exc, value)
+  File "C:\Python27\lib\site-packages\MySQLdb\connections.py", line 36, in defaulterrorhandler
+    raise errorvalue
+IntegrityError: (1062, "Duplicate entry '1' for key 'usuusuario_id'")
+

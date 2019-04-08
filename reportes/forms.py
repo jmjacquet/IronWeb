@@ -151,11 +151,7 @@ class ConsultaHistStockProd(forms.Form):
 	producto = forms.CharField(label='Producto/Servicio',widget=forms.TextInput(attrs={'class':'form-control'}),required = False)
 	fdesde =  forms.DateField(label='Fecha Desde',widget=forms.DateInput(attrs={'class': 'form-control datepicker'}),required = True,initial=inicioMes())
 	fhasta =  forms.DateField(label='Fecha Hasta',widget=forms.DateInput(attrs={'class': 'form-control datepicker'}),required = True,initial=finMes())    
-
-	def __init__(self, *args, **kwargs):
-		empresa = kwargs.pop('empresa', None)  
-		super(ConsultaHistStockProd, self).__init__(*args, **kwargs)				
-		# self.fields['ubicacion'].queryset = prod_ubicacion.objects.filter(baja=False,empresa=empresa)
+	
 
 class ConsultaRankings(forms.Form):               	
 	fdesde =  forms.DateField(label='Fecha Desde',widget=forms.DateInput(attrs={'class': 'form-control datepicker'}),required = False,initial=inicioMes())

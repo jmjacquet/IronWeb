@@ -897,7 +897,7 @@ def mandarEmail(request,id):
         
                 
         backend = EmailBackend(host=mail_servidor, port=mail_puerto, username=mail_usuario,password=mail_password,fail_silently=False)        
-        email = EmailMessage( subject=u'%s' % (cpb.get_cpb_tipo()),body=html_content,from_email=mail_origen,to=mail_destino,connection=backend)                
+        email = EmailMessage( subject=u'%s' % (cpb.get_cpb_tipo),body=html_content,from_email=mail_origen,to=mail_destino,connection=backend)                
         email.attach(u'%s.pdf' %nombre,post_pdf, "application/pdf")
         email.content_subtype = 'html'
         email.send()        
@@ -920,6 +920,12 @@ class BancosView(VariablesMixin,ListView):
         if not tiene_permiso(self.request,'gral_configuracion'):
             return redirect(reverse('principal'))
         return super(BancosView, self).dispatch(*args, **kwargs)
+    def get_queryset(self):
+        try:            
+            queryset = cpb_banco.objects.filter(empresa__id__in=empresas_habilitadas(self.request))
+        except:
+            queryset = cpb_banco.objects.none()
+        return queryset
 
 class BancosCreateView(VariablesMixin,AjaxCreateView):
     form_class = BancosForm
@@ -1330,8 +1336,7 @@ class PercImpView(VariablesMixin,ListView):
         return super(PercImpView, self).dispatch(*args, **kwargs)
 
     def get_queryset(self):
-        try:
-            empresa = empresa_actual(self.request)
+        try:            
             queryset = cpb_perc_imp.objects.filter(empresa__id__in=empresas_habilitadas(self.request))
         except:
             queryset = cpb_perc_imp.objects.none()
@@ -1399,9 +1404,8 @@ class FPView(VariablesMixin,ListView):
         return super(FPView, self).dispatch(*args, **kwargs)
 
     def get_queryset(self):
-        try:
-            empresa = empresa_actual(self.request)
-            queryset = cpb_tipo_forma_pago.objects.filter(empresa__id__in=empresas_habilitadas(request))
+        try:            
+            queryset = cpb_tipo_forma_pago.objects.filter(empresa__id__in=empresas_habilitadas(self.request))
         except:
             queryset = cpb_tipo_forma_pago.objects.none()
         return queryset
@@ -1615,8 +1619,7 @@ class DispoView(VariablesMixin,ListView):
         return context
 
     def get_queryset(self):
-        try:
-            empresa = empresa_actual(self.request)
+        try:            
             queryset = cpb_cuenta.objects.filter(empresa__id__in=empresas_habilitadas(self.request))
         except:
             queryset = cpb_cuenta.objects.none()

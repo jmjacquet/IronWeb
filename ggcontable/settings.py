@@ -94,7 +94,7 @@ MIDDLEWARE_CLASSES = (
     'django.contrib.messages.middleware.MessageMiddleware',
     # Uncomment the next line for simple clickjacking protection:
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
-    'debug_toolbar.middleware.DebugToolbarMiddleware',#Barra DEBUG
+    # 'debug_toolbar.middleware.DebugToolbarMiddleware',#Barra DEBUG
 )
 
 ROOT_URLCONF = 'ggcontable.urls'
@@ -116,7 +116,7 @@ INSTALLED_APPS = (
     'crispy_forms',
     'fm',
     'django_extensions',
-    'debug_toolbar',
+    # 'debug_toolbar',
     'localflavor',
     'modal',    
     'general',
@@ -279,9 +279,7 @@ MESSAGE_TAGS = {message_constants.DEBUG: 'debug',
                 message_constants.ERROR: 'error',} 
 
 
-
-
-COMPRESS_ENABLED = True
+COMPRESS_ENABLED = False
 
 COMPRESS_OUTPUT_DIR = '/'
 COMPRESS_CSS_FILTERS = [

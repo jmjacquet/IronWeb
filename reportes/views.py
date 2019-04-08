@@ -387,17 +387,17 @@ def generarCITI(cpbs,ventas_compras,tipo_archivo):
             linea += str(0).replace(".","").rjust(15, "0") #perc_nc
             linea += str(c.importe_exento).encode('utf-8').replace(".","").rjust(15, "0") #importe_exento
             
-            perc_impuestosNac=0.00
+
+            perc_impIva=0.00            
             perc_IIBB=0.00
             perc_impMunicip=0.00
             importe_impuestosInt=0.00
             otros_perc_imp=0.00
             try:
                 cpb_perc = cpb_comprobante_perc_imp.objects.filter(cpb_comprobante=c)
-                for p in cpb_perc: 
-                    id = p.perc_imp.id 
-                    if id==1:
-                        perc_impuestosNac+=p.importe_total
+                    id = p.perc_imp.id                                         
+                    if id in [6,13]:
+                        perc_impIva+=p.importe_total      
                     elif id in [2,8]:
                         perc_impMunicip+=p.importe_total                        
                     elif id==3:
@@ -409,11 +409,11 @@ def generarCITI(cpbs,ventas_compras,tipo_archivo):
             except:
                 pass
 
-            linea += str(perc_impuestosNac).replace(".","").rjust(15, "0") #perc_impuestosNac
+            linea += str(perc_impIva).replace(".","").rjust(15, "0") #perc_impIva
+            linea += str(otros_perc_imp).replace(".","").rjust(15, "0") #otros_perc_imp
             linea += str(perc_IIBB).replace(".","").rjust(15, "0") #perc_IIBB
             linea += str(perc_impMunicip).replace(".","").rjust(15, "0") #perc_impMunicip
             linea += str(importe_impuestosInt).replace(".","").rjust(15, "0") #importe_impuestosInt
-
             linea += str('PES').encode('utf-8') #Moneda
             linea += str('0001000000').encode('utf-8')#tipo_cambio
             try:
@@ -480,7 +480,7 @@ def generarCITI(cpbs,ventas_compras,tipo_archivo):
             linea += str(c.importe_no_gravado).encode('utf-8').replace(".","").rjust(15, "0") #importe_ng            
             linea += str(c.importe_exento).encode('utf-8').replace(".","").rjust(15, "0") #importe_exento
             
-            perc_impuestosNac=0.00
+            perc_impIva=0.00            
             perc_IIBB=0.00
             perc_impMunicip=0.00
             importe_impuestosInt=0.00
@@ -488,9 +488,9 @@ def generarCITI(cpbs,ventas_compras,tipo_archivo):
             try:
                 cpb_perc = cpb_comprobante_perc_imp.objects.filter(cpb_comprobante=c)
                 for p in cpb_perc: 
-                    id = p.perc_imp.id 
-                    if id==1:
-                        perc_impuestosNac+=p.importe_total
+                    id = p.perc_imp.id                                         
+                    if id in [6,13]:
+                        perc_impIva+=p.importe_total      
                     elif id in [2,8]:
                         perc_impMunicip+=p.importe_total                        
                     elif id==3:
@@ -502,11 +502,11 @@ def generarCITI(cpbs,ventas_compras,tipo_archivo):
             except:
                 pass
 
-            linea += str(perc_impuestosNac).replace(".","").rjust(15, "0") #perc_impuestosNac
+            linea += str(perc_impIva).replace(".","").rjust(15, "0") #perc_impIva
+            linea += str(otros_perc_imp).replace(".","").rjust(15, "0") #otros_perc_imp
             linea += str(perc_IIBB).replace(".","").rjust(15, "0") #perc_IIBB
             linea += str(perc_impMunicip).replace(".","").rjust(15, "0") #perc_impMunicip
             linea += str(importe_impuestosInt).replace(".","").rjust(15, "0") #importe_impuestosInt
-            
             linea += str('PES').encode('utf-8') #Moneda
             linea += str('0001000000').encode('utf-8')#tipo_cambio            
             try:
@@ -1002,7 +1002,7 @@ class seguimiento_cheques(VariablesMixin,ListView):
         
         fecha = hoy()
         
-        form = ConsultaHistStockProd(self.request.POST or None,empresa=empresa,request=self.request)   
+        form = ConsultaHistStockProd(self.request.POST or None)   
         
         cheques = cpb_comprobante_fp.objects.filter(cpb_comprobante__empresa=empresa,tipo_forma_pago__cuenta__tipo=2,cpb_comprobante__estado__in=[1,2]).order_by('-fecha_creacion','-mdcp_fecha')\
             .select_related('cpb_comprobante','cta_ingreso','cta_egreso','tipo_forma_pago','mdcp_banco','cpb_comprobante__cpb_tipo','cpb_comprobante__entidad','mdcp_salida__cta_ingreso','mdcp_salida__cpb_comprobante__cpb_tipo')
@@ -1052,7 +1052,7 @@ class ProdHistoricoView(VariablesMixin,ListView):
             empresa = None 
         fecha = date.today()
         
-        form = ConsultaHistStockProd(self.request.POST or None,empresa=empresa,request=self.request)   
+        form = ConsultaHistStockProd(self.request.POST or None)   
 
         movimientos = cpb_comprobante_detalle.objects.none()
         #movimientos = cpb_comprobante_detalle.objects.filter(cpb_comprobante__empresa=empresa,cpb_comprobante__fecha_cpb=hoy()).select_related('producto','cpb_comprobante').order_by('producto')

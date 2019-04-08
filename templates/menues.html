@@ -42,7 +42,9 @@
                       {% if 'cpb_cobranzas' in permisos_grupo %}
                       <li>
                         <a href="{% url 'cpb_rec_cobranza_listado' %}"><i class="icon-wallet"></i>Recibos Cobranzas</a>
+                        {% if 'cpb_cobranzas_abm' in permisos_grupo %}
                         <a class="acceso_menu" href="{% url 'cpb_rec_cobranza_nuevo' %}">+</a>
+                        {% endif %}
                       </li>
                       {% endif %}
                       {% if 'cpb_remitos' in permisos_grupo %}
@@ -53,7 +55,9 @@
                       {% if 'cpb_presupuestos' in permisos_grupo %}
                       <li>
                         <a href="{% url 'cpb_presup_listado' %}"><i class="icon-briefcase"></i>Presupuestos</a>
+                        {% if 'cpb_presup_abm' in permisos_grupo %}
                         <a class="acceso_menu" href="{% url 'cpb_presup_nuevo' %}">+</a>
+                        {% endif %}                      
                       </li>                      
                       {% endif %}                      
                     </ul>
@@ -76,7 +80,9 @@
                       {% if 'cpb_pagos' in permisos_grupo %}
                       <li>
                          <a href="{% url 'cpb_pago_listado' %}"><i class="icon-wallet"></i>Órdenes de Pago</a>
+                         {% if 'cpb_compras_abm' in permisos_grupo %}
                          <a class="acceso_menu" href="{% url 'cpb_pago_nuevo' %}">+</a>
+                         {% endif %}
                       </li>
                       {% endif %}
                       {% if 'cpb_movimientos' in permisos_grupo %}
@@ -85,7 +91,9 @@
                       </li>
                       <li>
                          <a href="{% url 'movimientos_listado' %}"><i class="icon-shuffle"></i>Movimientos entre Cuentas</a>
+                          {% if 'cpb_mov_abm' in permisos_grupo %}
                          <a class="acceso_menu" href="{% url 'movimientos_nuevo' %}">+</a>
+                         {% endif %}                   
                       </li>
                       {% endif %}                   
                     </ul>

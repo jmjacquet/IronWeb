@@ -27,14 +27,12 @@
                   </script>                     
               {% endfor %}
         {% endif %} 
-					{% block main %}       {% if not sitio_mobile %}   
-						                      <div class="col-sm-10">                                        
-                                      
-                                      {% include "barra_totales.html" %}
-                                  {% else %}
-                                   <div class="col-sm-12">
+					{% block main %}      
+						                      <div class="col-sm-10">                                                                              
+                                   {% if 'gral_barra_totales' in permisos_grupo and not sitio_mobile %}  
+                                      {% include "barra_totales.html" %}                                  
                                   {% endif %}  
-                                    {% if tipo_usr == 0 or empresa.pprincipal_panel_cpbs %}
+                                    {% if tipo_usr == 0 or 'gral_ultimos_cpbs' in permisos_grupo %}
                                     <div class="row">                           
                                             <div class="col-sm-12">                                               
                                               
@@ -45,7 +43,7 @@
                                     </div>
                                     {% endif %} 
                                     
-                                    {% if tareas and empresa.pprincipal_aviso_tareas and not sitio_mobile %}
+                                    {% if tareas and 'gral_tareas' in permisos_grupo and not sitio_mobile %}
                                       <div class="row">  
                                           <div class="col-xs-12">
                                              <div class="portlet box">
@@ -64,7 +62,7 @@
                                                                       
                                       </div> 
                                     {% endif %}
-                                    {% if tipo_usr == 0 or empresa.pprincipal_estadisticas %}
+                                    {% if tipo_usr == 0 or 'gral_panel_estadisticas' in permisos_grupo %}
                                       {% include "graficos.html" %}                                          
                                     {% endif %} 
 

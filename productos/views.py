@@ -19,6 +19,7 @@ from django.utils.functional import curry
 from usuarios.views import tiene_permiso
 from django.utils.functional import curry 
 from django.db.models.expressions import RawSQL
+from comprobantes.models import actualizar_stock_multiple,actualizar_stock
 
 #************* PRODUCTOS **************
 class ProductosView(VariablesMixin,ListView):
@@ -224,8 +225,12 @@ class CategoriasView(VariablesMixin,ListView):
     template_name = 'productos/lista_categorias.html'
     context_object_name = 'categorias'
 
-    def get_queryset(self):        
-        return prod_categoria.objects.filter(empresa=empresa_actual(self.request))
+    def get_queryset(self):
+        try:            
+            queryset = prod_categoria.objects.filter(empresa__id__in=empresas_habilitadas(self.request))
+        except:
+            queryset = prod_categoria.objects.none()
+        return queryset
 
     @method_decorator(login_required)
     def dispatch(self, *args, **kwargs):        
@@ -305,10 +310,14 @@ def categoria_baja_reactivar(request,id):
 class DepositosView(VariablesMixin,ListView):
     model = prod_ubicacion
     template_name = 'productos/lista_depositos.html'
-    context_object_name = 'depositos'
+    context_object_name = 'depositos'    
 
-    def get_queryset(self):        
-        return prod_ubicacion.objects.filter(empresa=empresa_actual(self.request))
+    def get_queryset(self):
+        try:            
+            queryset = prod_ubicacion.objects.filter(empresa__id__in=empresas_habilitadas(self.request))
+        except:
+            queryset = prod_ubicacion.objects.none()
+        return queryset
 
     @method_decorator(login_required)
     def dispatch(self, *args, **kwargs):        
@@ -378,8 +387,12 @@ class LPreciosView(VariablesMixin,ListView):
     template_name = 'productos/lista_lprecios.html'
     context_object_name = 'lista_precios'
 
-    def get_queryset(self):        
-        return prod_lista_precios.objects.filter(empresa=empresa_actual(self.request))
+    def get_queryset(self):
+        try:            
+            queryset = prod_lista_precios.objects.filter(empresa__id__in=empresas_habilitadas(self.request))
+        except:
+            queryset = prod_lista_precios.objects.none()
+        return queryset
 
     @method_decorator(login_required)
     def dispatch(self, *args, **kwargs):        
@@ -469,7 +482,7 @@ class ProdLPreciosView(VariablesMixin,ListView):
         precios = prod_producto_lprecios.objects.none()
         
         if form.is_valid():                                
-            precios = prod_producto_lprecios.objects.filter(producto__empresa=empresa,lista_precios___empresa__id__in=empresas_habilitadas(self.request)).select_related('producto','producto__categoria').order_by('producto','lista_precios')
+            precios = prod_producto_lprecios.objects.filter(producto__empresa=empresa,lista_precios__empresa__in=empresas_habilitadas(self.request)).select_related('producto','producto__categoria').order_by('producto','lista_precios')
             producto = form.cleaned_data['producto']                                                              
             lista_precios = form.cleaned_data['lista_precios']                                                              
             categoria = form.cleaned_data['categoria']   
@@ -477,7 +490,7 @@ class ProdLPreciosView(VariablesMixin,ListView):
             mostrar_en = form.cleaned_data['mostrar_en']
                     
             if int(tipo_prod)>0:                
-                precios= precios.filter(Q(producto__tipo_prod=tipo_prod)) 
+                precios= precios.filter(Q(producto__tipo_producto=tipo_prod)) 
             if int(mostrar_en)>0:                
                 precios= precios.filter(Q(producto__mostrar_en=mostrar_en)) 
             if producto:
@@ -513,8 +526,6 @@ class ProdLPreciosEditView(VariablesMixin,AjaxUpdateView):
     def get_initial(self):    
         initial = super(ProdLPreciosEditView, self).get_initial()                      
         return initial          
-
-
 
 def actualizar_precios(tipo_op,tipo_precio,valor,porc,coef,lista,recalcular):   
    try: 
@@ -570,7 +581,6 @@ def actualizar_precios(tipo_op,tipo_precio,valor,porc,coef,lista,recalcular):
    except:
     cant = 0 
    return cant
-
 
 @login_required 
 def prod_precios_actualizar(request):        
@@ -632,12 +642,12 @@ class ProdStockView(VariablesMixin,ListView):
             categoria = form.cleaned_data['categoria']   
             tipo_prod = int(form.cleaned_data['tipo_prod'])             
             lleva_stock = form.cleaned_data['lleva_stock']                         
-            productos = prod_producto_ubicac.objects.filter(producto__empresa=empresa,ubicacion__empresa__id__in=empresas_habilitadas(self.request)).select_related('producto','producto__categoria')            
+            productos = prod_producto_ubicac.objects.filter(producto__empresa=empresa,ubicacion__empresa__in=empresas_habilitadas(self.request)).select_related('producto','producto__categoria')            
         
             if producto:
                 productos = productos.filter(producto__nombre__icontains=producto)
             if tipo_prod>0:                
-                productos= productos.filter(producto__tipo_prod=tipo_prod)
+                productos= productos.filter(producto__tipo_producto=tipo_prod)
             if int(lleva_stock)>0:
                 lleva= (int(lleva_stock)==1)                
                 productos= productos.filter(producto__llevar_stock=lleva)
@@ -673,7 +683,7 @@ class ProdStockEditView(VariablesMixin,AjaxUpdateView):
         initial = super(ProdStockEditView, self).get_initial()                      
         return initial     
 
-from comprobantes.models import actualizar_stock_multiple
+
 
 @login_required 
 def prod_stock_actualizar(request):        

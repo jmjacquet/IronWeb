@@ -7,9 +7,8 @@
     <script src="{% static 'js/scripts/scripts_listado_compras.js'%}?{% now "Ymd"%}" type="text/javascript"></script>
 {% endblock %}
 
-
 {% block main %} 
-          <div id="cargando" class="cargando text-center" >
+          <div id="cargando" class="cargando" >
                         <span class="cargando-txt">CARGANDO...</span>
                         <img class="cargando-img" src="{% static 'img/loading-bars.svg' %}">
                     </div>    
@@ -27,12 +26,15 @@
             </div>
                     {% include "general/varios/barra_busqueda_compras.html" %}
                     <div class="btn-group" style="float:left;margin-right:20px;margin-bottom:10px;"> 
+                    {% if 'cpb_compras_abm' in permisos_grupo %}    
                     <a class="btn btn-sm blue-steel" style="float:left;margin-right:10px;" href="{% url 'cpb_compra_nuevo' %}">Nueva Compra</a>
+                    {% endif %}
                     {% if 'cpb_compras_pagar' in permisos_grupo %}
                     <button class="btn btn-sm blue-steel" id="btnPago" style="float:left;margin-right:10px;" >Pagar</button>                                                           
                     {% endif %}
+                    {% if 'cpb_compras_abm' in permisos_grupo %}    
                     <button class="btn btn-sm red-flamingo" value="" style="margin-right:10px;"  id="btnAnular">Anular</button>
-
+                    {% endif %}
                     <button class="btn btn-sm blue-steel" value="" id="btnImprimirDetalles">Listado Detalles</button>                                       
                      </div>
                     <table id="dataTables-cpb_compra" style="display:none;"  class="table table-striped compact table-hover table-no-bordered tabla_nueva nowrap">         
@@ -67,6 +69,7 @@
                                         <li><a target="_blank" href="{% url 'imprimirFactura' id=cpb.pk %}"><i class=" icon-printer"></i> Imprimir</a></li>
                                         <li><a href="{% url 'mandarEmail' id=cpb.pk %}"><i class="icon-envelope-open"></i> Enviar por Email</a></li>
                                             <li role="separator" class="divider"></li>
+                                        {% if 'cpb_compras_abm' in permisos_grupo %}
                                         <li><a href="{% url 'cpb_compra_editar' id=cpb.pk %}"  title="Editar" data-fm-callback="reload" ><i class="icon-note"></i> Editar</a></li>
                                         <li><a href="{% url 'cpb_compra_clonar' id=cpb.pk %}"  title="Clonar" data-fm-callback="reload" ><i class="icon-book-open"></i> Clonar</a></li>
                                             {% if cpb.estado.pk = 3 %}
@@ -89,14 +92,15 @@
                                                {% endif %} 
                                                 
                                                                                             
-                                            {% endif %}
-                                            <li role="separator" class="divider"></li>
-                                            <li><a href="{% url 'cpb_editar_seguimiento' id=cpb.pk %}"  class="fm-update" data-fm-head="EDITAR SEGUIMIENTO"  title="Editar Seguimiento" data-fm-target="#object-{{ item.pk }}" data-fm-callback="reload" ><i class="icon-speech"></i>Seguimiento</a></li>
-                                            
-                                                 <li><a href="#" 
+                                             {% endif %}                                        
+                                         <li role="separator" class="divider"></li>
+                                         {% endif %}
+                                         <li><a href="{% url 'cpb_editar_seguimiento' id=cpb.pk %}"  class="fm-update" data-fm-head="EDITAR SEGUIMIENTO"  title="Editar Seguimiento" data-fm-target="#object-{{ item.pk }}" data-fm-callback="reload" ><i class="icon-speech"></i>Seguimiento</a></li>
+                                         {% if 'cpb_compras_abm' in permisos_grupo %}   
+                                         <li><a href="#" 
                                                     onClick="alerta= alertify.dialog('confirm').set({'labels':{ok:'Aceptar', cancel:'Cancelar'},'message': '¿DESEA ELIMINAR LA COMPRA SELECCIONADA?',transition:'fade','onok': function(){ window.location.href = '{% url 'cpb_compra_eliminar' id=cpb.pk %}'; },'oncancel': function(){ return true;} }); alerta.setting('modal', true); alerta.setHeader('ELIMINAR COMPROBANTE'); alerta.show(); return true;"><i class="icon-trash"></i>Eliminar</a>
-                                                </li>      
-                                                                                  
+                                         </li>      
+                                         {% endif %}                                         
                                         
 
                                       </ul>

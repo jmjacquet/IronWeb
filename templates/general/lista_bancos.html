@@ -25,18 +25,22 @@
                             {% for d in bancos %}
                             <tr>
                                 
-                                <td><div class="btn-group">
+                                <td>
+                                    {% if empresa.id == d.empresa.id %}
+                                    <div class="btn-group">
                                        <button type="button" class="btn btn-xs color_barra" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                                         <i class="icon-settings"> </i> <span class="caret"></span>
                                       </button>                                    
-                                       <ul class="dropdown-menu dropdown-menu-default">                                        
+                                       <ul class="dropdown-menu dropdown-menu-default">                                                                                
                                         <li><a href="{% url 'bancos_editar' id=d.pk %}"  class="fm-update " title="Editar" data-fm-callback="reload" data-fm-head="EDITAR BANCO"data-fm-target="#object-{{ d.pk }}"><i class="icon-note"></i> Editar</a></li>
                                         <li>
                                             <a href="{% url 'bancos_eliminar' id=d.pk %}" class="fm-delete " data-fm-head="¿DESEA ELIMINAR EL REGISTRO SELECCIONADO?" data-fm-callback="reload" data-fm-target="#object-{{ d.pk }}" title="Quitar"> <i class="icon-trash"></i> Eliminar </a> 
                                         </li>
+
                                                                         
                                       </ul>      
                                     </div>
+                                    {% endif %}
                                 </td>
                                 <td class="text-right">{{ d.codigo|default_if_none:'' }}</td>
                                 <td>{{ d.nombre|default_if_none:'' }}</td>                                
