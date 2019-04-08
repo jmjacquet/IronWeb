@@ -318,10 +318,9 @@ class CPBPagoRetForm(forms.ModelForm):
 		request = kwargs.pop('request', None)
 		super(CPBPagoRetForm, self).__init__(*args, **kwargs)
 		try:
-			empresa = empresa_actual(request)
 			self.fields['retencion'].queryset = cpb_retenciones.objects.filter(empresa__id__in=empresas_habilitadas(request))			
 		except:
-			empresa = None	
+			pass
 
 #############################################################################
 
