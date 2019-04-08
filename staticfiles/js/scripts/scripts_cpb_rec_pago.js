@@ -243,7 +243,7 @@ function setear_FP(cta,fp,banco)
   $( "#GuardarRec" ).click(function() {
               
         total = parseFloat($("#id_importe_total").val());
-        total_pagos = parseFloat($("#id_importe_subtotal").val());        
+        
         var total_cpbs = 0;
         if($("#id_importe_cpbs").val()){
         total_cpbs = parseFloat($("#id_importe_cpbs").val())};
@@ -254,20 +254,13 @@ function setear_FP(cta,fp,banco)
            return false;
         };
         if (total_cpbs>0){
-          if (total_pagos!=total_cpbs){
+          if (total!=total_cpbs){
             alertify.errorAlert("¡El importe total no coincide con los comprobantes seleccionados!");
             $("#GuardarRec").prop("disabled", false);
             return false;
           }
         };   
-        if ((total != total_pagos))
-        {                
-            alertify.errorAlert("¡El importe total ($"+total+") no coincide con los pagos cargados ($"+total_pagos+")!");
-            $("#GuardarRec").prop("disabled", false);     
-            return false;
-        }       
-        //El solicitante debe cargar un EMAil
-      
+           
 
          $("#form-alta:disabled").removeAttr('disabled');
           $('#id_pto_vta').removeAttr('disabled');                                    
