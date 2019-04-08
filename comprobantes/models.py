@@ -391,7 +391,7 @@ class cpb_retenciones(models.Model):
 class cpb_comprobante_retenciones(models.Model):
     id = models.AutoField(primary_key=True,db_index=True)
     cpb_comprobante = models.ForeignKey('cpb_comprobante',verbose_name=u'CPB', db_column='cpb_comprobante',blank=True, null=True,on_delete=models.CASCADE)
-    retencion = models.ForeignKey('cpb_retenciones',db_column='retencion',blank=True, null=True,on_delete=models.SET_NULL) #Cliente/Proveedor    
+    retencion = models.ForeignKey('cpb_retenciones',db_column='retencion',blank=True, null=True,on_delete=models.SET_NULL)
     detalle = models.TextField(max_length=500,blank=True, null=True) # Field name made lowercase.   
     importe_total = models.DecimalField(max_digits=15, decimal_places=2, blank=True, null=True,default=0)    
     class Meta:

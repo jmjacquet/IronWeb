@@ -10,7 +10,7 @@ from django.db import connection
 from datetime import datetime,date,timedelta
 from django.utils import timezone
 from dateutil.relativedelta import *
-from .forms import MovimCuentasForm,BancosForm,MovimCuentasFPForm,PercImpForm,FormaPagoForm,PtoVtaForm,DispoForm,SeguimientoForm,FormCheques,FormChequesCobro,PtoVtaEditForm
+from .forms import MovimCuentasForm,BancosForm,MovimCuentasFPForm,PercImpForm,FormaPagoForm,PtoVtaForm,DispoForm,SeguimientoForm,FormCheques,FormChequesCobro,PtoVtaEditForm,RetencForm
 from django.http import HttpResponseRedirect,HttpResponseForbidden,HttpResponse
 from django.db.models import Q,Sum,Count,F,DecimalField
 from .models import *
@@ -1301,28 +1301,6 @@ class PresupVerView(VariablesMixin,DetailView):
 
         return context
 
-# class MovimVerView(VariablesMixin,DetailView):
-#     model = cpb_comprobante
-#     pk_url_kwarg = 'id'
-#     context_object_name = 'cpb'
-#     template_name = 'general/facturas/detalle_movim.html'
-
-#     @method_decorator(login_required)
-#     def dispatch(self, *args, **kwargs): 
-#         return super(MovimVerView, self).dispatch(*args, **kwargs)
-
-#     def get_context_data(self, **kwargs):        
-#         context = super(MovimVerView, self).get_context_data(**kwargs)
-#         try:
-#             config = gral_empresa.objects.get(id=settings.ENTIDAD_ID)        
-#         except gral_empresa.DoesNotExist:
-#             config = None        
-#         cpb = self.object
-#         context['config'] = config
-#         detalle = cpb_comprobante_fp.objects.filter(cpb_comprobante=cpb).select_related('tipo_forma_pago','mdcp_banco','cta_ingreso','cta_egreso')       
-#         context['detalle'] = detalle                
-#         return context
-
 #************* PercImp **************
 class PercImpView(VariablesMixin,ListView):
     model = cpb_perc_imp
@@ -1391,7 +1369,7 @@ class PercImpDeleteView(VariablesMixin,AjaxDeleteView):
             return redirect(reverse('principal'))
         return super(PercImpDeleteView, self).dispatch(*args, **kwargs)
 
-#************* Retrenciones ****
+#************* Retenciones ****
 class RetencView(VariablesMixin,ListView):
     model = cpb_retenciones
     template_name = 'general/lista_retenc.html'

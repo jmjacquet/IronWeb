@@ -605,7 +605,7 @@ class CPBPagoEditView(VariablesMixin,CreateView):
         cpb_fp = PagosFPFormSet(self.request.POST,instance=self.object,prefix='formFP')
         cpb_ret = PagosRetFormSet(self.request.POST,instance=self.object,prefix='formRet')        
         cpbs = PagosCPBFormSet(self.request.POST,instance=self.object,prefix='formCPB')      
-        if form.is_valid() and cpb_fp.is_valid()and cpb_ret.is_valid())and cpbs.is_valid():
+        if form.is_valid() and cpb_fp.is_valid() and cpb_ret.is_valid() and cpbs.is_valid():
             return self.form_valid(form, cpb_fp,cpbs,cpb_ret)
         else:
             return self.form_invalid(form, cpb_fp,cpbs,cpb_ret)        
