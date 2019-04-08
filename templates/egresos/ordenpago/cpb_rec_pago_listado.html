@@ -31,6 +31,8 @@
                                 <th>Nº Orden Pago</th>
                                 <th>Proveedor</th>
                                 <th class="text-right">Total</th>
+                                <th class="text-right">Importe</th>
+                                <th class="text-right">Retenc</th>
                                 <th>Comprobantes</th>                                 
                                 <th>Descripción</th>                                
                                 
@@ -71,6 +73,8 @@
                                 <td>{{ cpb }}</td>                                
                                 <td  title="{{ cpb.entidad}}" >{% include "entidades/proveedor_ver.html" %}</td>
                                 <td class="importe">${{cpb.importe_total|default_if_none:0|floatformat:2}}</td>
+                                <td class="importe">${{cpb.importe_subtotal|default_if_none:0|floatformat:2}}</td>
+                                <td class="importe">${{cpb.importe_ret|default_if_none:0|floatformat:2}}</td>
                                 <td class="wrap">
                                     {% for cc in cpb.get_cobranzas %}                                   
                                     {% include "general/varios/cpb_span_ver.html" %}&nbsp;                                    
@@ -87,6 +91,8 @@
                                 <th></th> 
                                 <th></th>                                 
                                 <th></th>
+                                <th class="importe"></th>
+                                <th class="importe"></th>
                                 <th class="importe"></th>
                                 <th></th> 
                                 <th></th>                               
@@ -278,6 +284,10 @@ var tabla = $('#dataTables-pagos').DataTable({
             };
             pageTotal = api.column(4, { page: 'current'} ).data().reduce( function (a, b) {return floatVal(a) + floatVal(b);}, 0 );            
             $( api.column(4).footer() ).html('$'+pageTotal.toFixed(2));
+            pageTotal = api.column(5, { page: 'current'} ).data().reduce( function (a, b) {return floatVal(a) + floatVal(b);}, 0 );            
+            $( api.column(5).footer() ).html('$'+pageTotal.toFixed(2));
+            pageTotal = api.column(6, { page: 'current'} ).data().reduce( function (a, b) {return floatVal(a) + floatVal(b);}, 0 );            
+            $( api.column(6).footer() ).html('$'+pageTotal.toFixed(2));
         }
         });
 
