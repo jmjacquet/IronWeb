@@ -277,6 +277,15 @@ PERIODOS = (
     ('12', '12'),
 )
 
+TIPO_RETENCIONES = (
+(1,'Ganancias'),
+(2,'IIBB'),
+(3,'Retenc. Bancarias'),
+(4,'IVA'),
+(5,'Seguridad Social'),
+(6,'Otros'),
+)
+
 # URL_API = "https://soa.afip.gob.ar/sr-padron/v2/persona/"
 URL_API = "http://afip.grupoguadalupe.com.ar/?cuit="
 EMAIL_CONTACTO = 'contacto@ironweb.com.ar'
@@ -339,16 +348,6 @@ def get_letra(cliente_categ,empresa_categ):
             return 'B'
     else:
         return 'C'
-
-# def logo_url():        
-#         url = '/media/empresa/%s/logo_empresa.png' % ENTIDAD_DIR
-#         print url
-#         if default_storage.exists(url):        
-#             return filepath
-#         else:        
-#             return STATIC_URL+'/images/logo_iron.png'
-
-
 
 class PrependWidget(Widget):
     def __init__(self, base_widget, data, *args, **kwargs):

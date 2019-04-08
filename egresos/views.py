@@ -90,6 +90,7 @@ class CPBCompraPIFormSet(BaseInlineFormSet):
     pass  
 class CPBCompraFPFormSet(BaseInlineFormSet): 
     pass 
+  
 
 CPBDetalleFormSet = inlineformset_factory(cpb_comprobante, cpb_comprobante_detalle,form=CPBCompraDetalleForm,formset=CPBCompraDetalleFormSet, can_delete=True,extra=0,min_num=1)
 CPBPIFormSet = inlineformset_factory(cpb_comprobante, cpb_comprobante_perc_imp,form=CPBCompraPercImpForm,formset=CPBCompraPIFormSet, can_delete=True,extra=0,min_num=1)  
@@ -448,6 +449,8 @@ class CPBPagosViewList(VariablesMixin,ListView):
     def post(self, *args, **kwargs):
         return self.get(*args, **kwargs)
 
+class CPBPagosRetFormSet(BaseInlineFormSet): 
+    pass
 class CPBPagosFPFormSet(BaseInlineFormSet): 
     pass  
 class CPBPagosCPBFormSet(BaseInlineFormSet): 
@@ -455,7 +458,8 @@ class CPBPagosCPBFormSet(BaseInlineFormSet):
 
 PagosFPFormSet = inlineformset_factory(cpb_comprobante, cpb_comprobante_fp,form=CPBFPForm,formset=CPBPagosFPFormSet, can_delete=True,extra=0,min_num=1)
 PagosCPBFormSet = inlineformset_factory(cpb_comprobante, cpb_cobranza, fk_name='cpb_comprobante',form=CPBPagoCPBForm,formset=CPBPagosCPBFormSet, can_delete=True,extra=0,min_num=1)
-#ReciboRetFormSet = inlineformset_factory(cpb_comprobante, cpb_comprobante_perc_imp,form=CPBVentaPercImpForm,formset=CPBReciboRetFormSet, can_delete=True,extra=0,min_num=1)  
+PagosRetFormSet = inlineformset_factory(cpb_comprobante, cpb_comprobante_retenciones,form=CPBPagoRetForm,formset=CPBPagosRetFormSet, can_delete=True,extra=0,min_num=1)  
+
 
 class CPBPagoCreateView(VariablesMixin,CreateView):
     form_class = CPBPagoForm
@@ -484,21 +488,25 @@ class CPBPagoCreateView(VariablesMixin,CreateView):
         form_class = self.get_form_class()
         form = self.get_form(form_class)       
         PagosFPFormSet.form = staticmethod(curry(CPBFPForm,request=request))
+        PagosRetFormSet.form = staticmethod(curry(CPBPagoRetForm,request=request))
         cpb_fp = PagosFPFormSet(prefix='formFP')        
-        return self.render_to_response(self.get_context_data(form=form,cpb_fp = cpb_fp))
+        cpb_ret = PagosRetFormSet(prefix='formRet')        
+        return self.render_to_response(self.get_context_data(form=form,cpb_fp = cpb_fp,cpb_ret=cpb_ret))
 
     def post(self, request, *args, **kwargs):
         self.object = None
         form_class = self.get_form_class()
         form = self.get_form(form_class)       
         PagosFPFormSet.form = staticmethod(curry(CPBFPForm,request=request))
+        PagosRetFormSet.form = staticmethod(curry(CPBPagoRetForm,request=request))
         cpb_fp = PagosFPFormSet(self.request.POST,prefix='formFP')
-        if form.is_valid() and cpb_fp.is_valid():            
-            return self.form_valid(form, cpb_fp)
+        cpb_ret = PagosRetFormSet(self.request.POST,prefix='formRet')
+        if form.is_valid() and cpb_fp.is_valid() and cpb_ret.is_valid():            
+            return self.form_valid(form, cpb_fp,cpb_ret)
         else:
-            return self.form_invalid(form, cpb_fp)        
+            return self.form_invalid(form, cpb_fp,cpb_ret)        
 
-    def form_valid(self, form, cpb_fp):
+    def form_valid(self, form, cpb_fp, cpb_ret):
         self.object = form.save(commit=False)        
         estado=cpb_estado.objects.get(pk=2)
         self.object.estado=estado   
@@ -515,6 +523,10 @@ class CPBPagoCreateView(VariablesMixin,CreateView):
         cpb_fp.instance = self.object
         cpb_fp.cpb_comprobante = self.object.id
         cpb_fp.save()
+        if cpb_ret:
+            cpb_ret.instance = self.object
+            cpb_ret.cpb_comprobante = self.object.id 
+            cpb_ret.save() 
         for f in cpb_fp:
             datos = f.cleaned_data
             id= datos.get('origen')               
@@ -527,16 +539,14 @@ class CPBPagoCreateView(VariablesMixin,CreateView):
         messages.success(self.request, u'Los datos se guardaron con éxito!')
         return HttpResponseRedirect(reverse('cpb_pago_listado'))
 
-    def form_invalid(self, form,cpb_fp):                                                       
-        return self.render_to_response(self.get_context_data(form=form,cpb_fp = cpb_fp))
-
+    def form_invalid(self, form,cpb_fp,cpb_ret):                                                       
+        return self.render_to_response(self.get_context_data(form=form,cpb_fp = cpb_fp, cpb_ret=cpb_ret))
 
 class CPBPagoEditView(VariablesMixin,CreateView):
     form_class = CPBPagoForm
     template_name = 'egresos/ordenpago/cpb_rec_pago_form.html' 
     model = cpb_comprobante   
-    pk_url_kwarg = 'id'      
-    success_message = "CPB was created successfully"
+    pk_url_kwarg = 'id'          
 
     @method_decorator(login_required)
     def dispatch(self, *args, **kwargs):            
@@ -560,7 +570,9 @@ class CPBPagoEditView(VariablesMixin,CreateView):
         form.fields['entidad'].widget.attrs['disabled'] = True
         form.fields['pto_vta'].widget.attrs['disabled'] = True                
         PagosFPFormSet.form = staticmethod(curry(CPBFPForm,request=request))
+        PagosRetFormSet.form = staticmethod(curry(CPBPagoRetForm,request=request))
         cpb_fp = PagosFPFormSet(instance=self.object,prefix='formFP')
+        cpb_ret = PagosRetFormSet(instance=self.object,prefix='formRet')        
         cpbs_pagos=cpb_cobranza.objects.filter(cpb_comprobante=self.object.id,cpb_comprobante__estado__pk__lt=3)     
         
         PagosCPBFormSet = inlineformset_factory(cpb_comprobante, cpb_cobranza, fk_name='cpb_comprobante',form=CPBPagoCPBForm,formset=CPBPagosCPBFormSet,extra=len(cpbs_pagos), can_delete=False,max_num=len(cpbs_pagos))
@@ -570,32 +582,24 @@ class CPBPagoEditView(VariablesMixin,CreateView):
             entidad = c.entidad                                
             d.append({'detalle_cpb': c.get_cpb_tipo,'desc_rec':'0','importe_total':cpb.importe_total,'saldo':c.saldo,'id_cpb_factura':c.id,'cpb_factura':c})            
         cpbs = PagosCPBFormSet(prefix='formCPB',initial=d)                      
-        return self.render_to_response(self.get_context_data(form=form,cpb_fp=cpb_fp,cpbs=cpbs))
-        # if cpbs_pagos:
-        #     PagosCPBFormSet = inlineformset_factory(cpb_comprobante, cpb_cobranza, fk_name='cpb_comprobante',form=CPBPagoCPBForm,formset=CPBPagosCPBFormSet,extra=len(cpbs_pagos), can_delete=False,max_num=len(cpbs_pagos))
-        #     d=[]
-        #     for cpb in cpbs_pagos:
-        #         c = cpb.cpb_factura
-        #         entidad = c.entidad                                
-        #         d.append({'detalle_cpb': c.get_cpb_tipo,'desc_rec':'0','importe_total':cpb.importe_total,'saldo':c.saldo,'id_cpb_factura':c.id,'cpb_factura':c})            
-        #     cpbs = PagosCPBFormSet(prefix='formCPB',initial=d)                      
-        #     return self.render_to_response(self.get_context_data(form=form,cpb_fp=cpb_fp,cpbs=cpbs))
+        return self.render_to_response(self.get_context_data(form=form,cpb_fp=cpb_fp,cpbs=cpbs,cpb_ret=cpb_ret))
 
-        # return self.render_to_response(self.get_context_data(form=form,cpb_fp = cpb_fp))
 
     def post(self, request, *args, **kwargs):
         self.object = self.get_object()
         form_class = self.get_form_class()
         form = self.get_form(form_class)       
         PagosFPFormSet.form = staticmethod(curry(CPBFPForm,request=request))
+        PagosRetFormSet.form = staticmethod(curry(CPBPagoRetForm,request=request))
         cpb_fp = PagosFPFormSet(self.request.POST,instance=self.object,prefix='formFP')
+        cpb_ret = PagosRetFormSet(self.request.POST,instance=self.object,prefix='formRet')        
         cpbs = PagosCPBFormSet(self.request.POST,instance=self.object,prefix='formCPB')      
-        if form.is_valid() and cpb_fp.is_valid()and cpbs.is_valid():
-            return self.form_valid(form, cpb_fp,cpbs)
+        if form.is_valid() and cpb_fp.is_valid() and cpb_ret.is_valid() and cpbs.is_valid():
+            return self.form_valid(form, cpb_fp,cpbs,cpb_ret)
         else:
-            return self.form_invalid(form, cpb_fp,cpbs)        
+            return self.form_invalid(form, cpb_fp,cpbs,cpb_ret)        
 
-    def form_valid(self, form, cpb_fp,cpbs):
+    def form_valid(self, form, cpb_fp,cpbs,cpb_ret):
         self.object = form.save(commit=False)        
         self.object.fecha_imputacion=self.object.fecha_cpb
         if not self.object.fecha_vto:
@@ -604,6 +608,10 @@ class CPBPagoEditView(VariablesMixin,CreateView):
         cpb_fp.instance = self.object
         cpb_fp.cpb_comprobante = self.object.id                
         cpb_fp.save()
+        if cpb_ret:
+            cpb_ret.instance = self.object
+            cpb_ret.cpb_comprobante = self.object.id 
+            cpb_ret.save() 
         for fp in cpb_fp:
             if fp.cleaned_data.get("origen"):
                 origen = fp.cleaned_data.get("origen")
@@ -622,8 +630,8 @@ class CPBPagoEditView(VariablesMixin,CreateView):
         kwargs['request'] = self.request
         return kwargs
 
-    def form_invalid(self, form,cpb_fp,cpbs):                                                       
-        return self.render_to_response(self.get_context_data(form=form,cpb_fp = cpb_fp,cpbs=cpbs))
+    def form_invalid(self, form,cpb_fp,cpbs,cpb_ret):                                                       
+        return self.render_to_response(self.get_context_data(form=form,cpb_fp = cpb_fp,cpbs=cpbs,cpb_ret=cpb_ret))
      
 @login_required
 def CPBPagoDeleteView(request, id):
@@ -706,23 +714,27 @@ class CPBPagarCreateView(VariablesMixin,CreateView):
             PagosCPBFormSet = inlineformset_factory(cpb_comprobante, cpb_cobranza, fk_name='cpb_comprobante',form=CPBPagoCPBForm,formset=CPBPagosCPBFormSet, can_delete=True,extra=0,min_num=1)
             cpbs = PagosCPBFormSet(prefix='formCPB')
         PagosFPFormSet.form = staticmethod(curry(CPBFPForm,request=request))
+        PagosRetFormSet.form = staticmethod(curry(CPBPagoRetForm,request=request))
         cpb_fp = PagosFPFormSet(prefix='formFP',initial=[{'importe':total}])        
-        return self.render_to_response(self.get_context_data(form=form,cpb_fp=cpb_fp,cpbs=cpbs))
+        cpb_ret = PagosRetFormSet(prefix='formRet')        
+        return self.render_to_response(self.get_context_data(form=form,cpb_fp=cpb_fp,cpbs=cpbs,cpb_ret=cpb_ret))
 
     def post(self, request, *args, **kwargs):
         self.object = None
         form_class = self.get_form_class()
         form = self.get_form(form_class)       
         PagosFPFormSet.form = staticmethod(curry(CPBFPForm,request=request))
+        PagosRetFormSet.form = staticmethod(curry(CPBPagoRetForm,request=request))
         cpb_fp = PagosFPFormSet(self.request.POST,prefix='formFP')
         cpbs = PagosCPBFormSet(self.request.POST,prefix='formCPB')        
+        cpb_ret = PagosRetFormSet(self.request.POST,prefix='formRet')        
 
-        if form.is_valid() and cpb_fp.is_valid() and cpbs.is_valid():            
-            return self.form_valid(form, cpb_fp,cpbs)
+        if form.is_valid() and cpb_fp.is_valid() and cpbs.is_valid()and cpb_ret.is_valid():            
+            return self.form_valid(form, cpb_fp,cpbs,cpb_ret)
         else:
-            return self.form_invalid(form, cpb_fp,cpbs)        
+            return self.form_invalid(form, cpb_fp,cpbs, cpb_ret)        
 
-    def form_valid(self, form, cpb_fp,cpbs):
+    def form_valid(self, form, cpb_fp,cpbs,cpb_ret):
         self.object = form.save(commit=False)        
         estado=cpb_estado.objects.get(pk=2)
         self.object.estado=estado   
@@ -739,6 +751,10 @@ class CPBPagarCreateView(VariablesMixin,CreateView):
         cpb_fp.instance = self.object
         cpb_fp.cpb_comprobante = self.object.id
         cpb_fp.save()
+        if cpb_ret:
+            cpb_ret.instance = self.object
+            cpb_ret.cpb_comprobante = self.object.id 
+            cpb_ret.save()
         for fp in cpb_fp:
             if fp.cleaned_data['origen']:
                 origen = fp.cleaned_data['origen']
@@ -760,7 +776,7 @@ class CPBPagarCreateView(VariablesMixin,CreateView):
         messages.success(self.request, u'Los datos se guardaron con éxito!')
         return HttpResponseRedirect(reverse('cpb_compra_listado'))
 
-    def form_invalid(self, form,cpb_fp,cpbs):                                                       
+    def form_invalid(self, form,cpb_fp,cpbs,cpb_ret):                                                       
         cpbs_pagos = self.request.session.get('cpbs_pagos', None)      
         entidad = None                
         if cpbs_pagos:
@@ -774,7 +790,7 @@ class CPBPagarCreateView(VariablesMixin,CreateView):
             cpbs = PagosCPBFormSet(prefix='formCPB',initial=d)
             if entidad:
                 form.fields['entidad'].initial = entidad   
-        return self.render_to_response(self.get_context_data(form=form,cpb_fp = cpb_fp,cpbs=cpbs))
+        return self.render_to_response(self.get_context_data(form=form,cpb_fp = cpb_fp,cpbs=cpbs,cpb_ret=cpb_ret))
 
 @login_required 
 def CPBPagosSeleccionarView(request):        

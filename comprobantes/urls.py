@@ -25,6 +25,11 @@ urlpatterns = patterns('comprobantes.views',
     url(r'^percimp/percimp_editar/(?P<id>\d+)/$', PercImpEditView.as_view(), name="percimp_editar"),
     url(r'^percimp/percimp_eliminar/(?P<id>[\w-]+)/$', PercImpDeleteView.as_view(), name="percimp_eliminar"),
 
+    url(r'^retenc/$', RetencView.as_view(),name="retenc_listado"),
+    url(r'^retenc/retenc_nuevp/$', RetencCreateView.as_view(), name="retenc_nuevo"),
+    url(r'^retenc/retenc_editar/(?P<id>\d+)/$', RetencEditView.as_view(), name="retenc_editar"),
+    url(r'^retenc/retenc_eliminar/(?P<id>[\w-]+)/$', RetencDeleteView.as_view(), name="retenc_eliminar"),
+
     url(r'^formapago/$', FPView.as_view(),name="formapago_listado"),
     url(r'^formapago/formapago_nuevo/$', FPCreateView.as_view(), name="formapago_nuevo"),
     url(r'^formapago/formapago_editar/(?P<id>\d+)/$', FPEditView.as_view(), name="formapago_editar"),
