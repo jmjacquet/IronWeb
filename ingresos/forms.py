@@ -195,6 +195,18 @@ class CPBVentaPercImpForm(forms.ModelForm):
 		except gral_empresa.DoesNotExist:
 			empresa = None			
 
+	def clean(self):						
+		super(forms.ModelForm,self).clean()	
+		importe_total = self.cleaned_data.get('importe_total')				
+		perc_imp = self.cleaned_data.get('perc_imp')							
+		if importe_total!=None or perc_imp!=None:
+			if not importe_total:
+				self._errors['importe_total'] = [u'¡Verificar Fecha!']	
+			if not perc_imp:
+				self._errors['perc_imp'] = [u'¡Verificar Perc/Imp!']	
+
+		return self.cleaned_data
+
 
 class CPBFPForm(forms.ModelForm):
 	tipo_forma_pago = forms.ModelChoiceField(label='FP',queryset=cpb_tipo_forma_pago.objects.filter(baja=False),empty_label=None,required = False)
@@ -511,7 +523,7 @@ class CPBRecCobranzaForm(forms.ModelForm):
 	pto_vta = forms.ChoiceField(label='Pto. Vta.',choices=[(pto.numero, pto.__unicode__()) for pto in cpb_pto_vta.objects.filter(baja=False)],required = False)
 	fecha_cpb = forms.DateField(required = True,widget=forms.DateInput(attrs={'class': 'form-control datepicker'}),initial=datetime.now())	
 	observacion = forms.CharField(label='Detalle',widget=forms.Textarea(attrs={ 'class':'form-control2','rows': 5}),required = False)	
-	importe_imp_perc = forms.DecimalField(label='',widget=PrependWidget(attrs={'class':'form-control','readonly':'readonly','step':0},base_widget=NumberInput, data='$'),initial=0.00,decimal_places=2,required = False)
+	importe_ret = forms.DecimalField(label='',widget=PrependWidget(attrs={'class':'form-control','readonly':'readonly','step':0},base_widget=NumberInput, data='$'),initial=0.00,decimal_places=2,required = False)
 	importe_subtotal = forms.DecimalField(label='',widget=PrependWidget(attrs={'class':'form-control','readonly':'readonly','step':0},base_widget=NumberInput, data='$'),initial=0.00,decimal_places=2,required = False)
 	importe_total = forms.DecimalField(label='',widget=PrependWidget(attrs={'class':'form-control','readonly':'readonly',},base_widget=NumberInput, data='$'),initial=0.00,decimal_places=2,required = False)	
 	importe_cpbs = forms.DecimalField(label='',widget=PrependWidget(attrs={'class':'form-control','readonly':'readonly','step':0},base_widget=NumberInput, data='$'),initial=0.00,decimal_places=2,required = False)
@@ -538,17 +550,9 @@ class CPBRecCobranzaForm(forms.ModelForm):
 		except gral_empresa.DoesNotExist:
 			empresa = None
 
-	# def clean(self):						
-	# 	super(forms.ModelForm,self).clean()	
-	# 	tipo_form = self.cleaned_data.get('tipo_form')		
-	# 	letra = self.cleaned_data.get('letra')
-	# 	pto_vta = self.cleaned_data.get('pto_vta')		
-	# 	numero = self.cleaned_data.get('numero')		
-	# 	cant=cpb_comprobante.objects.filter(numero=numero,pto_vta=pto_vta,letra='X',cpb_tipo__id=7).count()						
-	# 	if (tipo_form == 'ALTA')and(cant > 0):			
-	# 		raise forms.ValidationError("El Nº de Comprobante ingresado ya existe en el Sistema! Verifique.")			
-
-	# 	return self.cleaned_data
+	def clean(self):						
+		super(forms.ModelForm,self).clean()	
+		return self.cleaned_data
 		
 
 class CPBRecCPBForm(forms.ModelForm):	
@@ -603,6 +607,22 @@ class CPBRecFPForm(forms.ModelForm):
 
 		return self.cleaned_data
 
+class CPBRecRetForm(forms.ModelForm):
+	retencion = forms.ModelChoiceField(label='Retenciones',queryset=cpb_retenciones.objects.all(),empty_label='---',required = False)
+	detalle = forms.CharField(label='Detalle',widget=forms.Textarea(attrs={ 'class':'form-control','rows': 3}),required = False)		
+	importe_total = forms.DecimalField(widget=PrependWidget(attrs={'class':'form-control','step':0.00},base_widget=NumberInput, data='$'),initial=0.00,decimal_places=2,required = False)
+	cpb_comprobante = forms.IntegerField(widget = forms.HiddenInput(), required = False)	
+	class Meta:
+			model = cpb_comprobante_retenciones
+			exclude = ['id']
+
+	def __init__(self, *args, **kwargs):
+		request = kwargs.pop('request', None)
+		super(CPBRecRetForm, self).__init__(*args, **kwargs)
+		try:
+			self.fields['retencion'].queryset = cpb_retenciones.objects.filter(empresa__id__in=empresas_habilitadas(request))			
+		except:
+			pass
 
 #############################################################################
 
