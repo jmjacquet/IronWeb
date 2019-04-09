@@ -394,7 +394,7 @@ $('.formFP').formset({
           keepFieldValues:'',
           added: function (row) {
             var i = $(row).index();
-            var tot = parseFloat($("#id_importe_total").val()) - parseFloat($("#id_importe_cobrado").val());
+            var tot = parseFloat(0.00);
             tot =  parseFloat(tot).toFixed(2);             
             $("[name='formFP-"+i+"-importe']").val(tot);
              $('.datepicker').each(function(){
@@ -423,7 +423,7 @@ $('.formDetallePI').formset({
           keepFieldValues:'',
           added: function (row) {
             var i = $(row).index();
-            $("[name='formDetallePI-"+i+"-importe_total']").val('0');
+            $("[name='formDetallePI-"+i+"-importe_total']").val('0.00');
             recalcular();
             $("[name='formDetallePI-"+i+"-perc_imp']").focus();
            },

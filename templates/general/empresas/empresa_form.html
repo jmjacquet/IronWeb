@@ -87,6 +87,28 @@
 													</div>
 												
 												</fieldset>		
+									       		<fieldset>
+									       		<legend>SISTEMA EN MODO DEBUG</legend>                        						
+									       		   <div class="col-xs-12">
+									       		   	<div class="row cerca">														
+														{% if settings.DEBUG %}
+															<div class="row cerca">
+																<label class="control-label col-sm-4">ID:</label>
+																<div class="col-sm-4">{{settings.ENTIDAD_ID}}</div>		
+															</div>
+															<div class="row cerca">
+																<label class="control-label col-sm-4">BASE:</label>
+																<div class="col-sm-4">{{settings.ENTIDAD_DB}}</div>		
+															</div>
+															<div class="row cerca">
+																<label class="control-label col-sm-4">DIR:</label>
+																<div class="col-sm-4">{{settings.ENTIDAD_DIR}}</div>		
+															</div>
+														{% endif %}		
+													</div>
+									       		   	
+									       		   </div>
+									       		</fieldset>										       	  
 
 									       	</div>
 									       	<div class="col-sm-6">
@@ -105,43 +127,24 @@
 															</div>
 															
 														</div>
-														<div class="col-sm-6">
-															<div class="row cerca">
-																<div class="col-sm-12">{% bootstrap_field form.pprincipal_panel_cpbs  %}</div>
-															</div>
+														<div class="col-sm-6">															
 															<div class="row cerca">
 																<div class="col-sm-12">{% bootstrap_field form.pprincipal_aviso_tareas  %}</div>
-															</div>
-															<div class="row cerca">
-																<div class="col-sm-12">{% bootstrap_field form.pprincipal_estadisticas  %}</div>
-															</div>
+															</div>															
 															<div class="row cerca">
 																<div class="col-sm-12">{% bootstrap_field form.fp_facturas  %}</div>
 															</div>			
 														</div>
-															<div class="row cerca">
-																<label class="control-label col-sm-6">Pto. Venta x Defecto:</label>
-																<div class="col-sm-6">{% bootstrap_field form.pto_vta_defecto show_label=False  %}</div>		
-															</div>																
-															<div class="row cerca">
-																<label class="control-label col-sm-6">Tipo Logo en Factura:</label>
-																<div class="col-sm-6">{% bootstrap_field form.tipo_logo_factura show_label=False  %}</div>		
-															</div>
-															{% if settings.DEBUG %}
-																<div class="row cerca">
-																	<label class="control-label col-sm-4">ID:</label>
-																	<div class="col-sm-4">{{settings.ENTIDAD_ID}}</div>		
-																</div>
-																<div class="row cerca">
-																	<label class="control-label col-sm-4">BASE:</label>
-																	<div class="col-sm-4">{{settings.ENTIDAD_DB}}</div>		
-																</div>
-																<div class="row cerca">
-																	<label class="control-label col-sm-4">DIR:</label>
-																	<div class="col-sm-4">{{settings.ENTIDAD_DIR}}</div>		
-																</div>
-															{% endif %}		
 													</div>
+														<div class="row cerca">
+															<label class="control-label col-sm-6">Pto. Venta x Defecto:</label>
+															<div class="col-sm-6">{% bootstrap_field form.pto_vta_defecto show_label=False  %}</div>		
+														</div>																
+														<div class="row cerca">
+															<label class="control-label col-sm-6">Tipo Logo en Factura:</label>
+															<div class="col-sm-6">{% bootstrap_field form.tipo_logo_factura show_label=False  %}</div>		
+														</div>														
+													
 									       		   	
 									       		   </div>
 									       		</fieldset>	

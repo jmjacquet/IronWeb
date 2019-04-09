@@ -29,7 +29,9 @@
                                 class='danger'
                              {% endif %}>
                                 
-                                <td><div class="btn-group">
+                                <td> 
+                                    {% if empresa.id == d.empresa.id %}
+                                    <div class="btn-group">
                                        <button type="button" class="btn btn-xs color_barra" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                                         <i class="icon-settings"> </i> <span class="caret"></span>
                                       </button>                                    
@@ -41,6 +43,7 @@
                                                                         
                                       </ul>      
                                     </div>
+                                    {% endif %}
                                 </td>
                                 <td class="text-right">{{ d.id|default_if_none:'' }}</td>
                                 <td>{{ d.nombre|default_if_none:'' }}</td>

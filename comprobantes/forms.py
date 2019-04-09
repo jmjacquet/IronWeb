@@ -17,6 +17,7 @@ from .models import *
 from general.flavor import ARCUITField,ARDNIField,ARPostalCodeField
 from chosen import forms as chosenforms
 
+####################################################################################################
 
 class BancosForm(forms.ModelForm):
     class Meta:
@@ -27,6 +28,11 @@ class PercImpForm(forms.ModelForm):
     class Meta:
             model = cpb_perc_imp
             exclude = ['id','baja','empresa']      
+
+class RetencForm(forms.ModelForm):
+    class Meta:
+            model = cpb_retenciones
+            exclude = ['id','empresa'] 
 
 class FormaPagoForm(forms.ModelForm):
     signo = forms.ChoiceField(label='Signo',choices=SIGNO,required=False,initial=1)
@@ -44,9 +50,10 @@ class FormaPagoForm(forms.ModelForm):
 		except gral_empresa.DoesNotExist:
 			empresa = None	
 
-##################################################
 
-class MovimCuentasForm(forms.ModelForm):			
+####################################################################################################
+
+class MovimCuentasForm(forms.ModelForm):
 	observacion = forms.CharField(label='Detalle',widget=forms.Textarea(attrs={ 'class':'form-control2','rows': 3}),required = False)			
 	importe_total = forms.DecimalField(label='Total Comprobante',widget=PrependWidget(attrs={'class':'form-control','readonly':'readonly',},base_widget=NumberInput, data='$'),initial=0.00,decimal_places=2,required = False)					
 	class Meta:
@@ -58,7 +65,6 @@ class MovimCuentasForm(forms.ModelForm):
 		request = kwargs.pop('request', None)
 		super(MovimCuentasForm, self).__init__(*args, **kwargs)		
 	
-
 class MovimCuentasFPForm(forms.ModelForm):
 	tipo_forma_pago = forms.ModelChoiceField(label='Medio de Pago',queryset=cpb_tipo_forma_pago.objects.filter(baja=False),empty_label='---')
 	mdcp_fecha = forms.DateField(label='Fecha',widget=forms.DateInput(attrs={'class': 'form-control datepicker'}),initial=hoy(),required = False)
@@ -94,7 +100,6 @@ class MovimCuentasFPForm(forms.ModelForm):
 
 		return self.cleaned_data
 
-
 ####################################################################################################
 
 class SeguimientoForm(forms.ModelForm):
@@ -103,7 +108,6 @@ class SeguimientoForm(forms.ModelForm):
 	class Meta:
 			model = cpb_comprobante
 			fields = ['seguimiento']
-
 
 class PtoVtaForm(forms.ModelForm):
 	# observaciones = forms.CharField(label='Observaciones / Datos adicionales',widget=forms.Textarea(attrs={ 'rows': 3}),required = False)		
@@ -176,10 +180,7 @@ class PtoVtaEditForm(forms.ModelForm):
 				self._errors['fe_crt'] = [u'Debe cargar el nombre del archivo CRT!']
 			if not fe_key:
 				self._errors['fe_key'] = [u'Debe cargar el nombre del archivo KEY!']
-		return self.cleaned_data
-
-
-	       
+		return self.cleaned_data    
 
 class DispoForm(forms.ModelForm):    
     tipo_forma_pago = forms.ModelChoiceField(label='FP x Defecto',queryset=cpb_tipo_forma_pago.objects.all(),empty_label='---')
@@ -198,6 +199,7 @@ class DispoForm(forms.ModelForm):
 			empresa = None	
 
 ####################################################################################################
+
 class ChequesModelChoiceField(forms.ModelChoiceField):
     def label_from_instance(self, obj):
          return obj.get_selCheque()
@@ -217,7 +219,6 @@ class FormCheques(forms.Form):
 				self.fields['cheques'].queryset = cpb_comprobante_fp.objects.filter(cpb_comprobante__empresa=empresa,cta_ingreso__isnull=False,cta_ingreso__tipo=2,mdcp_salida__isnull=True).order_by('-mdcp_fecha','-fecha_creacion')									
 		except gral_empresa.DoesNotExist:
 			empresa = None  
-
 
 class FormChequesCobro(forms.Form):
 	fecha_cpb = forms.DateField(label='Fecha Movimiento',required = True,widget=forms.DateInput(attrs={'class': 'form-control datepicker'}),initial=hoy())		

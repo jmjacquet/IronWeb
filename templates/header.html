@@ -16,7 +16,6 @@
 
         <li class="mega-menu-dropdown">
           <a href="javascript:;" class="dropdown-toggle usuario_barra"  data-hover="dropdown" data-close-others="true" >            
-          <img alt="logo" class="img-circle logo_empresa" src="{{ MEDIA_URL }}empresa/{{ENTIDAD_DIR}}/logo_empresa.png">                    
           <span class="username"><strong>{{usuario.nombre}} ({{empresa.nombre}})  {% if homologacion %} | HOMO/PRUEBA {% endif%}</strong></span>
           <i class="fa fa-angle-down"></i>
           </a>
@@ -25,7 +24,7 @@
                 <div class="row">                  
                   <div class="col-sm-12">
                     <ul class="mega-menu-submenu">
-                    {% if 'gral_configuracion' in permisos_grupo %} 
+                    {% if 'empresa_configuracion' in permisos_grupo %} 
                     <li>
                       <a href="{% url 'empresa_editar' id=empresa.id %}"><i class="icon-settings"></i>Configurar Empresa</a>
                     </li>           
@@ -53,9 +52,10 @@
               </div>
           </ul>
         </li>
-
-        
-      </ul>
+        <li>   
+          <a href="mailto:{{EMAIL_CONTACTO}}" title="Contacto/Enviar Consultas"><i class="icono_mail icon-envelope"></i></a>
+        </li>
+      </ul>      
     </div>
 
 

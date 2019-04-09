@@ -8,56 +8,53 @@
             <div class="portlet box toolbar_blue">
                 <div class="portlet-title">
                     <div class="caption bold">
-                                <i class="fa fa-navicon"></i>LISTADO CUENTAS/DISPONIBILIDADES
+                                <i class="fa fa-navicon"></i>LISTADO RETENCIONES
                     </div>
 
                 </div> 
             </div>  
-                    <a class="btn btn-sm blue-hoki fm-create" style="float:left;margin-right:20px;" href="{% url 'disponibilidades_nuevo' %}" data-fm-head="AGREGAR CUENTA/DISPONIBILIDAD" data-fm-callback="reload">Nueva Disponibilidad</a>
+                    <a class="btn btn-sm blue-hoki fm-create" style="float:left;margin-right:20px;" href="{% url 'retenc_nuevo' %}" data-fm-head="AGREGAR RETENCION" data-fm-callback="reload">Nueva Retención</a>
                     <table width="100%" id="dataTables-primary" class="table table-striped table-hover table-condensed table-no-bordered tabla_nueva">         
                         <thead>
                             <tr>
                                 <th width="5%" ></th>
-                                <th>Código</th>
-                                <th>Nombre</th>               
-                                <th>Tipo</th>
+                                <th>Nombre</th>
+                                <th>Grupo</th>
+                                <th>Descripción</th>               
                             </tr>
                         </thead>
                         <tbody>
-                            {% for c in cuenta %}
+                            {% for d in retenc %}
                             <tr>
                                 
                                 <td>
-                                    {% if empresa.id == c.empresa.id %}
-                                        {% if c.modificable %}
-                                        <div class="btn-group">
-                                           <button type="button" class="btn btn-xs color_barra" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                                            <i class="icon-settings"> </i> <span class="caret"></span>
-                                          </button>                                    
-                                           <ul class="dropdown-menu dropdown-menu-default">                                        
-                                            
-                                            <li><a href="{% url 'disponibilidades_editar' id=c.pk %}"  class="fm-update " title="Editar" data-fm-callback="reload" data-fm-head="EDITAR CUENTA/DISPONIBILIDAD"data-fm-target="#object-{{ c.pk }}"><i class="icon-note"></i> Editar</a></li>
-                                            <li>
-                                                <a href="{% url 'disponibilidades_eliminar' id=c.pk %}" class="fm-delete " data-fm-head="¿DESEA ELIMINAR EL REGISTRO SELECCIONADO?" data-fm-callback="reload" data-fm-target="#object-{{ c.pk }}" title="Quitar"> <i class="icon-trash"></i> Eliminar </a> 
-                                            </li>
-                                                                             
-                                          </ul>      
-                                        </div>
-                                        {% endif %}
+                                    {% if empresa.id == d.empresa.id %}
+                                    <div class="btn-group">
+                                       <button type="button" class="btn btn-xs color_barra" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                        <i class="icon-settings"> </i> <span class="caret"></span>
+                                      </button>                                    
+                                       <ul class="dropdown-menu dropdown-menu-default">                                        
+                                        <li><a href="{% url 'retenc_editar' id=d.pk %}"  class="fm-update " title="Editar" data-fm-callback="reload" data-fm-head="EDITAR RETENCION"data-fm-target="#object-{{ d.pk }}"><i class="icon-note"></i> Editar</a></li>
+                                        <li>
+                                            <a href="{% url 'retenc_eliminar' id=d.pk %}" class="fm-delete " data-fm-head="¿DESEA ELIMINAR EL REGISTRO SELECCIONADO?" data-fm-callback="reload" data-fm-target="#object-{{ d.pk }}" title="Quitar"> <i class="icon-trash"></i> Eliminar </a> 
+                                        </li>
+                                                                        
+                                      </ul>      
+                                    </div>
                                     {% endif %}
                                 </td>
-                                <td>{{c.codigo|default_if_none:''}}</td>
-                                <td>{{c.nombre|default_if_none:'' }}</td>                                
-                                <td>{{c.get_tipo_display|default_if_none:'' }}</td>
+                                <td>{{d.nombre|default_if_none:''}}</td>
+                                <td>{{d.get_grupo_display|default_if_none:''}}</td>
+                                <td>{{d.descripcion|default_if_none:''}}</td>                                
                             </tr>
                             {% endfor %}
                         </tbody>
                         <tfoot>
                             <tr>                                
                                 <th></th> 
+                                <th></th> 
                                 <th></th>                                
                                 <th></th>        
-                                <th></th>
                             </tr>
                         </tfoot>
                     </table>                   
@@ -129,7 +126,7 @@ $(document).ready(function() {
                     extend:    'excel',
                     text:      '<i class="fa fa-file-excel-o"></i>',
                     titleAttr: 'Excel',
-                    filename: 'CUENTAS_DISPONIBILIDADES',                    
+                    filename: 'RETENCIONES',                    
                     exportOptions: {  modifier: {
                                         page: 'current'
                                     }, 
@@ -188,6 +185,7 @@ $(document).ready(function() {
     });
 </script> 
 {% endblock main %}
+
 
 
 

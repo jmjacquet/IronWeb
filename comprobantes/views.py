@@ -10,7 +10,7 @@ from django.db import connection
 from datetime import datetime,date,timedelta
 from django.utils import timezone
 from dateutil.relativedelta import *
-from .forms import MovimCuentasForm,BancosForm,MovimCuentasFPForm,PercImpForm,FormaPagoForm,PtoVtaForm,DispoForm,SeguimientoForm,FormCheques,FormChequesCobro,PtoVtaEditForm
+from .forms import MovimCuentasForm,BancosForm,MovimCuentasFPForm,PercImpForm,FormaPagoForm,PtoVtaForm,DispoForm,SeguimientoForm,FormCheques,FormChequesCobro,PtoVtaEditForm,RetencForm
 from django.http import HttpResponseRedirect,HttpResponseForbidden,HttpResponse
 from django.db.models import Q,Sum,Count,F,DecimalField
 from .models import *
@@ -897,7 +897,7 @@ def mandarEmail(request,id):
         
                 
         backend = EmailBackend(host=mail_servidor, port=mail_puerto, username=mail_usuario,password=mail_password,fail_silently=False)        
-        email = EmailMessage( subject=u'%s' % (cpb.get_cpb_tipo()),body=html_content,from_email=mail_origen,to=mail_destino,connection=backend)                
+        email = EmailMessage( subject=u'%s' % (cpb.get_cpb_tipo),body=html_content,from_email=mail_origen,to=mail_destino,connection=backend)                
         email.attach(u'%s.pdf' %nombre,post_pdf, "application/pdf")
         email.content_subtype = 'html'
         email.send()        
@@ -920,6 +920,12 @@ class BancosView(VariablesMixin,ListView):
         if not tiene_permiso(self.request,'gral_configuracion'):
             return redirect(reverse('principal'))
         return super(BancosView, self).dispatch(*args, **kwargs)
+    def get_queryset(self):
+        try:            
+            queryset = cpb_banco.objects.filter(empresa__id__in=empresas_habilitadas(self.request))
+        except:
+            queryset = cpb_banco.objects.none()
+        return queryset
 
 class BancosCreateView(VariablesMixin,AjaxCreateView):
     form_class = BancosForm
@@ -1295,28 +1301,6 @@ class PresupVerView(VariablesMixin,DetailView):
 
         return context
 
-# class MovimVerView(VariablesMixin,DetailView):
-#     model = cpb_comprobante
-#     pk_url_kwarg = 'id'
-#     context_object_name = 'cpb'
-#     template_name = 'general/facturas/detalle_movim.html'
-
-#     @method_decorator(login_required)
-#     def dispatch(self, *args, **kwargs): 
-#         return super(MovimVerView, self).dispatch(*args, **kwargs)
-
-#     def get_context_data(self, **kwargs):        
-#         context = super(MovimVerView, self).get_context_data(**kwargs)
-#         try:
-#             config = gral_empresa.objects.get(id=settings.ENTIDAD_ID)        
-#         except gral_empresa.DoesNotExist:
-#             config = None        
-#         cpb = self.object
-#         context['config'] = config
-#         detalle = cpb_comprobante_fp.objects.filter(cpb_comprobante=cpb).select_related('tipo_forma_pago','mdcp_banco','cta_ingreso','cta_egreso')       
-#         context['detalle'] = detalle                
-#         return context
-
 #************* PercImp **************
 class PercImpView(VariablesMixin,ListView):
     model = cpb_perc_imp
@@ -1330,8 +1314,7 @@ class PercImpView(VariablesMixin,ListView):
         return super(PercImpView, self).dispatch(*args, **kwargs)
 
     def get_queryset(self):
-        try:
-            empresa = empresa_actual(self.request)
+        try:            
             queryset = cpb_perc_imp.objects.filter(empresa__id__in=empresas_habilitadas(self.request))
         except:
             queryset = cpb_perc_imp.objects.none()
@@ -1386,6 +1369,76 @@ class PercImpDeleteView(VariablesMixin,AjaxDeleteView):
             return redirect(reverse('principal'))
         return super(PercImpDeleteView, self).dispatch(*args, **kwargs)
 
+#************* Retenciones ****
+class RetencView(VariablesMixin,ListView):
+    model = cpb_retenciones
+    template_name = 'general/lista_retenc.html'
+    context_object_name = 'retenc'
+
+    @method_decorator(login_required)
+    def dispatch(self, *args, **kwargs):        
+        if not tiene_permiso(self.request,'gral_configuracion'):
+            return redirect(reverse('principal'))
+        return super(RetencView, self).dispatch(*args, **kwargs)
+
+    def get_queryset(self):
+        try:            
+            queryset = cpb_retenciones.objects.filter(empresa__id__in=empresas_habilitadas(self.request))
+        except:
+            queryset = cpb_retenciones.objects.none()
+        return queryset
+
+class RetencCreateView(VariablesMixin,AjaxCreateView):
+    form_class = RetencForm
+    template_name = 'fm/general/form_retenc.html'
+
+    @method_decorator(login_required)
+    def dispatch(self, *args, **kwargs):        
+        if not tiene_permiso(self.request,'gral_configuracion'):
+            return redirect(reverse('principal'))
+        return super(RetencCreateView, self).dispatch(*args, **kwargs)
+
+    def form_valid(self, form):                       
+        form.instance.empresa = empresa_actual(self.request)
+        messages.success(self.request, u'Los datos se guardaron con éxito!')
+        return super(RetencCreateView, self).form_valid(form)
+
+    def get_initial(self):    
+        initial = super(RetencCreateView, self).get_initial()               
+        return initial    
+
+class RetencEditView(VariablesMixin,AjaxUpdateView):
+    form_class = RetencForm
+    model = cpb_retenciones
+    pk_url_kwarg = 'id'
+    template_name = 'fm/general/form_retenc.html'
+
+    @method_decorator(login_required)
+    def dispatch(self, *args, **kwargs):        
+        if not tiene_permiso(self.request,'gral_configuracion'):
+            return redirect(reverse('principal'))
+        return super(RetencEditView, self).dispatch(*args, **kwargs)
+
+    def form_valid(self, form):        
+        messages.success(self.request, u'Los datos se guardaron con éxito!')
+        return super(RetencEditView, self).form_valid(form)
+
+    def get_initial(self):    
+        initial = super(RetencEditView, self).get_initial()                      
+        return initial    
+
+class RetencDeleteView(VariablesMixin,AjaxDeleteView):
+    model = cpb_retenciones
+    pk_url_kwarg = 'id'
+
+    @method_decorator(login_required)
+    def dispatch(self, *args, **kwargs):        
+        if not tiene_permiso(self.request,'gral_configuracion'):
+            return redirect(reverse('principal'))
+        return super(RetencDeleteView, self).dispatch(*args, **kwargs)
+
+
+
 #************* FormaPago  **************
 class FPView(VariablesMixin,ListView):
     model = cpb_tipo_forma_pago
@@ -1399,9 +1452,8 @@ class FPView(VariablesMixin,ListView):
         return super(FPView, self).dispatch(*args, **kwargs)
 
     def get_queryset(self):
-        try:
-            empresa = empresa_actual(self.request)
-            queryset = cpb_tipo_forma_pago.objects.filter(empresa__id__in=empresas_habilitadas(request))
+        try:            
+            queryset = cpb_tipo_forma_pago.objects.filter(empresa__id__in=empresas_habilitadas(self.request))
         except:
             queryset = cpb_tipo_forma_pago.objects.none()
         return queryset
@@ -1615,8 +1667,7 @@ class DispoView(VariablesMixin,ListView):
         return context
 
     def get_queryset(self):
-        try:
-            empresa = empresa_actual(self.request)
+        try:            
             queryset = cpb_cuenta.objects.filter(empresa__id__in=empresas_habilitadas(self.request))
         except:
             queryset = cpb_cuenta.objects.none()

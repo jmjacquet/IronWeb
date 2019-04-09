@@ -276,7 +276,9 @@ class CPBVentaPresupCreateView(VariablesMixin,CreateView):
         estado=cpb_estado.objects.get(pk=1)
         self.object.estado=estado   
         self.object.empresa = empresa_actual(self.request)        
-        self.object.usuario = usuario_actual(self.request)
+        self.object.usuario = usuario_actual(self.request)        
+        presup=self.get_object()
+        self.object.id_cpb_padre=presup
         self.object.fecha_imputacion=self.object.fecha_cpb
         if not self.object.fecha_vto:
             self.object.fecha_vto=self.object.fecha_cpb
@@ -303,6 +305,11 @@ class CPBVentaPresupCreateView(VariablesMixin,CreateView):
             self.object.estado=estado
             cpb_fp.save() 
             self.object.save()
+        facturado=cpb_estado.objects.get(pk=4)
+        presup.estado=facturado
+        facturado=cpb_estado.objects.get(pk=14)
+        presup.presup_aprobacion=facturado
+        presup.save()   
 
         recalcular_saldo_cpb(self.object.pk)        
         messages.success(self.request, u'Los datos se guardaron con éxito!')
@@ -1115,7 +1122,7 @@ class CPBPresupViewList(VariablesMixin,ListView):
         except gral_empresa.DoesNotExist:
             empresa = None 
         form = ConsultaCpbsCompras(self.request.POST or None,empresa=empresa,request=self.request)   
-        comprobantes = cpb_comprobante.objects.filter(cpb_tipo__tipo=6,empresa=empresa,estado__in=[1,2],pto_vta__in=pto_vta_habilitados_list(self.request)).order_by('-fecha_cpb','-id').select_related('estado','cpb_tipo','entidad')
+        comprobantes = cpb_comprobante.objects.filter(cpb_tipo__tipo=6,empresa=empresa,estado__in=[1,2,4],pto_vta__in=pto_vta_habilitados_list(self.request)).order_by('-fecha_cpb','-id').select_related('estado','cpb_tipo','entidad')
         if form.is_valid():                                
             entidad = form.cleaned_data['entidad']                                                              
             fdesde = form.cleaned_data['fdesde']   
@@ -1125,7 +1132,7 @@ class CPBPresupViewList(VariablesMixin,ListView):
             estado = form.cleaned_data['estado']
 
             if int(estado) == 1:                
-                comprobantes = cpb_comprobante.objects.filter(cpb_tipo__tipo=6,empresa=empresa,estado__in=[1,2,3]).order_by('-fecha_cpb','-id').select_related('estado','cpb_tipo','entidad')
+                comprobantes = cpb_comprobante.objects.filter(cpb_tipo__tipo=6,empresa=empresa,estado__in=[1,2,3,4]).order_by('-fecha_cpb','-id').select_related('estado','cpb_tipo','entidad')
             if fdesde:
                 comprobantes= comprobantes.filter(Q(fecha_cpb__gte=fdesde))
             if fhasta:
@@ -1535,7 +1542,7 @@ class CPBRecCobranzaEditView(VariablesMixin,CreateView):
         for cpb in cpbs_cobro:
             c = cpb.cpb_factura
             entidad = c.entidad                                
-            d.append({'detalle_cpb': c.get_cpb_tipo(),'desc_rec':'0','importe_total':cpb.importe_total,'saldo':c.saldo,'id_cpb_factura':c.id,'cpb_factura':c})                    
+            d.append({'detalle_cpb': c.get_cpb_tipo,'desc_rec':'0','importe_total':cpb.importe_total,'saldo':c.saldo,'id_cpb_factura':c.id,'cpb_factura':c})                    
         cpbs = RecCobranzaCPBFormSet(prefix='formCPB',initial=d)      
         return self.render_to_response(self.get_context_data(form=form,cpb_fp=cpb_fp,cpbs=cpbs))
         
@@ -1545,7 +1552,7 @@ class CPBRecCobranzaEditView(VariablesMixin,CreateView):
         #     for cpb in cpbs_cobro:
         #         c = cpb.cpb_factura
         #         entidad = c.entidad                                
-        #         d.append({'detalle_cpb': c.get_cpb_tipo(),'desc_rec':'0','importe_total':cpb.importe_total,'saldo':c.saldo,'id_cpb_factura':c.id,'cpb_factura':c})            
+        #         d.append({'detalle_cpb': c.get_cpb_tipo,'desc_rec':'0','importe_total':cpb.importe_total,'saldo':c.saldo,'id_cpb_factura':c.id,'cpb_factura':c})            
         #     cpbs = RecCobranzaCPBFormSet(prefix='formCPB',initial=d)      
         #     return self.render_to_response(self.get_context_data(form=form,cpb_fp=cpb_fp,cpbs=cpbs))
         # else:     
@@ -1655,7 +1662,7 @@ class CPBCobrarCreateView(VariablesMixin,CreateView):
             for cpb in cpbs_cobro:
                 c = cpb_comprobante.objects.get(id=cpb['id_cpb_factura'])
                 entidad = c.entidad                
-                d.append({'detalle_cpb': c.get_cpb_tipo(),'desc_rec':'0','importe_total':cpb['importe_total'],'saldo':c.saldo,'id_cpb_factura':c.id,'cpb_factura':c})            
+                d.append({'detalle_cpb': c.get_cpb_tipo,'desc_rec':'0','importe_total':cpb['importe_total'],'saldo':c.saldo,'id_cpb_factura':c.id,'cpb_factura':c})            
                 total += Decimal(cpb['importe_total'])
             cpbs = RecCobranzaCPBFormSet(prefix='formCPB',initial=d)
             if entidad:
@@ -1723,7 +1730,7 @@ class CPBCobrarCreateView(VariablesMixin,CreateView):
             for cpb in cpbs_cobro:
                 c = cpb_comprobante.objects.get(id=cpb['id_cpb_factura'])
                 entidad = c.entidad                
-                d.append({'detalle_cpb': c.get_cpb_tipo(),'desc_rec':'0','importe_total':cpb['importe_total'],'saldo':c.saldo,'id_cpb_factura':c.id,'cpb_factura':c})            
+                d.append({'detalle_cpb': c.get_cpb_tipo,'desc_rec':'0','importe_total':cpb['importe_total'],'saldo':c.saldo,'id_cpb_factura':c.id,'cpb_factura':c})            
             cpbs = RecCobranzaCPBFormSet(prefix='formCPB',initial=d)
             if entidad:
                 form.fields['entidad'].initial = entidad   
@@ -1739,7 +1746,9 @@ def CPBCobrosSeleccionarView(request):
             d=[]
             for c in comprobantes:
                 f = c.cleaned_data                  
-                d.append({'detalle_cpb':f['detalle_cpb'],'desc_rec':'0','id_cpb_factura':f['id_cpb_factura'],'importe_total':f['importe_total'],'saldo':f['saldo']})                        
+                #Traigo solo aquellos comprobantes que tienen importe cargado (+/-)
+                if f['importe_total']!=0:
+                    d.append({'detalle_cpb':f['detalle_cpb'],'desc_rec':'0','id_cpb_factura':f['id_cpb_factura'],'importe_total':f['importe_total'],'saldo':f['saldo']})                        
             d = json.dumps(d,default=default)
             request.session['cpbs_cobranza'] = d
             response = {'status': 1, 'message': "Ok"} # for ok        
@@ -1758,7 +1767,7 @@ def CPBCobrosSeleccionarView(request):
         for c in cpbs:            
             saldo = (c.saldo * c.cpb_tipo.signo_ctacte)
             total += saldo
-            d.append({'detalle_cpb': c.get_cpb_tipo(),'desc_rec':'0','importe_total':saldo,'saldo':saldo,'id_cpb_factura':c.id})
+            d.append({'detalle_cpb': c.get_cpb_tipo,'desc_rec':'0','importe_total':saldo,'saldo':saldo,'id_cpb_factura':c.id})
         CPBSFormSet = formset_factory(CPBSeleccionados, max_num=cant_cpbs,can_delete=False)
         comprobantes = CPBSFormSet(prefix='comprobantes',initial=d)
         variables = RequestContext(request, {'comprobantes':comprobantes,'total':total})        

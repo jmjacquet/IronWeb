@@ -155,7 +155,7 @@ class Producto_EditarPrecioForm(forms.ModelForm):
 	coef_ganancia = forms.DecimalField(initial=1,decimal_places=3)		
 	class Meta:
 			model = prod_producto_lprecios
-			exclude = ['id']	
+			exclude = ['id','producto','lista_precios']	
 
 
 

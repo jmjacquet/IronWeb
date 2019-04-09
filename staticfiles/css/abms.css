@@ -82,10 +82,10 @@
   margin-top: 3px;
 }
 
-.abm [class*='checkbox']{
+.abm [class*='checkbox'], input[type="checkbox"]{
 /*  padding-right:10px;
   padding-left:10px;*/
-  line-height: 15px;
+  vertical-align: text-bottom;
 }
 
 .abm [class*='delete-row']{
