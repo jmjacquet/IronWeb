@@ -24,6 +24,18 @@ function calcularTotales(){
        });      
       $("#id_importe_subtotal").val(tot.toFixed(2));
 
+      var tot=0;
+         $('.form-detallesRet tr').each(function(j) {
+              if ($(this).is(':visible'))
+                  {
+                    var $importe_tot = parseFloat($("input[name='formRet-"+j+"-importe_total']").val())|| 0;                
+                    if ($importe_tot == '') $importe_tot=0;                    
+                    tot = tot + $importe_tot;  
+                  }
+              });       
+        var $importe_ret = tot;
+        $("#id_importe_ret").val($importe_ret.toFixed(2));
+
       if($("#id_importe_cpbs").val()){
         $('.form-cpbs tr').each(function(j) {
             var $importe = parseFloat($("input[name='formCPB-"+j+"-importe_total']").val())|| 0;               
@@ -32,12 +44,11 @@ function calcularTotales(){
         }); 
         $("#id_importe_cpbs").val(tot2.toFixed(2));
         };
-      var tot=0;
-      $("#id_importe_imp_perc").val(0.00);
+
       var $importe_subtot = parseFloat($("#id_importe_subtotal").val())|| 0;
-      var $importe_imp_perc = parseFloat($("#id_importe_imp_perc").val())|| 0;
+      var $importe_ret = parseFloat($("#id_importe_ret").val())|| 0;
       var $importe_total = 0;        
-      $importe_total = $importe_imp_perc + $importe_subtot;  
+      $importe_total = $importe_ret + $importe_subtot;  
       $importe_total = parseFloat($importe_total).toFixed(2); 
       $("#id_importe_total").val($importe_total);
   };
@@ -136,6 +147,11 @@ function recalcular(){
  
 
       });
+       $('.form-detallesRet tr').each(function(j) {
+          $("input[name='formRet-"+j+"-importe_total']").change(function(){
+             calcularTotales();     
+           });      
+        });
      calcularTotales();
     };
 
@@ -171,6 +187,24 @@ $('.formFP').formset({
             recalcular();               
           }
       });
+$('.formRet').formset({
+          addText: 'Agregar Retención',
+          addCssClass: 'add-row btn blue-hoki ',
+          deleteCssClass: 'delete-row2',       
+          deleteText: 'Eliminar',
+          prefix: 'formRet',
+          formCssClass: 'dynamic-form2',
+          keepFieldValues:'',
+          added: function (row) {
+            var i = $(row).index();
+            $("[name='formRet-"+i+"-importe_total']").val('0.00');
+            recalcular();
+            $("[name='formRet-"+i+"-retencion']").focus();
+           },
+          removed: function (row) {
+            calcularTotales();             
+          }
+      });
 
 $.fn.datepicker.dates['es'] = {
     days: ["Domingo", "Lunes", "Martes", "Miércoles", "Jueves", "Viernes", "Sábado", "Domingo"],
@@ -197,7 +231,7 @@ $.fn.datepicker.dates['es'] = {
 $( "#GuardarRec" ).click(function() {
             
       total = parseFloat($("#id_importe_total").val());
-      total_pagos = parseFloat($("#id_importe_subtotal").val());        
+            
       var total_cpbs = 0;
       if($("#id_importe_cpbs").val()){
       total_cpbs = parseFloat($("#id_importe_cpbs").val())};
@@ -216,16 +250,7 @@ $( "#GuardarRec" ).click(function() {
           return false;
         }
       };   
-      
-
-      if (total != total_pagos)
-      {                
-          alertify.errorAlert("¡El importe total ($"+total+") no coincide con los pagos cargados ($"+total_pagos+")!");
-          $("#GuardarRec").prop("disabled", false);     
-          return false;
-      }       
-      //El solicitante debe cargar un EMAil
-    
+             
 
        $("#form-alta:disabled").removeAttr('disabled');
         $('#id_pto_vta').removeAttr('disabled');                          
