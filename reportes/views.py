@@ -350,11 +350,7 @@ class saldos_proveedores(VariablesMixin,ListView):
 ################################################################
 
 import StringIO
-def generarCITI(cpbs,ventas_compras,tipo_archivo):
-    #ventascompras = V/C
-    #tipo_archivo = cpbs/alicuotas
-    import time
-    start = time.time()
+def generarCITI(cpbs,ventas_compras,tipo_archivo):    
     archivo = StringIO.StringIO()
     nafip = None
     if (ventas_compras=='V'):
@@ -387,33 +383,37 @@ def generarCITI(cpbs,ventas_compras,tipo_archivo):
             linea += str(0).replace(".","").rjust(15, "0") #perc_nc
             linea += str(c.importe_exento).encode('utf-8').replace(".","").rjust(15, "0") #importe_exento
             
-
-            perc_impIva=0.00            
-            perc_IIBB=0.00
-            perc_impMunicip=0.00
-            importe_impuestosInt=0.00
-            otros_perc_imp=0.00
+            perc_impuestosNac=Decimal(0.00)
+            perc_IIBB=Decimal(0.00)
+            perc_impMunicip=Decimal(0.00)
+            importe_impuestosInt=Decimal(0.00)
+            otros_perc_imp=Decimal(0.00)
+            cpb_perc = cpb_comprobante_perc_imp.objects.filter(cpb_comprobante=c)
+           
             try:
                 cpb_perc = cpb_comprobante_perc_imp.objects.filter(cpb_comprobante=c)
-                id = p.perc_imp.id                                         
-                if id in [6,13]:
-                    perc_impIva+=p.importe_total      
-                elif id in [2,8]:
-                    perc_impMunicip+=p.importe_total                        
-                elif id==3:
-                    importe_impuestosInt+=p.importe_total
-                elif id in [5,7]:
-                    perc_IIBB+=p.importe_total
-                else:
-                    otros_perc_imp+=p.importe_total                             
+                print cpb_perc
+                for p in cpb_perc: 
+                    
+                    id = p.perc_imp.id 
+                    print id
+                    if id==1:
+                        perc_impuestosNac+=p.importe_total
+                    elif id in [2,8]:
+                        perc_impMunicip+=p.importe_total                        
+                    elif id==3:
+                        importe_impuestosInt+=p.importe_total
+                    elif id in [5,7]:
+                        perc_IIBB+=p.importe_total
+                    else:
+                        otros_perc_imp+=p.importe_total                             
             except:
                 pass
-
-            linea += str(perc_impIva).replace(".","").rjust(15, "0") #perc_impIva
-            linea += str(otros_perc_imp).replace(".","").rjust(15, "0") #otros_perc_imp
-            linea += str(perc_IIBB).replace(".","").rjust(15, "0") #perc_IIBB
-            linea += str(perc_impMunicip).replace(".","").rjust(15, "0") #perc_impMunicip
-            linea += str(importe_impuestosInt).replace(".","").rjust(15, "0") #importe_impuestosInt
+            
+            linea += str(perc_impuestosNac).encode('utf-8').replace(".","").rjust(15, "0") #perc_impuestosNac
+            linea += str(perc_IIBB).encode('utf-8').replace(".","").rjust(15, "0") #perc_IIBB
+            linea += str(perc_impMunicip).encode('utf-8').replace(".","").rjust(15, "0") #perc_impMunicip
+            linea += str(importe_impuestosInt).encode('utf-8').replace(".","").rjust(15, "0") #importe_impuestosInt                        
             linea += str('PES').encode('utf-8') #Moneda
             linea += str('0001000000').encode('utf-8')#tipo_cambio
             try:
@@ -431,8 +431,8 @@ def generarCITI(cpbs,ventas_compras,tipo_archivo):
                 cod_op = 'N'
             linea += str(cant_alic).encode('utf-8').rjust(1, "0") #cant_alic_iva
             linea += str(cod_op).encode('utf-8')#cod_operacion
-            linea += str(0).replace(".","").rjust(15, "0") #otrosTributos
-            linea += str(c.fecha_imputacion.strftime("%Y%m%d")).encode('utf-8').rjust(8, "0") #FECHA_VTO
+            linea += str(0).replace(".","").rjust(15, "0") #otrosTributos            
+            linea += str(0).encode('utf-8').rjust(8, "0") #FECHA_VTO
             
             archivo.write(linea+'\r\n')
 
@@ -480,33 +480,34 @@ def generarCITI(cpbs,ventas_compras,tipo_archivo):
             linea += str(c.importe_no_gravado).encode('utf-8').replace(".","").rjust(15, "0") #importe_ng            
             linea += str(c.importe_exento).encode('utf-8').replace(".","").rjust(15, "0") #importe_exento
             
-            perc_impIva=0.00            
-            perc_IIBB=0.00
-            perc_impMunicip=0.00
-            importe_impuestosInt=0.00
-            otros_perc_imp=0.00
+            perc_impuestosNac=Decimal(0.00)
+            perc_IIBB=Decimal(0.00)
+            perc_impMunicip=Decimal(0.00)
+            importe_impuestosInt=Decimal(0.00)
+            perc_imp_iva=Decimal(0.00)
             try:
                 cpb_perc = cpb_comprobante_perc_imp.objects.filter(cpb_comprobante=c)
                 for p in cpb_perc: 
-                    id = p.perc_imp.id                                         
-                    if id in [6,13]:
-                        perc_impIva+=p.importe_total      
+                    id = p.perc_imp.id 
+                    if id==1:
+                        perc_impuestosNac+=p.importe_total
                     elif id in [2,8]:
                         perc_impMunicip+=p.importe_total                        
                     elif id==3:
                         importe_impuestosInt+=p.importe_total
                     elif id in [5,7]:
                         perc_IIBB+=p.importe_total
-                    else:
-                        otros_perc_imp+=p.importe_total                             
+                    elif id in [6,13]:
+                        perc_imp_iva+=p.importe_total
             except:
                 pass
 
-            linea += str(perc_impIva).replace(".","").rjust(15, "0") #perc_impIva
-            linea += str(otros_perc_imp).replace(".","").rjust(15, "0") #otros_perc_imp
-            linea += str(perc_IIBB).replace(".","").rjust(15, "0") #perc_IIBB
-            linea += str(perc_impMunicip).replace(".","").rjust(15, "0") #perc_impMunicip
-            linea += str(importe_impuestosInt).replace(".","").rjust(15, "0") #importe_impuestosInt
+            linea += str(perc_imp_iva).encode('utf-8').replace(".","").rjust(15, "0") #perc_impuestosNac
+            linea += str(perc_impuestosNac).encode('utf-8').replace(".","").rjust(15, "0") #perc_impuestosNac
+            linea += str(perc_IIBB).encode('utf-8').replace(".","").rjust(15, "0") #perc_IIBB
+            linea += str(perc_impMunicip).encode('utf-8').replace(".","").rjust(15, "0") #perc_impMunicip
+            linea += str(importe_impuestosInt).encode('utf-8').replace(".","").rjust(15, "0") #importe_impuestosInt
+            
             linea += str('PES').encode('utf-8') #Moneda
             linea += str('0001000000').encode('utf-8')#tipo_cambio            
             try:
@@ -561,6 +562,7 @@ def generarCITI(cpbs,ventas_compras,tipo_archivo):
     contents = archivo.getvalue()
     archivo.close()    
     return contents
+
 
 
 @login_required 
