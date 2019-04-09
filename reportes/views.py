@@ -390,6 +390,7 @@ def generarCITI(cpbs,ventas_compras,tipo_archivo):
             otros_perc_imp=0.00
             try:
                 cpb_perc = cpb_comprobante_perc_imp.objects.filter(cpb_comprobante=c)
+                print cpb_perc
                 for p in cpb_perc: 
                     id = p.perc_imp.id 
                     if id==1:
@@ -404,12 +405,12 @@ def generarCITI(cpbs,ventas_compras,tipo_archivo):
                         otros_perc_imp+=p.importe_total                             
             except:
                 pass
-
+            
             linea += str(perc_impuestosNac).encode('utf-8').replace(".","").rjust(15, "0") #perc_impuestosNac
             linea += str(perc_IIBB).encode('utf-8').replace(".","").rjust(15, "0") #perc_IIBB
             linea += str(perc_impMunicip).encode('utf-8').replace(".","").rjust(15, "0") #perc_impMunicip
-            linea += str(importe_impuestosInt).encode('utf-8').replace(".","").rjust(15, "0") #importe_impuestosInt
-
+            linea += str(importe_impuestosInt).encode('utf-8').replace(".","").rjust(15, "0") #importe_impuestosInt            
+            print linea
             linea += str('PES').encode('utf-8') #Moneda
             linea += str('0001000000').encode('utf-8')#tipo_cambio
             try:
