@@ -383,16 +383,20 @@ def generarCITI(cpbs,ventas_compras,tipo_archivo):
             linea += str(0).replace(".","").rjust(15, "0") #perc_nc
             linea += str(c.importe_exento).encode('utf-8').replace(".","").rjust(15, "0") #importe_exento
             
-            perc_impuestosNac=0.00
-            perc_IIBB=0.00
-            perc_impMunicip=0.00
-            importe_impuestosInt=0.00
-            otros_perc_imp=0.00
+            perc_impuestosNac=Decimal(0.00)
+            perc_IIBB=Decimal(0.00)
+            perc_impMunicip=Decimal(0.00)
+            importe_impuestosInt=Decimal(0.00)
+            otros_perc_imp=Decimal(0.00)
+            cpb_perc = cpb_comprobante_perc_imp.objects.filter(cpb_comprobante=c)
+           
             try:
                 cpb_perc = cpb_comprobante_perc_imp.objects.filter(cpb_comprobante=c)
                 print cpb_perc
                 for p in cpb_perc: 
+                    
                     id = p.perc_imp.id 
+                    print id
                     if id==1:
                         perc_impuestosNac+=p.importe_total
                     elif id in [2,8]:
@@ -409,8 +413,7 @@ def generarCITI(cpbs,ventas_compras,tipo_archivo):
             linea += str(perc_impuestosNac).encode('utf-8').replace(".","").rjust(15, "0") #perc_impuestosNac
             linea += str(perc_IIBB).encode('utf-8').replace(".","").rjust(15, "0") #perc_IIBB
             linea += str(perc_impMunicip).encode('utf-8').replace(".","").rjust(15, "0") #perc_impMunicip
-            linea += str(importe_impuestosInt).encode('utf-8').replace(".","").rjust(15, "0") #importe_impuestosInt            
-            print linea
+            linea += str(importe_impuestosInt).encode('utf-8').replace(".","").rjust(15, "0") #importe_impuestosInt                        
             linea += str('PES').encode('utf-8') #Moneda
             linea += str('0001000000').encode('utf-8')#tipo_cambio
             try:
@@ -477,11 +480,11 @@ def generarCITI(cpbs,ventas_compras,tipo_archivo):
             linea += str(c.importe_no_gravado).encode('utf-8').replace(".","").rjust(15, "0") #importe_ng            
             linea += str(c.importe_exento).encode('utf-8').replace(".","").rjust(15, "0") #importe_exento
             
-            perc_impuestosNac=0.00
-            perc_IIBB=0.00
-            perc_impMunicip=0.00
-            importe_impuestosInt=0.00
-            perc_imp_iva=0.00
+            perc_impuestosNac=Decimal(0.00)
+            perc_IIBB=Decimal(0.00)
+            perc_impMunicip=Decimal(0.00)
+            importe_impuestosInt=Decimal(0.00)
+            perc_imp_iva=Decimal(0.00)
             try:
                 cpb_perc = cpb_comprobante_perc_imp.objects.filter(cpb_comprobante=c)
                 for p in cpb_perc: 
