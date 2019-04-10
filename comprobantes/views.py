@@ -563,7 +563,7 @@ def imprimirFactura(request,id,pdf=None):
     facturado = (cpb.cae!=None)
 
     cantidad = detalle_comprobante.count() + cantidad
-    total_exng = cpb.importe_exento + cpb.importe_no_gravado
+    total_exng = cpb.importe_exento + cpb.importe_no_gravado + cpb.importe_perc_imp
     if discrimina_iva:
         total_bruto = cpb.importe_subtotal
     else:
@@ -782,12 +782,49 @@ def imprimirRemito(request,id,pdf=None):
 def imprimirCobranza(request,id,pdf=None):   
     cpb = cpb_comprobante.objects.get(id=id)        
     #puedeVerPadron(request,c.id_unidad.pk)    
-    try:
-        config = gral_empresa.objects.get(id=settings.ENTIDAD_ID)        
+    try:        
+        empresa = empresa_actual(request)
     except gral_empresa.DoesNotExist:
-        config = None 
+        empresa = None 
     
-    c = config
+    c = empresa
+    
+    tipo_logo_factura = c.tipo_logo_factura
+    cuit = c.cuit
+    ruta_logo = c.ruta_logo
+    nombre_fantasia = c.nombre_fantasia
+    domicilio = c.domicilio
+    email = c.email
+    telefono = c.telefono
+    celular = c.celular
+    iibb = c.iibb
+    categ_fiscal = c.categ_fiscal
+    fecha_inicio_activ = c.fecha_inicio_activ       
+    
+    cobranzas = cpb_cobranza.objects.filter(cpb_comprobante=cpb)    
+    retenciones = cpb_comprobante_retenciones.objects.filter(cpb_comprobante=cpb)    
+    leyenda = u'DOCUMENTO NO VÁLIDO COMO FACTURA'
+    pagos = cpb_comprobante_fp.objects.filter(cpb_comprobante=cpb)    
+    codigo_letra = '000'
+    
+    context = Context()    
+    fecha = hoy()    
+        
+    template = 'general/facturas/cobranza.html'                        
+    if pdf:
+        return render_to_pdf(template,locals())
+    return render_to_pdf_response(request, template, locals())
+
+@login_required 
+def imprimirCobranzaCtaCte(request,id,pdf=None):   
+    cpb = cpb_comprobante.objects.get(id=id)        
+    #puedeVerPadron(request,c.id_unidad.pk)    
+    try:        
+        empresa = empresa_actual(request)
+    except gral_empresa.DoesNotExist:
+        empresa = None 
+    
+    c = empresa
     
     tipo_logo_factura = c.tipo_logo_factura
     cuit = c.cuit
@@ -801,15 +838,19 @@ def imprimirCobranza(request,id,pdf=None):
     categ_fiscal = c.categ_fiscal
     fecha_inicio_activ = c.fecha_inicio_activ   
     
-    cobranzas = cpb_cobranza.objects.filter(cpb_comprobante=cpb)    
     leyenda = u'DOCUMENTO NO VÁLIDO COMO FACTURA'
     pagos = cpb_comprobante_fp.objects.filter(cpb_comprobante=cpb)    
     codigo_letra = '000'
-    
+    retenciones = cpb_comprobante_retenciones.objects.filter(cpb_comprobante=cpb) 
     context = Context()    
     fecha = hoy()    
- 
-    template = 'general/facturas/cobranza.html'                        
+    
+    total_ctacte = cpb_comprobante.objects.filter(entidad=cpb.entidad,pto_vta__in=pto_vta_habilitados_list(request),cpb_tipo__usa_ctacte=True,cpb_tipo__compra_venta='V'\
+        ,empresa=empresa,estado__in=[1,2],fecha_cpb__lte=cpb.fecha_cpb).aggregate(sum=Sum(F('importe_total')*F('cpb_tipo__signo_ctacte'), output_field=DecimalField()))['sum'] or 0    
+    if total_ctacte<0:
+        total_ctacte=0
+    
+    template = 'general/facturas/cobranza_ctacte.html'                        
     if pdf:
         return render_to_pdf(template,locals())
     return render_to_pdf_response(request, template, locals())

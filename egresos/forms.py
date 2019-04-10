@@ -21,7 +21,7 @@ import math
 class CPBCompraForm(forms.ModelForm):
 	entidad = chosenforms.ChosenModelChoiceField(label='Proveedor',queryset=egr_entidad.objects.filter(tipo_entidad=2,baja=False),empty_label='---',required = False)
 	vendedor = chosenforms.ChosenModelChoiceField(label='Vendedor',queryset=egr_entidad.objects.filter(tipo_entidad=3,baja=False),empty_label='---',required = False)
-	pto_vta = forms.IntegerField(label='Pto. Vta.',required = False)
+	pto_vta = forms.IntegerField(label='Pto. Vta.',required = True)
 	fecha_cpb = forms.DateField(required = True,widget=forms.DateInput(attrs={'class': 'form-control datepicker'}),initial=hoy())
 	fecha_imputacion = forms.DateField(required = False,widget=forms.DateInput(attrs={'class': 'form-control datepicker'}),initial=hoy())
 	fecha_vto = forms.DateField(required = False,widget=forms.DateInput(attrs={'class': 'datepicker'}))	
@@ -52,8 +52,7 @@ class CPBCompraForm(forms.ModelForm):
 
 	def __init__(self, *args, **kwargs):
 		request = kwargs.pop('request', None)
-		super(CPBCompraForm, self).__init__(*args, **kwargs)
-		
+		super(CPBCompraForm, self).__init__(*args, **kwargs)		
 		try:
 			empresa = empresa_actual(request)
 			letras = tipo_comprob_fiscal(empresa.categ_fiscal)
@@ -65,8 +64,6 @@ class CPBCompraForm(forms.ModelForm):
 			self.fields['entidad'].queryset = egr_entidad.objects.filter(tipo_entidad=2,baja=False,empresa__id__in=empresas_habilitadas(request)).order_by('apellido_y_nombre')
 			self.fields['fecha_vto'].initial = hoy()+timedelta(days=empresa.get_dias_venc())
 			self.fields['cpb_tipo'].queryset = cpb_tipo.objects.filter(Q(baja=False)&Q(tipo__in=get_compra_venta())&(Q(compra_venta='C')|Q(tipo=14)))
-
-
 		except:
 			empresa = None  
 
@@ -81,6 +78,9 @@ class CPBCompraForm(forms.ModelForm):
 		pto_vta = self.cleaned_data.get('pto_vta')		
 		numero = self.cleaned_data.get('numero')
 		
+		if pto_vta <= 0:											
+			raise forms.ValidationError("El Nº de PV no es válido! Verifique.")
+
 		if tipo_form == 'EDICION':							
 				if importe_cobrado > importe_total:					
 					self._errors['importe_cobrado'] = u'El total del comprobante debe ser igual o mayor al total de sus cobros!($%s)' % (importe_total-importe_cobrado)

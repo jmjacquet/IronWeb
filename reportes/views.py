@@ -52,7 +52,7 @@ def cuenta_corriente(request,compra_venta,entidad,fdesde,fhasta,estado,empresa):
 @login_required 
 def cta_cte_clientes(request,id=None):
     limpiar_sesion(request)
-    if not tiene_permiso(request,'rep_cta_cte'):
+    if not tiene_permiso(request,'rep_cta_cte_clientes'):
             return redirect(reverse('principal'))  
     context = {}
     context = getVariablesMixin(request)    
@@ -164,7 +164,7 @@ class saldos_clientes(VariablesMixin,ListView):
     @method_decorator(login_required)
     def dispatch(self, *args, **kwargs):         
         limpiar_sesion(self.request)        
-        if not tiene_permiso(self.request,'rep_saldos'):
+        if not tiene_permiso(self.request,'rep_saldos_clientes'):
             return redirect(reverse('principal'))  
         return super(saldos_clientes, self).dispatch(*args,**kwargs)
 
@@ -200,7 +200,7 @@ class saldos_clientes(VariablesMixin,ListView):
 def cta_cte_proveedores(request,id=None):
          
         limpiar_sesion(request)        
-        if not tiene_permiso(request,'rep_cta_cte'):
+        if not tiene_permiso(request,'rep_cta_cte_prov'):
             return redirect(reverse('principal'))          
 
         context = {}
@@ -318,7 +318,7 @@ class saldos_proveedores(VariablesMixin,ListView):
     @method_decorator(login_required)
     def dispatch(self, *args, **kwargs):         
         limpiar_sesion(self.request)        
-        if not tiene_permiso(self.request,'rep_saldos'):
+        if not tiene_permiso(self.request,'rep_saldos_prov'):
             return redirect(reverse('principal'))  
         return super(saldos_proveedores, self).dispatch(*args,**kwargs)
 
@@ -348,9 +348,10 @@ class saldos_proveedores(VariablesMixin,ListView):
         return self.get(*args, **kwargs)
              
 ################################################################
-
+import unicodedata
 import StringIO
 def generarCITI(cpbs,ventas_compras,tipo_archivo):    
+    nombre= ''
     archivo = StringIO.StringIO()
     nafip = None
     if (ventas_compras=='V'):
@@ -377,7 +378,8 @@ def generarCITI(cpbs,ventas_compras,tipo_archivo):
                 nro_doc = c.entidad.fact_cuit
             linea += str(tipo_doc).encode('utf-8').rjust(2, "0") #TIPO DOC
             linea += str(nro_doc)[:20].encode('utf-8').rjust(20, "0") #nro DOC/cuit
-            linea += (c.entidad.apellido_y_nombre)[:30].encode('utf-8').ljust(30, " ") #nombre
+            nombre = unicodedata.normalize('NFKD', (c.entidad.apellido_y_nombre)[:30]).encode('ASCII', 'ignore')
+            linea += nombre.ljust(30, " ") #nombre
             linea += str(c.importe_total).encode('utf-8').replace(".","").rjust(15, "0") #importe_total
             linea += str(c.importe_no_gravado).encode('utf-8').replace(".","").rjust(15, "0") #importe_ng
             linea += str(0).replace(".","").rjust(15, "0") #perc_nc
@@ -391,12 +393,9 @@ def generarCITI(cpbs,ventas_compras,tipo_archivo):
             cpb_perc = cpb_comprobante_perc_imp.objects.filter(cpb_comprobante=c)
            
             try:
-                cpb_perc = cpb_comprobante_perc_imp.objects.filter(cpb_comprobante=c)
-                print cpb_perc
-                for p in cpb_perc: 
-                    
-                    id = p.perc_imp.id 
-                    print id
+                cpb_perc = cpb_comprobante_perc_imp.objects.filter(cpb_comprobante=c)                
+                for p in cpb_perc:                     
+                    id = p.perc_imp.id                     
                     if id==1:
                         perc_impuestosNac+=p.importe_total
                     elif id in [2,8]:
@@ -462,8 +461,7 @@ def generarCITI(cpbs,ventas_compras,tipo_archivo):
             linea += str(nafip).encode('utf-8').rjust(3, "0") #CODIGO CPB AFIP
             linea += str(c.pto_vta).encode('utf-8').rjust(5, "0") #PTO VTA
             linea += str(c.numero).encode('utf-8').rjust(20, "0") #NRO CPB
-            linea += str('').encode('utf-8').ljust(16, " ") #NRO DESPACHO IMPORTACION
-            
+            linea += str('').encode('utf-8').ljust(16, " ") #NRO DESPACHO IMPORTACION            
             tipo_doc=c.entidad.tipo_doc
             if tipo_doc == 99:
                 nro_doc = 0
@@ -472,14 +470,15 @@ def generarCITI(cpbs,ventas_compras,tipo_archivo):
             elif tipo_doc == 80:    
                 nro_doc = c.entidad.fact_cuit
             else:
-                nro_doc = c.entidad.fact_cuit
+                nro_doc = c.entidad.fact_cuit            
             linea += str(tipo_doc).encode('utf-8').rjust(2, "0") #TIPO DOC
-            linea += str(nro_doc)[:20].encode('utf-8').rjust(20, "0") #nro DOC/cuit
-            linea += (c.entidad.apellido_y_nombre)[:30].encode('utf-8').ljust(30, " ") #nombre
-            linea += str(c.importe_total).replace(".","").encode('utf-8').rjust(15, "0") #importe_total
+            linea += str(nro_doc)[:20].encode('utf-8').rjust(20, "0") #nro DOC/cuit            
+            nombre = unicodedata.normalize('NFKD', (c.entidad.apellido_y_nombre)[:30]).encode('ASCII', 'ignore')
+            linea += nombre.ljust(30, " ") #nombre
+            linea += str(c.importe_total).replace(".","").encode('utf-8').rjust(15, "0") #importe_total            
             linea += str(c.importe_no_gravado).encode('utf-8').replace(".","").rjust(15, "0") #importe_ng            
             linea += str(c.importe_exento).encode('utf-8').replace(".","").rjust(15, "0") #importe_exento
-            
+
             perc_impuestosNac=Decimal(0.00)
             perc_IIBB=Decimal(0.00)
             perc_impMunicip=Decimal(0.00)
@@ -525,7 +524,7 @@ def generarCITI(cpbs,ventas_compras,tipo_archivo):
                 cod_op = 'N'
             linea += str(cant_alic).encode('utf-8').rjust(1, "0") #cant_alic_iva
             linea += str(cod_op).encode('utf-8')#cod_operacion
-            linea += str(0).replace(".","").rjust(15, "0") #credFiscalComputable
+            linea += str(c.importe_iva).encode('utf-8').replace(".","").rjust(15, "0") #credFiscalComputable            
             linea += str(0).replace(".","").rjust(15, "0") #otrosTributos
             linea += str(0).rjust(11, "0") #CUIT emisor/receptor
             linea += str('').encode('utf-8').ljust(30, " ") #Nombre emisor/receptor
@@ -562,8 +561,6 @@ def generarCITI(cpbs,ventas_compras,tipo_archivo):
     contents = archivo.getvalue()
     archivo.close()    
     return contents
-
-
 
 @login_required 
 def libro_iva_ventas(request):    
@@ -773,7 +770,6 @@ class caja_diaria(VariablesMixin,ListView):
     def post(self, *args, **kwargs):
         return self.get(*args, **kwargs)
         
-
 ################################################################
 
 class saldos_cuentas(VariablesMixin,ListView):
