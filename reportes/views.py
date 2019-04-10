@@ -52,7 +52,7 @@ def cuenta_corriente(request,compra_venta,entidad,fdesde,fhasta,estado,empresa):
 @login_required 
 def cta_cte_clientes(request,id=None):
     limpiar_sesion(request)
-    if not tiene_permiso(request,'rep_cta_cte'):
+    if not tiene_permiso(request,'rep_cta_cte_clientes'):
             return redirect(reverse('principal'))  
     context = {}
     context = getVariablesMixin(request)    
@@ -164,7 +164,7 @@ class saldos_clientes(VariablesMixin,ListView):
     @method_decorator(login_required)
     def dispatch(self, *args, **kwargs):         
         limpiar_sesion(self.request)        
-        if not tiene_permiso(self.request,'rep_saldos'):
+        if not tiene_permiso(self.request,'rep_saldos_clientes'):
             return redirect(reverse('principal'))  
         return super(saldos_clientes, self).dispatch(*args,**kwargs)
 
@@ -200,7 +200,7 @@ class saldos_clientes(VariablesMixin,ListView):
 def cta_cte_proveedores(request,id=None):
          
         limpiar_sesion(request)        
-        if not tiene_permiso(request,'rep_cta_cte'):
+        if not tiene_permiso(request,'rep_cta_cte_prov'):
             return redirect(reverse('principal'))          
 
         context = {}
@@ -318,7 +318,7 @@ class saldos_proveedores(VariablesMixin,ListView):
     @method_decorator(login_required)
     def dispatch(self, *args, **kwargs):         
         limpiar_sesion(self.request)        
-        if not tiene_permiso(self.request,'rep_saldos'):
+        if not tiene_permiso(self.request,'rep_saldos_prov'):
             return redirect(reverse('principal'))  
         return super(saldos_proveedores, self).dispatch(*args,**kwargs)
 
@@ -563,8 +563,6 @@ def generarCITI(cpbs,ventas_compras,tipo_archivo):
     archivo.close()    
     return contents
 
-
-
 @login_required 
 def libro_iva_ventas(request):    
     limpiar_sesion(request)
@@ -773,7 +771,6 @@ class caja_diaria(VariablesMixin,ListView):
     def post(self, *args, **kwargs):
         return self.get(*args, **kwargs)
         
-
 ################################################################
 
 class saldos_cuentas(VariablesMixin,ListView):
