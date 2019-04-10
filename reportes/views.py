@@ -525,7 +525,7 @@ def generarCITI(cpbs,ventas_compras,tipo_archivo):
                 cod_op = 'N'
             linea += str(cant_alic).encode('utf-8').rjust(1, "0") #cant_alic_iva
             linea += str(cod_op).encode('utf-8')#cod_operacion
-            linea += str(0).replace(".","").rjust(15, "0") #credFiscalComputable
+            linea += str(c.importe_iva).encode('utf-8').replace(".","").rjust(15, "0") #credFiscalComputable            
             linea += str(0).replace(".","").rjust(15, "0") #otrosTributos
             linea += str(0).rjust(11, "0") #CUIT emisor/receptor
             linea += str('').encode('utf-8').ljust(30, " ") #Nombre emisor/receptor
