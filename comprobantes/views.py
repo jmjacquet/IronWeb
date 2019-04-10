@@ -815,6 +815,42 @@ def imprimirCobranza(request,id,pdf=None):
     return render_to_pdf_response(request, template, locals())
 
 @login_required 
+def imprimirCobranzaCtaCte(request,id,pdf=None):   
+    cpb = cpb_comprobante.objects.get(id=id)        
+    #puedeVerPadron(request,c.id_unidad.pk)    
+    try:
+        config = gral_empresa.objects.get(id=settings.ENTIDAD_ID)        
+    except gral_empresa.DoesNotExist:
+        config = None 
+    
+    c = config
+    
+    tipo_logo_factura = c.tipo_logo_factura
+    cuit = c.cuit
+    ruta_logo = c.ruta_logo
+    nombre_fantasia = c.nombre_fantasia
+    domicilio = c.domicilio
+    email = c.email
+    telefono = c.telefono
+    celular = c.celular
+    iibb = c.iibb
+    categ_fiscal = c.categ_fiscal
+    fecha_inicio_activ = c.fecha_inicio_activ   
+    
+    cobranzas = cpb_cobranza.objects.filter(cpb_comprobante=cpb)    
+    leyenda = u'DOCUMENTO NO VÁLIDO COMO FACTURA'
+    pagos = cpb_comprobante_fp.objects.filter(cpb_comprobante=cpb)    
+    codigo_letra = '000'
+    
+    context = Context()    
+    fecha = hoy()    
+ 
+    template = 'general/facturas/cobranza_ctacte.html'                        
+    if pdf:
+        return render_to_pdf(template,locals())
+    return render_to_pdf_response(request, template, locals())
+
+@login_required 
 def imprimirPago(request,id,pdf=None):   
     cpb = cpb_comprobante.objects.get(id=id)        
     #puedeVerPadron(request,c.id_unidad.pk)    

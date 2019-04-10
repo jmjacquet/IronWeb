@@ -52,8 +52,7 @@ class CPBCompraForm(forms.ModelForm):
 
 	def __init__(self, *args, **kwargs):
 		request = kwargs.pop('request', None)
-		super(CPBCompraForm, self).__init__(*args, **kwargs)
-		
+		super(CPBCompraForm, self).__init__(*args, **kwargs)		
 		try:
 			empresa = empresa_actual(request)
 			letras = tipo_comprob_fiscal(empresa.categ_fiscal)
@@ -65,8 +64,6 @@ class CPBCompraForm(forms.ModelForm):
 			self.fields['entidad'].queryset = egr_entidad.objects.filter(tipo_entidad=2,baja=False,empresa__id__in=empresas_habilitadas(request)).order_by('apellido_y_nombre')
 			self.fields['fecha_vto'].initial = hoy()+timedelta(days=empresa.get_dias_venc())
 			self.fields['cpb_tipo'].queryset = cpb_tipo.objects.filter(Q(baja=False)&Q(tipo__in=get_compra_venta())&(Q(compra_venta='C')|Q(tipo=14)))
-
-
 		except:
 			empresa = None  
 

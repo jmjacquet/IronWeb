@@ -97,10 +97,10 @@ class cpb_pto_vta(models.Model):
         db_table = 'cpb_pto_vta'      
     
     def __unicode__(self):
-        return u'%s - %s' % ("{num:>04}".format(num=str(self.numero)),self.nombre)                  
+        return u'%s - %s' % ("{num:>05}".format(num=str(self.numero)),self.nombre)                  
 
     def get_numero(self):
-        return u'%s' % ("{num:>04}".format(num=str(self.numero)))   
+        return u'%s' % ("{num:>05}".format(num=str(self.numero)))   
 
 class cpb_pto_vta_numero(models.Model):
     id = models.AutoField(primary_key=True,db_index=True)
@@ -163,7 +163,7 @@ class cpb_comprobante(models.Model):
         db_table = 'cpb_comprobante'
     
     def __unicode__(self):
-        return u'%s-%s-%s' % ("{num:>04}".format(num=str(self.pto_vta)),self.letra,"{num:>08}".format(num=str(self.numero)))              
+        return u'%s-%s-%s' % ("{num:>05}".format(num=str(self.pto_vta)),self.letra,"{num:>08}".format(num=str(self.numero)))              
 
     
     # def get_cpb(self):
@@ -171,7 +171,7 @@ class cpb_comprobante(models.Model):
 
     @property
     def get_cpb(self):        
-        return u'%s-%s-%s' % ("{num:>04}".format(num=str(self.pto_vta)),self.letra,"{num:>08}".format(num=str(self.numero)))              
+        return u'%s-%s-%s' % ("{num:>05}".format(num=str(self.pto_vta)),self.letra,"{num:>08}".format(num=str(self.numero)))              
 
     
 
@@ -227,11 +227,11 @@ class cpb_comprobante(models.Model):
         return c.numero_afip
 
     def get_numero(self):                
-        return '%s-%s' % ("{num:>04}".format(num=str(self.pto_vta)),"{num:>08}".format(num=str(self.numero))) 
+        return '%s-%s' % ("{num:>05}".format(num=str(self.pto_vta)),"{num:>08}".format(num=str(self.numero))) 
 
     @property
     def get_cpb_tipo(self):                
-        return u'%s: %s-%s-%s ' % (self.cpb_tipo,"{num:>04}".format(num=str(self.pto_vta)),self.letra,"{num:>08}".format(num=str(self.numero)))
+        return u'%s: %s-%s-%s ' % (self.cpb_tipo,"{num:>05}".format(num=str(self.pto_vta)),self.letra,"{num:>08}".format(num=str(self.numero)))
 
 
     def get_cobranzas(self):                

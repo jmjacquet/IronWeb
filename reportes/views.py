@@ -348,9 +348,10 @@ class saldos_proveedores(VariablesMixin,ListView):
         return self.get(*args, **kwargs)
              
 ################################################################
-
+import unicodedata
 import StringIO
 def generarCITI(cpbs,ventas_compras,tipo_archivo):    
+    nombre= ''
     archivo = StringIO.StringIO()
     nafip = None
     if (ventas_compras=='V'):
@@ -377,7 +378,8 @@ def generarCITI(cpbs,ventas_compras,tipo_archivo):
                 nro_doc = c.entidad.fact_cuit
             linea += str(tipo_doc).encode('utf-8').rjust(2, "0") #TIPO DOC
             linea += str(nro_doc)[:20].encode('utf-8').rjust(20, "0") #nro DOC/cuit
-            linea += (c.entidad.apellido_y_nombre)[:30].encode('utf-8').ljust(30, " ") #nombre
+            nombre = unicodedata.normalize('NFKD', (c.entidad.apellido_y_nombre)[:30]).encode('ASCII', 'ignore')
+            linea += nombre.ljust(30, " ") #nombre
             linea += str(c.importe_total).encode('utf-8').replace(".","").rjust(15, "0") #importe_total
             linea += str(c.importe_no_gravado).encode('utf-8').replace(".","").rjust(15, "0") #importe_ng
             linea += str(0).replace(".","").rjust(15, "0") #perc_nc
@@ -391,12 +393,9 @@ def generarCITI(cpbs,ventas_compras,tipo_archivo):
             cpb_perc = cpb_comprobante_perc_imp.objects.filter(cpb_comprobante=c)
            
             try:
-                cpb_perc = cpb_comprobante_perc_imp.objects.filter(cpb_comprobante=c)
-                print cpb_perc
-                for p in cpb_perc: 
-                    
-                    id = p.perc_imp.id 
-                    print id
+                cpb_perc = cpb_comprobante_perc_imp.objects.filter(cpb_comprobante=c)                
+                for p in cpb_perc:                     
+                    id = p.perc_imp.id                     
                     if id==1:
                         perc_impuestosNac+=p.importe_total
                     elif id in [2,8]:
@@ -462,8 +461,7 @@ def generarCITI(cpbs,ventas_compras,tipo_archivo):
             linea += str(nafip).encode('utf-8').rjust(3, "0") #CODIGO CPB AFIP
             linea += str(c.pto_vta).encode('utf-8').rjust(5, "0") #PTO VTA
             linea += str(c.numero).encode('utf-8').rjust(20, "0") #NRO CPB
-            linea += str('').encode('utf-8').ljust(16, " ") #NRO DESPACHO IMPORTACION
-            
+            linea += str('').encode('utf-8').ljust(16, " ") #NRO DESPACHO IMPORTACION            
             tipo_doc=c.entidad.tipo_doc
             if tipo_doc == 99:
                 nro_doc = 0
@@ -472,14 +470,15 @@ def generarCITI(cpbs,ventas_compras,tipo_archivo):
             elif tipo_doc == 80:    
                 nro_doc = c.entidad.fact_cuit
             else:
-                nro_doc = c.entidad.fact_cuit
+                nro_doc = c.entidad.fact_cuit            
             linea += str(tipo_doc).encode('utf-8').rjust(2, "0") #TIPO DOC
-            linea += str(nro_doc)[:20].encode('utf-8').rjust(20, "0") #nro DOC/cuit
-            linea += (c.entidad.apellido_y_nombre)[:30].encode('utf-8').ljust(30, " ") #nombre
-            linea += str(c.importe_total).replace(".","").encode('utf-8').rjust(15, "0") #importe_total
+            linea += str(nro_doc)[:20].encode('utf-8').rjust(20, "0") #nro DOC/cuit            
+            nombre = unicodedata.normalize('NFKD', (c.entidad.apellido_y_nombre)[:30]).encode('ASCII', 'ignore')
+            linea += nombre.ljust(30, " ") #nombre
+            linea += str(c.importe_total).replace(".","").encode('utf-8').rjust(15, "0") #importe_total            
             linea += str(c.importe_no_gravado).encode('utf-8').replace(".","").rjust(15, "0") #importe_ng            
             linea += str(c.importe_exento).encode('utf-8').replace(".","").rjust(15, "0") #importe_exento
-            
+
             perc_impuestosNac=Decimal(0.00)
             perc_IIBB=Decimal(0.00)
             perc_impMunicip=Decimal(0.00)
