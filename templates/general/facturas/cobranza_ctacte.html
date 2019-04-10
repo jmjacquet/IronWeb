@@ -12,29 +12,67 @@
 
 
  @page {
+         size: a5 landscape;
          margin: 0.5cm 0.5cm 0.5cm 0.5cm;
          padding: 0;         
          @frame footer {
                         -pdf-frame-content: page-footer;
                         bottom: 0.5cm;
-                        height: 3cm;
+                        height: 1cm;
                         margin-right: 0.5cm;                        
                         margin-left: 0.5cm;                                                
                     }
-         @frame header {
-                        -pdf-frame-content: page-header;
-                        margin-top: 0cm;
-                        margin-right: 1cm;                        
-                        margin-left: 1cm;
-                        margin-bottom: 1cm;
-                        height: 2cm;                      
+        @frame footer {
+                        -pdf-frame-content: page-footer2;                       
+                        
+                        margin-right: 0.5cm;                        
+                        margin-left: 0.5cm; 
+                        height: 0.5cm;
+                        bottom:0.2cm;                        
                     }
          }
 </style>
 </head>
 
 <body>  
-{% include 'general/facturas/encabezado.html'%}
+<table width="100%" align="center" >
+  <tr>
+    
+    <td align="center" rowspan="5" width="46%" valign="middle" class="borde_izq borde_arriba borde_abajo">     
+        <h1 class="empresa">{{nombre_fantasia}}</h1>          
+        <h3>{{domicilio}}</h3>
+        <h3>{{email}}</h3>
+        <h3>{{telefono}} {{celular}}</h3>     
+    </td>
+
+    <td colspan="2" align="center" valign="middle" class="borde letra_cpb">
+      <span class="letra_cpb">{{cpb.letra|upper}}</span><p class="letra_cod">{% if tipo %}{{tipo}}{% else %}COD.{{codigo_letra}}{% endif %}</p>
+    </td>
+    <td colspan="2" class="nombre_cpb borde_arriba borde_der">RECIBO CTA CTE<p class="letra_cod">{{leyenda}}</p>
+  </tr>
+  <tr>
+    <td width="5%" align="center" class="">&nbsp;</td>
+    <td width="5%" align="center " class="borde_izq">&nbsp;</td>
+    <td width="22%" class="texto_cpb">Nº: {{cpb.get_numero}}</td>
+    <td width="22%" class="texto_cpb borde_der">Fecha: {{cpb.fecha_cpb|date:'d/m/Y'}}</td>
+  </tr>
+  <tr>
+    <td class="borde_der" >&nbsp;</td>
+    <td class="borde_izq" >&nbsp;</td>
+    <td class="texto_cpb"><span class="texto_cpb ">CUIT: {{cuit}}</span></td>
+    <td class="texto_cpb borde_der">IIBB: {{iibb}}</td>
+  </tr>
+  <tr>
+    <td class="borde_der">&nbsp;</td>
+    <td class="borde_izq">&nbsp;</td>
+    <td colspan="2" class="texto_cpb borde_der">{{get_categ_fiscal_display|upper}}</td>
+  </tr>
+  <tr>
+    <td class="borde_der borde_abajo"></td>
+    <td class="borde_abajo"></td>
+    <td colspan="2" class="borde_abajo texto_cpb borde_der">Inicio de Actividades: {{fecha_inicio_activ|date:'d/m/Y'}}</td>
+  </tr>
+</table>
 <table width="100%" >
   <tr>
     <td width="10%" class=" borde_izq texto_der">Señor/es:</td>
@@ -55,15 +93,15 @@
     <td class="texto_izq borde_der borde_abajo">{{cpb.entidad.fact_cuit|default_if_none:''}}</td>
   </tr> 
   <tr>
-    <td class="texto_der borde_izq">Observaciones:</span></td>
-    <td colspan="3" rowspan="2" valign="top" class="texto_izq borde_der borde_abajo">{{cpb.observacion|default_if_none:''}}</td>
+    <td class="texto_der">Observaciones:</span></td>
+    <td colspan="3" rowspan="2" valign="top" class="texto_izq">{{cpb.observacion|default_if_none:''}}</td>
   </tr>
   <tr>
-    <td class="texto_der borde_abajo borde_izq">&nbsp;</td>
+    <td class="texto_der ">&nbsp;</td>
   </tr> 
 </table>
-<br>
-<h3>Valores Recibidos </h4>
+
+<h3>Valores recibidos en concepto de pago de su Cuenta Corriente:</h3>
 <table width="100%" class="tabla">
   <thead>      
     <th class="borde_izq borde_arriba borde_abajo tabla_header" width="15%">Tipo</th>
@@ -78,69 +116,38 @@
     <tr>
       <td class="listado_izq borde_izq">{{item.tipo_forma_pago|default_if_none:''}}</td>
       <td class="listado_izq borde_izq">{{item.cta_ingreso|default_if_none:''}}</td>
-      <td class="listado_izq borde_izq">{{item.detalle|default_if_none:''|truncatechars:60 }}</td>
+      <td class="listado_izq borde_izq">{{item.detalle|default_if_none:''|truncatechars:40 }}</td>
       <td class=" borde_izq">{{item.mdcp_fecha|date:'d/m/Y'}}</td>
       <td class="listado_izq borde_izq">{{item.mdcp_banco|default_if_none:''}}</td>
       <td class="listado_der borde_izq">{{item.mdcp_cheque|default_if_none:''}}</td>
       <td class="listado_der borde_der borde_izq">${{item.importe|default_if_none:0|floatformat:2|intcomma}}</td>
     </tr>       
-  {% endfor detalle_comprobante %}  
-  <tr class="borde_izq borde_der borde_arriba borde_abajo ">
-    <td colspan="7" class="tabla_footer">Subtotal: ${{cpb.importe_total|default_if_none:0|floatformat:2|intcomma}}</td>
-  </tr>
-</table>
-{% if retenciones %}
-<br>
-<h3>Retenciones</h3>
-<table width="100%" class="tabla">
-  <thead>      
-    <th class="borde_izq borde_arriba borde_abajo tabla_header" width="40%">Tipo</th>    
-    <th class="borde_arriba borde_abajo tabla_header" width="40%">Detalle</th>
-    <th class="borde_der borde_arriba borde_abajo tabla_header" width="20%">Importe</th>
-  </thead>
+  {% endfor pagos %}  
   {% for r in retenciones %}
     <tr>
-      <td class="listado_izq borde_izq">{{r.retencion|default_if_none:''}}</td>
-      <td class="listado_izq borde_izq">{{r.detalle|default_if_none:''}}</td>      
-      <td class="listado_der borde_der borde_izq">${{r.importe_total|default_if_none:0|floatformat:2|intcomma}}</td>
+      <td colspan="2" class="listado_izq borde_arriba borde_izq">{{r.retencion|default_if_none:''}}</td>
+      <td colspan="4" class="listado_izq borde_arriba borde_izq">{{r.detalle|default_if_none:''}}</td>      
+      <td class="listado_der borde_der borde_arriba borde_izq">${{r.importe_total|default_if_none:0|floatformat:2|intcomma}}</td>
     </tr>       
   {% endfor retenciones %}  
   <tr class="borde_izq borde_der borde_arriba borde_abajo ">
-    <td colspan="3" class="tabla_footer">Subtotal: ${{cpb.importe_ret|default_if_none:0|floatformat:2|intcomma}}</td>
+    <td colspan="7" class="tabla_footer">Total: ${{cpb.importe_total|default_if_none:0|floatformat:2|intcomma}}</td>
   </tr>
 </table>
-{% endif %}
-{% if cobranzas %}
-<br>
-<h3>En concepto de cancelación de documentos y adelantos </h3>
-<table width="100%" class="tabla">
-  <thead>      
-    <th class="borde_izq borde_arriba borde_abajo tabla_header" width="60%">Tipo</th>
-    <th class="borde_arriba borde_abajo tabla_header" width="10%">Fecha</th>    
-    <th class="borde_arriba borde_abajo tabla_header" width="20%">Número</th>
-    <th class="borde_der borde_arriba borde_abajo tabla_header" width="20%">Importe</th>
-  </thead>
-  {% for c in cobranzas %}
-    <tr>
-      <td class="listado_izq borde_izq">{{c.cpb_factura.get_cpb_tipo|default_if_none:''}}</td>
-      <td class="listado_izq borde_izq">{{c.cpb_factura.fecha_cpb|date:'d/m/Y'}}</td>
-      <td class="listado_izq borde_izq">{{c.cpb_factura.get_numero|default_if_none:''}}</td>      
-      <td class="listado_der borde_der borde_izq">${{c.importe_total|default_if_none:0|floatformat:2|intcomma}}</td>
-    </tr>       
-  {% endfor detalle_comprobante %}  
-  <tr class="borde_izq borde_der borde_arriba borde_abajo ">
-    <td colspan="4" class="tabla_footer">Subtotal: ${{cpb.importe_total|default_if_none:0|floatformat:2|intcomma}}</td>
-  </tr>
-</table>
-{% endif %}
+<h2 class="listado_subtot_imp">Saldo Restante de Cta.Cte al {{cpb.fecha_cpb|date:'d/m/Y'}}: ${{total_ctacte|default_if_none:0|floatformat:2|intcomma}}</h2>
 <div id="page-footer">
   <table width="100%" align="center" >    
     <tr>
-      <td width="90%" class="listado_final borde_izq borde_arriba borde_abajo tabla_footer">TOTAL:</td>
-      <td width="10%" class="listado_final borde_der borde_arriba borde_abajo tabla_footer">$ {{cpb.importe_total|default_if_none:0|floatformat:2|intcomma}}</td>
+      <td width="10%"></td>
+      <td width="30%" class="texto_firma">Recibí Conforme</td>    
+      <td width="20%" class=" "></td>
+      <td width="30%" class="texto_firma">Firma y Aclaración</td>
+      <td width="10%"></td>  
     </tr>
-      
   </table>
+</div>
+<div id="page-footer2" class="pie_sistema">
+  <img alt="" class="pie_logo" src="{% static 'images/logo_iron.png' %}"/>&nbsp;&nbsp;IRONweb Gestión & Facturación
 </div>
 
 </body>
