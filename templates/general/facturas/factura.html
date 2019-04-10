@@ -170,13 +170,14 @@
     </tr>
     <tr>
       {% if discrimina_iva %}
-        <td class="listado_final">Importe Exento/No Gravado:</td>
+        <td class="listado_final">Exento/No Gravado/Perc/Imp:</td>
         <td class="listado_final borde_der">$ {{total_exng|default_if_none:0|floatformat:2|intcomma}}</td>
       {% else %}
         <td class="listado_final ">&nbsp;</td>
         <td class="listado_final borde_der">&nbsp;</td>
       {% endif %}
     </tr>
+    
     <tr>
       {% if discrimina_iva %}
         <td class="listado_final">

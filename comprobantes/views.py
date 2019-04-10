@@ -563,7 +563,7 @@ def imprimirFactura(request,id,pdf=None):
     facturado = (cpb.cae!=None)
 
     cantidad = detalle_comprobante.count() + cantidad
-    total_exng = cpb.importe_exento + cpb.importe_no_gravado
+    total_exng = cpb.importe_exento + cpb.importe_no_gravado + cpb.importe_perc_imp
     if discrimina_iva:
         total_bruto = cpb.importe_subtotal
     else:
