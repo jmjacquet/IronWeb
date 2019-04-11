@@ -1433,6 +1433,8 @@ class CPBRecCobranzaViewList(VariablesMixin,ListView):
     def post(self, *args, **kwargs):
         return self.get(*args, **kwargs)
 
+class CPBRecRetFormSet(BaseInlineFormSet): 
+    pass
 class CPBRecCobranzaFPFormSet(BaseInlineFormSet): 
     pass  
 class CPBReciboCPBFormSet(BaseInlineFormSet): 
@@ -1440,7 +1442,7 @@ class CPBReciboCPBFormSet(BaseInlineFormSet):
 
 RecCobranzaFPFormSet = inlineformset_factory(cpb_comprobante, cpb_comprobante_fp,form=CPBRecFPForm,formset=CPBRecCobranzaFPFormSet, can_delete=True,extra=0,min_num=1)
 RecCobranzaCPBFormSet = inlineformset_factory(cpb_comprobante, cpb_cobranza, fk_name='cpb_comprobante',form=CPBRecCPBForm,formset=CPBReciboCPBFormSet, can_delete=True,extra=0,min_num=1)
-#ReciboRetFormSet = inlineformset_factory(cpb_comprobante, cpb_comprobante_perc_imp,form=CPBVentaPercImpForm,formset=CPBReciboRetFormSet, can_delete=True,extra=0,min_num=1)  
+RecCobranzaRetFormSet = inlineformset_factory(cpb_comprobante, cpb_comprobante_retenciones,form=CPBRecRetForm,formset=CPBRecRetFormSet, can_delete=True,extra=0,min_num=1)  
 
 class CPBRecCobranzaCreateView(VariablesMixin,CreateView):
     form_class = CPBRecCobranzaForm
@@ -1470,21 +1472,25 @@ class CPBRecCobranzaCreateView(VariablesMixin,CreateView):
         form_class = self.get_form_class()
         form = self.get_form(form_class)       
         RecCobranzaFPFormSet.form = staticmethod(curry(CPBRecFPForm,request=request))
+        RecCobranzaRetFormSet.form = staticmethod(curry(CPBRecRetForm,request=request))
+        cpb_ret = RecCobranzaRetFormSet(prefix='formRet')
         cpb_fp = RecCobranzaFPFormSet(prefix='formFP')        
-        return self.render_to_response(self.get_context_data(form=form,cpb_fp = cpb_fp))
+        return self.render_to_response(self.get_context_data(form=form,cpb_fp = cpb_fp,cpb_ret=cpb_ret))
 
     def post(self, request, *args, **kwargs):
         self.object = None
         form_class = self.get_form_class()
         form = self.get_form(form_class)       
         RecCobranzaFPFormSet.form = staticmethod(curry(CPBRecFPForm,request=request))
+        RecCobranzaRetFormSet.form = staticmethod(curry(CPBRecRetForm,request=request))
+        cpb_ret = RecCobranzaRetFormSet(self.request.POST,prefix='formRet')
         cpb_fp = RecCobranzaFPFormSet(self.request.POST,prefix='formFP')
-        if form.is_valid() and cpb_fp.is_valid():            
-            return self.form_valid(form, cpb_fp)
+        if form.is_valid() and cpb_fp.is_valid() and cpb_ret.is_valid():            
+            return self.form_valid(form, cpb_fp,cpb_ret)
         else:
-            return self.form_invalid(form, cpb_fp)        
+            return self.form_invalid(form, cpb_fp,cpb_ret)        
 
-    def form_valid(self, form, cpb_fp):
+    def form_valid(self, form, cpb_fp,cpb_ret):
         self.object = form.save(commit=False)        
         estado=cpb_estado.objects.get(pk=2)
         self.object.estado=estado   
@@ -1498,13 +1504,17 @@ class CPBRecCobranzaCreateView(VariablesMixin,CreateView):
         self.object.save()
         cpb_fp.instance = self.object
         cpb_fp.cpb_comprobante = self.object.id       
-        cpb_fp.save() 
+        cpb_fp.save()
+        if cpb_ret:
+            cpb_ret.instance = self.object
+            cpb_ret.cpb_comprobante = self.object.id 
+            cpb_ret.save()  
         recalcular_saldo_cpb(self.object.pk)
         messages.success(self.request, u'Los datos se guardaron con éxito!')
         return HttpResponseRedirect(reverse('cpb_rec_cobranza_listado'))
 
-    def form_invalid(self, form,cpb_fp):                                                       
-        return self.render_to_response(self.get_context_data(form=form,cpb_fp = cpb_fp))
+    def form_invalid(self, form,cpb_fp,cpb_ret):                                                       
+        return self.render_to_response(self.get_context_data(form=form,cpb_fp = cpb_fp,cpb_ret=cpb_ret))
 
 class CPBRecCobranzaEditView(VariablesMixin,CreateView):
     form_class = CPBRecCobranzaForm
@@ -1535,6 +1545,8 @@ class CPBRecCobranzaEditView(VariablesMixin,CreateView):
         form.fields['entidad'].widget.attrs['disabled'] = True
         form.fields['pto_vta'].widget.attrs['disabled'] = True                
         RecCobranzaFPFormSet.form = staticmethod(curry(CPBRecFPForm,request=request))
+        RecCobranzaRetFormSet.form = staticmethod(curry(CPBRecRetForm,request=request))
+        cpb_ret = RecCobranzaRetFormSet(instance=self.object,prefix='formRet')
         cpb_fp = RecCobranzaFPFormSet(instance=self.object,prefix='formFP')
         cpbs_cobro=cpb_cobranza.objects.filter(cpb_comprobante=self.object.id)     
         RecCobranzaCPBFormSet = inlineformset_factory(cpb_comprobante, cpb_cobranza, fk_name='cpb_comprobante',form=CPBRecCPBForm,formset=CPBReciboCPBFormSet, can_delete=False,extra=len(cpbs_cobro),max_num=len(cpbs_cobro))
@@ -1544,41 +1556,35 @@ class CPBRecCobranzaEditView(VariablesMixin,CreateView):
             entidad = c.entidad                                
             d.append({'detalle_cpb': c.get_cpb_tipo,'desc_rec':'0','importe_total':cpb.importe_total,'saldo':c.saldo,'id_cpb_factura':c.id,'cpb_factura':c})                    
         cpbs = RecCobranzaCPBFormSet(prefix='formCPB',initial=d)      
-        return self.render_to_response(self.get_context_data(form=form,cpb_fp=cpb_fp,cpbs=cpbs))
-        
-        # if cpbs_cobro:
-        #     RecCobranzaCPBFormSet = inlineformset_factory(cpb_comprobante, cpb_cobranza, fk_name='cpb_comprobante',form=CPBRecCPBForm,formset=CPBReciboCPBFormSet, can_delete=False,extra=len(cpbs_cobro),max_num=len(cpbs_cobro))
-        #     d=[]
-        #     for cpb in cpbs_cobro:
-        #         c = cpb.cpb_factura
-        #         entidad = c.entidad                                
-        #         d.append({'detalle_cpb': c.get_cpb_tipo,'desc_rec':'0','importe_total':cpb.importe_total,'saldo':c.saldo,'id_cpb_factura':c.id,'cpb_factura':c})            
-        #     cpbs = RecCobranzaCPBFormSet(prefix='formCPB',initial=d)      
-        #     return self.render_to_response(self.get_context_data(form=form,cpb_fp=cpb_fp,cpbs=cpbs))
-        # else:     
-        #     return self.render_to_response(self.get_context_data(form=form,cpb_fp=cpb_fp,cpbs=None))        
+        return self.render_to_response(self.get_context_data(form=form,cpb_fp=cpb_fp,cpbs=cpbs,cpb_ret=cpb_ret))
+            
 
     def post(self, request, *args, **kwargs):
         self.object = self.get_object()
         form_class = self.get_form_class()
         form = self.get_form(form_class)       
         RecCobranzaFPFormSet.form = staticmethod(curry(CPBRecFPForm,request=request))
+        RecCobranzaRetFormSet.form = staticmethod(curry(CPBRecRetForm,request=request))
+        cpb_ret = RecCobranzaRetFormSet(self.request.POST,instance=self.object,prefix='formRet')
         cpb_fp = RecCobranzaFPFormSet(self.request.POST,instance=self.object,prefix='formFP')
         cpbs = RecCobranzaCPBFormSet(self.request.POST,instance=self.object,prefix='formCPB')        
-        if form.is_valid() and cpb_fp.is_valid() and cpbs.is_valid():            
-            return self.form_valid(form, cpb_fp,cpbs)
+        if form.is_valid() and cpb_fp.is_valid() and cpbs.is_valid() and cpb_ret.is_valid():            
+            return self.form_valid(form, cpb_fp,cpbs,cpb_ret)
         else:
-            return self.form_invalid(form, cpb_fp,cpbs)        
+            return self.form_invalid(form, cpb_fp,cpbs,cpb_ret)        
        
 
-    def form_valid(self, form, cpb_fp,cpbs):
+    def form_valid(self, form, cpb_fp,cpbs,cpb_ret):
         self.object = form.save(commit=False)                
         self.object.fecha_imputacion=self.object.fecha_cpb
         self.object.save()
         cpb_fp.instance = self.object
         cpb_fp.cpb_comprobante = self.object.id        
-
         cpb_fp.save()
+        if cpb_ret:
+            cpb_ret.instance = self.object
+            cpb_ret.cpb_comprobante = self.object.id 
+            cpb_ret.save()  
         cpbs=cpb_cobranza.objects.filter(cpb_comprobante=self.object.id)
         for c in cpbs:            
             recalcular_saldo_cpb(c.cpb_factura.pk)                    
@@ -1591,8 +1597,8 @@ class CPBRecCobranzaEditView(VariablesMixin,CreateView):
         kwargs['request'] = self.request
         return kwargs
 
-    def form_invalid(self, form,cpb_fp,cpbs):                                                       
-        return self.render_to_response(self.get_context_data(form=form,cpb_fp = cpb_fp,cpbs=cpbs))
+    def form_invalid(self, form,cpb_fp,cpbs,cpb_ret):                                                       
+        return self.render_to_response(self.get_context_data(form=form,cpb_fp = cpb_fp,cpbs=cpbs,cpb_ret=cpb_ret))
 
 
 @login_required
@@ -1673,23 +1679,27 @@ class CPBCobrarCreateView(VariablesMixin,CreateView):
             cpbs = RecCobranzaCPBFormSet(prefix='formCPB')
 
         RecCobranzaFPFormSet.form = staticmethod(curry(CPBRecFPForm,request=request))
+        RecCobranzaRetFormSet.form = staticmethod(curry(CPBRecRetForm,request=request))
+        cpb_ret = RecCobranzaRetFormSet(prefix='formRet')
         cpb_fp = RecCobranzaFPFormSet(prefix='formFP',initial=[{'importe':total}]) 
-        return self.render_to_response(self.get_context_data(form=form,cpb_fp=cpb_fp,cpbs=cpbs))
+        return self.render_to_response(self.get_context_data(form=form,cpb_fp=cpb_fp,cpbs=cpbs,cpb_ret=cpb_ret))
 
     def post(self, request, *args, **kwargs):
         self.object = None
         form_class = self.get_form_class()
         form = self.get_form(form_class)       
         RecCobranzaFPFormSet.form = staticmethod(curry(CPBRecFPForm,request=request))
+        RecCobranzaRetFormSet.form = staticmethod(curry(CPBRecRetForm,request=request))
+        cpb_ret = RecCobranzaRetFormSet(self.request.POST,prefix='formRet')
         cpb_fp = RecCobranzaFPFormSet(self.request.POST,prefix='formFP')
         cpbs = RecCobranzaCPBFormSet(self.request.POST,prefix='formCPB')        
                 
-        if form.is_valid() and cpb_fp.is_valid() and cpbs.is_valid():            
-            return self.form_valid(form, cpb_fp,cpbs)
+        if form.is_valid() and cpb_fp.is_valid() and cpbs.is_valid() and cpb_ret.is_valid():            
+            return self.form_valid(form, cpb_fp,cpbs,cpb_ret)
         else:
-            return self.form_invalid(form, cpb_fp,cpbs)        
+            return self.form_invalid(form, cpb_fp,cpbs,cpb_ret)        
 
-    def form_valid(self, form, cpb_fp,cpbs):
+    def form_valid(self, form, cpb_fp,cpbs,cpb_ret):
         self.object = form.save(commit=False)        
         estado=cpb_estado.objects.get(pk=2)
         self.object.estado=estado   
@@ -1712,6 +1722,10 @@ class CPBCobrarCreateView(VariablesMixin,CreateView):
         cpbs.cpb_comprobante = c
         cpbs.desc_rec=0
         cpb_fp.save()
+        if cpb_ret:
+            cpb_ret.instance = self.object
+            cpb_ret.cpb_comprobante = self.object.id 
+            cpb_ret.save()  
         cpbs.save()
         for c in cpbs:            
             recalcular_saldo_cpb(c.instance.cpb_factura.pk) 
@@ -1720,7 +1734,7 @@ class CPBCobrarCreateView(VariablesMixin,CreateView):
         messages.success(self.request, u'Los datos se guardaron con éxito!')
         return HttpResponseRedirect(reverse('cpb_venta_listado'))
 
-    def form_invalid(self, form,cpb_fp,cpbs):                                                       
+    def form_invalid(self, form,cpb_fp,cpbs,cpb_ret):                                                       
         cpbs_cobro = self.request.session.get('cpbs_cobranza', None)              
         entidad = None        
         if cpbs_cobro:
@@ -1734,7 +1748,7 @@ class CPBCobrarCreateView(VariablesMixin,CreateView):
             cpbs = RecCobranzaCPBFormSet(prefix='formCPB',initial=d)
             if entidad:
                 form.fields['entidad'].initial = entidad   
-        return self.render_to_response(self.get_context_data(form=form,cpb_fp = cpb_fp,cpbs=cpbs))
+        return self.render_to_response(self.get_context_data(form=form,cpb_fp = cpb_fp,cpbs=cpbs,cpb_ret=cpb_ret))
 
 @login_required 
 def CPBCobrosSeleccionarView(request):        

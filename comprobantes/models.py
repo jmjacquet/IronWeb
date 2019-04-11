@@ -97,10 +97,10 @@ class cpb_pto_vta(models.Model):
         db_table = 'cpb_pto_vta'      
     
     def __unicode__(self):
-        return u'%s - %s' % ("{num:>04}".format(num=str(self.numero)),self.nombre)                  
+        return u'%s - %s' % ("{num:>05}".format(num=str(self.numero)),self.nombre)                  
 
     def get_numero(self):
-        return u'%s' % ("{num:>04}".format(num=str(self.numero)))   
+        return u'%s' % ("{num:>05}".format(num=str(self.numero)))   
 
 class cpb_pto_vta_numero(models.Model):
     id = models.AutoField(primary_key=True,db_index=True)
@@ -163,7 +163,7 @@ class cpb_comprobante(models.Model):
         db_table = 'cpb_comprobante'
     
     def __unicode__(self):
-        return u'%s-%s-%s' % ("{num:>04}".format(num=str(self.pto_vta)),self.letra,"{num:>08}".format(num=str(self.numero)))              
+        return u'%s-%s-%s' % ("{num:>05}".format(num=str(self.pto_vta)),self.letra,"{num:>08}".format(num=str(self.numero)))              
 
     
     # def get_cpb(self):
@@ -171,7 +171,7 @@ class cpb_comprobante(models.Model):
 
     @property
     def get_cpb(self):        
-        return u'%s-%s-%s' % ("{num:>04}".format(num=str(self.pto_vta)),self.letra,"{num:>08}".format(num=str(self.numero)))              
+        return u'%s-%s-%s' % ("{num:>05}".format(num=str(self.pto_vta)),self.letra,"{num:>08}".format(num=str(self.numero)))              
 
     
 
@@ -227,11 +227,11 @@ class cpb_comprobante(models.Model):
         return c.numero_afip
 
     def get_numero(self):                
-        return '%s-%s' % ("{num:>04}".format(num=str(self.pto_vta)),"{num:>08}".format(num=str(self.numero))) 
+        return '%s-%s' % ("{num:>05}".format(num=str(self.pto_vta)),"{num:>08}".format(num=str(self.numero))) 
 
     @property
     def get_cpb_tipo(self):                
-        return u'%s: %s-%s-%s ' % (self.cpb_tipo,"{num:>04}".format(num=str(self.pto_vta)),self.letra,"{num:>08}".format(num=str(self.numero)))
+        return u'%s: %s-%s-%s ' % (self.cpb_tipo,"{num:>05}".format(num=str(self.pto_vta)),self.letra,"{num:>08}".format(num=str(self.numero)))
 
 
     def get_cobranzas(self):                
@@ -393,8 +393,11 @@ class cpb_comprobante_retenciones(models.Model):
     id = models.AutoField(primary_key=True,db_index=True)
     cpb_comprobante = models.ForeignKey('cpb_comprobante',verbose_name=u'CPB', db_column='cpb_comprobante',blank=True, null=True,on_delete=models.CASCADE)
     retencion = models.ForeignKey('cpb_retenciones',db_column='retencion',blank=True, null=True,on_delete=models.SET_NULL)
-    detalle = models.TextField(max_length=500,blank=True, null=True) # Field name made lowercase.   
-    importe_total = models.DecimalField(max_digits=15, decimal_places=2, blank=True, null=True,default=0)    
+    ret_nrocpb = models.CharField(verbose_name=u'Nº Certif. Retención',max_length=30,blank=True, null=True)  #Número del certificado de retención recibido.
+    ret_importe_isar = models.DecimalField(verbose_name=u'Importe Sujeto a Retención',max_digits=15, decimal_places=2, blank=True, null=True,default=0) # Importe neto sujeto a la retención sufrida.
+    ret_fecha_cpb = models.DateField(verbose_name=u'Fecha Retención',blank=True, null=True) #Fecha del certificado de retención recibido.
+    detalle = models.TextField(max_length=500,blank=True, null=True) 
+    importe_total = models.DecimalField(u'Importe Retenido',max_digits=15, decimal_places=2, blank=True, null=True,default=0)# Valor de la retención.
     class Meta:
         db_table = 'cpb_comprobante_retenciones'
     

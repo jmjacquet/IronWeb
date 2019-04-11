@@ -3137,3 +3137,86 @@ Traceback (most recent call last):
     raise errorvalue
 IntegrityError: (1062, "Duplicate entry '1' for key 'usuusuario_id'")
 
+[10/Apr/2019 11:08:30] ERROR [django.request:256] Internal Server Error: /reportes/libro_iva_compras/
+Traceback (most recent call last):
+  File "C:\Python27\lib\site-packages\django\core\handlers\base.py", line 132, in get_response
+    response = wrapped_callback(request, *callback_args, **callback_kwargs)
+  File "C:\Python27\lib\site-packages\django\contrib\auth\decorators.py", line 22, in _wrapped_view
+    return view_func(request, *args, **kwargs)
+  File "D:\GitHub\IronWeb\reportes\views.py", line 676, in libro_iva_compras
+    response = HttpResponse(generarCITI(cpbs,'C','cpbs'),content_type='text/plain')
+  File "D:\GitHub\IronWeb\reportes\views.py", line 478, in generarCITI
+    linea += (c.entidad.apellido_y_nombre)[:30].decode('utf-8').ljust(30, " ") #nombre
+  File "C:\Python27\lib\encodings\utf_8.py", line 16, in decode
+    return codecs.utf_8_decode(input, errors, True)
+UnicodeEncodeError: 'ascii' codec can't encode character u'\xd1' in position 10: ordinal not in range(128)
+[10/Apr/2019 11:12:24] ERROR [django.request:256] Internal Server Error: /reportes/libro_iva_compras/
+Traceback (most recent call last):
+  File "C:\Python27\lib\site-packages\django\core\handlers\base.py", line 132, in get_response
+    response = wrapped_callback(request, *callback_args, **callback_kwargs)
+  File "C:\Python27\lib\site-packages\django\contrib\auth\decorators.py", line 22, in _wrapped_view
+    return view_func(request, *args, **kwargs)
+  File "D:\GitHub\IronWeb\reportes\views.py", line 677, in libro_iva_compras
+    response = HttpResponse(generarCITI(cpbs,'C','cpbs'),content_type='text/plain')
+  File "D:\GitHub\IronWeb\reportes\views.py", line 479, in generarCITI
+    linea += unicodedata.normalize("NFKD",(c.entidad.apellido_y_nombre)[:30]).ljust(30, " ") #nombre
+NameError: global name 'unicodedata' is not defined
+[10/Apr/2019 11:25:49] ERROR [django.request:256] Internal Server Error: /reportes/libro_iva_compras/
+Traceback (most recent call last):
+  File "C:\Python27\lib\site-packages\django\core\handlers\base.py", line 132, in get_response
+    response = wrapped_callback(request, *callback_args, **callback_kwargs)
+  File "C:\Python27\lib\site-packages\django\contrib\auth\decorators.py", line 22, in _wrapped_view
+    return view_func(request, *args, **kwargs)
+  File "D:\GitHub\IronWeb\reportes\views.py", line 673, in libro_iva_compras
+    response = HttpResponse(generarCITI(cpbs,'C','cpbs'),content_type='text/plain')
+  File "D:\GitHub\IronWeb\reportes\views.py", line 476, in generarCITI
+    linea += (c.entidad.apellido_y_nombre)[:30].decode('ascii').ljust(30, " ") #nombre
+UnicodeEncodeError: 'ascii' codec can't encode character u'\xd1' in position 10: ordinal not in range(128)
+[10/Apr/2019 11:29:55] ERROR [django.request:256] Internal Server Error: /reportes/libro_iva_compras/
+Traceback (most recent call last):
+  File "C:\Python27\lib\site-packages\django\core\handlers\base.py", line 132, in get_response
+    response = wrapped_callback(request, *callback_args, **callback_kwargs)
+  File "C:\Python27\lib\site-packages\django\contrib\auth\decorators.py", line 22, in _wrapped_view
+    return view_func(request, *args, **kwargs)
+  File "D:\GitHub\IronWeb\reportes\views.py", line 672, in libro_iva_compras
+    response = HttpResponse(generarCITI(cpbs,'C','cpbs'),content_type='text/plain')
+  File "D:\GitHub\IronWeb\reportes\views.py", line 475, in generarCITI
+    linea += (c.entidad.apellido_y_nombre)[:30].decode('utf-8').ljust(30, " ") #nombre
+  File "C:\Python27\lib\encodings\utf_8.py", line 16, in decode
+    return codecs.utf_8_decode(input, errors, True)
+UnicodeEncodeError: 'ascii' codec can't encode character u'\xd1' in position 10: ordinal not in range(128)
+[10/abr/2019 15:34:09] ERROR [django.request:256] Internal Server Error: /comprobantes/imprimirCobranzaCtaCte/50/
+Traceback (most recent call last):
+  File "C:\Python27\lib\site-packages\django\core\handlers\base.py", line 132, in get_response
+    response = wrapped_callback(request, *callback_args, **callback_kwargs)
+  File "C:\Python27\lib\site-packages\django\contrib\auth\decorators.py", line 22, in _wrapped_view
+    return view_func(request, *args, **kwargs)
+  File "D:\Repo\ironStable\comprobantes\views.py", line 851, in imprimirCobranzaCtaCte
+    return render_to_pdf_response(request, template, locals())
+  File "C:\Python27\lib\site-packages\easy_pdf\rendering.py", line 166, in render_to_pdf_response
+    pdf = render_to_pdf(template, context, encoding=encoding, **kwargs)
+  File "C:\Python27\lib\site-packages\easy_pdf\rendering.py", line 138, in render_to_pdf
+    content = loader.render_to_string(template, context)
+  File "C:\Python27\lib\site-packages\django\template\loader.py", line 98, in render_to_string
+    template = get_template(template_name, using=using)
+  File "C:\Python27\lib\site-packages\django\template\loader.py", line 46, in get_template
+    raise TemplateDoesNotExist(template_name)
+TemplateDoesNotExist: general/facturas/cobranza_ctacte.html
+[10/Apr/2019 15:44:06] ERROR [django.request:256] Internal Server Error: /comprobantes/imprimirCobranzaCtaCte/50/
+Traceback (most recent call last):
+  File "C:\Python27\lib\site-packages\django\core\handlers\base.py", line 132, in get_response
+    response = wrapped_callback(request, *callback_args, **callback_kwargs)
+  File "C:\Python27\lib\site-packages\django\contrib\auth\decorators.py", line 22, in _wrapped_view
+    return view_func(request, *args, **kwargs)
+  File "D:\Repo\ironStable\comprobantes\views.py", line 850, in imprimirCobranzaCtaCte
+    empresa=empresa,estado__in=[1,2]).aggregate(sum=Sum(F('importe_total')*F('cpb_tipo__signo_ctacte'), output_field=DecimalField()))['sum'] or 0
+NameError: global name 'empresa' is not defined
+[10/Apr/2019 15:45:02] ERROR [django.request:256] Internal Server Error: /comprobantes/imprimirCobranzaCtaCte/50/
+Traceback (most recent call last):
+  File "C:\Python27\lib\site-packages\django\core\handlers\base.py", line 132, in get_response
+    response = wrapped_callback(request, *callback_args, **callback_kwargs)
+  File "C:\Python27\lib\site-packages\django\contrib\auth\decorators.py", line 22, in _wrapped_view
+    return view_func(request, *args, **kwargs)
+  File "D:\Repo\ironStable\comprobantes\views.py", line 850, in imprimirCobranzaCtaCte
+    ,empresa=empresa,estado__in=[1,2]).aggregate(sum=Sum(F('importe_total')*F('cpb_tipo__signo_ctacte'), output_field=DecimalField()))['sum'] or 0
+NameError: global name 'empresa' is not defined

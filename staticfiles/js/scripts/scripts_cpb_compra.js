@@ -20,8 +20,7 @@ $("#id_entidad").change(function(){
                         else{                 
                          $("#id_cliente_categ_fiscal").val(5); 
                           $("#id_cliente_descuento").val(0); 
-                        };
-                                                
+                        };                                                
                         calcularTotales();
                 },
                 error : function(message) {
@@ -517,11 +516,11 @@ $("#id_condic_pago").change(function(){
          });   
 
 
-var h = ("0000" + $("#id_pto_vta").val()).slice(-4);    
-$("#id_pto_vta").val(h);
+
+$('#id_pto_vta').val(("00000" + $('#id_pto_vta').val()).slice(-5));      
 
 $("#id_pto_vta").keyup(function(){
-    h = ("0000" + $(this).val()).slice(-4);    
+    h = ("00000" + $(this).val()).slice(-5);    
     $(this).val(h);
  });
 

@@ -160,7 +160,7 @@
         {% endif %}
 
       </td>
-      {%if discrimina_iva %}
+      {% if discrimina_iva %}
         <td width="35%" class="listado_final borde_arriba">Importe Neto Gravado:</td>
         <td width="15%" class="listado_final borde_der borde_arriba ">$ {{cpb.importe_gravado|default_if_none:0|floatformat:2|intcomma}}</td>
       {% else %}
@@ -169,16 +169,17 @@
       {% endif %}
     </tr>
     <tr>
-      {%if discrimina_iva %}
-        <td class="listado_final">Importe Exento/No Gravado:</td>
+      {% if discrimina_iva %}
+        <td class="listado_final">Exento/No Gravado/Perc/Imp:</td>
         <td class="listado_final borde_der">$ {{total_exng|default_if_none:0|floatformat:2|intcomma}}</td>
       {% else %}
         <td class="listado_final ">&nbsp;</td>
         <td class="listado_final borde_der">&nbsp;</td>
       {% endif %}
     </tr>
+    
     <tr>
-      {%if discrimina_iva %}
+      {% if discrimina_iva %}
         <td class="listado_final">
           {% for ti in detalle_totales_iva %}
           <small>{% if forloop.first %}( {% endif %}  IVA {{ti.tasa_iva.nombre}}: ${{ti.importe_total}}</small> {% if forloop.last %} )&nbsp;&nbsp;&nbsp; Total IVA:{% else %}/{% endif %}
