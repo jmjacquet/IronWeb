@@ -131,10 +131,13 @@
 						     	<table id="id_forms_table2" width="100%" class="table tabla table-condensed tabla_listado">
 				                    <thead>
 				                          <tr>
-				                              <th style="width: 40%;">Retenciones</th>						                          					
-				                              <th style="width: 30%;">Detalle</th>
-				                              <th style="width: 20%;">Importe</th>						                              
-				                              <th style="width: 10%;" class="remove-sorting"></th>
+				                              <th style="width: 30%;">Retenciones</th>						                          					
+				                              <th style="width: 20%;">Detalle</th>
+				                              <th style="width: 10%;">Certif.Nº</th>						                              				                              
+				                              <th style="width: 10%;">Neto ISAR</th>						                              
+				                              <th style="width: 10%;">Certif.Fecha</th>						                              
+				                              <th style="width: 10%;">Importe Ret.</th>						                              
+				                              <th style="width: 5%;" class="remove-sorting"></th>
 				                          </tr>
 				                    </thead>					                    
   			                        <tbody class='form-detallesRet'>       											                    	
@@ -145,6 +148,9 @@
 					                      	<tr class="{{ cpb_ret.prefix }}">           					                      	
 						                      	<td>{% bootstrap_field form3.retencion show_label=False%}</td>
 						                      	<td>{% bootstrap_field form3.detalle show_label=False%}</td>
+						                      	<td>{% bootstrap_field form3.ret_nrocpb show_label=False%}</td>
+						                      	<td>{% bootstrap_field form3.ret_importe_isar show_label=False%}</td>
+						                      	<td>{% bootstrap_field form3.ret_fecha_cpb show_label=False%}</td>						                      	
 						                      	<td>{% bootstrap_field form3.importe_total show_label=False%}</td>								                      	
 						                      	<td>{{form3.DELETE}}
 						                      		<a class="btn btn-danger delete-row2" title="Eliminar">

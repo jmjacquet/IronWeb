@@ -516,8 +516,8 @@ $("#id_condic_pago").change(function(){
          });   
 
 
-var h = ("00000" + $("#id_pto_vta").val()).slice(-5);    
-$("#id_pto_vta").val(h);
+
+$('#id_pto_vta').val(("00000" + $('#id_pto_vta').val()).slice(-5));      
 
 $("#id_pto_vta").keyup(function(){
     h = ("00000" + $(this).val()).slice(-5);    

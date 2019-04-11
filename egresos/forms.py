@@ -259,7 +259,7 @@ class CPBRemitoDetalleForm(forms.ModelForm):
 
 class CPBPagoForm(forms.ModelForm):
 	entidad = chosenforms.ChosenModelChoiceField(label='Proveedor',queryset=egr_entidad.objects.filter(tipo_entidad=2,baja=False),empty_label='---',required = False)	
-	pto_vta = forms.IntegerField(label='Pto. Vta.',required = False)
+	pto_vta = forms.IntegerField(label='Pto. Vta.',required = False,initial=1)
 	fecha_cpb = forms.DateField(required = True,widget=forms.DateInput(attrs={'class': 'form-control datepicker'}),initial=hoy())	
 	observacion = forms.CharField(label='Detalle',widget=forms.Textarea(attrs={ 'class':'form-control2','rows': 5}),required = False)	
 	importe_ret = forms.DecimalField(label='',widget=PrependWidget(attrs={'class':'form-control','readonly':'readonly','step':0},base_widget=NumberInput, data='$'),initial=0.00,decimal_places=2,required = False)
@@ -281,8 +281,7 @@ class CPBPagoForm(forms.ModelForm):
 		request = kwargs.pop('request', None)
 		super(CPBPagoForm, self).__init__(*args, **kwargs)
 		try:
-			empresa = empresa_actual(request)
-			self.fields['pto_vta'].initial = 1
+			empresa = empresa_actual(request)			
 			self.fields['entidad'].queryset = egr_entidad.objects.filter(tipo_entidad=2,baja=False,empresa__id__in=empresas_habilitadas(request)).order_by('apellido_y_nombre')
 		except:
 			empresa = None   
@@ -309,6 +308,8 @@ class CPBPagoRetForm(forms.ModelForm):
 	retencion = forms.ModelChoiceField(label='Retenciones',queryset=cpb_retenciones.objects.all(),empty_label='---',required = False)
 	detalle = forms.CharField(label='Detalle',widget=forms.Textarea(attrs={ 'class':'form-control','rows': 3}),required = False)		
 	importe_total = forms.DecimalField(widget=PrependWidget(attrs={'class':'form-control','step':0.00},base_widget=NumberInput, data='$'),initial=0.00,decimal_places=2,required = False)
+	ret_fecha_cpb = forms.DateField(label=u'Fecha Retención',widget=forms.DateInput(attrs={'class': 'form-control datepicker'}),required = False)
+	ret_importe_isar = forms.DecimalField(label=u'Importe Sujeto a Retención',widget=PrependWidget(attrs={'class':'form-control','step':0.00},base_widget=NumberInput, data='$'),decimal_places=2,required = False)
 	cpb_comprobante = forms.IntegerField(widget = forms.HiddenInput(), required = False)	
 	class Meta:
 			model = cpb_comprobante_retenciones
