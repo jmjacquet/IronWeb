@@ -611,6 +611,8 @@ class CPBRecRetForm(forms.ModelForm):
 	retencion = forms.ModelChoiceField(label='Retenciones',queryset=cpb_retenciones.objects.all(),empty_label='---',required = False)
 	detalle = forms.CharField(label='Detalle',widget=forms.Textarea(attrs={ 'class':'form-control','rows': 3}),required = False)		
 	importe_total = forms.DecimalField(widget=PrependWidget(attrs={'class':'form-control','step':0.00},base_widget=NumberInput, data='$'),initial=0.00,decimal_places=2,required = False)
+	ret_fecha_cpb = forms.DateField(label=u'Fecha Retención',widget=forms.DateInput(attrs={'class': 'form-control datepicker'}),required = False)
+	ret_importe_isar = forms.DecimalField(label=u'Importe Sujeto a Retención',widget=PrependWidget(attrs={'class':'form-control','step':0.00},base_widget=NumberInput, data='$'),decimal_places=2,required = False)
 	cpb_comprobante = forms.IntegerField(widget = forms.HiddenInput(), required = False)	
 	class Meta:
 			model = cpb_comprobante_retenciones

@@ -270,6 +270,7 @@ $( "#GuardarRec" ).click(function() {
 if ($('#id_tipo_form').val()=='EDICION'){
         $('#id_pto_vta').attr('disabled', 'disabled');        
         $("#id_numero").attr('disabled', 'disabled');        
+        $('#id_pto_vta').val(("00000" + $('#id_pto_vta').val()).slice(-5));
 };
 
 function ultimoNumCPB(cpb_tipo,letra,pto_vta){

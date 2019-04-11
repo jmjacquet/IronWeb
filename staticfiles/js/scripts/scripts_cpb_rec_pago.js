@@ -4,9 +4,9 @@ $(document).ready(function() {
        $('#id_pto_vta').attr('disabled', 'disabled');               
        $('#id_entidad').trigger("chosen:updated");          
        $('#recargarProveedores').hide();
-       $('#id_pto_vta').val(("00000" + $(this).val()).slice(-5));
-  }else{
-      $('#id_pto_vta').val(("00000" + $(this).val()).slice(-5));
+       $('#id_pto_vta').val(("00000" + $('#id_pto_vta').val()).slice(-5));
+  }else{      
+      $('#id_pto_vta').val(("00000" + $('#id_pto_vta').val()).slice(-5));
       setear_CTA($("[name='formFP-0-cta_egreso']"),$("[name='formFP-0-tipo_forma_pago']"));
   };
 
