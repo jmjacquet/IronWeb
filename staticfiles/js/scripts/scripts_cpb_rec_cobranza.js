@@ -230,8 +230,7 @@ $.fn.datepicker.dates['es'] = {
 
 $( "#GuardarRec" ).click(function() {
             
-      total = parseFloat($("#id_importe_total").val());
-            
+      total = parseFloat($("#id_importe_total").val());      
       var total_cpbs = 0;
       if($("#id_importe_cpbs").val()){
       total_cpbs = parseFloat($("#id_importe_cpbs").val())};
@@ -244,7 +243,7 @@ $( "#GuardarRec" ).click(function() {
       };
 
       if (total_cpbs>0){
-        if (total_pagos!=total_cpbs){
+        if (total!=total_cpbs){
           alertify.errorAlert("¡El importe total no coincide con los comprobantes seleccionados!");
           $("#GuardarRec").prop("disabled", false);
           return false;
