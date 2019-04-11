@@ -388,24 +388,21 @@ def generarCITI(cpbs,ventas_compras,tipo_archivo):
             perc_impuestosNac=Decimal(0.00)
             perc_IIBB=Decimal(0.00)
             perc_impMunicip=Decimal(0.00)
-            importe_impuestosInt=Decimal(0.00)
-            otros_perc_imp=Decimal(0.00)
+            importe_impuestosInt=Decimal(0.00)            
             cpb_perc = cpb_comprobante_perc_imp.objects.filter(cpb_comprobante=c)
            
             try:
                 cpb_perc = cpb_comprobante_perc_imp.objects.filter(cpb_comprobante=c)                
                 for p in cpb_perc:                     
                     id = p.perc_imp.id                     
-                    if id==1:
-                        perc_impuestosNac+=p.importe_total
-                    elif id in [2,8]:
+                    if id in [2,8]:
                         perc_impMunicip+=p.importe_total                        
                     elif id==3:
                         importe_impuestosInt+=p.importe_total
                     elif id in [5,7]:
                         perc_IIBB+=p.importe_total
                     else:
-                        otros_perc_imp+=p.importe_total                             
+                        perc_impuestosNac+=p.importe_total                           
             except:
                 pass
             
@@ -487,10 +484,8 @@ def generarCITI(cpbs,ventas_compras,tipo_archivo):
             try:
                 cpb_perc = cpb_comprobante_perc_imp.objects.filter(cpb_comprobante=c)
                 for p in cpb_perc: 
-                    id = p.perc_imp.id 
-                    if id==1:
-                        perc_impuestosNac+=p.importe_total
-                    elif id in [2,8]:
+                    id = p.perc_imp.id                     
+                    if id in [2,8]:
                         perc_impMunicip+=p.importe_total                        
                     elif id==3:
                         importe_impuestosInt+=p.importe_total
@@ -498,6 +493,8 @@ def generarCITI(cpbs,ventas_compras,tipo_archivo):
                         perc_IIBB+=p.importe_total
                     elif id in [6,13]:
                         perc_imp_iva+=p.importe_total
+                    else:
+                        perc_impuestosNac+=p.importe_total
             except:
                 pass
 
