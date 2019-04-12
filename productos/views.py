@@ -40,13 +40,13 @@ class ProductosView(VariablesMixin,ListView):
         except gral_empresa.DoesNotExist:
             empresa = None 
         form = ConsultaProds(self.request.POST or None)   
-        productos = prod_productos.objects.filter(empresa=empresa_actual(self.request),baja=False).select_related('categoria','tasa_iva')
+        productos = prod_productos.objects.filter(empresa__id__in=empresas_habilitadas(self.request),baja=False).select_related('categoria','tasa_iva')
         if form.is_valid():                                
             nombre = form.cleaned_data['nombre']                                                              
             estado = form.cleaned_data['estado']
 
             if int(estado) == 1:                
-                productos = prod_productos.objects.filter(empresa=empresa_actual(self.request)).select_related('categoria','tasa_iva')
+                productos = prod_productos.objects.all().select_related('categoria','tasa_iva')
             if nombre:
                 productos= productos.filter(Q(nombre__icontains=nombre))
             
