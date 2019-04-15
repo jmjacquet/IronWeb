@@ -178,11 +178,11 @@
                  {% if permisos_rep_ingr_egr %}
                   <div class="col-sm-6">
                     <ul class="mega-menu-submenu">
-                      {% if 'rep_cta_cte_clientes' in permisos_grupo %} 
+                     {% if 'permisos_rep_ingr_egr' in permisos_grupo %} 
                       <li>
                         <h3>REPORTES CUENTAS CORRIENTES</h3>
                       </li>
-                      
+                       {% if 'rep_cta_cte_clientes' in permisos_grupo %}
                       <li>
                         <a href="{% url 'cta_cte_clientes' %}"><i class="icon-bar-chart"></i>Cta.Cte.Clientes</a>
                       </li>
@@ -216,12 +216,13 @@
                         <a href="{% url 'rankings' %}"><i class="icon-bar-chart"></i>Estadísticas Ventas/Compras</a>
                       </li>
                       {% endif %} 
+                    {% endif %} 
                     </ul>
                   </div>
-                {% endif %}
-                {% if permisos_rep_contables %}
+                {% endif %}                
                   <div class="col-sm-6">
                     <ul class="mega-menu-submenu">
+                      {% if permisos_rep_contables %}
                       <li>
                         <h3>REPORTES CONTABLES</h3>
                       </li>                      
@@ -236,6 +237,8 @@
                         <a href="{% url 'libro_iva_compras' %}"><i class="icon-bar-chart"></i>Libro IVA Compras</a>
                       </li> 
                       {% endif %}
+                     {% endif %}
+                     {% if permisos_rep_finanzas %}
                       <li>
                         <h3>REPORTES FINANZAS</h3>
                       </li>                      
@@ -254,9 +257,10 @@
                         <a href="{% url 'seguimiento_cheques' %}"><i class="icon-bar-chart"></i>Seguimiento Cheques</a>
                       </li>
                       {% endif %}                 
+                      {% endif %}
                     </ul>
                   </div> 
-                {% endif %} 
+                
                 </div>   
               </div>
             </li>

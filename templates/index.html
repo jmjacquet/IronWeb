@@ -20,13 +20,7 @@
 			<!-- BEGIN CONTENT -->
 			<div class="page-content-wrapper">
 				<div class="page-content ">
-        {% if messages %}
-              {% for message in messages %}
-                  <script type="text/javascript">                               
-                          toastr.{{ message.tags }}('{{ message }}');                      
-                  </script>                     
-              {% endfor %}
-        {% endif %} 
+        
 					{% block main %}      
 						                      <div class="col-sm-10">                                                                              
                                    {% if 'gral_barra_totales' in permisos_grupo and not sitio_mobile %}  

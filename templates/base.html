@@ -170,10 +170,16 @@
            Metronic.init();
            Layout.init(); 
 
+           {% if messages %}
+              {% for message in messages %}                                                
+                          toastr.{{ message.tags }}('{{ message }}');                                        
+              {% endfor %}
+            {% endif %}     
+
             
         });
       </script> 
       {% include "fm/modal.html" %}     
       {% include "modal/modal.html" %} 
-          
+
 </html>
