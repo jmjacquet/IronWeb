@@ -87,11 +87,12 @@
 													</div>
 												
 												</fieldset>		
+									       		{% if settings.DEBUG %}
 									       		<fieldset>
 									       		<legend>SISTEMA EN MODO DEBUG</legend>                        						
 									       		   <div class="col-xs-12">
 									       		   	<div class="row cerca">														
-														{% if settings.DEBUG %}
+														
 															<div class="row cerca">
 																<label class="control-label col-sm-4">ID:</label>
 																<div class="col-sm-4">{{settings.ENTIDAD_ID}}</div>		
@@ -104,11 +105,10 @@
 																<label class="control-label col-sm-4">DIR:</label>
 																<div class="col-sm-4">{{settings.ENTIDAD_DIR}}</div>		
 															</div>
-														{% endif %}		
 													</div>
-									       		   	
 									       		   </div>
-									       		</fieldset>										       	  
+									       		</fieldset>	
+									       		{% endif %}											       	  
 
 									       	</div>
 									       	<div class="col-sm-6">
