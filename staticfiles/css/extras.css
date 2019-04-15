@@ -359,3 +359,13 @@
 .page-sidebar .page-sidebar-menu li .sub-menu li > a{font-weight:300;}
 .page-sidebar-closed.page-sidebar-fixed .page-sidebar:hover .page-sidebar-menu li .sub-menu li > a > i,
 .page-sidebar .page-sidebar-menu li .sub-menu li > a > i{font-weight:300;}
+
+.page-footer .page-footer-inner{color:#dfe2e5;}
+.page-footer-fixed .page-footer{background-color:#606975;}
+
+
+
+.icono_mail{
+	font-size: 2.5em;
+
+}
