@@ -297,7 +297,25 @@ var tabla = $('#dataTables-cpb_compra').DataTable({
     });
     $('#btnPago').click(function() {
         if (cpbs.length == 0) {
-            alertify.errorAlert("¡Debe seleccionar algún comprobante!");
+            alerta = alertify.dialog('confirm').set({
+                'labels': {
+                    ok: 'Aceptar',
+                    cancel: 'Cancelar'
+                },
+                'message': '¿Desea Imprimir el Detalle de todos los Comprobantes?',
+                transition: 'fade',
+                'onok': function() {
+                    alerta.close();
+                    window.open('/comprobantes/imprimir_detalles/');                    
+                },
+                'oncancel': function() {
+                    return true;
+                }
+            });
+            alerta.setting('modal', true);
+            alerta.setHeader('IMPRIMIR COMPROBANTES');
+            alerta.show();
+            return true;
         } else {
             datos = []
             $.ajax({

@@ -45,7 +45,7 @@
                                     </div>
                                     {% endif %}
                                 </td>
-                                <td class="text-right">{{ d.id|default_if_none:'' }}</td>
+                                <td class="text-right">{{ d.id|safe|default_if_none:'' }}</td>
                                 <td>{{ d.nombre|default_if_none:'' }}</td>
                                 <td class="text-left">{{ d.default|yesno:"Si,No,No"}}</td>
                             </tr>

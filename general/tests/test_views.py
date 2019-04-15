@@ -1,45 +1,45 @@
 # -*- coding: utf-8 -*-
-from django.test import TestCase
-from django.test.client import Client
-from django.contrib.auth.models import User
-from django.core.urlresolvers import reverse
-from selenium import webdriver
-from selenium.webdriver.common.keys import Keys
-from django.test import LiveServerTestCase
+# from django.test import TestCase
+# from django.test.client import Client
+# from django.contrib.auth.models import User
+# from django.core.urlresolvers import reverse
+# from selenium import webdriver
+# from selenium.webdriver.common.keys import Keys
+# from django.test import LiveServerTestCase
 
-# class GeneralTests(TestCase):
-# 	def setUp(self):
-# 		self.c = Client()
-# 		self.user = User.objects.create_user(username="demo", email="test@test.com", password="demo")
+class GeneralTests(TestCase):
+	def setUp(self):
+		self.c = Client()
+		self.user = User.objects.create_user(username="demo", email="test@test.com", password="demo")
 		
 
-	# def test_homepage(self):
-	# 	print self.c.login(username='demo', password='demo')
-	# 	response = self.c.get(reverse('principal'))
-	# 	self.assertEqual(response.status_code, 200)
+	def test_homepage(self):
+		print self.c.login(username='demo', password='demo')
+		response = self.c.get(reverse('principal'))
+		self.assertEqual(response.status_code, 200)
 
-	# def test_authenticate_inactive(self):
- #        """
- #        An inactive user can't authenticate.
- #        """
- #        self.assertEqual(authenticate(**self.user_credentials), self.user)
- #        self.user.is_active = False
- #        self.user.save()
- #        self.assertIsNone(authenticate(**self.user_credentials))
+	def test_authenticate_inactive(self):
+        """
+        An inactive user can't authenticate.
+        """
+        self.assertEqual(authenticate(**self.user_credentials), self.user)
+        self.user.is_active = False
+        self.user.save()
+        self.assertIsNone(authenticate(**self.user_credentials))
 
 
-# class LogInTest(TestCase):
-# 	def setUp(self):
-# 		self.credentials = {
-# 		'username': 'demo',
-# 		'password': 'dem'}
-# 		User.objects.create_user(username="demo", email="test@test.com", password="demo")
+class LogInTest(TestCase):
+	def setUp(self):
+		self.credentials = {
+		'username': 'demo',
+		'password': 'dem'}
+		User.objects.create_user(username="demo", email="test@test.com", password="demo")
 	
-# 	def test_login(self):
-# 		# send login data
-# 		response = self.client.post('/login/', self.credentials, follow=True)
-# 		print response.context['user']
-# 		self.assertTrue(response.context['user'].is_authenticated)
+	def test_login(self):
+		# send login data
+		response = self.client.post('/login/', self.credentials, follow=True)
+		print response.context['user']
+		self.assertTrue(response.context['user'].is_authenticated)
 
 class LoginTestCase(LiveServerTestCase):
 
