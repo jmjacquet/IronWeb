@@ -2,11 +2,12 @@ $(document).ready(function() {
 
 
 if ($('#id_tipo_form').val()=='EDICION'){
-              
      $('#id_entidad').trigger("chosen:updated");
      $('#recargarClientes').hide();
-
+     
 };
+
+
 
 $("#id_entidad").chosen({
           no_results_text: "Cliente inexistente...",
@@ -53,8 +54,7 @@ function calcularTotales(){
       $("#id_importe_total").val($importe_total);
   };
 
-function setear_CTA(cta,fp)
-{   
+function setear_CTA(cta,fp){   
     var id_fp =  fp.val();      
     $.ajax({
           data: {'fp': id_fp},
@@ -75,8 +75,7 @@ function setear_CTA(cta,fp)
             }
         });
 };
-function setear_FP(cta,fp,banco)
-{
+function setear_FP(cta,fp,banco){
     var id_cta =  cta.val();      
     $.ajax({
           data: {'cta':id_cta},
@@ -155,8 +154,9 @@ function recalcular(){
      calcularTotales();
     };
 
-  //Se ejecuta al crearse el form
-  recalcular();
+
+//Se ejecuta al crearse el form
+recalcular();
 
 
 $('.formFP').formset({
@@ -222,9 +222,9 @@ $.fn.datepicker.dates['es'] = {
           todayHighlight: true
     });
 
-   $('.datepicker').each(function(){
-        $(this).datepicker();
-    });
+$('.datepicker').each(function(){
+    $(this).datepicker();
+});
 
 
 
@@ -266,11 +266,7 @@ $( "#GuardarRec" ).click(function() {
 
   });
 
-if ($('#id_tipo_form').val()=='EDICION'){
-        $('#id_pto_vta').attr('disabled', 'disabled');        
-        $("#id_numero").attr('disabled', 'disabled');        
-        $('#id_pto_vta').val(("00000" + $('#id_pto_vta').val()).slice(-5));
-};
+
 
 function ultimoNumCPB(cpb_tipo,letra,pto_vta){
    if ($('#id_tipo_form').val()=='ALTA')

@@ -2,7 +2,8 @@
 {% load static from staticfiles %}
 {% load i18n l10n %}
 {% load humanize %}
-{% block extra_js %}            
+{% block extra_js %}       
+    {{ block.super }}     
     <script src="{% static 'js/scripts/scripts_general.js'%}?{% now "Ymd"%}" type="text/javascript"></script>    
 {% endblock %}
 {% block main %} 

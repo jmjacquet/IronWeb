@@ -543,16 +543,12 @@ class CPBRecCobranzaForm(forms.ModelForm):
 		super(CPBRecCobranzaForm, self).__init__(*args, **kwargs)
 		try:
 			empresa = empresa_actual(request)
-			pventa = pto_vta_habilitados(request)
+			pventa = pto_vta_habilitados(request)			
 			self.fields['pto_vta'].choices = [(pto.numero, pto.__unicode__()) for pto in pventa]			
-			self.fields['pto_vta'].initial = get_pv_defecto(request)
+			self.fields['pto_vta'].initial = get_pv_defecto(request)			
 			self.fields['entidad'].queryset = egr_entidad.objects.filter(tipo_entidad=1,baja=False,empresa__id__in=empresas_habilitadas(request)).order_by('apellido_y_nombre')
 		except gral_empresa.DoesNotExist:
 			empresa = None
-
-	def clean(self):						
-		super(forms.ModelForm,self).clean()	
-		return self.cleaned_data
 		
 
 class CPBRecCPBForm(forms.ModelForm):	
