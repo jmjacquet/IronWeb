@@ -677,7 +677,7 @@ class CPBVentaEditView(VariablesMixin,UpdateView):
        if not tiene_permiso(self.request,'cpb_ventas_abm'):
             return redirect(reverse('principal'))
        if not puedeEditarCPB(self.get_object().pk):
-            messages.error(self.request, u'¡No puede editar un Comprobante Saldado/Facturado!')
+            messages.error(self.request, u'¡No puede editar un Comprobante Saldado/Facturado o con saldos parciales!')
             return redirect(reverse('cpb_venta_listado'))
        return super(CPBVentaEditView, self).dispatch(*args, **kwargs)
 

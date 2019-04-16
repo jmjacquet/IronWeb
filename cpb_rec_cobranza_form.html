@@ -190,7 +190,7 @@
 						     </div>
 		     		     </div>		     		     
 					     {% if form.non_field_errors  %}
-					     	<script type="text/javascript">					     						     	
+					     	<script type="text/javascript">
 					     	alertify.errorAlert("{% for err in form.non_field_errors %}{{ err }}{% endfor %}");
 					     	</script>
 					    {% endif %}       
@@ -211,5 +211,7 @@
 	     	</div>                        
 	    </div>
 </div>	
-
+<script type="text/javascript">
+	
+</script>
 {% endblock %}
