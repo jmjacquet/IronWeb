@@ -640,17 +640,14 @@ if ($('#id_tipo_form').val()=='EDICION'){
   }; 
 }
 
-
-
-
 $("#id_entidad").chosen({
-          no_results_text: "Cliente inexistente...",
-          placeholder_text_single:"Seleccione un Cliente",
-          allow_single_deselect: true,
-      });
-  recalcular(); 
-  $("#id_entidad").trigger("change");
-  $("#id_letra").trigger("change"); 
-  $("#id_condic_pago").trigger("change");  
+        no_results_text: "Cliente inexistente...",
+        placeholder_text_single:"Seleccione un Cliente",
+        allow_single_deselect: true,
+    });
+recalcular(); 
+$("#id_entidad").trigger("change");
+$("#id_letra").trigger("change"); 
+$("#id_condic_pago").trigger("change");  
 
  });

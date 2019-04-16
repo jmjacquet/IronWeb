@@ -26,16 +26,26 @@ DB_PASS = "battlehome"
 DB_HOST = "web594.webfaction.com"
 
 
-DATABASES = {
-    'default': {
-        'ENGINE': 'django.db.backends.mysql', # Add 'postgresql_psycopg2', 'postgresql', 'mysql', 'sqlite3' or 'oracle'.
-        'NAME': ENTIDAD_DB,           # Or path to database file if using sqlite3.
-        'USER':  DB_USER,    
-        'PASSWORD':  DB_PASS,            # Not used with sqlite3.
-        'HOST':  DB_HOST,                      # Set to empty string for localhost. Not used with sqlite3.
-        'PORT': '',      
-    },
-}
+if 'test' in sys.argv or 'test_coverage' in sys.argv: #Covers regular testing and django-coverage
+    DATABASES = {
+        'default': {
+            'ENGINE': 'django.db.backends.sqlite3', #
+            'NAME': 'test_sqlitedb', # Ruta al archivo de la base de datos
+        }
+    }
+else:
+    DATABASES = {
+        'default': {
+            'ENGINE': 'django.db.backends.mysql', # Add 'postgresql_psycopg2', 'postgresql', 'mysql', 'sqlite3' or 'oracle'.
+            'NAME': ENTIDAD_DB,           # Or path to database file if using sqlite3.
+            'USER':  DB_USER,    
+            'PASSWORD':  DB_PASS,            # Not used with sqlite3.
+            'HOST':  DB_HOST,                      # Set to empty string for localhost. Not used with sqlite3.
+            'PORT': '',      
+        },
+    }
+
+    
 
 ALLOWED_HOSTS = '*'
 TIME_ZONE = 'America/Argentina/Buenos_Aires'

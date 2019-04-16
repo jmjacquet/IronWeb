@@ -61,7 +61,7 @@ class gral_empresa(models.Model):
     mail_usuario =models.CharField('Usuario',max_length=100, blank=True)
     mail_password =models.CharField('Password',max_length=100, blank=True)
 
-    afip_categoria =  models.ForeignKey(gral_afip_categorias,verbose_name=u'Categoría AFIP (si corresponde)',db_column='afip_categoria',blank=True, null=True,on_delete=models.SET_NULL)    
+    afip_categoria =  models.ForeignKey('general.gral_afip_categorias',verbose_name=u'Categoría AFIP (si corresponde)',db_column='afip_categoria',blank=True, null=True,on_delete=models.SET_NULL)    
 
     ruta_logo = models.ImageField(upload_to=get_image_name,db_column='ruta_logo', max_length=100,null=True, blank=True) # Field name made lowercase.    
     tipo_logo_factura = models.IntegerField(u'Tipo Logotipo',choices=TIPO_LOGOTIPO, blank=True, null=True)  

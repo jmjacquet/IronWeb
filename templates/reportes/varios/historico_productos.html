@@ -3,7 +3,8 @@
 {% load i18n %}
 {% load bootstrap3 %}
 {% load humanize %}
-{% block extra_js %}            
+{% block extra_js %}      
+    {{ block.super }}      
     <script src="{% static 'js/scripts/scripts_prod_stock.js'%}?{% now "Ymd"%}" type="text/javascript"></script>   
 {% endblock %}
 {% block main %}   
