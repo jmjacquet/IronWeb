@@ -1209,5 +1209,47 @@ def ver_grafico(request):
     return HttpResponse( json.dumps(productos_vendidos, cls=DjangoJSONEncoder), content_type='application/json' )  
 
 
+######################################################
+
+@login_required 
+def reporte_retenciones_imp(request):    
+    limpiar_sesion(request)
+    # if not tiene_permiso(request,'rep_libro_iva'):
+    #         return redirect(reverse('principal'))  
+    context = {}
+    context = getVariablesMixin(request)    
+    try:
+        empresa = empresa_actual(request)
+    except gral_empresa.DoesNotExist:
+        empresa = None 
+    form = ConsultaRepRetencImp(request.POST or None,request=request)            
+    fecha = date.today()
+    
+    cpbs = None
+    if form.is_valid():                                
+        entidad = form.cleaned_data['entidad']                                                              
+        fdesde = form.cleaned_data['fdesde']   
+        fhasta = form.cleaned_data['fhasta']           
+        pto_vta = form.cleaned_data['pto_vta']  
+        nro_cpb = form.cleaned_data['nro_cpb']          
+        total = 0                    
+        cpbs = cpb_comprobante_perc_imp.objects.filter(cpb_comprobante__empresa=empresa,cpb_comprobante__fecha_imputacion__gte=fdesde,cpb_comprobante__fecha_imputacion__lte=fhasta)\
+            .select_related('cpb_comprobante','perc_imp','cpb_comprobante__cpb_tipo','cpb_comprobante__entidad')\
+            .only('id','perc_imp','cpb_comprobante','importe_total','detalle').order_by('-cpb_comprobante__fecha_imputacion','-id')            
+                            
+        if entidad:
+                cpbs= cpbs.filter(cpb_comprobante__entidad__apellido_y_nombre__icontains=entidad)
+        
+        if pto_vta:
+               cpbs= cpbs.filter(cpb_comprobante__pto_vta=pto_vta)        
+
+        if nro_cpb:
+               cpbs= cpbs.filter(cpb_comprobante__numero=nro_cpb)        
+
+        
+    context['form'] = form
+    context['cpbs'] = cpbs
+    context['fecha'] = fecha          
+    return render(request,'reportes/contables/retenc_imp.html',context )
 
 
