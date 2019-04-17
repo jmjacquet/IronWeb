@@ -165,3 +165,16 @@ class ConsultaRankings(forms.Form):
 		request = kwargs.pop('request', None) 
 		super(ConsultaRankings, self).__init__(*args, **kwargs)							
 		self.fields['tipo_cpb'].queryset = cpb_tipo.objects.filter(tipo__in=[1,2,3,4,5,6,7,9],baja=False)		
+
+#################################################################################
+
+class ConsultaRepRetencImp(forms.Form):               
+    entidad = forms.CharField(label='Cliente/Proveedor',max_length=100,widget=forms.TextInput(attrs={'class':'form-control','text-transform': 'uppercase'}),required=False)    
+    fdesde =  forms.DateField(label='Fecha Desde',widget=forms.DateInput(attrs={'class': 'form-control datepicker'}),initial=inicioMes(),required = True)
+    fhasta =  forms.DateField(label='Fecha Hasta',widget=forms.DateInput(attrs={'class': 'form-control datepicker'}),initial=finMes(),required = True)    
+    pto_vta = forms.IntegerField(label='Pto.Vta.',required = False)    
+    nro_cpb = forms.IntegerField(label='CPB',required = False)        
+    
+    def __init__(self, *args, **kwargs):		
+		request = kwargs.pop('request', None)   
+		super(ConsultaRepRetencImp, self).__init__(*args, **kwargs)

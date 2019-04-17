@@ -237,6 +237,11 @@
                         <a href="{% url 'libro_iva_compras' %}"><i class="icon-bar-chart"></i>Libro IVA Compras</a>
                       </li> 
                       {% endif %}
+                      {% if 'rep_retenciones_imp' in permisos_grupo %}                      
+                      <li>
+                        <a href="{% url 'reporte_retenciones_imp' %}"><i class="icon-bar-chart"></i>Reporte Retenciones/Percepciones</a>
+                      </li> 
+                      {% endif %}
                      {% endif %}
                      {% if permisos_rep_finanzas %}
                       <li>
