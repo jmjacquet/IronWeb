@@ -1181,7 +1181,6 @@ class RankingsView(VariablesMixin,TemplateView):
         return self.get(*args, **kwargs)
 
 
-
 from django.http import JsonResponse
 
 def ValuesQuerySetToDict(vqs):
@@ -1225,7 +1224,7 @@ def reporte_retenciones_imp(request):
     form = ConsultaRepRetencImp(request.POST or None,request=request)            
     fecha = date.today()
     
-    cpbs = None
+    cpbs = rets = None
     if form.is_valid():                                
         entidad = form.cleaned_data['entidad']                                                              
         fdesde = form.cleaned_data['fdesde']   
@@ -1237,18 +1236,26 @@ def reporte_retenciones_imp(request):
             .select_related('cpb_comprobante','perc_imp','cpb_comprobante__cpb_tipo','cpb_comprobante__entidad')\
             .only('id','perc_imp','cpb_comprobante','importe_total','detalle').order_by('-cpb_comprobante__fecha_imputacion','-id')            
                             
+        rets = cpb_comprobante_retenciones.objects.filter(cpb_comprobante__empresa=empresa,cpb_comprobante__fecha_imputacion__gte=fdesde,cpb_comprobante__fecha_imputacion__lte=fhasta)\
+            .select_related('cpb_comprobante','retencion','cpb_comprobante__cpb_tipo','cpb_comprobante__entidad')\
+            .only('id','retencion','cpb_comprobante','ret_nrocpb','ret_importe_isar','ret_fecha_cpb','importe_total','detalle').order_by('-cpb_comprobante__fecha_imputacion','-id')  
+
         if entidad:
                 cpbs= cpbs.filter(cpb_comprobante__entidad__apellido_y_nombre__icontains=entidad)
+                rets= rets.filter(cpb_comprobante__entidad__apellido_y_nombre__icontains=entidad)
         
         if pto_vta:
                cpbs= cpbs.filter(cpb_comprobante__pto_vta=pto_vta)        
+               rets= rets.filter(cpb_comprobante__pto_vta=pto_vta)        
 
         if nro_cpb:
                cpbs= cpbs.filter(cpb_comprobante__numero=nro_cpb)        
+               rets= rets.filter(cpb_comprobante__numero=nro_cpb)        
 
         
     context['form'] = form
     context['cpbs'] = cpbs
+    context['rets'] = rets
     context['fecha'] = fecha          
     return render(request,'reportes/contables/retenc_imp.html',context )
 
