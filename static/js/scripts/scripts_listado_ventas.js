@@ -61,7 +61,7 @@ var tabla = $('#dataTables-cpb_venta').DataTable({
                   "orderable": false,
                 }],          
            "paging":   true,
-           "lengthMenu": [[20, 50, -1], [20, 50, "Todos"]],
+           "lengthMenu": [[20, 50, -1], [20, 50, ""]],
            "autoWidth": false,           
            "order": [],
            "colReorder": true,
@@ -318,27 +318,30 @@ var tabla = $('#dataTables-cpb_venta').DataTable({
     });
 
     $('#btnImprimirDetalles').click(function() {
-        if (cpbs.length == 0) {
-            alerta = alertify.dialog('confirm').set({
-                'labels': {
-                    ok: 'Aceptar',
-                    cancel: 'Cancelar'
-                },
-                'message': '¿Desea Imprimir el Detalle de todos los Comprobantes?',
-                transition: 'fade',
-                'onok': function() {
-                    alerta.close();
-                    window.open('/comprobantes/imprimir_detalles/');                    
-                },
-                'oncancel': function() {
-                    return true;
-                }
-            });
-            alerta.setting('modal', true);
-            alerta.setHeader('IMPRIMIR COMPROBANTES');
-            alerta.show();
-            return true;
-        } else {
+        // if (cpbs.length == 0) {
+        //     alerta = alertify.dialog('confirm').set({
+        //         'labels': {
+        //             ok: 'Aceptar',
+        //             cancel: 'Cancelar'
+        //         },
+        //         'message': '¿Desea Imprimir el Detalle de todos los Comprobantes?',
+        //         transition: 'fade',
+        //         'onok': function() {
+        //             alerta.close();
+        //             window.open('/comprobantes/imprimir_detalles/');                    
+        //         },
+        //         'oncancel': function() {
+        //             return true;
+        //         }
+        //     });
+        //     alerta.setting('modal', true);
+        //     alerta.setHeader('IMPRIMIR COMPROBANTES');
+        //     alerta.show();
+        //     return true;
+        // } else {
+         if (cpbs.length == 0) {
+            alertify.errorAlert("¡Debe seleccionar algún comprobante!");
+        } else {    
             alerta = alertify.dialog('confirm').set({
                 'labels': {
                     ok: 'Aceptar',

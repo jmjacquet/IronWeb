@@ -91,6 +91,7 @@ var tabla = $('#dataTables-cpb_venta').DataTable({
                     exportOptions: {  modifier: {
                                         page: 'current'
                                     }, 
+                                      // columns: [ 0, 1, 2, 5 ]
                                       columns: ':visible',
                                       format: {
                                       body: function(data, row, column, node) {
@@ -151,7 +152,7 @@ var tabla = $('#dataTables-cpb_venta').DataTable({
                // this.api().columns().every( function () {[0, 1, 9]
                 this.api().columns([3,6]).every( function () {
                     var column = this;
-                    var select = $('<select class="form-control"><option value="">Todos</option></select>')
+                    var select = $('<select class="form-control"><option value=""></option></select>')
                         .appendTo( $(column.footer()).empty() )
                         .on( 'change', function () {
                             var val = $.fn.dataTable.util.escapeRegex(
