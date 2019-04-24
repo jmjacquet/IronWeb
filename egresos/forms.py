@@ -142,7 +142,19 @@ class CPBCompraPercImpForm(forms.ModelForm):
 			empresa = empresa_actual(request)
 			self.fields['perc_imp'].queryset = cpb_perc_imp.objects.filter(empresa__id__in=empresas_habilitadas(request))			
 		except:
-			empresa = None			
+			empresa = None
+
+	def clean(self):						
+		super(forms.ModelForm,self).clean()	
+		importe_total = self.cleaned_data.get('importe_total')				
+		perc_imp = self.cleaned_data.get('perc_imp')							
+		if perc_imp!=None:
+			if not importe_total:
+				self._errors['importe_total'] = [u'¡Verificar Fecha!']	
+			if not perc_imp:
+				self._errors['perc_imp'] = [u'¡Verificar Perc/Imp!']	
+
+		return self.cleaned_data			
 
 class CPBFPForm(forms.ModelForm):
 	tipo_forma_pago = forms.ModelChoiceField(label='FP',queryset=cpb_tipo_forma_pago.objects.filter(baja=False),empty_label=None,required = False)
