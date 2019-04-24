@@ -199,7 +199,7 @@ class CPBVentaPercImpForm(forms.ModelForm):
 		super(forms.ModelForm,self).clean()	
 		importe_total = self.cleaned_data.get('importe_total')				
 		perc_imp = self.cleaned_data.get('perc_imp')							
-		if importe_total!=None or perc_imp!=None:
+		if perc_imp!=None:
 			if not importe_total:
 				self._errors['importe_total'] = [u'¡Verificar Fecha!']	
 			if not perc_imp:
