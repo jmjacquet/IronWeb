@@ -31,5 +31,6 @@ urlpatterns = patterns('reportes.views',
 
  url(r'^rankings/$', RankingsView.as_view() ,name="rankings"), 
 
+ url(r'^reporte_retenciones_imp/$', reporte_retenciones_imp, name="reporte_retenciones_imp"),
 
 )
