@@ -911,7 +911,6 @@ def mandarEmail(request,id):
              raise ValueError
 
         datos = config.get_datos_mail()      
-
         mail_cuerpo = datos['mail_cuerpo']
         mail_servidor = datos['mail_servidor']
         mail_puerto = int(datos['mail_puerto'])
@@ -933,9 +932,6 @@ def mandarEmail(request,id):
         image_url = request.build_absolute_uri(reverse("chequear_email",kwargs={'id': cpb.id}))
         
         html_content = get_template('general/varios/email.html').render({'mensaje': mail_cuerpo,'image_url':image_url})
-        
-        
-        
                 
         backend = EmailBackend(host=mail_servidor, port=mail_puerto, username=mail_usuario,password=mail_password,fail_silently=False)        
         email = EmailMessage( subject=u'%s' % (cpb.get_cpb_tipo),body=html_content,from_email=mail_origen,to=mail_destino,connection=backend)                
@@ -946,7 +942,8 @@ def mandarEmail(request,id):
         cpb.save()
         messages.success(request, 'El comprobante fué enviado con éxito!')
         return HttpResponseRedirect(cpb.get_listado())
-    except:
+    except Exception as e:
+        print e
         messages.error(request, 'El comprobante no pudo ser enviado! (verifique la dirección de correo del destinatario)')  
         return HttpResponseRedirect(cpb.get_listado())
 
