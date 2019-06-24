@@ -73,8 +73,11 @@ class CPBCompraViewList(VariablesMixin,ListView):
                 comprobantes= comprobantes.filter(pto_vta=pto_vta)
             if letra:
                 comprobantes= comprobantes.filter(letra=letra) 
-        else:
-            comprobantes= comprobantes.filter(fecha_cpb__gte=inicioMesAnt(),fecha_cpb__lte=finMes())
+        else:            
+            cpbs= comprobantes.filter(fecha_cpb__gte=inicioMesAnt(),fecha_cpb__lte=finMes())
+            if len(cpbs)==0:
+                cpbs = comprobantes[:20]            
+            comprobantes=cpbs
 
         context['form'] = form
         context['comprobantes'] = comprobantes
@@ -438,8 +441,11 @@ class CPBPagosViewList(VariablesMixin,ListView):
 
             if pto_vta:
                 comprobantes= comprobantes.filter(Q(pto_vta=pto_vta)) 
-        else:
-            comprobantes= comprobantes.filter(fecha_cpb__gte=inicioMesAnt(),fecha_cpb__lte=finMes())
+        else:            
+            cpbs= comprobantes.filter(fecha_cpb__gte=inicioMesAnt(),fecha_cpb__lte=finMes())
+            if len(cpbs)==0:
+                cpbs = comprobantes[:20]            
+            comprobantes=cpbs
 
 
         context['form'] = form
@@ -877,8 +883,11 @@ class CPBRemitoCViewList(VariablesMixin,ListView):
                      
             if pto_vta:
                 comprobantes= comprobantes.filter(Q(pto_vta=pto_vta)) 
-        else:
-            comprobantes= comprobantes.filter(fecha_cpb__gte=inicioMesAnt(),fecha_cpb__lte=finMes())
+        else:            
+            cpbs= comprobantes.filter(fecha_cpb__gte=inicioMesAnt(),fecha_cpb__lte=finMes())
+            if len(cpbs)==0:
+                cpbs = comprobantes[:20]            
+            comprobantes=cpbs
 
         context['form'] = form
         context['comprobantes'] = comprobantes

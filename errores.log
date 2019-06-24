@@ -3220,3 +3220,26 @@ Traceback (most recent call last):
   File "D:\Repo\ironStable\comprobantes\views.py", line 850, in imprimirCobranzaCtaCte
     ,empresa=empresa,estado__in=[1,2]).aggregate(sum=Sum(F('importe_total')*F('cpb_tipo__signo_ctacte'), output_field=DecimalField()))['sum'] or 0
 NameError: global name 'empresa' is not defined
+[24/Jun/2019 12:47:38] ERROR [django.request:256] Internal Server Error: /ingresos/ventas/
+Traceback (most recent call last):
+  File "C:\Python27\lib\site-packages\django\core\handlers\base.py", line 132, in get_response
+    response = wrapped_callback(request, *callback_args, **callback_kwargs)
+  File "C:\Python27\lib\site-packages\django\views\generic\base.py", line 71, in view
+    return self.dispatch(request, *args, **kwargs)
+  File "C:\Python27\lib\site-packages\django\utils\decorators.py", line 34, in _wrapper
+    return bound_func(*args, **kwargs)
+  File "C:\Python27\lib\site-packages\django\contrib\auth\decorators.py", line 22, in _wrapped_view
+    return view_func(request, *args, **kwargs)
+  File "C:\Python27\lib\site-packages\django\utils\decorators.py", line 30, in bound_func
+    return func.__get__(self, type(self))(*args2, **kwargs2)
+  File "D:\GitHub\IronWeb\ingresos\views.py", line 43, in dispatch
+    return super(CPBSVentasList, self).dispatch(*args,**kwargs)
+  File "C:\Python27\lib\site-packages\django\views\generic\base.py", line 89, in dispatch
+    return handler(request, *args, **kwargs)
+  File "C:\Python27\lib\site-packages\django\views\generic\list.py", line 174, in get
+    context = self.get_context_data()
+  File "D:\GitHub\IronWeb\ingresos\views.py", line 94, in get_context_data
+    context['comprobantes'] = comprobantes.select_related('estado','cpb_tipo','entidad','vendedor','id_cpb_padre').order_by('-fecha_cpb','-fecha_creacion','-id')
+  File "C:\Python27\lib\site-packages\django\db\models\query.py", line 810, in order_by
+    "Cannot reorder a query once a slice has been taken."
+AssertionError: Cannot reorder a query once a slice has been taken.

@@ -61,7 +61,7 @@ var tabla = $('#dataTables-cpb_venta').DataTable({
                   "orderable": false,
                 }],          
            "paging":   true,
-           "lengthMenu": [[20, 50, -1], [20, 50, ""]],
+           "lengthMenu": [[20, 50, -1], [20, 50, "Todos"]],
            "autoWidth": false,           
            "order": [],
            "colReorder": true,
@@ -91,7 +91,8 @@ var tabla = $('#dataTables-cpb_venta').DataTable({
                     exportOptions: {  modifier: {
                                         page: 'current'
                                     }, 
-                                      columns: ':visible',
+                                      // columns: [ 0, 1, 2, 5 ]
+                                      columns: '.imprimir',
                                       format: {
                                       body: function(data, row, column, node) {
                                         var floatVal = function (i) {
@@ -151,7 +152,7 @@ var tabla = $('#dataTables-cpb_venta').DataTable({
                // this.api().columns().every( function () {[0, 1, 9]
                 this.api().columns([3,6]).every( function () {
                     var column = this;
-                    var select = $('<select class="form-control"><option value="">Todos</option></select>')
+                    var select = $('<select class="form-control"><option value=""></option></select>')
                         .appendTo( $(column.footer()).empty() )
                         .on( 'change', function () {
                             var val = $.fn.dataTable.util.escapeRegex(

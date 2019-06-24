@@ -5,7 +5,7 @@ PROJECT_ROOT = os.path.join(os.path.dirname(__file__), '..') #every dot represen
 
 SITE_ROOT = PROJECT_ROOT
 
-DEBUG = False
+DEBUG = True
 # DEBUG = False
 
 TEMPLATE_DEBUG = DEBUG

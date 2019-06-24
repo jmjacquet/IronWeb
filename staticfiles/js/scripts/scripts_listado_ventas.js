@@ -92,7 +92,7 @@ var tabla = $('#dataTables-cpb_venta').DataTable({
                                         page: 'current'
                                     }, 
                                       // columns: [ 0, 1, 2, 5 ]
-                                      columns: ':visible',
+                                      columns: '.imprimir',
                                       format: {
                                       body: function(data, row, column, node) {
                                         var floatVal = function (i) {
