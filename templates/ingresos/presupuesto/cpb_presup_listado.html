@@ -29,15 +29,15 @@
                         <thead>
                             <tr>
                                 <th class="no-sort text-center"></th>
-                                <th class="text-center">Estado</th>                                                                
-                                <th class="text-center">Aprobación</th>                                                                
-                                <th class="text-center">Fecha CPB</th>
-                                <th class="text-center">Vencimiento</th>
-                                <th>Nº CPB</th>
-                                <th>Cliente</th>
-                                <th class="text-right">Total</th>
-                                <th class="text-right">Importe</th>
-                                <th class="text-right">IVA</th>                                
+                                <th class="imprimir text-center">Estado</th>                                                                
+                                <th class="imprimir text-center">Aprobación</th>                                                                
+                                <th class="imprimir text-center">Fecha CPB</th>
+                                <th class="imprimir text-center">Vencimiento</th>
+                                <th class="imprimir">Nº CPB</th>
+                                <th class="imprimir">Cliente</th>
+                                <th class="imprimir text-right">Total</th>
+                                <th class="imprimir text-right">Importe</th>
+                                <th class="imprimir text-right">IVA</th>                                
                                 <th>Descripción</th>                                
                             </tr>
                         </thead>
@@ -213,7 +213,7 @@ var tabla = $('#dataTables-cpb_presupuesto').DataTable({
                     exportOptions: {  modifier: {
                                         page: 'current'
                                     }, 
-                                      columns: ':visible',
+                                      columns: '.imprimir',
                                       format: {
                                       body: function(data, row, column, node) {
                                         var floatVal = function (i) {
@@ -253,7 +253,7 @@ var tabla = $('#dataTables-cpb_presupuesto').DataTable({
                     extend:    'pdfHtml5',
                     text:      '<i class="fa fa-file-pdf-o"></i>',
                     titleAttr: 'PDF',footer: true,
-                    exportOptions: { columns: ':visible'},
+                    exportOptions: { columns: '.imprimir'},
                     orientation: 'landscape',
                     className: 'btnToolbar',                    
                 },
@@ -261,7 +261,7 @@ var tabla = $('#dataTables-cpb_presupuesto').DataTable({
                     extend: 'print',
                     text:      '<i class="fa fa-print"></i>',
                     titleAttr: 'Imprimir',
-                    exportOptions: { columns: ':visible' },
+                    exportOptions: { columns: '.imprimir' },
                     className: 'btnToolbar',                    
                 },
             ],

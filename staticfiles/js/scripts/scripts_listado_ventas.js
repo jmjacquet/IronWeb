@@ -92,7 +92,7 @@ var tabla = $('#dataTables-cpb_venta').DataTable({
                                         page: 'current'
                                     }, 
                                       // columns: [ 0, 1, 2, 5 ]
-                                      columns: '.imprimir',
+                                      columns: ['.imprimir'],
                                       format: {
                                       body: function(data, row, column, node) {
                                         var floatVal = function (i) {
@@ -132,7 +132,7 @@ var tabla = $('#dataTables-cpb_venta').DataTable({
                     extend:    'pdfHtml5',
                     text:      '<i class="fa fa-file-pdf-o"></i>',
                     titleAttr: 'PDF',footer: true,
-                    exportOptions: { columns: ':visible'},
+                    exportOptions: { columns: '.imprimir'},
                     orientation: 'landscape',
                     className: 'btnToolbar',                    
                 },
@@ -140,7 +140,7 @@ var tabla = $('#dataTables-cpb_venta').DataTable({
                     extend: 'print',
                     text:      '<i class="fa fa-print"></i>',
                     titleAttr: 'Imprimir',
-                    exportOptions: { columns: ':visible' },
+                    exportOptions: { columns: '.imprimir' },
                     className: 'btnToolbar',                    
                 },
             ],

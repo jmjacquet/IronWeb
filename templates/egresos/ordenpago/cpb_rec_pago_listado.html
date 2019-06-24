@@ -31,12 +31,12 @@
                         <thead>
                             <tr>
                                 <th class="no-sort"></th>                                 
-                                <th class="text-center">Fecha Emisión</th>
-                                <th>Nº Orden Pago</th>
-                                <th>Proveedor</th>
-                                <th class="text-right">Total</th>
-                                <th class="text-right">Importe</th>
-                                <th class="text-right">Retenc</th>
+                                <th class="imprimir text-center">Fecha Emisión</th>
+                                <th class="imprimir">Nº Orden Pago</th>
+                                <th class="imprimir">Proveedor</th>
+                                <th class="imprimir text-right">Total</th>
+                                <th class="imprimir text-right">Importe</th>
+                                <th class="imprimir text-right">Retenc</th>
                                 <th>Comprobantes</th>                                 
                                 <th>Descripción</th>                                
                                 
@@ -197,7 +197,7 @@ var tabla = $('#dataTables-pagos').DataTable({
                     exportOptions: {  modifier: {
                                         page: 'current'
                                     }, 
-                                      columns: ':visible',
+                                      columns: '.imprimir',
                                       format: {
                                       body: function(data, row, column, node) {
                                         var floatVal = function (i) {
@@ -237,7 +237,7 @@ var tabla = $('#dataTables-pagos').DataTable({
                     extend:    'pdfHtml5',
                     text:      '<i class="fa fa-file-pdf-o"></i>',
                     titleAttr: 'PDF',footer: true,
-                    exportOptions: { columns: ':visible'},
+                    exportOptions: { columns: '.imprimir'},
                     orientation: 'landscape',
                     className: 'btnToolbar',                    
                 },
@@ -245,7 +245,7 @@ var tabla = $('#dataTables-pagos').DataTable({
                     extend: 'print',
                     text:      '<i class="fa fa-print"></i>',
                     titleAttr: 'Imprimir',
-                    exportOptions: { columns: ':visible' },
+                    exportOptions: { columns: '.imprimir' },
                     className: 'btnToolbar',                    
                 },
             ],
