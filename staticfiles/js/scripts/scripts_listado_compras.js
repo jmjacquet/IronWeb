@@ -231,38 +231,69 @@ var tabla = $('#dataTables-cpb_compra').DataTable({
     }
     var cpbs = [];
    
-    $("input[class='tildado']" ,tabla.rows().nodes()).change(function() {        
-        checkBoxClick2();
-    });
-   
-    function checkBoxClick2() {
-        cpbs = [];
-        cant = 0;
-        str1 = '/egresos/pagos/comprobantes/?'
-        str2 = ''
-        $("input[class='tildado']", tabla.rows().nodes()).each(function(index, checkbox) {
-            if (checkbox.checked) {                
-                chk = document.getElementById(checkbox.id);
-                if (chk!=null){
-                    id_cpb = chk.value;
-                    cpbs.push(id_cpb);
-                    cant += 1;
-                    $(checkbox).closest('tr').toggleClass('selected', checkbox.checked);
-                    if (str2 == '') {
-                        str2 = str2 + 'id_cpb=' + id_cpb;
-                    } else {
-                        str2 = str2 + '&id_cpb=' + id_cpb;
-                    };
-                }
-            } else {
-                if ($(checkbox).closest('tr').hasClass('selected')) {
-                    $(checkbox).closest('tr').removeClass('selected');
-                }
+    
+
+    $("input[class='tildado']" ,tabla.rows().nodes()).change(function() {                
+        str1 = '/egresos/pagos/comprobantes/?';
+        str2 = '';
+        checkbox=this;
+        id_cpb = checkbox.value;
+        if (checkbox.checked) {               
+                //Agrego al array de cpbs seleccionados
+                cpbs.push(id_cpb);                
+                $(checkbox).closest('tr').toggleClass('selected', checkbox.checked);                                
+        } else {
+            if ($(checkbox).closest('tr').hasClass('selected')) {
+                $(checkbox).closest('tr').removeClass('selected');
             };
-            $('#btnPago').val(str1 + str2)
-            $('#btnAnular').val(str2);
-        });
-    };
+            var cpbs2=[];
+            //Regenero el array de cpbs selecionados sin el que acabo de quitar
+            for( var i = 0; i < cpbs.length; i++){
+                if ( cpbs[i] != id_cpb) cpbs2.push(cpbs[i]);                    
+                };
+            cpbs=cpbs2;     
+        };
+        //Armo el String para los botones
+        for (var i = 0; i < cpbs.length; i++) {                
+                if (str2 == '') {
+                    str2 = str2 + 'id_cpb=' + cpbs[i];
+                } else {
+                    str2 = str2 + '&id_cpb=' + cpbs[i];
+                };
+        };
+        $('#btnPago').val(str1 + str2)
+        $('#btnAnular').val(str2);
+               
+    });
+       
+    // function checkBoxClick2() {
+    //     cpbs = [];
+    //     cant = 0;
+    //     str1 = '/egresos/pagos/comprobantes/?'
+    //     str2 = ''
+    //     $("input[class='tildado']", tabla.rows().nodes()).each(function(index, checkbox) {
+    //         if (checkbox.checked) {                
+    //             chk = document.getElementById(checkbox.id);
+    //             if (chk!=null){
+    //                 id_cpb = chk.value;
+    //                 cpbs.push(id_cpb);
+    //                 cant += 1;
+    //                 $(checkbox).closest('tr').toggleClass('selected', checkbox.checked);
+    //                 if (str2 == '') {
+    //                     str2 = str2 + 'id_cpb=' + id_cpb;
+    //                 } else {
+    //                     str2 = str2 + '&id_cpb=' + id_cpb;
+    //                 };
+    //             }
+    //         } else {
+    //             if ($(checkbox).closest('tr').hasClass('selected')) {
+    //                 $(checkbox).closest('tr').removeClass('selected');
+    //             }
+    //         };
+    //         $('#btnPago').val(str1 + str2)
+    //         $('#btnAnular').val(str2);
+    //     });
+    // };
 
     $('#btnAnular').click(function() {
         if (cpbs.length == 0) {
