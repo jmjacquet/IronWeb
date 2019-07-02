@@ -41,7 +41,7 @@
                                         <i class="icon-settings"> </i> <span class="caret"></span>
                                       </button>
                                       <ul class="dropdown-menu dropdown-menu-default">
-                                        <li>{% include "general/varios/cpb_ver_dropdown.html" %}</li>
+                                         <li><a href="{% url 'remito_ver' id=cpb.id %}"  title="VER" class="modal-detail" data-modal-head="DETALLE {{cpb.cpb_tipo.nombre|upper}} {{cpb}}   Fecha: {{cpb.fecha_cpb|date:'d/m/Y'}}" data-fm-callback="reload"><i class="icon-screen-desktop"></i> Vista Previa</a></li>
                                         <li><a target="_blank" href="{% url 'imprimirRemito' id=cpb.pk %}"><i class=" icon-printer"></i> Imprimir</a></li>
                                         <li><a href="{% url 'mandarEmail' id=cpb.pk %}"><i class="icon-envelope-open"></i> Enviar por Email</a></li>
                                             <li role="separator" class="divider"></li>
