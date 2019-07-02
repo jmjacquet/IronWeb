@@ -92,7 +92,7 @@ var tabla = $('#dataTables-cpb_venta').DataTable({
                                         page: 'current'
                                     }, 
                                       // columns: [ 0, 1, 2, 5 ]
-                                      columns: '.imprimir',
+                                      columns: ['.imprimir'],
                                       format: {
                                       body: function(data, row, column, node) {
                                         var floatVal = function (i) {
@@ -132,7 +132,7 @@ var tabla = $('#dataTables-cpb_venta').DataTable({
                     extend:    'pdfHtml5',
                     text:      '<i class="fa fa-file-pdf-o"></i>',
                     titleAttr: 'PDF',footer: true,
-                    exportOptions: { columns: ':visible'},
+                    exportOptions: { columns: '.imprimir'},
                     orientation: 'landscape',
                     className: 'btnToolbar',                    
                 },
@@ -140,7 +140,7 @@ var tabla = $('#dataTables-cpb_venta').DataTable({
                     extend: 'print',
                     text:      '<i class="fa fa-print"></i>',
                     titleAttr: 'Imprimir',
-                    exportOptions: { columns: ':visible' },
+                    exportOptions: { columns: '.imprimir' },
                     className: 'btnToolbar',                    
                 },
             ],
@@ -224,46 +224,74 @@ var tabla = $('#dataTables-cpb_venta').DataTable({
 
   var cpbs = [];
    
-    $("input[class='tildado']" ,tabla.rows().nodes()).change(function() {        
-        checkBoxClick1();
-
+    $("input[class='tildado']" ,tabla.rows().nodes()).change(function() {                
+        str1 = '/ingresos/cobranza/comprobantes/?';
+        str2 = '';
+        checkbox=this;
+        id_cpb = checkbox.value;
+        if (checkbox.checked) {               
+                //Agrego al array de cpbs seleccionados
+                cpbs.push(id_cpb);                
+                $(checkbox).closest('tr').toggleClass('selected', checkbox.checked);                                
+        } else {
+            if ($(checkbox).closest('tr').hasClass('selected')) {
+                $(checkbox).closest('tr').removeClass('selected');
+            };
+            var cpbs2=[];
+            //Regenero el array de cpbs selecionados sin el que acabo de quitar
+            for( var i = 0; i < cpbs.length; i++){
+                if ( cpbs[i] != id_cpb) cpbs2.push(cpbs[i]);                    
+                };
+            cpbs=cpbs2;     
+        };
+        //Armo el String para los botones
+        for (var i = 0; i < cpbs.length; i++) {                
+                if (str2 == '') {
+                    str2 = str2 + 'id_cpb=' + cpbs[i];
+                } else {
+                    str2 = str2 + '&id_cpb=' + cpbs[i];
+                };
+        };
+        $('#btnCobranza').val(str1 + str2)
+        $('#btnAnular').val(str2);
+               
     });
    
-      function checkBoxClick1() {
+    //   function checkBoxClick1() {
 
-        cpbs = [];
-        cant = 0;
-        str1 = '/ingresos/cobranza/comprobantes/?'
-        str2 = ''
-        $("input[class='tildado']",tabla.rows().nodes()).each(function(index, checkbox) {
+    //     cpbs = [];
+    //     cant = 0;
+    //     str1 = '/ingresos/cobranza/comprobantes/?'
+    //     str2 = ''
+    //     $("input[class='tildado']",tabla.rows().nodes()).each(function(index, checkbox) {
            
 
-            if (checkbox.checked) {   
+    //         if (checkbox.checked) {   
 
-                chk = document.getElementById(checkbox.id);
+    //             chk = document.getElementById(checkbox.id);
 
-                if (chk!=null){
-                    id_cpb = chk.value;
-                    cpbs.push(id_cpb);
-                    cant += 1;
-                    $(checkbox).closest('tr').toggleClass('selected', checkbox.checked);
-                    if (str2 == '') {
-                        str2 = str2 + 'id_cpb=' + id_cpb;
-                    } else {
-                        str2 = str2 + '&id_cpb=' + id_cpb;
-                    };
-                }
-            } else {
-                if ($(checkbox).closest('tr').hasClass('selected')) {
-                    $(checkbox).closest('tr').removeClass('selected');
-                }
-            };
-            $('#btnCobranza').val(str1 + str2)
-            $('#btnAnular').val(str2);
+    //             if (chk!=null){
+    //                 id_cpb = chk.value;
+    //                 cpbs.push(id_cpb);
+    //                 cant += 1;
+    //                 $(checkbox).closest('tr').toggleClass('selected', checkbox.checked);
+    //                 if (str2 == '') {
+    //                     str2 = str2 + 'id_cpb=' + id_cpb;
+    //                 } else {
+    //                     str2 = str2 + '&id_cpb=' + id_cpb;
+    //                 };
+    //             }
+    //         } else {
+    //             if ($(checkbox).closest('tr').hasClass('selected')) {
+    //                 $(checkbox).closest('tr').removeClass('selected');
+    //             }
+    //         };
+    //         $('#btnCobranza').val(str1 + str2)
+    //         $('#btnAnular').val(str2);
        
-        });
+    //     });
 
-    };
+    // };
     $('#btnCobranza').click(function() {
         if (cpbs.length == 0) {
             alertify.errorAlert("¡Debe seleccionar algún comprobante!");
@@ -318,28 +346,7 @@ var tabla = $('#dataTables-cpb_venta').DataTable({
         }
     });
 
-    $('#btnImprimirDetalles').click(function() {
-        // if (cpbs.length == 0) {
-        //     alerta = alertify.dialog('confirm').set({
-        //         'labels': {
-        //             ok: 'Aceptar',
-        //             cancel: 'Cancelar'
-        //         },
-        //         'message': '¿Desea Imprimir el Detalle de todos los Comprobantes?',
-        //         transition: 'fade',
-        //         'onok': function() {
-        //             alerta.close();
-        //             window.open('/comprobantes/imprimir_detalles/');                    
-        //         },
-        //         'oncancel': function() {
-        //             return true;
-        //         }
-        //     });
-        //     alerta.setting('modal', true);
-        //     alerta.setHeader('IMPRIMIR COMPROBANTES');
-        //     alerta.show();
-        //     return true;
-        // } else {
+    $('#btnImprimirDetalles').click(function() {    
          if (cpbs.length == 0) {
             alertify.errorAlert("¡Debe seleccionar algún comprobante!");
         } else {    

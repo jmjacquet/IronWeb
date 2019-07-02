@@ -18,8 +18,8 @@
                         <thead>
                             <tr>
                                 <th width="5%" ></th>
-                                <th>Código</th>
-                                <th>Nombre</th>               
+                                <th class="imprimir">Código</th>
+                                <th class="imprimir">Nombre</th>               
                             </tr>
                         </thead>
                         <tbody>
@@ -124,7 +124,7 @@ $(document).ready(function() {
                     exportOptions: {  modifier: {
                                         page: 'current'
                                     }, 
-                                      columns: ':visible',
+                                      columns: '.imprimir',
                                       format: {
                                       body: function(data, row, column, node) {
                                         var floatVal = function (i) {
@@ -164,14 +164,14 @@ $(document).ready(function() {
                         extend:    'pdfHtml5',
                         text:      '<i class="fa fa-file-pdf-o"></i>',
                         titleAttr: 'PDF',footer: true,
-                        exportOptions: { columns: ':visible' },
+                        exportOptions: { columns: '.imprimir' },
                         className: 'btnToolbar',                    
                     },
                     {
                         extend: 'print',
                         text:      '<i class="fa fa-print"></i>',
                         titleAttr: 'Imprimir',
-                        exportOptions: { columns: ':visible' },
+                        exportOptions: { columns: '.imprimir' },
                         className: 'btnToolbar',                    
                     },
                 ],

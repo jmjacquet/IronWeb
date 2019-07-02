@@ -29,15 +29,15 @@
                         <thead>
                             <tr>
                                 <th></th>
-                                <th>Código</th>
-                                <th>Nombre</th>
-                                <th>Categoría</th>
-                                <th>TipoProd.</th>
-                                <th>Unidad</th>
-                                <th>Mostrar en</th>
-                                <th>IVA</th>
-                                <th class="text-center">Lleva Stock</th> 
-                                <th>Descripción</th>                                
+                                <th class="imprimir">Código</th>
+                                <th class="imprimir">Nombre</th>
+                                <th class="imprimir">Categoría</th>
+                                <th class="imprimir">TipoProd.</th>
+                                <th class="imprimir">Unidad</th>
+                                <th class="imprimir">Mostrar en</th>
+                                <th class="imprimir">IVA</th>
+                                <th class="imprimir text-center">Lleva Stock</th> 
+                                <th class="imprimir">Descripción</th>                                
                             </tr>
                         </thead>
                         <tbody>
@@ -165,7 +165,7 @@ var tabla = $('#dataTables-primary').DataTable({
                     exportOptions: {  modifier: {
                                         page: 'current'
                                     }, 
-                                      columns: ':visible',
+                                      columns: '.imprimir',
                                       format: {
                                       body: function(data, row, column, node) {
                                         var floatVal = function (i) {
@@ -205,7 +205,7 @@ var tabla = $('#dataTables-primary').DataTable({
                     extend:    'pdfHtml5',
                     text:      '<i class="fa fa-file-pdf-o"></i>',
                     titleAttr: 'PDF',footer: true,
-                    exportOptions: { columns: ':visible'},
+                    exportOptions: { columns: '.imprimir'},
                     orientation: 'landscape',
                     className: 'btnToolbar',                    
                 },
@@ -213,7 +213,7 @@ var tabla = $('#dataTables-primary').DataTable({
                     extend: 'print',
                     text:      '<i class="fa fa-print"></i>',
                     titleAttr: 'Imprimir',
-                    exportOptions: { columns: ':visible' },
+                    exportOptions: { columns: '.imprimir' },
                     className: 'btnToolbar',                    
                 },
             ],

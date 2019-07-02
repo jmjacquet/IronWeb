@@ -19,14 +19,14 @@
                         <thead >
                             <tr>
                                 <th></th>                                
-                                <th>Nombre</th>
-                                <th>Usuario</th>
-                                <th>Tipo</th>
-                                <th>Documento</th>
-                                <th>Grupo</th>
-                                <th>EMail</th>
-                                <th>Pto.Vta.Fijo</th>
-                                <th>Último Logueo</th>
+                                <th class="imprimir">Nombre</th>
+                                <th class="imprimir">Usuario</th>
+                                <th class="imprimir">Tipo</th>
+                                <th class="imprimir">Documento</th>
+                                <th class="imprimir">Grupo</th>
+                                <th class="imprimir">EMail</th>
+                                <th class="imprimir">Pto.Vta.Fijo</th>
+                                <th class="imprimir">Último Logueo</th>
                             </tr>
                         </thead>
                         <tbody>
@@ -145,11 +145,11 @@ var tabla = $('#dataTables-usuarios').DataTable({
                     extend:    'excel',
                     text:      '<i class="fa fa-file-excel-o"></i>',
                     titleAttr: 'Excel',
-                    filename: 'ORDEN_TRABAJO',                    
+                    filename: 'USUARIOS',                    
                     exportOptions: {  modifier: {
                                         page: 'current'
                                     }, 
-                                      columns: ':visible',
+                                      columns: '.imprimir',
                                       format: {
                                       body: function(data, row, column, node) {
                                         var floatVal = function (i) {
@@ -189,14 +189,14 @@ var tabla = $('#dataTables-usuarios').DataTable({
                     extend:    'pdfHtml5',
                     text:      '<i class="fa fa-file-pdf-o"></i>',
                     titleAttr: 'PDF',footer: true,
-                    exportOptions: { columns: ':visible' },
+                    exportOptions: { columns: '.imprimir' },
                     className: 'btnToolbar',                    
                 },
                 {
                     extend: 'print',
                     text:      '<i class="fa fa-print"></i>',
                     titleAttr: 'Imprimir',
-                    exportOptions: { columns: ':visible' },
+                    exportOptions: { columns: '.imprimir' },
                     className: 'btnToolbar',                    
                 },
             ],

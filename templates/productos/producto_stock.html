@@ -40,12 +40,12 @@
             <tr>                                                               
                 <th class="no-sort text-center"></th>
                 <th class="no-sort text-center"><input type="checkbox" id="checkall" title="Seleccionar Todas"/></th>
-                <th class="">Producto</th>                                                                
-                <th>Categoría</th>
-                <th>TipoProd.</th>
-                <th class="text-center">Lleva Stock</th>
-                <th class="text-right">Stock</th>
-                <th class="text-left">Unidad</th>
+                <th class="imprimir">Producto</th>                                                                
+                <th class="imprimir">Categoría</th>
+                <th class="imprimir">TipoProd.</th>
+                <th class="imprimir text-center">Lleva Stock</th>
+                <th class="imprimir text-right">Stock</th>
+                <th class="imprimir text-left">Unidad</th>
                                                                                                               
             </tr>
         </thead>
@@ -170,11 +170,11 @@ var tabla = $('#dataTables-stock').DataTable({
                     extend:    'excel',
                     text:      '<i class="fa fa-file-excel-o"></i>',
                     titleAttr: 'Excel',
-                    filename: 'VENTAS',                    
+                    filename: 'STOCK',                    
                     exportOptions: {  modifier: {
                                         page: 'current'
                                     }, 
-                                      columns: ':visible',
+                                      columns: '.imprimir',
                                       format: {
                                       body: function(data, row, column, node) {
                                         var floatVal = function (i) {
@@ -214,7 +214,7 @@ var tabla = $('#dataTables-stock').DataTable({
                     extend:    'pdfHtml5',
                     text:      '<i class="fa fa-file-pdf-o"></i>',
                     titleAttr: 'PDF',footer: true,
-                    exportOptions: { columns: ':visible'},
+                    exportOptions: { columns: '.imprimir'},
                     orientation: 'landscape',
                     className: 'btnToolbar',                    
                 },
@@ -222,7 +222,7 @@ var tabla = $('#dataTables-stock').DataTable({
                     extend: 'print',
                     text:      '<i class="fa fa-print"></i>',
                     titleAttr: 'Imprimir',
-                    exportOptions: { columns: ':visible' },
+                    exportOptions: { columns: '.imprimir' },
                     className: 'btnToolbar',                    
                 },
             ],

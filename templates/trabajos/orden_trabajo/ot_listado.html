@@ -21,15 +21,15 @@
                             <tr>
                                 <th class="no-sort text-center"></th>
                                 <th class="no-sort text-center"></th>                                
-                                <th class="text-center">Estado</th>
-                                <th class="text-center">Fecha</th>                                
-                                <th>Número</th>
-                                <th>Cliente</th>                                
-                                <th>Nº Orden Pedido</th>                                                              
-                                <th class="text-center">Fecha Estimada</th>                                 
-                                <th>Detalle</th>                                
-                                <th>Responsable</th>                                
-                                <th>Usuario</th>
+                                <th class="imprimir text-center">Estado</th>
+                                <th class="imprimir text-center">Fecha</th>                                
+                                <th class="imprimir">Número</th>
+                                <th class="imprimir">Cliente</th>                                
+                                <th class="imprimir">NºOrd.Pedido</th>                                                              
+                                <th class="imprimir text-center">Fecha Estimada</th>                                 
+                                <th class="imprimir">Detalle</th>                                
+                                <th class="imprimir">Responsable</th>                                
+                                <th class="imprimir">Usuario</th>
                             </tr>
                         </thead>
                         <tbody>
@@ -174,7 +174,7 @@ var tabla = $('#dataTables-cpb_venta').DataTable({
                     exportOptions: {  modifier: {
                                         page: 'current'
                                     }, 
-                                      columns: ':visible',
+                                      columns: '.imprimir',
                                       format: {
                                       body: function(data, row, column, node) {
                                         var floatVal = function (i) {
@@ -214,14 +214,14 @@ var tabla = $('#dataTables-cpb_venta').DataTable({
                     extend:    'pdfHtml5',
                     text:      '<i class="fa fa-file-pdf-o"></i>',
                     titleAttr: 'PDF',footer: true,
-                    exportOptions: { columns: ':visible' },
+                    exportOptions: { columns: '.imprimir' },
                     className: 'btnToolbar',                    
                 },
                 {
                     extend: 'print',
                     text:      '<i class="fa fa-print"></i>',
                     titleAttr: 'Imprimir',
-                    exportOptions: { columns: ':visible' },
+                    exportOptions: { columns: '.imprimir' },
                     className: 'btnToolbar',                    
                 },
             ],

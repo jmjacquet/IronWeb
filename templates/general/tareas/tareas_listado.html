@@ -21,10 +21,10 @@
                         <thead>
                             <tr>                                
                                 <th style="width: 5%;" class="no-sort text-center"></th>
-                                <th style="width: 5%;">Fecha</th>
-                                <th style="width: 10%;">Usuario Asignado</th>
-                                <th style="width: 20%;">Título</th>                                
-                                <th style="width: 60%;">Detalle</th>                                
+                                <th class="imprimir" style="width: 5%;">Fecha</th>
+                                <th class="imprimir" style="width: 10%;">Usuario Asignado</th>
+                                <th class="imprimir" style="width: 20%;">Título</th>                                
+                                <th class="imprimir" style="width: 60%;">Detalle</th>                                
                             </tr>
                         </thead>
                         <tbody>
@@ -138,7 +138,7 @@ var tabla = $('#dataTables-empresas').DataTable({
                     exportOptions: {  modifier: {
                                         page: 'current'
                                     }, 
-                                      columns: ':visible',
+                                      columns: '.imprimir',
                                       format: {
                                       body: function(data, row, column, node) {
                                         var floatVal = function (i) {
@@ -178,7 +178,7 @@ var tabla = $('#dataTables-empresas').DataTable({
                     extend:    'pdfHtml5',
                     text:      '<i class="fa fa-file-pdf-o"></i>',
                     titleAttr: 'PDF',footer: true,
-                    exportOptions: { columns: ':visible'},
+                    exportOptions: { columns: '.imprimir'},
                     orientation: 'landscape',
                     className: 'btnToolbar',                    
                 },
@@ -186,7 +186,7 @@ var tabla = $('#dataTables-empresas').DataTable({
                     extend: 'print',
                     text:      '<i class="fa fa-print"></i>',
                     titleAttr: 'Imprimir',
-                    exportOptions: { columns: ':visible' },
+                    exportOptions: { columns: '.imprimir' },
                     className: 'btnToolbar',                    
                 },
             ],
