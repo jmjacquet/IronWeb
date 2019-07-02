@@ -17,7 +17,7 @@ urlpatterns = patterns('egresos.views',
 
     
     url(r'^remitos/$',  CPBRemitoCViewList.as_view(),name="cpb_remitoc_listado"),
-    url(r'^remitos/nuevo/(?P<id>\d+)/$', CPBRemitoCCreateView.as_view(), name="cpb_remitoc_nuevo"),    
+    url(r'^remitos/nuevo/$', CPBRemitoCCreateView.as_view(), name="cpb_remitoc_nuevo"),    
     url(r'^remitos/editar/(?P<id>\d+)/$', CPBRemitoCEditView.as_view(), name="cpb_remitoc_editar"),
     url(r'^remitos/eliminar/(?P<id>\d+)/$', CPBRemitoCDeleteView, name="cpb_remitoc_eliminar"),
 

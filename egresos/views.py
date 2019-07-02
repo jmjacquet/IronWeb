@@ -851,7 +851,7 @@ class CPBRemitoCViewList(VariablesMixin,ListView):
     @method_decorator(login_required)
     def dispatch(self, *args, **kwargs):         
         limpiar_sesion(self.request)        
-        if not tiene_permiso(self.request,'cpb_remitos'):
+        if not tiene_permiso(self.request,'cpb_remitosc'):
             return redirect(reverse('principal'))
         return super(CPBRemitoCViewList, self).dispatch(*args,**kwargs)
 
@@ -862,7 +862,7 @@ class CPBRemitoCViewList(VariablesMixin,ListView):
         except gral_empresa.DoesNotExist:
             empresa = None 
         form = ConsultaCpbsCompras(self.request.POST or None,empresa=empresa,request=self.request)   
-        comprobantes = cpb_comprobante.objects.filter(cpb_tipo__tipo=5,cpb_tipo__compra_venta='C',estado__in=[1,2],empresa=empresa).order_by('-fecha_cpb','-id').select_related('pto_vta','estado','cpb_tipo','entidad')
+        comprobantes = cpb_comprobante.objects.filter(cpb_tipo__tipo=5,cpb_tipo__compra_venta='C',estado__in=[1,2],empresa=empresa).order_by('-fecha_cpb','-id').select_related('estado','cpb_tipo','entidad')
         if form.is_valid():                                
             entidad = form.cleaned_data['entidad']                                                              
             fdesde = form.cleaned_data['fdesde']   
@@ -872,7 +872,7 @@ class CPBRemitoCViewList(VariablesMixin,ListView):
             estado = form.cleaned_data['estado']
 
             if int(estado) == 1:                
-                comprobantes = cpb_comprobante.objects.filter(cpb_tipo__tipo=5,cpb_tipo__compra_venta='C',estado__in=[1,2,3],empresa=empresa).order_by('-fecha_cpb','-id').select_related('pto_vta','estado','cpb_tipo','entidad')
+                comprobantes = cpb_comprobante.objects.filter(cpb_tipo__tipo=5,cpb_tipo__compra_venta='C',estado__in=[1,2,3],empresa=empresa).order_by('-fecha_cpb','-id').select_related('estado','cpb_tipo','entidad')
 
             if fdesde:
                 comprobantes= comprobantes.filter(Q(fecha_cpb__gte=fdesde))
@@ -909,11 +909,10 @@ class CPBRemitoCCreateView(VariablesMixin,CreateView):
     form_class = CPBRemitoForm
     template_name = 'egresos/remitos/cpb_remito_form.html' 
     model = cpb_comprobante
-    pk_url_kwarg = 'id'
     
     @method_decorator(login_required)
     def dispatch(self, *args, **kwargs):            
-        if not tiene_permiso(self.request,'cpb_remitos'):
+        if not tiene_permiso(self.request,'cpb_remitosc'):
             return redirect(reverse('principal'))
         return super(CPBRemitoCCreateView, self).dispatch(*args, **kwargs)
     
@@ -932,18 +931,9 @@ class CPBRemitoCCreateView(VariablesMixin,CreateView):
         self.object = None
         form_class = self.get_form_class()
         form = self.get_form(form_class)
-        cpb=self.get_object()
-        form.fields['id_cpb_padre'].initial = cpb.pk
-        form.fields['pto_vta'].initial = cpb.pto_vta
-        form.fields['entidad'].initial = cpb.entidad        
-        detalles = cpb_comprobante_detalle.objects.filter(cpb_comprobante=cpb)
-        det=[]        
-        for c in detalles:            
-            det.append({'producto': c.producto,'cantidad':c.cantidad,'detalle':c.detalle})        
-        
-        CPBRemitoDetalleFS = inlineformset_factory(cpb_comprobante, cpb_comprobante_detalle,fk_name='cpb_comprobante',form=CPBRemitoDetalleForm,formset=CPBRemitoDetalleFormSet, can_delete=True,extra=len(det),max_num=len(det),min_num=1)         
+        CPBRemitoDetalleFS = inlineformset_factory(cpb_comprobante, cpb_comprobante_detalle,fk_name='cpb_comprobante',form=CPBRemitoDetalleForm,formset=CPBRemitoDetalleFormSet, can_delete=True,extra=0,min_num=1)         
         CPBRemitoDetalleFS.form = staticmethod(curry(CPBRemitoDetalleForm,request=request))        
-        remito_detalle = CPBRemitoDetalleFS(initial=det,prefix='formDetalle')
+        remito_detalle = CPBRemitoDetalleFS(prefix='formDetalle')
         return self.render_to_response(self.get_context_data(form=form,remito_detalle = remito_detalle))
 
     def post(self, request, *args, **kwargs):
@@ -963,9 +953,9 @@ class CPBRemitoCCreateView(VariablesMixin,CreateView):
         estado=cpb_estado.objects.get(pk=1)
         self.object.estado=estado   
         tipo=cpb_tipo.objects.get(pk=9)
-        self.object.empresa = empresa_actual(self.request)
-        self.object.numero = ultimoNro(9,self.object.pto_vta,self.object.letra,self.object.entidad)
+        self.object.empresa = empresa_actual(self.request)        
         self.object.usuario = usuario_actual(self.request)
+        self.object.letra = 'X'
         self.object.fecha_imputacion=self.object.fecha_cpb
         if not self.object.fecha_vto:
             self.object.fecha_vto=self.object.fecha_cpb
@@ -997,7 +987,7 @@ class CPBRemitoCEditView(VariablesMixin,UpdateView):
         return super(CPBRemitoCEditView, self).dispatch(*args, **kwargs)
 
     def get_form_kwargs(self):
-        kwargs = super(CPBRemitoEditView, self).get_form_kwargs()
+        kwargs = super(CPBRemitoCEditView, self).get_form_kwargs()
         kwargs['request'] = self.request
         return kwargs
 
@@ -1036,7 +1026,7 @@ class CPBRemitoCEditView(VariablesMixin,UpdateView):
         return HttpResponseRedirect(reverse('cpb_remitoc_listado'))
 
     def get_initial(self):    
-        initial = super(CPBRemitoEditView, self).get_initial()        
+        initial = super(CPBRemitoCEditView, self).get_initial()        
         initial['tipo_form'] = 'EDICION'        
         initial['titulo'] = 'Editar Remito '+str(self.get_object())   
         initial['request'] = self.request   

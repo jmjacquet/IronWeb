@@ -225,18 +225,18 @@ class CPBRemitoForm(forms.ModelForm):
 	fecha_cpb = forms.DateField(required = True,widget=forms.DateInput(attrs={'class': 'datepicker'}),initial=hoy())	
 	observacion = forms.CharField(label='Detalle',widget=forms.Textarea(attrs={ 'class':'form-control2','rows': 5}),required = False)						
 	letra = forms.ChoiceField(label='Letra',choices=COMPROB_FISCAL_X,required=False,initial=1)	
+	pto_vta = forms.IntegerField(label='Pto. Vta.',required = True)
 	class Meta:
 			model = cpb_comprobante			
-			exclude = ['id','fecha_creacion','numero','pto_vta','fecha_imputacion','cae','cae_vto','estado','anulacion_motivo','anulacion_fecha','empresa','usuario','presup_tiempo_entrega','presup_forma_pago','presup_aprobacion','cpb_nro_afip','cpb_tipo']
+			exclude = ['id','fecha_creacion','fecha_imputacion','cae','cae_vto','estado','anulacion_motivo','anulacion_fecha','empresa','usuario','presup_tiempo_entrega','presup_forma_pago','presup_aprobacion','cpb_nro_afip','cpb_tipo']
 
 	def __init__(self, *args, **kwargs):
 		request = kwargs.pop('request', None)
 		super(CPBRemitoForm, self).__init__(*args, **kwargs)		
-		try:
-			empresa = empresa_actual(request)
-			letras = tipo_comprob_fiscal(empresa.categ_fiscal)
-			self.fields['letra'].choices = COMPROB_FISCAL_X						
-			self.fields['entidad'].queryset = egr_entidad.objects.filter(tipo_entidad=2,baja=False,empresa__id__in=empresas_habilitadas(request)).order_by('apellido_y_nombre')
+		try:			
+			self.fields['numero'].initial= 1
+			self.fields['pto_vta'].initial= 1
+			self.fields['entidad'].queryset = egr_entidad.objects.filter(tipo_entidad=2,baja=False,empresa__id__in=empresas_habilitadas(request)).order_by('apellido_y_nombre')			
 		except:
 			empresa = None   
 

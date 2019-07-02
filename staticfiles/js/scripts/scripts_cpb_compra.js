@@ -586,6 +586,8 @@ $("#id_numero").keyup(function(){
     $(this).val(h);
  });
 
+$('#id_numero').val(("00000000" + $('#id_numero').val()).slice(-8));    
+
 $("[name='formDetalle-0-producto']").chosen({
                 no_results_text: "Producto inexistente...",
                 placeholder_text_single:"Seleccione una Opcion",

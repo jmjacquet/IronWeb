@@ -516,8 +516,8 @@ $("#id_condic_pago").change(function(){
          });   
 
 
-var h = ("00000" + $("#id_pto_vta").val()).slice(-5);    
-$("#id_pto_vta").val(h);
+
+$('#id_pto_vta').val(("00000" + $('#id_pto_vta').val()).slice(-5));      
 
 $("#id_pto_vta").keyup(function(){
     h = ("00000" + $(this).val()).slice(-5);    
@@ -585,6 +585,8 @@ $("#id_numero").keyup(function(){
     h = ("00000000" + $(this).val()).slice(-8);    
     $(this).val(h);
  });
+
+$('#id_numero').val(("00000000" + $('#id_numero').val()).slice(-8));    
 
 $("[name='formDetalle-0-producto']").chosen({
                 no_results_text: "Producto inexistente...",

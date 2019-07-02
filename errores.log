@@ -3243,3 +3243,433 @@ Traceback (most recent call last):
   File "C:\Python27\lib\site-packages\django\db\models\query.py", line 810, in order_by
     "Cannot reorder a query once a slice has been taken."
 AssertionError: Cannot reorder a query once a slice has been taken.
+[02/jul/2019 11:24:56] ERROR [django.request:256] Internal Server Error: /egresos/remitos/
+Traceback (most recent call last):
+  File "C:\Python27\lib\site-packages\django\core\handlers\base.py", line 132, in get_response
+    response = wrapped_callback(request, *callback_args, **callback_kwargs)
+  File "C:\Python27\lib\site-packages\django\views\generic\base.py", line 71, in view
+    return self.dispatch(request, *args, **kwargs)
+  File "C:\Python27\lib\site-packages\django\utils\decorators.py", line 34, in _wrapper
+    return bound_func(*args, **kwargs)
+  File "C:\Python27\lib\site-packages\django\contrib\auth\decorators.py", line 22, in _wrapped_view
+    return view_func(request, *args, **kwargs)
+  File "C:\Python27\lib\site-packages\django\utils\decorators.py", line 30, in bound_func
+    return func.__get__(self, type(self))(*args2, **kwargs2)
+  File "D:\GitHub\IronWeb\egresos\views.py", line 856, in dispatch
+    return super(CPBRemitoCViewList, self).dispatch(*args,**kwargs)
+  File "C:\Python27\lib\site-packages\django\views\generic\base.py", line 89, in dispatch
+    return handler(request, *args, **kwargs)
+  File "C:\Python27\lib\site-packages\django\views\generic\list.py", line 174, in get
+    context = self.get_context_data()
+  File "D:\GitHub\IronWeb\egresos\views.py", line 888, in get_context_data
+    if len(cpbs)==0:
+  File "C:\Python27\lib\site-packages\django\db\models\query.py", line 144, in __len__
+    self._fetch_all()
+  File "C:\Python27\lib\site-packages\django\db\models\query.py", line 965, in _fetch_all
+    self._result_cache = list(self.iterator())
+  File "C:\Python27\lib\site-packages\django\db\models\query.py", line 238, in iterator
+    results = compiler.execute_sql()
+  File "C:\Python27\lib\site-packages\django\db\models\sql\compiler.py", line 818, in execute_sql
+    sql, params = self.as_sql()
+  File "C:\Python27\lib\site-packages\django\db\models\sql\compiler.py", line 367, in as_sql
+    extra_select, order_by, group_by = self.pre_sql_setup()
+  File "C:\Python27\lib\site-packages\django\db\models\sql\compiler.py", line 48, in pre_sql_setup
+    self.setup_query()
+  File "C:\Python27\lib\site-packages\django\db\models\sql\compiler.py", line 39, in setup_query
+    self.select, self.klass_info, self.annotation_col_map = self.get_select()
+  File "C:\Python27\lib\site-packages\django\db\models\sql\compiler.py", line 203, in get_select
+    related_klass_infos = self.get_related_selections(select)
+  File "C:\Python27\lib\site-packages\django\db\models\sql\compiler.py", line 671, in get_related_selections
+    ", ".join(_get_field_choices()) or '(none)',
+FieldError: Non-relational field given in select_related: 'pto_vta'. Choices are: cpb_tipo, entidad, vendedor, presup_aprobacion, estado, id_cpb_padre, empresa, usuario
+[02/jul/2019 11:38:41] ERROR [django.request:256] Internal Server Error: /egresos/remitos/
+Traceback (most recent call last):
+  File "C:\Python27\lib\site-packages\django\core\handlers\base.py", line 132, in get_response
+    response = wrapped_callback(request, *callback_args, **callback_kwargs)
+  File "C:\Python27\lib\site-packages\django\views\generic\base.py", line 71, in view
+    return self.dispatch(request, *args, **kwargs)
+  File "C:\Python27\lib\site-packages\django\utils\decorators.py", line 34, in _wrapper
+    return bound_func(*args, **kwargs)
+  File "C:\Python27\lib\site-packages\django\contrib\auth\decorators.py", line 22, in _wrapped_view
+    return view_func(request, *args, **kwargs)
+  File "C:\Python27\lib\site-packages\django\utils\decorators.py", line 30, in bound_func
+    return func.__get__(self, type(self))(*args2, **kwargs2)
+  File "D:\GitHub\IronWeb\egresos\views.py", line 856, in dispatch
+    return super(CPBRemitoCViewList, self).dispatch(*args,**kwargs)
+  File "C:\Python27\lib\site-packages\django\views\generic\base.py", line 89, in dispatch
+    return handler(request, *args, **kwargs)
+  File "C:\Python27\lib\site-packages\django\views\generic\list.py", line 174, in get
+    context = self.get_context_data()
+  File "D:\GitHub\IronWeb\egresos\views.py", line 888, in get_context_data
+    if len(cpbs)==0:
+  File "C:\Python27\lib\site-packages\django\db\models\query.py", line 144, in __len__
+    self._fetch_all()
+  File "C:\Python27\lib\site-packages\django\db\models\query.py", line 965, in _fetch_all
+    self._result_cache = list(self.iterator())
+  File "C:\Python27\lib\site-packages\django\db\models\query.py", line 238, in iterator
+    results = compiler.execute_sql()
+  File "C:\Python27\lib\site-packages\django\db\models\sql\compiler.py", line 818, in execute_sql
+    sql, params = self.as_sql()
+  File "C:\Python27\lib\site-packages\django\db\models\sql\compiler.py", line 367, in as_sql
+    extra_select, order_by, group_by = self.pre_sql_setup()
+  File "C:\Python27\lib\site-packages\django\db\models\sql\compiler.py", line 48, in pre_sql_setup
+    self.setup_query()
+  File "C:\Python27\lib\site-packages\django\db\models\sql\compiler.py", line 39, in setup_query
+    self.select, self.klass_info, self.annotation_col_map = self.get_select()
+  File "C:\Python27\lib\site-packages\django\db\models\sql\compiler.py", line 203, in get_select
+    related_klass_infos = self.get_related_selections(select)
+  File "C:\Python27\lib\site-packages\django\db\models\sql\compiler.py", line 671, in get_related_selections
+    ", ".join(_get_field_choices()) or '(none)',
+FieldError: Non-relational field given in select_related: 'pto_vta'. Choices are: cpb_tipo, entidad, vendedor, presup_aprobacion, estado, id_cpb_padre, empresa, usuario
+[02/Jul/2019 11:46:11] ERROR [django.request:256] Internal Server Error: /egresos/remitos/
+Traceback (most recent call last):
+  File "C:\Python27\lib\site-packages\django\core\handlers\base.py", line 164, in get_response
+    response = response.render()
+  File "C:\Python27\lib\site-packages\django\template\response.py", line 158, in render
+    self.content = self.rendered_content
+  File "C:\Python27\lib\site-packages\django\template\response.py", line 135, in rendered_content
+    content = template.render(context, self._request)
+  File "C:\Python27\lib\site-packages\django\template\backends\django.py", line 74, in render
+    return self.template.render(context)
+  File "C:\Python27\lib\site-packages\django\template\base.py", line 209, in render
+    return self._render(context)
+  File "C:\Python27\lib\site-packages\django\test\utils.py", line 96, in instrumented_test_render
+    return self.nodelist.render(context)
+  File "C:\Python27\lib\site-packages\django\template\base.py", line 903, in render
+    bit = self.render_node(node, context)
+  File "C:\Python27\lib\site-packages\django\template\debug.py", line 79, in render_node
+    return node.render(context)
+  File "C:\Python27\lib\site-packages\django\template\loader_tags.py", line 135, in render
+    return compiled_parent._render(context)
+  File "C:\Python27\lib\site-packages\django\test\utils.py", line 96, in instrumented_test_render
+    return self.nodelist.render(context)
+  File "C:\Python27\lib\site-packages\django\template\base.py", line 903, in render
+    bit = self.render_node(node, context)
+  File "C:\Python27\lib\site-packages\django\template\debug.py", line 79, in render_node
+    return node.render(context)
+  File "C:\Python27\lib\site-packages\django\template\loader_tags.py", line 135, in render
+    return compiled_parent._render(context)
+  File "C:\Python27\lib\site-packages\django\test\utils.py", line 96, in instrumented_test_render
+    return self.nodelist.render(context)
+  File "C:\Python27\lib\site-packages\django\template\base.py", line 903, in render
+    bit = self.render_node(node, context)
+  File "C:\Python27\lib\site-packages\django\template\debug.py", line 79, in render_node
+    return node.render(context)
+  File "C:\Python27\lib\site-packages\django\template\loader_tags.py", line 65, in render
+    result = block.nodelist.render(context)
+  File "C:\Python27\lib\site-packages\django\template\base.py", line 903, in render
+    bit = self.render_node(node, context)
+  File "C:\Python27\lib\site-packages\django\template\debug.py", line 79, in render_node
+    return node.render(context)
+  File "C:\Python27\lib\site-packages\django\template\loader_tags.py", line 65, in render
+    result = block.nodelist.render(context)
+  File "C:\Python27\lib\site-packages\django\template\base.py", line 903, in render
+    bit = self.render_node(node, context)
+  File "C:\Python27\lib\site-packages\django\template\debug.py", line 79, in render_node
+    return node.render(context)
+  File "C:\Python27\lib\site-packages\django\template\defaulttags.py", line 329, in render
+    return nodelist.render(context)
+  File "C:\Python27\lib\site-packages\django\template\base.py", line 903, in render
+    bit = self.render_node(node, context)
+  File "C:\Python27\lib\site-packages\django\template\debug.py", line 79, in render_node
+    return node.render(context)
+  File "C:\Python27\lib\site-packages\django\template\defaulttags.py", line 507, in render
+    six.reraise(*exc_info)
+  File "C:\Python27\lib\site-packages\django\template\defaulttags.py", line 493, in render
+    url = reverse(view_name, args=args, kwargs=kwargs, current_app=current_app)
+  File "C:\Python27\lib\site-packages\django\core\urlresolvers.py", line 579, in reverse
+    return force_text(iri_to_uri(resolver._reverse_with_prefix(view, prefix, *args, **kwargs)))
+  File "C:\Python27\lib\site-packages\django\core\urlresolvers.py", line 496, in _reverse_with_prefix
+    (lookup_view_s, args, kwargs, len(patterns), patterns))
+NoReverseMatch: Reverse for 'cpb_remitoc_nuevo' with arguments '()' and keyword arguments '{}' not found. 1 pattern(s) tried: ['egresos/remitos/nuevo/(?P<id>\\d+)/$']
+[02/Jul/2019 11:49:46] ERROR [django.request:256] Internal Server Error: /egresos/remitos/nuevo/
+Traceback (most recent call last):
+  File "C:\Python27\lib\site-packages\django\core\handlers\base.py", line 132, in get_response
+    response = wrapped_callback(request, *callback_args, **callback_kwargs)
+  File "C:\Python27\lib\site-packages\django\views\generic\base.py", line 71, in view
+    return self.dispatch(request, *args, **kwargs)
+  File "C:\Python27\lib\site-packages\django\utils\decorators.py", line 34, in _wrapper
+    return bound_func(*args, **kwargs)
+  File "C:\Python27\lib\site-packages\django\contrib\auth\decorators.py", line 22, in _wrapped_view
+    return view_func(request, *args, **kwargs)
+  File "C:\Python27\lib\site-packages\django\utils\decorators.py", line 30, in bound_func
+    return func.__get__(self, type(self))(*args2, **kwargs2)
+  File "D:\GitHub\IronWeb\egresos\views.py", line 918, in dispatch
+    return super(CPBRemitoCCreateView, self).dispatch(*args, **kwargs)
+  File "C:\Python27\lib\site-packages\django\views\generic\base.py", line 89, in dispatch
+    return handler(request, *args, **kwargs)
+  File "D:\GitHub\IronWeb\egresos\views.py", line 935, in get
+    cpb=self.get_object()
+  File "C:\Python27\lib\site-packages\django\views\generic\detail.py", line 49, in get_object
+    % self.__class__.__name__)
+AttributeError: Generic detail view CPBRemitoCCreateView must be called with either an object pk or a slug.
+[02/Jul/2019 11:50:36] ERROR [django.request:256] Internal Server Error: /egresos/remitos/nuevo/
+Traceback (most recent call last):
+  File "C:\Python27\lib\site-packages\django\core\handlers\base.py", line 132, in get_response
+    response = wrapped_callback(request, *callback_args, **callback_kwargs)
+  File "C:\Python27\lib\site-packages\django\views\generic\base.py", line 71, in view
+    return self.dispatch(request, *args, **kwargs)
+  File "C:\Python27\lib\site-packages\django\utils\decorators.py", line 34, in _wrapper
+    return bound_func(*args, **kwargs)
+  File "C:\Python27\lib\site-packages\django\contrib\auth\decorators.py", line 22, in _wrapped_view
+    return view_func(request, *args, **kwargs)
+  File "C:\Python27\lib\site-packages\django\utils\decorators.py", line 30, in bound_func
+    return func.__get__(self, type(self))(*args2, **kwargs2)
+  File "D:\GitHub\IronWeb\egresos\views.py", line 918, in dispatch
+    return super(CPBRemitoCCreateView, self).dispatch(*args, **kwargs)
+  File "C:\Python27\lib\site-packages\django\views\generic\base.py", line 89, in dispatch
+    return handler(request, *args, **kwargs)
+  File "D:\GitHub\IronWeb\egresos\views.py", line 935, in get
+    cpb=self.get_object()
+  File "C:\Python27\lib\site-packages\django\views\generic\detail.py", line 49, in get_object
+    % self.__class__.__name__)
+AttributeError: Generic detail view CPBRemitoCCreateView must be called with either an object pk or a slug.
+[02/Jul/2019 11:55:00] ERROR [django.request:256] Internal Server Error: /egresos/remitos/nuevo/
+Traceback (most recent call last):
+  File "C:\Python27\lib\site-packages\django\core\handlers\base.py", line 132, in get_response
+    response = wrapped_callback(request, *callback_args, **callback_kwargs)
+  File "C:\Python27\lib\site-packages\django\views\generic\base.py", line 71, in view
+    return self.dispatch(request, *args, **kwargs)
+  File "C:\Python27\lib\site-packages\django\utils\decorators.py", line 34, in _wrapper
+    return bound_func(*args, **kwargs)
+  File "C:\Python27\lib\site-packages\django\contrib\auth\decorators.py", line 22, in _wrapped_view
+    return view_func(request, *args, **kwargs)
+  File "C:\Python27\lib\site-packages\django\utils\decorators.py", line 30, in bound_func
+    return func.__get__(self, type(self))(*args2, **kwargs2)
+  File "D:\GitHub\IronWeb\egresos\views.py", line 917, in dispatch
+    return super(CPBRemitoCCreateView, self).dispatch(*args, **kwargs)
+  File "C:\Python27\lib\site-packages\django\views\generic\base.py", line 89, in dispatch
+    return handler(request, *args, **kwargs)
+  File "D:\GitHub\IronWeb\egresos\views.py", line 934, in get
+    CPBRemitoDetalleFS = inlineformset_factory(cpb_comprobante, cpb_comprobante_detalle,fk_name='cpb_comprobante',form=CPBRemitoDetalleForm,formset=CPBRemitoDetalleFormSet, can_delete=True,extra=len(det),max_num=len(det),min_num=1)
+NameError: global name 'det' is not defined
+[02/Jul/2019 11:56:14] ERROR [django.request:256] Internal Server Error: /egresos/remitos/nuevo/
+Traceback (most recent call last):
+  File "C:\Python27\lib\site-packages\django\core\handlers\base.py", line 132, in get_response
+    response = wrapped_callback(request, *callback_args, **callback_kwargs)
+  File "C:\Python27\lib\site-packages\django\views\generic\base.py", line 71, in view
+    return self.dispatch(request, *args, **kwargs)
+  File "C:\Python27\lib\site-packages\django\utils\decorators.py", line 34, in _wrapper
+    return bound_func(*args, **kwargs)
+  File "C:\Python27\lib\site-packages\django\contrib\auth\decorators.py", line 22, in _wrapped_view
+    return view_func(request, *args, **kwargs)
+  File "C:\Python27\lib\site-packages\django\utils\decorators.py", line 30, in bound_func
+    return func.__get__(self, type(self))(*args2, **kwargs2)
+  File "D:\GitHub\IronWeb\egresos\views.py", line 917, in dispatch
+    return super(CPBRemitoCCreateView, self).dispatch(*args, **kwargs)
+  File "C:\Python27\lib\site-packages\django\views\generic\base.py", line 89, in dispatch
+    return handler(request, *args, **kwargs)
+  File "D:\GitHub\IronWeb\egresos\views.py", line 936, in get
+    remito_detalle = CPBRemitoDetalleFS(initial=det,prefix='formDetalle')
+NameError: global name 'det' is not defined
+[02/Jul/2019 11:57:28] ERROR [django.request:256] Internal Server Error: /egresos/remitos/nuevo/
+Traceback (most recent call last):
+  File "C:\Python27\lib\site-packages\django\core\handlers\base.py", line 164, in get_response
+    response = response.render()
+  File "C:\Python27\lib\site-packages\django\template\response.py", line 158, in render
+    self.content = self.rendered_content
+  File "C:\Python27\lib\site-packages\django\template\response.py", line 135, in rendered_content
+    content = template.render(context, self._request)
+  File "C:\Python27\lib\site-packages\django\template\backends\django.py", line 74, in render
+    return self.template.render(context)
+  File "C:\Python27\lib\site-packages\django\template\base.py", line 209, in render
+    return self._render(context)
+  File "C:\Python27\lib\site-packages\django\test\utils.py", line 96, in instrumented_test_render
+    return self.nodelist.render(context)
+  File "C:\Python27\lib\site-packages\django\template\base.py", line 903, in render
+    bit = self.render_node(node, context)
+  File "C:\Python27\lib\site-packages\django\template\debug.py", line 79, in render_node
+    return node.render(context)
+  File "C:\Python27\lib\site-packages\django\template\loader_tags.py", line 135, in render
+    return compiled_parent._render(context)
+  File "C:\Python27\lib\site-packages\django\test\utils.py", line 96, in instrumented_test_render
+    return self.nodelist.render(context)
+  File "C:\Python27\lib\site-packages\django\template\base.py", line 903, in render
+    bit = self.render_node(node, context)
+  File "C:\Python27\lib\site-packages\django\template\debug.py", line 79, in render_node
+    return node.render(context)
+  File "C:\Python27\lib\site-packages\django\template\loader_tags.py", line 135, in render
+    return compiled_parent._render(context)
+  File "C:\Python27\lib\site-packages\django\test\utils.py", line 96, in instrumented_test_render
+    return self.nodelist.render(context)
+  File "C:\Python27\lib\site-packages\django\template\base.py", line 903, in render
+    bit = self.render_node(node, context)
+  File "C:\Python27\lib\site-packages\django\template\debug.py", line 79, in render_node
+    return node.render(context)
+  File "C:\Python27\lib\site-packages\django\template\loader_tags.py", line 65, in render
+    result = block.nodelist.render(context)
+  File "C:\Python27\lib\site-packages\django\template\base.py", line 903, in render
+    bit = self.render_node(node, context)
+  File "C:\Python27\lib\site-packages\django\template\debug.py", line 79, in render_node
+    return node.render(context)
+  File "C:\Python27\lib\site-packages\django\template\loader_tags.py", line 65, in render
+    result = block.nodelist.render(context)
+  File "C:\Python27\lib\site-packages\django\template\base.py", line 903, in render
+    bit = self.render_node(node, context)
+  File "C:\Python27\lib\site-packages\django\template\debug.py", line 79, in render_node
+    return node.render(context)
+  File "C:\Python27\lib\site-packages\django\template\base.py", line 1195, in render
+    return func(*resolved_args, **resolved_kwargs)
+  File "C:\Python27\lib\site-packages\bootstrap3\templatetags\bootstrap3.py", line 517, in bootstrap_field
+    return render_field(*args, **kwargs)
+  File "C:\Python27\lib\site-packages\bootstrap3\forms.py", line 78, in render_field
+    return renderer_cls(field, **kwargs).render()
+  File "C:\Python27\lib\site-packages\bootstrap3\renderers.py", line 254, in __init__
+    'Parameter "field" should contain a valid Django BoundField.'
+BootstrapError: Parameter "field" should contain a valid Django BoundField.
+[02/Jul/2019 11:59:37] ERROR [django.request:256] Internal Server Error: /egresos/remitos/nuevo/
+Traceback (most recent call last):
+  File "C:\Python27\lib\site-packages\django\core\handlers\base.py", line 164, in get_response
+    response = response.render()
+  File "C:\Python27\lib\site-packages\django\template\response.py", line 158, in render
+    self.content = self.rendered_content
+  File "C:\Python27\lib\site-packages\django\template\response.py", line 135, in rendered_content
+    content = template.render(context, self._request)
+  File "C:\Python27\lib\site-packages\django\template\backends\django.py", line 74, in render
+    return self.template.render(context)
+  File "C:\Python27\lib\site-packages\django\template\base.py", line 209, in render
+    return self._render(context)
+  File "C:\Python27\lib\site-packages\django\test\utils.py", line 96, in instrumented_test_render
+    return self.nodelist.render(context)
+  File "C:\Python27\lib\site-packages\django\template\base.py", line 903, in render
+    bit = self.render_node(node, context)
+  File "C:\Python27\lib\site-packages\django\template\debug.py", line 79, in render_node
+    return node.render(context)
+  File "C:\Python27\lib\site-packages\django\template\loader_tags.py", line 135, in render
+    return compiled_parent._render(context)
+  File "C:\Python27\lib\site-packages\django\test\utils.py", line 96, in instrumented_test_render
+    return self.nodelist.render(context)
+  File "C:\Python27\lib\site-packages\django\template\base.py", line 903, in render
+    bit = self.render_node(node, context)
+  File "C:\Python27\lib\site-packages\django\template\debug.py", line 79, in render_node
+    return node.render(context)
+  File "C:\Python27\lib\site-packages\django\template\loader_tags.py", line 135, in render
+    return compiled_parent._render(context)
+  File "C:\Python27\lib\site-packages\django\test\utils.py", line 96, in instrumented_test_render
+    return self.nodelist.render(context)
+  File "C:\Python27\lib\site-packages\django\template\base.py", line 903, in render
+    bit = self.render_node(node, context)
+  File "C:\Python27\lib\site-packages\django\template\debug.py", line 79, in render_node
+    return node.render(context)
+  File "C:\Python27\lib\site-packages\django\template\loader_tags.py", line 65, in render
+    result = block.nodelist.render(context)
+  File "C:\Python27\lib\site-packages\django\template\base.py", line 903, in render
+    bit = self.render_node(node, context)
+  File "C:\Python27\lib\site-packages\django\template\debug.py", line 79, in render_node
+    return node.render(context)
+  File "C:\Python27\lib\site-packages\django\template\loader_tags.py", line 65, in render
+    result = block.nodelist.render(context)
+  File "C:\Python27\lib\site-packages\django\template\base.py", line 903, in render
+    bit = self.render_node(node, context)
+  File "C:\Python27\lib\site-packages\django\template\debug.py", line 79, in render_node
+    return node.render(context)
+  File "C:\Python27\lib\site-packages\django\template\base.py", line 1195, in render
+    return func(*resolved_args, **resolved_kwargs)
+  File "C:\Python27\lib\site-packages\bootstrap3\templatetags\bootstrap3.py", line 517, in bootstrap_field
+    return render_field(*args, **kwargs)
+  File "C:\Python27\lib\site-packages\bootstrap3\forms.py", line 78, in render_field
+    return renderer_cls(field, **kwargs).render()
+  File "C:\Python27\lib\site-packages\bootstrap3\renderers.py", line 254, in __init__
+    'Parameter "field" should contain a valid Django BoundField.'
+BootstrapError: Parameter "field" should contain a valid Django BoundField.
+[02/Jul/2019 12:03:57] ERROR [django.request:256] Internal Server Error: /egresos/remitos/nuevo/
+Traceback (most recent call last):
+  File "C:\Python27\lib\site-packages\django\core\handlers\base.py", line 164, in get_response
+    response = response.render()
+  File "C:\Python27\lib\site-packages\django\template\response.py", line 158, in render
+    self.content = self.rendered_content
+  File "C:\Python27\lib\site-packages\django\template\response.py", line 135, in rendered_content
+    content = template.render(context, self._request)
+  File "C:\Python27\lib\site-packages\django\template\backends\django.py", line 74, in render
+    return self.template.render(context)
+  File "C:\Python27\lib\site-packages\django\template\base.py", line 209, in render
+    return self._render(context)
+  File "C:\Python27\lib\site-packages\django\test\utils.py", line 96, in instrumented_test_render
+    return self.nodelist.render(context)
+  File "C:\Python27\lib\site-packages\django\template\base.py", line 903, in render
+    bit = self.render_node(node, context)
+  File "C:\Python27\lib\site-packages\django\template\debug.py", line 79, in render_node
+    return node.render(context)
+  File "C:\Python27\lib\site-packages\django\template\loader_tags.py", line 135, in render
+    return compiled_parent._render(context)
+  File "C:\Python27\lib\site-packages\django\test\utils.py", line 96, in instrumented_test_render
+    return self.nodelist.render(context)
+  File "C:\Python27\lib\site-packages\django\template\base.py", line 903, in render
+    bit = self.render_node(node, context)
+  File "C:\Python27\lib\site-packages\django\template\debug.py", line 79, in render_node
+    return node.render(context)
+  File "C:\Python27\lib\site-packages\django\template\loader_tags.py", line 135, in render
+    return compiled_parent._render(context)
+  File "C:\Python27\lib\site-packages\django\test\utils.py", line 96, in instrumented_test_render
+    return self.nodelist.render(context)
+  File "C:\Python27\lib\site-packages\django\template\base.py", line 903, in render
+    bit = self.render_node(node, context)
+  File "C:\Python27\lib\site-packages\django\template\debug.py", line 79, in render_node
+    return node.render(context)
+  File "C:\Python27\lib\site-packages\django\template\loader_tags.py", line 65, in render
+    result = block.nodelist.render(context)
+  File "C:\Python27\lib\site-packages\django\template\base.py", line 903, in render
+    bit = self.render_node(node, context)
+  File "C:\Python27\lib\site-packages\django\template\debug.py", line 79, in render_node
+    return node.render(context)
+  File "C:\Python27\lib\site-packages\django\template\loader_tags.py", line 65, in render
+    result = block.nodelist.render(context)
+  File "C:\Python27\lib\site-packages\django\template\base.py", line 903, in render
+    bit = self.render_node(node, context)
+  File "C:\Python27\lib\site-packages\django\template\debug.py", line 79, in render_node
+    return node.render(context)
+  File "C:\Python27\lib\site-packages\django\template\base.py", line 1195, in render
+    return func(*resolved_args, **resolved_kwargs)
+  File "C:\Python27\lib\site-packages\bootstrap3\templatetags\bootstrap3.py", line 517, in bootstrap_field
+    return render_field(*args, **kwargs)
+  File "C:\Python27\lib\site-packages\bootstrap3\forms.py", line 78, in render_field
+    return renderer_cls(field, **kwargs).render()
+  File "C:\Python27\lib\site-packages\bootstrap3\renderers.py", line 254, in __init__
+    'Parameter "field" should contain a valid Django BoundField.'
+BootstrapError: Parameter "field" should contain a valid Django BoundField.
+[02/Jul/2019 13:14:32] ERROR [django.request:256] Internal Server Error: /egresos/remitos/editar/57/
+Traceback (most recent call last):
+  File "C:\Python27\lib\site-packages\django\core\handlers\base.py", line 132, in get_response
+    response = wrapped_callback(request, *callback_args, **callback_kwargs)
+  File "C:\Python27\lib\site-packages\django\views\generic\base.py", line 71, in view
+    return self.dispatch(request, *args, **kwargs)
+  File "C:\Python27\lib\site-packages\django\utils\decorators.py", line 34, in _wrapper
+    return bound_func(*args, **kwargs)
+  File "C:\Python27\lib\site-packages\django\contrib\auth\decorators.py", line 22, in _wrapped_view
+    return view_func(request, *args, **kwargs)
+  File "C:\Python27\lib\site-packages\django\utils\decorators.py", line 30, in bound_func
+    return func.__get__(self, type(self))(*args2, **kwargs2)
+  File "D:\GitHub\IronWeb\egresos\views.py", line 987, in dispatch
+    return super(CPBRemitoCEditView, self).dispatch(*args, **kwargs)
+  File "C:\Python27\lib\site-packages\django\views\generic\base.py", line 89, in dispatch
+    return handler(request, *args, **kwargs)
+  File "D:\GitHub\IronWeb\egresos\views.py", line 997, in get
+    form = self.get_form(form_class)
+  File "C:\Python27\lib\site-packages\django\views\generic\edit.py", line 74, in get_form
+    return form_class(**self.get_form_kwargs())
+  File "D:\GitHub\IronWeb\egresos\views.py", line 990, in get_form_kwargs
+    kwargs = super(CPBRemitoEditView, self).get_form_kwargs()
+NameError: global name 'CPBRemitoEditView' is not defined
+[02/Jul/2019 13:15:12] ERROR [django.request:256] Internal Server Error: /egresos/remitos/editar/57/
+Traceback (most recent call last):
+  File "C:\Python27\lib\site-packages\django\core\handlers\base.py", line 132, in get_response
+    response = wrapped_callback(request, *callback_args, **callback_kwargs)
+  File "C:\Python27\lib\site-packages\django\views\generic\base.py", line 71, in view
+    return self.dispatch(request, *args, **kwargs)
+  File "C:\Python27\lib\site-packages\django\utils\decorators.py", line 34, in _wrapper
+    return bound_func(*args, **kwargs)
+  File "C:\Python27\lib\site-packages\django\contrib\auth\decorators.py", line 22, in _wrapped_view
+    return view_func(request, *args, **kwargs)
+  File "C:\Python27\lib\site-packages\django\utils\decorators.py", line 30, in bound_func
+    return func.__get__(self, type(self))(*args2, **kwargs2)
+  File "D:\GitHub\IronWeb\egresos\views.py", line 987, in dispatch
+    return super(CPBRemitoCEditView, self).dispatch(*args, **kwargs)
+  File "C:\Python27\lib\site-packages\django\views\generic\base.py", line 89, in dispatch
+    return handler(request, *args, **kwargs)
+  File "D:\GitHub\IronWeb\egresos\views.py", line 997, in get
+    form = self.get_form(form_class)
+  File "C:\Python27\lib\site-packages\django\views\generic\edit.py", line 74, in get_form
+    return form_class(**self.get_form_kwargs())
+  File "D:\GitHub\IronWeb\egresos\views.py", line 990, in get_form_kwargs
+    kwargs = super(CPBRemitoEditView, self).get_form_kwargs()
+NameError: global name 'CPBRemitoEditView' is not defined

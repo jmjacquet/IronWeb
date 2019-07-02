@@ -1,53 +1,66 @@
 {% extends "index.html" %}
 {% load static from staticfiles %}
-{% load i18n %}
+{% load i18n l10n %}
 {% load humanize %}
 {% block main %} 
-    
-        <div class="row margin-top-50">
+
           <div class="col-md-12">   
                 <div class="portlet box toolbar_blue">
                     <div class="portlet-title">
                         <div class="caption bold">
-                                    <i class="fa fa-cubes"></i>REMITOS DE VENTA <small> impresión</small>
+                                    <i class="fa fa-truck"></i>REMITOS DE COMPRA <small> impresión</small>
                         </div>
-                         <div class="actions">
-                            <button tittle="Búsqueda Avanzada" data-toggle="collapse" aria-expanded="true"  class="btn btn-circle active" data-target="#barra_busqueda" aria-controls="barra_busqueda"><i class="glyphicon glyphicon-search"></i></button>
+                        <div class="actions">
+                            <button  tittle="Búsqueda Avanzada" data-toggle="collapse" aria-expanded="true"  class="btn btn-circle active" data-target="#barra_busqueda" aria-controls="barra_busqueda"><i class="glyphicon glyphicon-search"></i></button>
                     </div>
 
                     </div> 
                 </div>
-                    {% include "general/varios/barra_busqueda.html" %}                                
+                    {% include "general/varios/barra_busqueda_compras.html" %}                                
+                    <div class="btn-group" style="float:left;margin-right:20px;margin-bottom:10px;"> 
+                    {% if 'cpb_remitosc_abm' in permisos_grupo %}    
+                    <a class="btn btn-sm blue-steel" style="float:left;margin-right:10px;" href="{% url 'cpb_remitoc_nuevo' %}">Nuevo Remito</a>
+                    {% endif %}                    
+                     </div>
                     <table id="dataTables-cpb_remito" class="table table-striped compact table-hover table-no-bordered tabla_nueva nowrap">          
                         <thead>
                             <tr>
                                 <th class="no-sort text-center"></th>                                
-                                <th class="text-center">Fecha CPB</th>                                
-                                <th>Nº CPB</th>
-                                <th>Cliente</th>
-                                <th>Descripción</th>                                
+                                <th class="imprimir">Fecha CPB</th>                                
+                                <th class="imprimir">Nº CPB</th>
+                                <th class="imprimir">Cliente</th>
+                                <th class="imprimir">CPB Factura</th>
+                                <th class="imprimir">Descripción</th>                                
                             </tr>
                         </thead>
                         <tbody>
                             {% for cpb in comprobantes %}
                             <tr {% if cpb.estado.pk = 3 %}class="{{cpb.estado_color}}"{% endif %}>                                                          
                                 <td><div class="btn-group">
-                                      <button type="button" class="btn btn-xs blue-hoki" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                      <button type="button" title="{{ cpb.pk|safe}}" class="btn btn-xs color_barra" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                                         <i class="icon-settings"> </i> <span class="caret"></span>
                                       </button>
                                       <ul class="dropdown-menu dropdown-menu-default">
                                         <li>{% include "general/varios/cpb_ver_dropdown.html" %}</li>
-                                        <li><a href="{% url 'cpb_remito_editar' id=cpb.pk %}"  title="Editar" data-fm-callback="reload" ><i class="icon-note"></i> Editar</a></li>
-                                        <li><a href="#" 
-                                                    onClick="alerta= alertify.dialog('confirm').set({'labels':{ok:'Aceptar', cancel:'Cancelar'},'message': '¿DESEA ELIMINAR EL REGISTRO SELECCIONADO?',transition:'fade','onok': function(){ window.location.href = '{% url 'cpb_remito_eliminar' id=cpb.pk %}'; },'oncancel': function(){ return true;} }); alerta.setting('modal', true); alerta.setHeader('ELIMINAR COMPROBANTE'); alerta.show(); return true;"><i class="icon-trash"></i>Eliminar</a>
-                                                </li>                                             
+                                        <li><a target="_blank" href="{% url 'imprimirRemito' id=cpb.pk %}"><i class=" icon-printer"></i> Imprimir</a></li>
+                                        <li><a href="{% url 'mandarEmail' id=cpb.pk %}"><i class="icon-envelope-open"></i> Enviar por Email</a></li>
+                                            <li role="separator" class="divider"></li>
+                                        <li><a href="{% url 'cpb_remitoc_editar' id=cpb.pk %}"  title="Editar" data-fm-callback="reload" ><i class="icon-note"></i> Editar</a></li>
+                                         <li><a href="#" 
+                                                    onClick="alerta= alertify.dialog('confirm').set({'labels':{ok:'Aceptar', cancel:'Cancelar'},'message': '¿DESEA ELIMINAR EL REMITO SELECCIONADO?',transition:'fade','onok': function(){ window.location.href = '{% url 'cpb_remitoc_eliminar' id=cpb.pk %}'; },'oncancel': function(){ return true;} }); alerta.setting('modal', true); alerta.setHeader('ELIMINAR COMPROBANTE'); alerta.show(); return true;"><i class="icon-trash"></i>Eliminar</a>
+                                                </li>       
+                                        <li role="separator" class="divider"></li>
+                                            <li><a href="{% url 'cpb_editar_seguimiento' id=cpb.pk %}"  class="fm-update" data-fm-head="EDITAR SEGUIMIENTO"  title="Editar Seguimiento" data-fm-target="#object-{{ item.pk }}" data-fm-callback="reload" ><i class="icon-speech"></i>Seguimiento</a></li>                                                                               
                                       </ul>
-                                    </div>                              
+                                    </div> 
+                                    {% if cpb.seguimiento %}  <i title="{{cpb.seguimiento}}" class="icon-speech icono_seguimiento"></i> {% endif %}                              
+                                    {% if cpb.fecha_envio_mail %}  <i title="Email enviado el {{cpb.fecha_envio_mail|date:'d/m/Y'}}" class="fa fa-envelope-o icono_seguimiento"></i> {% endif %}
                                 </td>                                 
                                 <td>{{cpb.fecha_cpb|date:'d/m/Y'}}</td>                                
-                                <td>{{ cpb.pto_vta.numero|default_if_none:'' }}-{{ cpb.letra|default_if_none:'' }}-{{ cpb.numero|default_if_none:'' }}</td>                                
-                                <td  title="{{ cpb.entidad}}" >{% include "entidades/proveedor_ver.html" %}{{ cpb.entidad|truncatechars:60 }}</td>                                                        
-                                <td>{{ cpb.descripcion|default_if_none:'' }}</td>
+                                <td>{{ cpb}}</td>                                
+                                <td  title="{{ cpb.entidad}}" >{% include "entidades/proveedor_ver.html" %}</td>                      
+                                <td><strong>{{ cpb.id_cpb_padre|default_if_none:'' }}</a><strong></td>                                
+                                <td  title="{{ cpb.descripcion}}">{{ cpb.descripcion|default_if_none:''|truncatechars:60 }}</td>
                             </tr>
                             {% endfor %}
                         </tbody>
@@ -57,14 +70,13 @@
                                 <th></th>
                                 <th></th>
                                 <th></th>
+                                <th></th>
                                 <th></th>                                
                             </tr>
                         </tfoot>
                     </table>                            
-        </div>
-      </div>
-    
-
+            </div>
+   
     
  
 <script type="text/javascript">
@@ -92,7 +104,7 @@ $.fn.dataTable.moment('DD/MM/YYYY');
 var tabla = $('#dataTables-cpb_remito').DataTable({
             "language": {
                 "decimal": ",",
-                "thousands": ".",                 
+                "thousands": ".",                
                 "sProcessing": "Procesando...",
                 "sLengthMenu": "Mostrar _MENU_ registros",
                 "sZeroRecords": "No se encontraron resultados",
@@ -117,7 +129,7 @@ var tabla = $('#dataTables-cpb_remito').DataTable({
                 },
                       
             },                      
-            "columnDefs": [ {
+           "columnDefs": [ {
                   "targets"  : 'no-sort',
                   "orderable": false,
                 }],          
@@ -151,16 +163,52 @@ var tabla = $('#dataTables-cpb_remito').DataTable({
                     extend:    'excel',
                     text:      '<i class="fa fa-file-excel-o"></i>',
                     titleAttr: 'Excel',
-                    exportOptions: { columns: ':visible', },
-
-                    className: 'btnToolbar',                    
+                    filename: 'REMITOS_COMPRA',                    
+                    exportOptions: {  modifier: {
+                                        page: 'current'
+                                    }, 
+                                      // columns: [ 0, 1, 2, 5 ]
+                                      columns: ['.imprimir'],
+                                      format: {
+                                      body: function(data, row, column, node) {
+                                        var floatVal = function (i) {
+                                            if (typeof i === "number") {
+                                                return i;
+                                            } else if (typeof i === "string") {
+                                                i = i.replace("$", "")
+                                                i = i.replace(",", "")
+                                                i = i.replace(".", "")
+                                                var result = parseFloat(i)/100;
+                                                // console.log(result);
+                                                if (isNaN(result)) {
+                                                    try {
+                                                        var result = $jq(i).text();
+                                                        result = parseFloat(result);
+                                                        if (isNaN(result)) { result = 0 };
+                                                        return result * 1;
+                                                    } catch (error) {
+                                                        return 0;
+                                                    }
+                                                } else {
+                                                    return result * 1;
+                                                }
+                                            } else {
+                                                alert("Unhandled type for totals [" + (typeof i) + "]");
+                                                return 0
+                                            }
+                                        };
+                                          data = $('<p>' + data + '</p>').text();
+                                          return (node.className=='importe') ? floatVal(data)  : data;
+                                      }
+                                    }},
+                    className: 'btnToolbar',     
                 },
                
                 {
                     extend:    'pdfHtml5',
                     text:      '<i class="fa fa-file-pdf-o"></i>',
                     titleAttr: 'PDF',footer: true,
-                    exportOptions: { columns: ':visible'},
+                    exportOptions: { columns: '.imprimir'},
                     orientation: 'landscape',
                     className: 'btnToolbar',                    
                 },
@@ -168,7 +216,7 @@ var tabla = $('#dataTables-cpb_remito').DataTable({
                     extend: 'print',
                     text:      '<i class="fa fa-print"></i>',
                     titleAttr: 'Imprimir',
-                    exportOptions: { columns: ':visible' },
+                    exportOptions: { columns: '.imprimir' },
                     className: 'btnToolbar',                    
                 },
             ],

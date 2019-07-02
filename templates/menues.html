@@ -83,6 +83,14 @@
                          {% if 'cpb_compras_abm' in permisos_grupo %}
                          <a class="acceso_menu" href="{% url 'cpb_pago_nuevo' %}">+</a>
                          {% endif %}
+                      </li>                      
+                      {% endif %}
+                      {% if 'cpb_remitosc' in permisos_grupo %}
+                      <li>
+                        <a href="{% url 'cpb_remitoc_listado' %}"><i class="fa  fa-truck"></i>Remitos de Compra</a>
+                         {% if 'cpb_remitosc_abm' in permisos_grupo %}
+                         <a class="acceso_menu" href="{% url 'cpb_remitoc_nuevo' %}">+</a>
+                         {% endif %}
                       </li>
                       {% endif %}
                       {% if 'cpb_movimientos' in permisos_grupo %}
