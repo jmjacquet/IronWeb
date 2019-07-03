@@ -38,10 +38,12 @@
 											{% bootstrap_field form.entidad show_label=False  %}												
 										</div>						
 										{% if not sitio_mobile %}
-										<div class="col-sm-1 col-xs-1">
-						                  <a id="recargarClientes" href="#" class="recargarDatos" type="button" data-toggle="tooltip" data-placement="top" title="Recargar Clientes">
-											<i class="fa fa-refresh"></i></a>
-						                </div>        				
+												<div class="col-sm-1 col-xs-1 hidden-xs">						                  
+													<div class="btn-group"> 
+									                  		<a id="nuevoClientes" href="{% url 'cliente_nuevo' %}" data-fm-head="AGREGAR CLIENTE" class="recargarDatos fm-create" type="button" data-toggle="tooltip" data-fm-callback="recargarC" data-placement="top" title="Agregar Cliente"><i class="fa fa-plus"></i></a>
+									                  		<a id="recargarClientes" href="#" class="recargarDatos" type="button" data-toggle="tooltip" data-placement="top" title="Recargar Clientes"><i class="fa fa-refresh"></i></a>
+													</div>
+								                </div>        				
 						                {% endif %}
 								  </div>
 								  <div class="row">
@@ -275,3 +277,4 @@
 </div>
 
 {% endblock %}
+{% include "fm/modal.html" %} 

@@ -1,7 +1,14 @@
 $(document).ready(function() {  
 
 
-
+$.fm({
+        debug: true,
+        custom_callbacks: {
+            "recargarC": function(data, options) {
+               console.log("lalalala");
+               }
+            }
+  });
 
 $("#id_vendedor").chosen({
           no_results_text: "Vendedor inexistente...",
@@ -494,6 +501,8 @@ $("#recargarVendedores").click(function () {
             $('#id_vendedor').trigger("chosen:updated");
         });
   });
+
+
 
 $("#recargarProductos").click(function () {      
       

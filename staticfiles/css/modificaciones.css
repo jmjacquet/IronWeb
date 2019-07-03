@@ -65,7 +65,7 @@ div.dataTables_wrapper div.dataTables_filter input{margin-left:0.5em;display:inl
 .input-group-addon{padding:4px 6px;font-size:12px;font-weight:normal;height:25px;text-align:center;color:#fff;background:#657384;border-radius:0px;cursor:pointer;}
 .modal-backdrop.in{opacity:0.8;filter:alpha(opacity=80);}
 table .label{text-shadow:none !important;font-size:9px;font-weight:bold;padding:3px 6px 3px 6px;color:#fff;/*font-family:"Open Sans", sans-serif;*/}
-.selected{background-color:#d8dcde;}
+.selected , .table-striped>tbody>tr.selected:nth-child(odd)>td{background-color:#d9ecff;}
 .leyenda{text-align:right;font-weight:bold;font-size:10px;padding-right:5px;padding-bottom:4px;}
 .ui-datepicker{background-color:#fff;border:1px solid #66AFE9;border-radius:4px;box-shadow:0 0 8px rgba(102,175,233,.6);display:none;margin-top:4px;padding:5px;width:200px;color:black;z-index:9999 !important}
 .ui-datepicker a,
@@ -115,6 +115,7 @@ textarea.form-control{height:auto}
 .verdadero{color:#fff;text-shadow:1px 1px 1px #ccc;font-size:1.5em;}
 .has-error .help-block, .has-error .help-inline, .has-error .control-label, .has-error .radio, .has-error .checkbox, .has-error .radio-inline, .has-error .checkbox-inline{color:#a94442;font-size:9px;}
 .recargarDatos{margin-left: 3px; font-size:10px;font-weight:bold;color:#4f5a67;line-height:1.42857143;height:25px;}
+.recargarDatos i{margin-left: 3px; font-size:10px;font-weight:bold;color:#4f5a67;}
 .panel_centrado{max-width:1000px;display:block;margin-right:auto;margin-left:auto;}
 .tabla_cpbs th{background:#4f5a67;vertical-align:middle;#fff;font-weight:400;font-size:10px;height:20px;}
 .tabla_cpbs > thead > tr > th, .tabla_cpbs > tbody > tr > th, .tabla_cpbs > tfoot > tr > th, .tabla_cpbs > thead > tr > td, .tabla_cpbs > tbody > tr > td, .tabla_cpbs > tfoot > tr > td{padding-left:10px;padding-right:10px;vertical-align:middle;border-top:none;border-bottom:none;font-size:10px;}
