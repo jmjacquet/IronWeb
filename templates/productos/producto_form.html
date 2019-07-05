@@ -50,7 +50,7 @@
 								       	<div class="col-sm-8 col-xs-12">
 									       	<div class="row">										       	
 										       		<fieldset>
-										       		<legend>Ubicación/Stock</legend>                        						
+										       		   <legend>Ubicación/Stock</legend>                        						
 										       		   <div class="col-sm-3 col-xs-12">
 										       		    {% bootstrap_field form.llevar_stock show_label=False %}						
 												       	{% bootstrap_field form.stock_negativo show_label=False %}
@@ -75,9 +75,9 @@
 												                    <thead>
 												                          <tr>
 												                              <th style="width: 40%;">Lista</th>						                          						
-												                              <th style="width: 15%;" title="Precio de Costo" >Costo</th>											                             
-												                              <th style="width: 20%;" title="Precio de Costo con Impuestos" >Costo c/Imp.</th>											                             
-												                              <th style="width: 5%;" title="Coeficiente de Ganancia (1=100%)" >Coef.Gan.</th>											                             
+												                              <th style="width: 15%;" title="Precio de Costo" >Costo</th>											
+												                              <th style="width: 20%;" title="Precio de Costo con Impuestos" >Costo c/Imp.</th>						
+												                              <th style="width: 5%;" title="Coeficiente de Ganancia (1=100%)" >Coef.Gan.</th>						
 												                              <th style="width: 20%;" title="Precio de Venta (Costo c/Imp * Coef.Gan.)" >Venta</th>
 												                              <th class="remove-sorting"></th>
 												                          </tr>
@@ -126,16 +126,11 @@
 									</div>
 								</div>
 							</div>
-
 							
-				    
-					     
-		     		     
-
 					  
 					     {% if form.non_field_errors  %}
 					     	<script type="text/javascript">
-					     	alertify.errorAlert("{% for err in form.non_field_errors %}{{ err }}{% endfor %}");
+					     	alertify.errorAlert("{% for err in form.non_field_errors %}{{err}}{% endfor %}");
 					     	</script>
 					    {% endif %}       
 				        {% for hidden in form.hidden_fields %} {{ hidden }} {% endfor %}

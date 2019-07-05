@@ -9,11 +9,10 @@
  	<link rel="stylesheet" href="{% static 'css/comprobantes.css'%}?{% now "Ymd"%}" type="text/css" >  
 {% endblock %}
 {% block extra_js %}        
+{% endblock %}
+{% block extra_js_final %}        
     <script src="{% static 'js/jquery.formset.js' %}" type="text/javascript"></script>
-    <script src="{% static 'js/scripts/scripts_cpb_rec_pago.js'%}?{% now "Ymd"%}" type="text/javascript"></script>
-    {% block modales_js %} 
-    {% endblock %}
-
+    <script src="{% static 'js/scripts/scripts_cpb_rec_pago.js'%}?{% now "Ymd"%}" type="text/javascript"></script>    
 {% endblock %}
 
 
@@ -45,8 +44,7 @@
 										</div>
 										{% if not cpbs %}
 										<div class="col-sm-1 col-xs-1 hidden-xs">
-						                  <a id="recargarProveedores" href="#" class="recargarDatos" type="button" data-toggle="tooltip" data-placement="top" title="Recargar Proveedores">
-											<i class="fa fa-refresh"></i></a>
+						                  <a id="nuevoProveedor" href="{% url 'proveedor_nuevo' %}" data-fm-head="AGREGAR PROVEEDOR" class="recargarDatos fm-create" type="button" data-toggle="tooltip" data-fm-callback="recargarP" data-placement="top" title="Agregar Proveedor"><i class="icon-users"></i></a>
 						                </div> 		
 						                {% endif %}				
 								  </div>												  								 

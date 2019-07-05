@@ -1,5 +1,15 @@
 $(document).ready(function() {  
 
+$.fm({        
+        custom_callbacks: {
+            "recargarC": function(data, options) {
+               recargarClientes();
+               },
+            "recargarV": function(data, options) {
+               recargarVendedores();
+               }
+            }
+  });
 
 if ($('#id_tipo_form').val()=='EDICION'){
      $('#id_entidad').trigger("chosen:updated");

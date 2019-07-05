@@ -1,5 +1,12 @@
 $(document).ready(function() {  
 
+$.fm({        
+        custom_callbacks: {
+            "recargarP": function(data, options) {
+               recargarProveedores();
+               },
+            }
+  });
 
  $("#id_entidad").chosen({
           no_results_text: "Proveedor inexistente...",
@@ -112,16 +119,7 @@ $("#recargarProductos").click(function () {
         });
   });
 
-$("#recargarProveedores").click(function () {
-  $.getJSON('/recargar_proveedores/',{},
-        function (c) {
-            $("#id_entidad").empty().append('<option value="">---</option>');
-            $.each(c["proveedores"], function (idx, item) {
-                jQuery("<option/>").text(item['codigo']+' - '+item['apellido_y_nombre']+' - '+item['fact_cuit']).attr("value", item['id']).appendTo("#id_entidad");
-            })
-            $('#id_entidad').trigger("chosen:updated");
-        }); 
-     });
+
 
 function ultimoNumCPB(cpb_tipo,letra,pto_vta,entidad){
    if ($('#id_tipo_form').val()=='ALTA')

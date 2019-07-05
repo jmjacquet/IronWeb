@@ -8,14 +8,13 @@
 {% block extra_css %}
  	<link rel="stylesheet" href="{% static 'css/comprobantes.css'%}?{% now "Ymd"%}" type="text/css" >  
 {% endblock %}
+
 {% block extra_js %}        
-    <script src="{% static 'js/jquery.formset.js' %}" type="text/javascript"></script>
-    <script src="{% static 'js/scripts/scripts_cpb_rec_cobranza.js'%}?{% now "Ymd"%}" type="text/javascript"></script>
-    {% block modales_js %} 
-    {% endblock %}
-
 {% endblock %}
-
+{% block extra_js_final %}        
+    <script src="{% static 'js/jquery.formset.js' %}" type="text/javascript"></script>
+    <script src="{% static 'js/scripts/scripts_cpb_rec_cobranza.js'%}?{% now "Ymd"%}" type="text/javascript"></script>    
+{% endblock %}
 
 {% block main %}
 <div class="row "> 
@@ -39,14 +38,19 @@
 					       	<div class="row">
    								<div class="col-sm-7 col-xs-12">
    								  <div class="row">
-										<label class="control-label col-sm-3 col-xs-2">Cliente:</label>
+										<label class="control-label col-sm-2 col-xs-2">Cliente:</label>
 										<div class="col-sm-9 col-xs-10">
 											{% bootstrap_field form.entidad show_label=False  %}												
 										</div>						
+										{% if not sitio_mobile %}
+												<div class="col-sm-1 hidden-xs">						                  
+									                  		<a id="nuevoClientes" href="{% url 'cliente_nuevo' %}" data-fm-head="AGREGAR CLIENTE" class="recargarDatos fm-create" type="button" data-toggle="tooltip" data-fm-callback="recargarC" data-placement="top" title="Agregar Cliente"><i class="icon-users"></i></a>
+								                </div>        				
+						                {% endif %}
 								  </div>							  								 
 								  
 									<div class="row">
-								       <label class="control-label col-sm-3 col-xs-3" for="id_fecha_cpb">Fecha Cobro:</label>
+								       <label class="control-label col-sm-2 col-xs-2" for="id_fecha_cpb">Fecha Cobro:</label>
 								       <div class="col-sm-3 col-xs-3">	{% bootstrap_field form.fecha_cpb show_label=False %}</div>	
 								        <label class="control-label col-sm-3 col-xs-3">Pto.Venta:</label>	
 										<div class="col-xs-3 col-sm-3">{% bootstrap_field form.pto_vta show_label=False %}</div>

@@ -1,5 +1,14 @@
 $(document).ready(function() {  
 
+
+$.fm({        
+        custom_callbacks: {
+            "recargarP": function(data, options) {
+               recargarProveedores();
+               },            
+            }
+  });
+
   if ($('#id_tipo_form').val()=='EDICION'){
        $('#id_pto_vta').attr('disabled', 'disabled');               
        $('#id_entidad').trigger("chosen:updated");          
@@ -228,17 +237,6 @@ function setear_FP(cta,fp,banco)
           $(this).datepicker();
       });
 
-
-  $("#recargarProveedores").click(function () {
-    $.getJSON('/recargar_proveedores/',{},
-          function (c) {
-              $("#id_entidad").empty().append('<option value="">---</option>');
-              $.each(c["proveedores"], function (idx, item) {
-                  jQuery("<option/>").text(item['codigo']+' - '+item['apellido_y_nombre']+' - '+item['fact_cuit']).attr("value", item['id']).appendTo("#id_entidad");
-              })
-              $('#id_entidad').trigger("chosen:updated");
-          }); 
-       });
 
   $( "#GuardarRec" ).click(function() {
               

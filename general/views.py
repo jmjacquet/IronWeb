@@ -400,7 +400,7 @@ def TareasDeleteView(request, id):
     messages.success(request, u'Los datos se guardaron con éxito!')
     return redirect('tareas_listado')        
 
-#*************  **************
+#***************************
 
 @login_required 
 def recargar_clientes(request):

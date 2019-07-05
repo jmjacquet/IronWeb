@@ -41,18 +41,16 @@
 										<div class="col-sm-9 col-xs-10">
 											{% bootstrap_field form.entidad show_label=False  %}												
 										</div>						
-										<div class="col-sm-1 col-xs-1 hidden-xs">
-						                  <a id="recargarClientes" href="#" class="recargarDatos" type="button" data-toggle="tooltip" data-placement="top" title="Recargar Clientes">
-											<i class="fa fa-refresh"></i></a>
-						                </div>        				
+										<div class="col-sm-1 hidden-xs">						                  
+							                  		<a id="nuevoClientes" href="{% url 'cliente_nuevo' %}" data-fm-head="AGREGAR CLIENTE" class="recargarDatos fm-create" type="button" data-toggle="tooltip" data-fm-callback="recargarC" data-placement="top" title="Agregar Cliente"><i class="icon-users"></i></a>
+						                </div>    				
 								  </div>
 								  <div class="row">
 										<label class="control-label col-sm-2 col-xs-3">Vendedor:</label>
 										<div class="col-sm-9 col-xs-9">{% bootstrap_field form.vendedor show_label=False %}</div>										
 										<div class="col-sm-1 col-xs-1 hidden-xs">
-						                  <a id="recargarVendedores" href="#" class="recargarDatos" type="button" data-toggle="tooltip" data-placement="top" title="Recargar Vendedores">
-											<i class="fa fa-refresh"></i></a>
-						                </div>   
+						                  	<a id="nuevoVendedor" href="{% url 'vendedor_nuevo' %}" data-fm-callback="recargarV" data-fm-head="AGREGAR VENDEDOR" class="recargarDatos fm-create" type="button" data-toggle="tooltip" data-placement="top" title="Agregar Vendedor"><i class="icon-users"></i></a>
+						                </div> 
 								  </div>
 							     <div class="row">
 										<label class="control-label col-sm-2 col-xs-3" for="id_fecha_cpb">Ubicación:</label>

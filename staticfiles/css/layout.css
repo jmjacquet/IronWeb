@@ -108,7 +108,7 @@
 .page-header.navbar .hor-menu .navbar-nav > li.mega-menu-dropdown > .dropdown-menu .mega-menu-content .mega-menu-submenu{padding:0;margin:0;}
 .page-header.navbar .hor-menu .navbar-nav > li.mega-menu-dropdown > .dropdown-menu .mega-menu-content .mega-menu-submenu:last-child{border-right:0;}
 .page-header.navbar .hor-menu .navbar-nav > li.mega-menu-dropdown > .dropdown-menu .mega-menu-content .mega-menu-submenu li{padding:1px !important;margin:0 !important;list-style:none;}
-.page-header.navbar .hor-menu .navbar-nav > li.mega-menu-dropdown > .dropdown-menu .mega-menu-content .mega-menu-submenu li > h3{margin-top:5px;padding-left:5px;font-size:12px;font-weight:400;}
+.page-header.navbar .hor-menu .navbar-nav > li.mega-menu-dropdown > .dropdown-menu .mega-menu-content .mega-menu-submenu li > h3{margin-top:5px;padding-left:5px;font-size:12px;font-weight:400;    margin-bottom: 5px;}
 .page-header.navbar .hor-menu .navbar-nav > li.mega-menu-dropdown > .dropdown-menu .mega-menu-content .mega-menu-submenu li > a{display: inline-block; white-space:normal;font-family:"Ubuntu", sans-serif;padding:5px;margin:0;font-size:11px;font-weight:400;}
 .page-header.navbar .hor-menu .navbar-nav > li.mega-menu-dropdown > .dropdown-menu .mega-menu-content .mega-menu-submenu li > a.iconify{padding:7px 7px 7px 30px;}
 .page-header.navbar .hor-menu .navbar-nav > li.mega-menu-dropdown > .dropdown-menu .mega-menu-content .mega-menu-submenu li > a.iconify > i{position:absolute;top:auto !important;margin-left:-24px;font-size:12px;margin-top:3px !important;}

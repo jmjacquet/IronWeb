@@ -61,11 +61,7 @@
         <script src="{% static 'bootstrap-hover-dropdown/bootstrap-hover-dropdown.min.js' %}" type="text/javascript"></script>               
         <script src="{% static 'alertifyjs/alertify.js' %}" type="text/javascript"></script>
         <script src="{% static 'js/jquery.uniform.min.js' %}" type="text/javascript" ></script>        
-        
-        
-
-        <script src="{% static 'js/scripts/scripts.js'%}?{% now "Ymd"%}" type="text/javascript"></script>
-        <script src="{% static 'js/scripts/scripts_general.js'%}?{% now "Ymd"%}" type="text/javascript"></script>
+               
         <script src="{% static 'js/chosen.jquery.js' %}" type="text/javascript"></script>
         <script src="{% static 'js/toastr.min.js' %}" type="text/javascript"></script>
         <!-- END CORE PLUGINS -->
@@ -90,73 +86,8 @@
           <script src="{% static 'DataTables/FixedHeader-3.1.3/js/dataTables.fixedHeader.min.js' %}" type="text/javascript"></script>    
         {% endblock %}
 
-        <script type="text/javascript">
-               
-            alertify.defaults.transition = "slide";
-            alertify.defaults.theme.ok = "btn btn-primary";
-            alertify.defaults.theme.cancel = "btn btn-default";
-            alertify.defaults.theme.input = "form-control";              
-           
-            $('[data-toggle=tooltip]').tooltip();     
-
-            toastr.options = {
-              "closeButton": true,
-              "debug": false,
-              "positionClass": "toast-top-center",
-              "onclick": null,
-              "showDuration": "1000",
-              "hideDuration": "1000",
-              "timeOut": "5000",
-              "extendedTimeOut": "1000",
-              "showEasing": "swing",
-              "hideEasing": "linear",
-              "showMethod": "fadeIn",
-              "hideMethod": "fadeOut",          
-            };
-            
-            if(!alertify.errorAlert){
-              alertify.dialog('errorAlert',function factory(){
-            return{
-                    build:function(){
-                        var errorHeader = '<span class="fa fa-times-circle fa-2x" '
-                        +    'style="vertical-align:middle;margin-right:10px;color:#e10000;text-align:left;">'
-                        + '</span> ¡ATENCIÓN!';
-                        this.setHeader(errorHeader);
-                    }
-                };
-            },true,'alert'); 
-            };
-
-            if(!alertify.successAlert){
-              alertify.dialog('successAlert',function factory(){
-            return{
-                    build:function(){
-                        var successHeader = '<span class="fa fa-check-circle fa-2x" '
-                        +    'style="vertical-align:middle;margin-right:10px;color:#6aca5f;text-align:left;">'
-                        + '</span> ¡ATENCIÓN!';
-                        this.setHeader(successHeader);
-                    }
-                };
-            },true,'alert'); 
-            };
-
-            if(!alertify.warningAlert){
-              alertify.dialog('warningAlert',function factory(){
-            return{
-                    build:function(){
-                        var warningHeader = '<span class="fa fa-check-circle fa-2x" '
-                        +    'style="vertical-align:middle;color:#FFFF00;margin-right:10px;text-align:left;">'
-                        + '</span> ¡ATENCIÓN!';
-                        this.setHeader(warningHeader);
-                    }
-                };
-            },true,'alert'); 
-            };
-
-                    
-
-       </script>  
-      
+        <script src="{% static 'js/scripts/scripts.js'%}?{% now "Ymd"%}" type="text/javascript"></script>             
+        <script src="{% static 'js/scripts/scripts_general.js'%}?{% now "Ymd"%}" type="text/javascript"></script>
         
 </head>
         
@@ -169,7 +100,7 @@
       <script type="text/javascript">
         jQuery(document).ready(function() {
            $.modal({debug: false});
-           $.fm({debug: false});        
+           $.fm({debug: false});         
            Metronic.init();
            Layout.init();
            {% if messages %}
@@ -179,5 +110,8 @@
             {% endif %}    
         });
       </script> 
+      {% block extra_js_final %}
+      {% endblock extra_js_final %} 
+
 
 </html>

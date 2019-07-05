@@ -4,9 +4,9 @@ $(document).ready(function() {
        $('#id_pto_vta').attr('disabled', 'disabled');               
        $('#id_entidad').trigger("chosen:updated");          
        $('#recargarProveedores').hide();
-       $('#id_pto_vta').val(("00000" + $(this).val()).slice(-5));
-  }else{
-      // $('#id_pto_vta').val(("00000" + $(this).val()).slice(-5));
+       $('#id_pto_vta').val(("00000" + $('#id_pto_vta').val()).slice(-5));
+  }else{      
+      $('#id_pto_vta').val(("00000" + $('#id_pto_vta').val()).slice(-5));
       setear_CTA($("[name='formFP-0-cta_egreso']"),$("[name='formFP-0-tipo_forma_pago']"));
   };
 
@@ -230,14 +230,7 @@ function setear_FP(cta,fp,banco)
 
 
   $("#recargarProveedores").click(function () {
-    $.getJSON('/recargar_proveedores/',{},
-          function (c) {
-              $("#id_entidad").empty().append('<option value="">---</option>');
-              $.each(c["proveedores"], function (idx, item) {
-                  jQuery("<option/>").text(item['codigo']+' - '+item['apellido_y_nombre']+' - '+item['fact_cuit']).attr("value", item['id']).appendTo("#id_entidad");
-              })
-              $('#id_entidad').trigger("chosen:updated");
-          }); 
+      recargarProveedores()
        });
 
   $( "#GuardarRec" ).click(function() {
