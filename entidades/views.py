@@ -57,7 +57,7 @@ class ClientesCreateView(VariablesMixin,AjaxCreateView):
 
     @method_decorator(login_required)
     def dispatch(self, *args, **kwargs): 
-        if not tiene_permiso(self.request,'ent_clientes'):
+        if not tiene_permiso(self.request,'ent_clientes_abm'):
             return redirect(reverse('principal'))
         return super(ClientesCreateView, self).dispatch(*args, **kwargs)
         
@@ -99,7 +99,7 @@ class ClientesEditView(VariablesMixin,AjaxUpdateView):
 
     @method_decorator(login_required)
     def dispatch(self, *args, **kwargs): 
-        if not tiene_permiso(self.request,'ent_clientes'):
+        if not tiene_permiso(self.request,'ent_clientes_abm'):
             return redirect(reverse('principal'))
         return super(ClientesEditView, self).dispatch(*args, **kwargs)
 
@@ -125,7 +125,7 @@ class ClientesDeleteView(VariablesMixin,AjaxDeleteView):
 
     @method_decorator(login_required)
     def dispatch(self, *args, **kwargs): 
-        if not tiene_permiso(self.request,'ent_clientes'):
+        if not tiene_permiso(self.request,'ent_clientes_abm'):
             return redirect(reverse('principal'))
         messages.success(self.request, u'Los datos se eliminaron con éxito!')
         return super(ClientesDeleteView, self).dispatch(*args, **kwargs)
@@ -168,7 +168,7 @@ class ProveedoresCreateView(VariablesMixin,AjaxCreateView):
 
     @method_decorator(login_required)
     def dispatch(self, *args, **kwargs): 
-        if not tiene_permiso(self.request,'ent_proveedores'):
+        if not tiene_permiso(self.request,'ent_proveedores_abm'):
             return redirect(reverse('principal'))
         return super(ProveedoresCreateView, self).dispatch(*args, **kwargs)
 
@@ -202,7 +202,7 @@ class ProveedoresEditView(VariablesMixin,AjaxUpdateView):
 
     @method_decorator(login_required)
     def dispatch(self, *args, **kwargs): 
-        if not tiene_permiso(self.request,'ent_proveedores'):
+        if not tiene_permiso(self.request,'ent_proveedores_abm'):
             return redirect(reverse('principal'))
         return super(ProveedoresEditView, self).dispatch(*args, **kwargs)
 
@@ -224,7 +224,7 @@ class ProveedoresDeleteView(VariablesMixin,AjaxDeleteView):
 
     @method_decorator(login_required)
     def dispatch(self, *args, **kwargs): 
-        if not tiene_permiso(self.request,'ent_proveedores'):
+        if not tiene_permiso(self.request,'ent_proveedores_abm'):
             return redirect(reverse('principal'))
         messages.success(self.request, u'Los datos se eliminaron con éxito!')
         return super(ProveedoresDeleteView, self).dispatch(*args, **kwargs)
@@ -265,7 +265,7 @@ class VendedoresCreateView(VariablesMixin,AjaxCreateView):
 
     @method_decorator(login_required)
     def dispatch(self, *args, **kwargs): 
-        if not tiene_permiso(self.request,'ent_vendedores'):
+        if not tiene_permiso(self.request,'ent_vendedores_abm'):
             return redirect(reverse('principal'))
         return super(VendedoresCreateView, self).dispatch(*args, **kwargs)
 
@@ -296,7 +296,7 @@ class VendedoresEditView(VariablesMixin,AjaxUpdateView):
 
     @method_decorator(login_required)
     def dispatch(self, *args, **kwargs): 
-        if not tiene_permiso(self.request,'ent_vendedores'):
+        if not tiene_permiso(self.request,'ent_vendedores_abm'):
             return redirect(reverse('principal'))
         return super(VendedoresEditView, self).dispatch(*args, **kwargs)
 
@@ -320,7 +320,7 @@ class VendedoresDeleteView(VariablesMixin,AjaxDeleteView):
 
     @method_decorator(login_required)
     def dispatch(self, *args, **kwargs): 
-        if not tiene_permiso(self.request,'ent_vendedores'):
+        if not tiene_permiso(self.request,'ent_vendedores_abm'):
             return redirect(reverse('principal'))
         messages.success(self.request, u'Los datos se eliminaron con éxito!')
         return super(VendedoresDeleteView, self).dispatch(*args, **kwargs)

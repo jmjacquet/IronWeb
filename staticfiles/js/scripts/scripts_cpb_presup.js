@@ -416,7 +416,7 @@ $("#id_formDetalle-0-producto").focus();
 
 
 if ($('#id_tipo_form').val()=='EDICION'){                
-     $('#recargarClientes').hide();    
+     $('#nuevoClientes').hide();    
 };
 
 

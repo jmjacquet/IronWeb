@@ -614,14 +614,14 @@ $("#id_formDetalle-0-producto").focus();
 
 if ($('#id_tipo_form').val()=='EDICION'){  
      
-   $('#recargarClientes').hide();
+   $('#nuevoClientes').hide();
 
      $('.form-detalles tr').each(function(j) {        
         recargarProd(j);              
       });  
 }else{
   if  ($("#id_entidad").val()!='') {
-    $('#recargarClientes').hide();
+    $('#nuevoClientes').hide();
     $('#recargarProductos').hide();
   }; 
 }

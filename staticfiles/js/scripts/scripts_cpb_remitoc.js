@@ -1,5 +1,13 @@
 $(document).ready(function() {  
 
+
+  if ($('#id_tipo_form').val()=='EDICION'){
+       $('#id_entidad').trigger("chosen:updated");          
+       $('#nuevoProveedores').hide();
+  }else{      
+
+  };
+
 $.fm({        
         custom_callbacks: {
             "recargarP": function(data, options) {

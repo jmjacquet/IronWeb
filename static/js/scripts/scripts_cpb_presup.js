@@ -1,7 +1,16 @@
 $(document).ready(function() {  
 
 
-
+$.fm({        
+        custom_callbacks: {
+            "recargarC": function(data, options) {
+               recargarClientes();
+               },
+            "recargarV": function(data, options) {
+               recargarVendedores();
+               }
+            }
+  });
 
 $("#id_entidad").chosen({
           no_results_text: "Cliente inexistente...",
@@ -307,29 +316,6 @@ $.fn.datepicker.dates['es'] = {
           todayHighlight: true
     });
 
-
-$("#recargarClientes").click(function () {
-  $.getJSON('/recargar_clientes/',{},
-        function (c) {
-            $("#id_entidad").empty().append('<option value="">---</option>');
-            $.each(c["clientes"], function (idx, item) {
-                jQuery("<option/>").text(item['codigo']+' - '+item['apellido_y_nombre']+' - '+item['fact_cuit']).attr("value", item['id']).appendTo("#id_entidad");
-            })
-            $('#id_entidad').trigger("chosen:updated");
-        }); 
-     });
-
-
-$("#recargarVendedores").click(function () {
-        $.getJSON('/recargar_vendedores/',{},
-        function (c) {
-            $("#id_vendedor").empty().append('<option value="">---</option>');
-            $.each(c["vendedores"], function (idx, item) {
-                jQuery("<option/>").text(item['codigo']+' - '+item['apellido_y_nombre']+' - '+item['fact_cuit']).attr("value", item['id']).appendTo("#id_vendedor");
-            })
-            $('#id_vendedor').trigger("chosen:updated");
-        });
-  });
 
 $("#recargarProductos").click(function () {      
       

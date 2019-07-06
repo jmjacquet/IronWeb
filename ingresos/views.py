@@ -86,8 +86,7 @@ class CPBSVentasList(VariablesMixin,ListView):
         else:
             cpbs= comprobantes.filter(fecha_cpb__gte=inicioMesAnt(),fecha_cpb__lte=finMes())            
             if len(cpbs)==0:
-                cpbs = comprobantes[:20]            
-            print len(cpbs)
+                cpbs = comprobantes[:20]                        
             comprobantes=cpbs
 
         context['form'] = form
@@ -1062,6 +1061,7 @@ class CPBRemitoEditView(VariablesMixin,UpdateView):
         self.object = self.get_object()
         form_class = self.get_form_class()
         form = self.get_form(form_class) 
+        form.fields['entidad'].widget.attrs['disabled'] = True
         cpb=self.object.id_cpb_padre       
         CPBRemitoDetalleFS.form = staticmethod(curry(CPBRemitoDetalleForm,request=request))
         remito_detalle = CPBRemitoDetalleFS(instance=self.object,prefix='formDetalle')
@@ -1812,7 +1812,7 @@ class CPBLiqProdCreateView(VariablesMixin,CreateView):
     
     @method_decorator(login_required)
     def dispatch(self, *args, **kwargs):            
-        if not tiene_permiso(self.request,'cpb_ventas_abm'):
+        if not tiene_permiso(self.request,'cpb_liqprod_abm'):
             return redirect(reverse('principal'))
         return super(CPBLiqProdCreateView, self).dispatch(*args, **kwargs)
     
@@ -1887,7 +1887,7 @@ class CPBLiqProdEditView(VariablesMixin,SuccessMessageMixin,UpdateView):
 
     @method_decorator(login_required)
     def dispatch(self, *args, **kwargs):            
-        if not tiene_permiso(self.request,'cpb_ventas_abm'):
+        if not tiene_permiso(self.request,'cpb_liqprod_abm'):
             return redirect(reverse('principal'))
         if not puedeEditarCPB(self.get_object().pk):
             messages.error(self.request, u'¡No puede editar un Comprobante con Pagos/Saldado!')
@@ -1956,7 +1956,7 @@ class CPBLiqProdEditView(VariablesMixin,SuccessMessageMixin,UpdateView):
 @login_required
 def CPBLiqProdDeleteView(request, id):
     cpb = get_object_or_404(cpb_comprobante, id=id)
-    if not tiene_permiso(request,'cpb_ventas_abm'):
+    if not tiene_permiso(request,'cpb_liqprod_abm'):
             return redirect(reverse('principal'))
     if not puedeEliminarCPB(id):
             messages.error(request, u'¡No puede editar un Comprobante Saldado/Facturado!')

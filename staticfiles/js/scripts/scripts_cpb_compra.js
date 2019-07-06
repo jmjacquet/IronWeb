@@ -596,7 +596,7 @@ $("[name='formDetalle-0-producto']").chosen({
 $("#id_formDetalle-0-producto").focus();
 
 if ($('#id_tipo_form').val()=='EDICION'){
-     $('#recargarProveedores').hide();
+     $('#nuevoProveedores').hide();
      $('.form-detalles tr').each(function(j) {       
         recargarProd(j);              
       });

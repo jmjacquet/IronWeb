@@ -912,7 +912,7 @@ class CPBRemitoCCreateView(VariablesMixin,CreateView):
     
     @method_decorator(login_required)
     def dispatch(self, *args, **kwargs):            
-        if not tiene_permiso(self.request,'cpb_remitosc'):
+        if not tiene_permiso(self.request,'cpb_remitosc_abm'):
             return redirect(reverse('principal'))
         return super(CPBRemitoCCreateView, self).dispatch(*args, **kwargs)
     
@@ -982,7 +982,7 @@ class CPBRemitoCEditView(VariablesMixin,UpdateView):
 
     @method_decorator(login_required)
     def dispatch(self, *args, **kwargs): 
-        if not tiene_permiso(self.request,'cpb_remitos'):
+        if not tiene_permiso(self.request,'cpb_remitosc_abm'):
             return redirect(reverse('principal'))
         return super(CPBRemitoCEditView, self).dispatch(*args, **kwargs)
 

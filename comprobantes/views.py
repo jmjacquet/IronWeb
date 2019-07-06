@@ -1043,7 +1043,10 @@ class MovInternosViewList(VariablesMixin,ListView):
             if fhasta:
                 movimientos= movimientos.filter(cpb_comprobante__fecha_cpb__lte=fhasta)              
         else:
-            movimientos= movimientos.filter(cpb_comprobante__fecha_cpb__gte=inicioMesAnt(),cpb_comprobante__fecha_cpb__lte=finMes())
+            mvs= movimientos.filter(cpb_comprobante__fecha_cpb__gte=inicioMesAnt(),cpb_comprobante__fecha_cpb__lte=finMes())            
+            if len(mvs)==0:
+                mvs = movimientos[:20]                        
+            movimientos=mvs
 
         context['form'] = form
         context['movimientos'] = movimientos

@@ -268,6 +268,8 @@ class cpb_comprobante(models.Model):
 
     def get_importe_total(self):
         signo = self.cpb_tipo.signo_ctacte
+        if not self.importe_total:
+            return 0
         if signo:
             return self.importe_total * signo
         else:
