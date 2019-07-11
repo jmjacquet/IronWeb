@@ -1,5 +1,12 @@
 $(document).ready(function() {  
 
+$.fm({        
+        custom_callbacks: {
+            "recargarP": function(data, options) {
+               recargarProveedores();
+               },
+            }
+  });
 
 $("#id_entidad").change(function(){
     var id =  $("#id_entidad").val();
@@ -325,16 +332,6 @@ $.fn.datepicker.dates['es'] = {
     $('.datepicker').each(function(){
         $(this).datepicker();
     });
-$("#recargarProveedores").click(function () {
-  $.getJSON('/recargar_proveedores/',{},
-        function (c) {
-            $("#id_entidad").empty().append('<option value="">---</option>');
-            $.each(c["proveedores"], function (idx, item) {
-                jQuery("<option/>").text(item['codigo']+' - '+item['apellido_y_nombre']+' - '+item['fact_cuit']).attr("value", item['id']).appendTo("#id_entidad");
-            })
-            $('#id_entidad').trigger("chosen:updated");
-        }); 
-     });
 
 
 $("#recargarProductos").click(function () {      

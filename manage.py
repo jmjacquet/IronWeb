@@ -4,9 +4,9 @@ import sys
 
 if __name__ == "__main__":
 	os.environ.setdefault("DJANGO_SETTINGS_MODULE", "ggcontable.settings")
-	os.environ.setdefault("ENTIDAD_DB", "gg_ironweb")
-	os.environ.setdefault("ENTIDAD_ID", "1")
-	os.environ.setdefault("ENTIDAD_DIR", "copyfast")
+	os.environ.setdefault("ENTIDAD_DB", "ironweb_412")
+	os.environ.setdefault("ENTIDAD_ID", "412")
+	os.environ.setdefault("ENTIDAD_DIR", "prueba")
     
 	from django.core.management import execute_from_command_line
 
