@@ -1,5 +1,14 @@
 $(document).ready(function() {  
 
+
+$.fm({        
+        custom_callbacks: {
+            "recargarP": function(data, options) {
+               recargarProveedores();
+               },            
+            }
+  });
+
   if ($('#id_tipo_form').val()=='EDICION'){
        $('#id_pto_vta').attr('disabled', 'disabled');               
        $('#id_entidad').trigger("chosen:updated");          
@@ -228,10 +237,6 @@ function setear_FP(cta,fp,banco)
           $(this).datepicker();
       });
 
-
-  $("#recargarProveedores").click(function () {
-      recargarProveedores()
-       });
 
   $( "#GuardarRec" ).click(function() {
               
