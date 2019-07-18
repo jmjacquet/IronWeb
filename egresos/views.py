@@ -964,6 +964,7 @@ class CPBRemitoCCreateView(VariablesMixin,CreateView):
         remito_detalle.instance = self.object
         remito_detalle.cpb_comprobante = self.object.id        
         remito_detalle.save() 
+        recalcular_saldo_cpb(self.object.pk)
         messages.success(self.request, u'Los datos se guardaron con éxito!')       
         return HttpResponseRedirect(reverse('cpb_remitoc_listado'))
 
@@ -1022,6 +1023,7 @@ class CPBRemitoCEditView(VariablesMixin,UpdateView):
         remito_detalle.instance = self.object
         remito_detalle.cpb_comprobante = self.object.id        
         remito_detalle.save()
+        recalcular_saldo_cpb(self.object.pk)
         messages.success(self.request, u'Los datos se guardaron con éxito!')
         return HttpResponseRedirect(reverse('cpb_remitoc_listado'))
 

@@ -556,7 +556,7 @@ def recalcular_saldo_cpb(idCpb):# pragma: no cover
     importe_total = 0    
     
     # Cobros y Pagos sólos no recalculan IVA ni detalles, etc
-    if cpb.cpb_tipo.tipo in [4,7]:
+    if cpb.cpb_tipo.tipo in [4,5,7,8]:
         cpb.importe_gravado = importe_gravado    
         cpb.importe_iva = importe_iva
         cpb.importe_no_gravado = importe_no_gravado
