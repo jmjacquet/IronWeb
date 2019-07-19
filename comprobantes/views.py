@@ -32,6 +32,15 @@ from django.utils.functional import curry
 from django.forms.models import model_to_dict
 
 @login_required 
+def recalcular_cpbs(request):
+
+    comprobantes = cpb_comprobante.objects.all()
+    for c in comprobantes:
+        recalcular_saldo_cpb(c.id)
+
+    return HttpResponseRedirect(reverse('principal')) 
+
+@login_required 
 def eliminar_detalles_fp_huerfanos(request):
     empresa = empresa_actual(request)
     ids = cpb_comprobante.objects.all().values_list('id',flat=True)
@@ -936,7 +945,7 @@ def mandarEmail(request,id):
         backend = EmailBackend(host=mail_servidor, port=mail_puerto, username=mail_usuario,password=mail_password,fail_silently=False)        
         email = EmailMessage( subject=u'%s' % (cpb.get_cpb_tipo),body=html_content,from_email=mail_origen,to=mail_destino,connection=backend)                
         email.attach(u'%s.pdf' %nombre,post_pdf, "application/pdf")
-        email.content_subtype = 'html'
+        email.content_subtype = 'html'        
         email.send()        
         cpb.fecha_envio_mail=fecha
         cpb.save()

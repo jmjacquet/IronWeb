@@ -553,7 +553,8 @@ def recalcular_saldo_cpb(idCpb):# pragma: no cover
     importe_gravado = 0
     importe_iva = 0
     importe_subtotal = 0
-    importe_total = 0    
+    importe_total = 0
+    tot_perc_imp = 0    
     
     # Cobros y Pagos sólos no recalculan IVA ni detalles, etc
     if cpb.cpb_tipo.tipo in [4,5,7,8]:
@@ -563,6 +564,8 @@ def recalcular_saldo_cpb(idCpb):# pragma: no cover
         cpb.importe_exento = importe_exento        
         cpb.importe_perc_imp = 0    
         cpb.saldo = 0
+        cpb.importe_subtotal = importe_gravado + importe_no_gravado + importe_exento
+        cpb.importe_total = importe_subtotal  + tot_perc_imp + importe_iva 
         cpb.save()
 
     elif cpb.cpb_tipo.tipo in [1,2,3,6,9,14]:

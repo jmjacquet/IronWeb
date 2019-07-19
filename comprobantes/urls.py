@@ -65,6 +65,7 @@ urlpatterns = patterns('comprobantes.views',
     url(r'^cpb_facturar_afip_id/(?P<id>\d+)/$',  cpb_facturar_afip_id,name="cpb_facturar_afip_id"),
 
     url(r'^eliminar_detalles_fp_huerfanos/$', eliminar_detalles_fp_huerfanos, name="eliminar_detalles_fp_huerfanos"),   
+    url(r'^recalcular_cpbs/$', recalcular_cpbs, name="recalcular_cpbs"),   
     url(r'^recalcular_compras/$', recalcular_compras, name="recalcular_compras"),   
     url(r'^recalcular_presupuestos/$', recalcular_presupuestos, name="recalcular_presupuestos"),   
 
