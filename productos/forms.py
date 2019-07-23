@@ -109,7 +109,6 @@ class Producto_StockForm(forms.ModelForm):
 		except gral_empresa.DoesNotExist:
 			empresa = None  
 
-
 	def clean(self):		
 		super(forms.ModelForm,self).clean()	
 		ubicacion = self.cleaned_data.get('ubicacion')		

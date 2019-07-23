@@ -630,6 +630,7 @@ class ProdStockView(VariablesMixin,ListView):
             empresa = empresa_actual(self.request)
         except gral_empresa.DoesNotExist:
             empresa = None 
+
         fecha = date.today()
         
         form = ConsultaStockProd(self.request.POST or None,request =self.request )   
@@ -642,7 +643,7 @@ class ProdStockView(VariablesMixin,ListView):
             categoria = form.cleaned_data['categoria']   
             tipo_prod = int(form.cleaned_data['tipo_prod'])             
             lleva_stock = form.cleaned_data['lleva_stock']                         
-            productos = prod_producto_ubicac.objects.filter(producto__empresa=empresa,ubicacion__empresa__in=empresas_habilitadas(self.request)).select_related('producto','producto__categoria')            
+            productos = prod_producto_ubicac.objects.filter(producto__empresa=empresa).select_related('producto','producto__categoria')            
         
             if producto:
                 productos = productos.filter(producto__nombre__icontains=producto)
@@ -652,18 +653,43 @@ class ProdStockView(VariablesMixin,ListView):
                 lleva= (int(lleva_stock)==1)                
                 productos= productos.filter(producto__llevar_stock=lleva)
             if categoria:
-                productos= productos.filter(producto__categoria=categoria)         
-            
-           
+                productos= productos.filter(producto__categoria=categoria)                     
+            if ubicacion:
+                productos = productos.filter(ubicacion=ubicacion)
+            else:
+                productos = productos.filter(ubicacion__empresa__in=empresas_habilitadas(self.request))           
+                       
         context['form'] = form
         context['productos'] = productos
         return context
     def post(self, *args, **kwargs):
         return self.get(*args, **kwargs)     
 
+class ProdStockCreateView(VariablesMixin,AjaxCreateView):
+    form_class = Producto_StockForm
+    template_name = 'fm/productos/form_stock_prod.html'
+
+    @method_decorator(login_required)
+    def dispatch(self, *args, **kwargs):        
+        if not tiene_permiso(self.request,'gral_configuracion'):
+            return redirect(reverse('prod_stock_listado'))
+        return super(ProdStockCreateView, self).dispatch(*args, **kwargs)
+
+    def form_valid(self, form):                               
+        messages.success(self.request, u'Los datos se guardaron con éxito!')
+        return super(ProdStockCreateView, self).form_valid(form)
+
+    def get_form_kwargs(self):
+        kwargs = super(ProdStockCreateView, self).get_form_kwargs()
+        kwargs['request'] = self.request
+        return kwargs
+
+    def get_initial(self):    
+        initial = super(ProdStockCreateView, self).get_initial()               
+        return initial  
 
 class ProdStockEditView(VariablesMixin,AjaxUpdateView):
-    form_class = StockProdForm
+    form_class = Producto_StockForm
     model = prod_producto_ubicac
     pk_url_kwarg = 'id'
     template_name = 'fm/productos/form_stock_prod.html'
