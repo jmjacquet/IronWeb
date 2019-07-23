@@ -178,7 +178,7 @@ class ProductosEditView(VariablesMixin,UpdateView):
         else:
             return self.form_invalid(form, prod_precios)       
      
-    def form_invalid(self, form, prod_precios,prod_stock):                                                       
+    def form_invalid(self, form, prod_precios):                                                       
         return self.render_to_response(self.get_context_data(form=form,prod_precios = prod_precios))
 
 
