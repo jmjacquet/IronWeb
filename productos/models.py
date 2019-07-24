@@ -147,8 +147,9 @@ class prod_producto_ubicac(models.Model):
     def __unicode__(self):
         return u'%s (%s) [%s]' % (self.producto.nombre,self.ubicacion,TIPO_UNIDAD[self.producto.unidad])          
 
-    def _get_stock(self):     
-        total_stock = cpb_comprobante_detalle.objects.filter(cpb_comprobante__estado__in=[1,2],cpb_comprobante__cpb_tipo__usa_stock=True,cpb_comprobante__empresa__id__in=empresas_habilitadas(self.request),producto__id=self.producto.id,origen_destino__id=self.ubicacion.id).aggregate(total=Sum(F('cantidad') *F('cpb_comprobante__cpb_tipo__signo_stock'),output_field=DecimalField()))['total'] or 0              
+    def _get_stock(request,self):     
+        total_stock = cpb_comprobante_detalle.objects.filter(cpb_comprobante__estado__in=[1,2],cpb_comprobante__cpb_tipo__usa_stock=True,\
+            cpb_comprobante__empresa__id__in=empresas_habilitadas(request),producto__id=self.producto.id,origen_destino__id=self.ubicacion.id).aggregate(total=Sum(F('cantidad') *F('cpb_comprobante__cpb_tipo__signo_stock'),output_field=DecimalField()))['total'] or 0              
         return total_stock
 
     get_stock = property(_get_stock)
