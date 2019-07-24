@@ -39,7 +39,7 @@ urlpatterns = patterns('productos.views',
     url(r'^prod_precios_actualizar/$', prod_precios_actualizar,name="prod_precios_actualizar"),
 
     url(r'^prod_stock/$', ProdStockView.as_view(),name="prod_stock_listado"),
-    url(r'^prod_stock_nuevo/$', ProdStockCreateView.as_view(),name="prod_stock_nuevo"),
+    url(r'^prod_stock_nuevo/$', prod_stock_nuevo,name="prod_stock_nuevo"),
     url(r'^prod_stock_editar/(?P<id>\d+)/$', ProdStockEditView.as_view(),name="prod_stock_editar"),
     url(r'^prod_stock_actualizar/$', prod_stock_actualizar,name="prod_stock_actualizar"),
 
