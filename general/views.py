@@ -77,7 +77,7 @@ def getVariablesMixin(request):
     except gral_empresa.DoesNotExist:
         empresa = None                  
     context['empresa'] = empresa
-    
+        
     try:
         tipo_usr = usr.userprofile.id_usuario.tipoUsr
         context['tipo_usr'] = tipo_usr
@@ -122,7 +122,7 @@ class VariablesMixin(object):
         except gral_empresa.DoesNotExist:
             empresa = None
                       
-        context['empresa'] = empresa   
+        context['empresa'] = empresa           
         context['settings'] = settings 
         
         try:
