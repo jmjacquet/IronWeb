@@ -115,6 +115,7 @@ function recalcular(){
            });
    });
 };
+recalcular(); 
 
 
 });
