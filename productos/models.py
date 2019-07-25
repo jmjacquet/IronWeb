@@ -7,7 +7,7 @@ from dateutil.relativedelta import *
 from django.conf import settings
 import os 
 from .utilidades import *
-from general.utilidades import TIPO_IVA,TIPO_UNIDAD,empresas_habilitadas
+from general.utilidades import TIPO_IVA,TIPO_UNIDAD,empresas_habilitadas_list
 from django.db.models import Sum,F,DecimalField
 
 class gral_tipo_iva(models.Model):
