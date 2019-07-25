@@ -4,11 +4,7 @@
     alertify.defaults.theme.input = "form-control";              
    
     $('[data-toggle=tooltip]').tooltip();     
-
-
-    $("input[type=number]").click(function(){
-            this.select()
-          });
+    
 
     toastr.options = {
       "closeButton": true,

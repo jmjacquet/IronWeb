@@ -1,6 +1,8 @@
 $(document).ready(function() { 
 
-
+$("input[type=number]").click(function(){
+            this.select()
+          });
 
   $( "#AceptarSeleccion" ).click(function() {
     datos = [];

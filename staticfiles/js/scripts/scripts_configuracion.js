@@ -22,7 +22,9 @@ $( "#Buscar" ).click(function() {
  });
 
 
-
+$("input[type=number]").click(function(){
+            this.select()
+          });
 $("#id_cuit").keyup(function(e){  
   if(e.which === 13) {
      consulta = $("#id_cuit").val();

@@ -7,6 +7,9 @@ $(document).ready(function() {
 //           allow_single_deselect: true,
 //       }); 
 
+$("input[type=number]").click(function(){
+            this.select()
+          });
 
 $('.formStock').formset({
           addText: 'Agregar Ubicación',
