@@ -149,8 +149,7 @@ class prod_producto_ubicac(models.Model):
 
     def get_stock_(self):             
         qs = cpb_comprobante_detalle.objects.filter(cpb_comprobante__estado__in=[1,2],cpb_comprobante__cpb_tipo__usa_stock=True,producto__id=self.producto.id,origen_destino__id=self.ubicacion.id)
-        total_stock = qs.aggregate(total=Sum(F('cantidad') *F('cpb_comprobante__cpb_tipo__signo_stock'),output_field=DecimalField()))['total'] or 0
-        print qs.query
+        total_stock = qs.aggregate(total=Sum(F('cantidad') *F('cpb_comprobante__cpb_tipo__signo_stock'),output_field=DecimalField()))['total'] or 0        
         return total_stock
 
     get_stock = property(get_stock_)
