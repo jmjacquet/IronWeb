@@ -136,7 +136,7 @@ def cobros_cpb(idCpb):
     return importes
 
 def obtener_stock(prod_ubi):     
-        total_stock = cpb_comprobante_detalle.objects.filter(cpb_comprobante__estado__in=[1,2],cpb_comprobante__cpb_tipo__usa_stock=True,cpb_comprobante__empresa__id=prod_ubi.producto.empresa.id,producto__id=prod_ubi.producto.id,origen_destino__id=prod_ubi.ubicacion.id).prefetch_related('cpb_comprobante__empresa','producto','ubicacion').aggregate(total=Sum(F('cantidad') *F('cpb_comprobante__cpb_tipo__signo_stock'),output_field=DecimalField()))['total'] or 0               
+        total_stock = cpb_comprobante_detalle.objects.filter(cpb_comprobante__estado__in=[1,2],cpb_comprobante__cpb_tipo__usa_stock=True,cpb_comprobante__empresa__id=prod_ubi.ubicacion.empresa.id,producto__id=prod_ubi.producto.id,origen_destino__id=prod_ubi.ubicacion.id).prefetch_related('cpb_comprobante__empresa','producto','ubicacion').aggregate(total=Sum(F('cantidad') *F('cpb_comprobante__cpb_tipo__signo_stock'),output_field=DecimalField()))['total'] or 0               
         return total_stock
 
 @login_required 
@@ -166,7 +166,7 @@ def buscarDatosProd(request):
                 except:
                     prod_ubi = None
                 if prod_ubi:
-                    stock = obtener_stock(prod_ubi)            
+                    stock = prod_ubi.get_stock_()
             if idlista:
                try:
                     prod_lista = prod_producto_lprecios.objects.get(producto=p,lista_precios__id=idlista) 
