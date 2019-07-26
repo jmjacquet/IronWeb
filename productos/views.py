@@ -134,7 +134,6 @@ class ProductosCreateView(VariablesMixin,CreateView):
     def form_invalid(self, form, prod_precios):                                                       
         return self.render_to_response(self.get_context_data(form=form,prod_precios = prod_precios))
     
-
 class ProductosEditView(VariablesMixin,UpdateView):
     form_class = ProductosForm
     template_name = 'productos/producto_form.html' 
@@ -178,7 +177,7 @@ class ProductosEditView(VariablesMixin,UpdateView):
         else:
             return self.form_invalid(form, prod_precios)       
      
-    def form_invalid(self, form, prod_precios,prod_stock):                                                       
+    def form_invalid(self, form, prod_precios):                                                       
         return self.render_to_response(self.get_context_data(form=form,prod_precios = prod_precios))
 
 
@@ -630,6 +629,7 @@ class ProdStockView(VariablesMixin,ListView):
             empresa = empresa_actual(self.request)
         except gral_empresa.DoesNotExist:
             empresa = None 
+
         fecha = date.today()
         
         form = ConsultaStockProd(self.request.POST or None,request =self.request )   
@@ -642,7 +642,7 @@ class ProdStockView(VariablesMixin,ListView):
             categoria = form.cleaned_data['categoria']   
             tipo_prod = int(form.cleaned_data['tipo_prod'])             
             lleva_stock = form.cleaned_data['lleva_stock']                         
-            productos = prod_producto_ubicac.objects.filter(producto__empresa=empresa,ubicacion__empresa__in=empresas_habilitadas(self.request)).select_related('producto','producto__categoria')            
+            productos = prod_producto_ubicac.objects.filter(producto__empresa__id__in=empresas_habilitadas(self.request)).select_related('producto','producto__categoria')            
         
             if producto:
                 productos = productos.filter(producto__nombre__icontains=producto)
@@ -652,18 +652,41 @@ class ProdStockView(VariablesMixin,ListView):
                 lleva= (int(lleva_stock)==1)                
                 productos= productos.filter(producto__llevar_stock=lleva)
             if categoria:
-                productos= productos.filter(producto__categoria=categoria)         
-            
-           
+                productos= productos.filter(producto__categoria=categoria)                     
+            if ubicacion:
+                productos = productos.filter(ubicacion=ubicacion)                       
+                       
         context['form'] = form
         context['productos'] = productos
         return context
     def post(self, *args, **kwargs):
         return self.get(*args, **kwargs)     
 
+class ProdStockCreateView(VariablesMixin,AjaxCreateView):
+    form_class = Producto_StockForm
+    template_name = 'fm/productos/form_stock_prod.html'
+
+    @method_decorator(login_required)
+    def dispatch(self, *args, **kwargs):        
+        if not tiene_permiso(self.request,'gral_configuracion'):
+            return redirect(reverse('prod_stock_listado'))
+        return super(ProdStockCreateView, self).dispatch(*args, **kwargs)
+
+    def form_valid(self, form):                               
+        messages.success(self.request, u'Los datos se guardaron con éxito!')
+        return super(ProdStockCreateView, self).form_valid(form)
+
+    def get_form_kwargs(self):
+        kwargs = super(ProdStockCreateView, self).get_form_kwargs()
+        kwargs['request'] = self.request
+        return kwargs
+
+    def get_initial(self):    
+        initial = super(ProdStockCreateView, self).get_initial()               
+        return initial  
 
 class ProdStockEditView(VariablesMixin,AjaxUpdateView):
-    form_class = StockProdForm
+    form_class = Producto_StockForm
     model = prod_producto_ubicac
     pk_url_kwarg = 'id'
     template_name = 'fm/productos/form_stock_prod.html'
@@ -713,3 +736,31 @@ def prod_stock_actualizar(request):
         form = ActualizarStockForm(None)          
         variables = RequestContext(request, {'form':form})        
         return render_to_response("productos/actualizar_stock.html", variables)
+
+@login_required 
+def prod_stock_nuevo(request):        
+    limpiar_sesion(request)    
+    if request.method == 'POST':                                       
+        form = CrearStockForm(request.POST or None,request=request)             
+        
+        if form.is_valid():                                   
+            producto = form.cleaned_data['producto']
+            ubicacion = form.cleaned_data['ubicacion']
+            valor = form.cleaned_data['valor']
+            existe_prod_stock = prod_producto_ubicac.objects.filter(producto=producto,ubicacion=ubicacion).exists()
+            if existe_prod_stock:
+                response = {'cant': 0, 'message': "¡El producto ya tiene asignado Stock!"} 
+            else:
+                ubi_prod = prod_producto_ubicac(producto=producto,ubicacion=ubicacion)
+                ubi_prod.save()            
+                actualizar_stock(request,producto,ubicacion,21,valor)            
+                response = {'cant': 1, 'message': "Se actualizaron exitosamente."} # for ok        
+        else:
+            response = {'cant': 0, 'message': "¡Verifique los datos ingresados!"} 
+       
+            
+        return HttpResponse(json.dumps(response,default=default), content_type='application/json')
+    else:    
+        form = CrearStockForm(None,request=request)          
+        variables = RequestContext(request, {'form':form})        
+        return render_to_response("productos/nuevo_stock.html", variables)

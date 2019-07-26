@@ -1,6 +1,8 @@
 $(document).ready(function() {  
 
-
+$("input[type=number]").click(function(){
+            this.select()
+          });
 
 function calcularTotales(){                
       var tot2=0;      

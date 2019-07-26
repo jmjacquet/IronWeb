@@ -662,7 +662,7 @@ class CPBVentaUnificarView(VariablesMixin,CreateView):
         #Anulo los cpbs anteriores   
         for i in id_cpbs:
             cpb_anular_reactivar(self.request,i,3,'Unificado en CPB:%s'%self.object.numero)    
-
+        
         messages.success(self.request, u'Los datos se guardaron con éxito!')
         return HttpResponseRedirect(reverse('cpb_venta_listado'))
 
@@ -1030,6 +1030,7 @@ class CPBRemitoCreateView(VariablesMixin,CreateView):
         remito_detalle.instance = self.object
         remito_detalle.cpb_comprobante = self.object.id        
         remito_detalle.save()        
+        recalcular_saldo_cpb(self.object.pk)
         messages.success(self.request, u'Los datos se guardaron con éxito!')
         return HttpResponseRedirect(reverse('cpb_remito_listado'))
 
@@ -1089,6 +1090,7 @@ class CPBRemitoEditView(VariablesMixin,UpdateView):
         remito_detalle.instance = self.object
         remito_detalle.cpb_comprobante = self.object.id        
         remito_detalle.save()
+        recalcular_saldo_cpb(self.object.pk)
         messages.success(self.request, u'Los datos se guardaron con éxito!')
         return HttpResponseRedirect(reverse('cpb_remito_listado'))
 
@@ -1388,6 +1390,7 @@ class CPBPresupLiteCreateView(VariablesMixin,CreateView):
         # msj=u"Se há enviado un mail de confirmación. \nPor favor revise su casilla de correo y siga las instrucciones para obtener su contraseña."
         # messages.add_message(self.request, messages.SUCCESS,u'%s' % (msj))   
         return reverse('cpb_presup_listado')
+
 ################################################################
 
 class CPBRecCobranzaViewList(VariablesMixin,ListView):    

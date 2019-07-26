@@ -109,7 +109,6 @@ class Producto_StockForm(forms.ModelForm):
 		except gral_empresa.DoesNotExist:
 			empresa = None  
 
-
 	def clean(self):		
 		super(forms.ModelForm,self).clean()	
 		ubicacion = self.cleaned_data.get('ubicacion')		
@@ -203,6 +202,17 @@ OPERACION2_ = (
 class ActualizarStockForm(forms.Form):	
 	tipo_operacion = forms.ChoiceField(label=u'Operación',choices=OPERACION2_,required=True,initial=0)		
 	valor = forms.DecimalField(label='Cantidad',initial=0.00,decimal_places=2)	
+
+class CrearStockForm(forms.Form):		
+	ubicacion = forms.ModelChoiceField(label=u'Ubicación',queryset=prod_ubicacion.objects.filter(baja=False),initial=0,required = True)	
+	producto = forms.ModelChoiceField(queryset=prod_productos.objects.filter(baja=False,mostrar_en__in=(1,3)),initial=0,required = True)	
+	valor = forms.DecimalField(label='Cantidad',initial=0.00,decimal_places=2,required = True)	
+	
+	def __init__(self, *args, **kwargs):
+		request = kwargs.pop('request', None)
+		super(CrearStockForm, self).__init__(*args, **kwargs)				
+		self.fields['producto'].queryset = prod_productos.objects.filter(baja=False,mostrar_en__in=(1,3),empresa__id__in=empresas_habilitadas(request)).order_by('nombre')
+		self.fields['ubicacion'].queryset = prod_ubicacion.objects.filter(baja=False,empresa__id__in=empresas_habilitadas(request))
 
 
 class StockProdForm(forms.ModelForm):

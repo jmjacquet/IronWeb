@@ -1,6 +1,8 @@
 $(document).ready(function() {  
 
-
+$("input[type=number]").click(function(){
+            this.select()
+          });
  $("#id_entidad").chosen({
           no_results_text: "Cliente inexistente...",
           placeholder_text_single:"Seleccione un Cliente",

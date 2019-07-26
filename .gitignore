@@ -6,3 +6,7 @@
 errores.log
 /static/*
 *.conf
+errores.log
+manage.py
+errores.log
+errores.log

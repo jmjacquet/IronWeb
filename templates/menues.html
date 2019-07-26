@@ -174,6 +174,73 @@
           </ul>
         </li>
         {% endif %}
+        {% if permisos_entidades or permisos_productos %}
+        <li class="mega-menu-dropdown">
+          <a data-toggle="dropdown" href="javascript:;" class="dropdown-toggle hover-initialized"  data-hover="dropdown" data-close-others="true">
+            ENTIDADES/PRODUCTOS<i class="fa fa-angle-down"></i>
+          </a>
+          <ul class="dropdown-menu" style="min-width: 450px;">
+            <li>
+              <!-- Content container to add padding -->
+              <div class="mega-menu-content">
+                <div class="row">
+                  {% if permisos_entidades%}
+                  <div class="col-sm-6">
+                    <ul class="mega-menu-submenu">
+                      <li>
+                        <h3>ENTIDADES</h3>
+                      </li>
+                      {% if 'ent_clientes' in permisos_grupo %}
+                      <li>
+                         <a href="{% url 'clientes_listado' %}"><i class="icon-user"></i>Clientes</a>
+                         
+                      </li>
+                      {% endif %}
+                      {% if 'ent_proveedores' in permisos_grupo %}     
+                      <li>
+                        <a href="{% url 'proveedores_listado' %}"><i class="icon-users"></i>Proveedores</a>
+                        
+                      </li>
+                      {% endif %}
+                      {% if 'ent_vendedores' in permisos_grupo %}     
+                      <li>
+                        <a href="{% url 'vendedores_listado' %}"><i class="fa fa-users"></i>Empleados/Vendedores</a>
+                        
+                      </li>                     
+                      {% endif %}
+                    </ul>
+                  </div>
+                  {% endif %} 
+                  {% if permisos_productos%}
+                  <div class="col-sm-6">
+                    <ul class="mega-menu-submenu">
+                      <li>
+                        <h3>PRODUCTOS/SERVICIOS</h3>
+                      </li>                      
+                      {% if 'prod_productos' in permisos_grupo %} 
+                      <li>
+                        <a href="{% url 'productos_listado' %}"><i class="fa fa-tags"></i>Productos/Servicios</a>
+                        <a class="acceso_menu" href="{% url 'producto_nuevo' %}">+</a>
+                      </li>
+                      {% endif %}
+                      {% if 'prod_productos_abm' in permisos_grupo %} 
+                      <li>
+                        <a href="{% url 'prod_precios_listado' %}"><i class="fa fa-list-alt"></i>Actualización Precios</a>
+                      </li>                       
+                      <li>
+                        <a href="{% url 'prod_stock_listado' %}"><i class="fa fa-cubes"></i>Mantenimiento Stock</a>
+                      </li>             
+                      {% endif %}                      
+                                   
+                    </ul>
+                  </div>  
+                  {% endif %}                                                               
+                </div>
+              </div>
+            </li>
+          </ul>
+        </li> 
+        {% endif %} 
         {% if permisos_rep_ingr_egr or permisos_rep_contables %} 
        <li class="mega-menu-dropdown">
           <a data-toggle="dropdown" href="javascript:;" class="dropdown-toggle hover-initialized"  data-hover="dropdown" data-close-others="true">
@@ -280,73 +347,6 @@
           </ul>
         </li>
         {% endif %}
-        {% if permisos_entidades or permisos_productos %}
-        <li class="mega-menu-dropdown">
-          <a data-toggle="dropdown" href="javascript:;" class="dropdown-toggle hover-initialized"  data-hover="dropdown" data-close-others="true">
-            ENTIDADES/PRODUCTOS<i class="fa fa-angle-down"></i>
-          </a>
-          <ul class="dropdown-menu" style="min-width: 450px;">
-            <li>
-              <!-- Content container to add padding -->
-              <div class="mega-menu-content">
-                <div class="row">
-                  {% if permisos_entidades%}
-                  <div class="col-sm-6">
-                    <ul class="mega-menu-submenu">
-                      <li>
-                        <h3>ENTIDADES</h3>
-                      </li>
-                      {% if 'ent_clientes' in permisos_grupo %}
-                      <li>
-                         <a href="{% url 'clientes_listado' %}"><i class="icon-user"></i>Clientes</a>
-                         
-                      </li>
-                      {% endif %}
-                      {% if 'ent_proveedores' in permisos_grupo %}     
-                      <li>
-                        <a href="{% url 'proveedores_listado' %}"><i class="icon-users"></i>Proveedores</a>
-                        
-                      </li>
-                      {% endif %}
-                      {% if 'ent_vendedores' in permisos_grupo %}     
-                      <li>
-                        <a href="{% url 'vendedores_listado' %}"><i class="fa fa-users"></i>Empleados/Vendedores</a>
-                        
-                      </li>                     
-                      {% endif %}
-                    </ul>
-                  </div>
-                  {% endif %} 
-                  {% if permisos_productos%}
-                  <div class="col-sm-6">
-                    <ul class="mega-menu-submenu">
-                      <li>
-                        <h3>PRODUCTOS/SERVICIOS</h3>
-                      </li>                      
-                      {% if 'prod_productos' in permisos_grupo %} 
-                      <li>
-                        <a href="{% url 'productos_listado' %}"><i class="fa fa-tags"></i>Productos/Servicios</a>
-                        <a class="acceso_menu" href="{% url 'producto_nuevo' %}">+</a>
-                      </li>
-                      {% endif %}
-                      {% if 'prod_productos_abm' in permisos_grupo %} 
-                      <li>
-                        <a href="{% url 'prod_precios_listado' %}"><i class="fa fa-list-alt"></i>Actualización Precios</a>
-                      </li>                       
-                      <li>
-                        <a href="{% url 'prod_stock_listado' %}"><i class="fa fa-cubes"></i>Mantenimiento Stock</a>
-                      </li>             
-                      {% endif %}                      
-                                   
-                    </ul>
-                  </div>  
-                  {% endif %}                                                               
-                </div>
-              </div>
-            </li>
-          </ul>
-        </li> 
-        {% endif %}        
        {% if 'gral_configuracion' in permisos_grupo %} 
         <li class="mega-menu-dropdown">
           <a data-toggle="dropdown" href="javascript:;" class="dropdown-toggle hover-initialized"  data-hover="dropdown" data-close-others="true">

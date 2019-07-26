@@ -299,12 +299,12 @@ def empresa_actual(request):
 #Incluye la empresa del usuario + la empresa 1 universal
 def empresas_habilitadas(request):    
     e = empresa_actual(request)
-    lista = [e.id,1]   
+    lista = [int(e.id),1]   
     return lista
 
-def empresas_habilitadas_list(request):    
-    e = empresa_actual(request)
-    lista = [e.id,1]   
+def empresas_habilitadas_list(empresa):    
+    e = empresa
+    lista = [int(e.id),1]   
     return lista
 
 def tipo_comprob_fiscal(id):

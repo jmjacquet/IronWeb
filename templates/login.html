@@ -21,8 +21,7 @@
 		<form class="login-form" accept-charset="UTF-8" role="form" action="/login/" method="post">
 	       {% csrf_token %}
 
-			<div class="form-group">
-				<!--ie8, ie9 does not support html5 placeholder, so we just show field title for that-->
+			<div class="form-group">				
 				<label class="control-label visible-ie8 visible-ie9">Usuario</label>
 				<input class="form-control form-control-solid placeholder-no-fix" type="text" required autofocus autocomplete="off" placeholder="Usuario" name="username"/>
 			</div>
@@ -32,7 +31,7 @@
 			</div>
 			
 			<div class="form-actions">
-				<input type="submit" name="login"/ class="btn grey-gallery uppercase" value="Ingresar">				
+				<input type="submit" name="login" class="btn grey-gallery uppercase" value="Ingresar">				
 			</div>		
 
 		</form>

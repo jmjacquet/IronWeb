@@ -89,5 +89,9 @@ $('#btnActualizar').click(function(){
 
 });
 
+$('#btnNuevo').click(function(){   
+      return abrir_modal('/productos/prod_stock_nuevo/');
+});
+
       
 });

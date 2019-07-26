@@ -1,6 +1,8 @@
 $(document).ready(function() {  
 
-
+$("input[type=number]").click(function(){
+            this.select()
+          });
 $.fm({        
         custom_callbacks: {
             "recargarC": function(data, options) {

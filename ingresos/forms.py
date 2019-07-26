@@ -173,7 +173,7 @@ class CPBVentaDetalleForm(forms.ModelForm):
 				comprobante_original = self.cleaned_data.get('comprobante_original')
 				if cantidad and producto.llevar_stock:			
 					prod_ubi, created = prod_producto_ubicac.objects.get_or_create(producto=producto,ubicacion=origen_destino)
-					stock = obtener_stock(prod_ubi)			
+					stock=prod_ubi.get_stock_()		
 					if (stock < cantidad) and  not producto.stock_negativo:
 						self._errors['cantidad'] = [u'Stock insuficiente!']
 			return self.cleaned_data

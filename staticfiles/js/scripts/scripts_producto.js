@@ -7,6 +7,9 @@ $(document).ready(function() {
 //           allow_single_deselect: true,
 //       }); 
 
+$("input[type=number]").click(function(){
+            this.select()
+          });
 
 $('.formStock').formset({
           addText: 'Agregar Ubicación',
@@ -42,6 +45,7 @@ $('.formPrecios').formset({
             $("[name='formPrecios-"+i+"-precio_cimp']").val(0);           
             $("[name='formPrecios-"+i+"-precio_venta']").val(0);           
             $("[name='formPrecios-"+i+"-coef_ganancia']").val(1);           
+            recalcular();
           },
           removed: function (row) {
             var i = $(row).index();
@@ -98,20 +102,20 @@ $('.formPrecios').formset({
   $("input[name='formPrecios-"+i+"-precio_venta']").val($precio_venta.toFixed(2));
 };
 
-$('.form-detallesPrecios tr').each(function(j) {
-        $("input[name='formPrecios-"+j+"-precio_costo']").change(function(){
-            calcularProd(j);
-         });
-        $("input[name='formPrecios-"+j+"-precio_cimp']").change(function(){
-            calcularProd(j);
-         });
-        $("input[name='formPrecios-"+j+"-coef_ganancia']").change(function(){
-            calcularProd(j);
-         });
- });
-
-
-
+function recalcular(){
+  $('.form-detallesPrecios tr').each(function(j) {
+          $("input[name='formPrecios-"+j+"-precio_costo']").change(function(){
+              calcularProd(j);
+           });
+          $("input[name='formPrecios-"+j+"-precio_cimp']").change(function(){
+              calcularProd(j);
+           });
+          $("input[name='formPrecios-"+j+"-coef_ganancia']").change(function(){
+              calcularProd(j);
+           });
+   });
+};
+recalcular(); 
 
 
 });
