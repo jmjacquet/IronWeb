@@ -1,6 +1,8 @@
 $(document).ready(function() {  
 
-
+$("input[type=number]").click(function(){
+            this.select()
+          });
 $.fm({        
         custom_callbacks: {
             "recargarP": function(data, options) {
@@ -12,7 +14,7 @@ $.fm({
   if ($('#id_tipo_form').val()=='EDICION'){
        $('#id_pto_vta').attr('disabled', 'disabled');               
        $('#id_entidad').trigger("chosen:updated");          
-       $('#recargarProveedores').hide();
+       $('#nuevoProveedores').hide();
        $('#id_pto_vta').val(("00000" + $('#id_pto_vta').val()).slice(-5));
   }else{      
       $('#id_pto_vta').val(("00000" + $('#id_pto_vta').val()).slice(-5));

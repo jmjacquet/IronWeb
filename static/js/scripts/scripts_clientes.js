@@ -1,7 +1,9 @@
 $(document).ready(function() {  
 
 
-
+$("input[type=number]").click(function(){
+            this.select()
+          });
 
 $( "#Buscar" ).click(function() {
       var e = $.Event( "keyup", { which: 13 } );

@@ -3,7 +3,9 @@
 
 $(document).ready(function() { 
 
-
+$("input[type=number]").click(function(){
+            this.select()
+          });
 function abrir_modal(url)
 {        $('#popup').load(url, function()
         {        $(this).modal('show');

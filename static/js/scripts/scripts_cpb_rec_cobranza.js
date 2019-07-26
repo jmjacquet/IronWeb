@@ -1,5 +1,7 @@
 $(document).ready(function() {  
-
+$("input[type=number]").click(function(){
+            this.select()
+          });
 $.fm({        
         custom_callbacks: {
             "recargarC": function(data, options) {
@@ -13,7 +15,7 @@ $.fm({
 
 if ($('#id_tipo_form').val()=='EDICION'){
      $('#id_entidad').trigger("chosen:updated");
-     $('#recargarClientes').hide();
+     $('#nuevoClientes').hide();
      
 };
 
