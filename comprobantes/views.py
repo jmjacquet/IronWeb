@@ -41,6 +41,15 @@ def recalcular_cpbs(request):
     return HttpResponseRedirect(reverse('principal')) 
 
 @login_required 
+def recalcular_cobranzas(request):
+
+    comprobantes = cpb_comprobante.objects.filter(cpb_tipo__tipo__in = [4,7,8])    
+    for c in comprobantes:
+        recalcular_saldos_cobranzas(c.id)
+
+    return HttpResponseRedirect(reverse('principal')) 
+
+@login_required 
 def eliminar_detalles_fp_huerfanos(request):
     empresa = empresa_actual(request)
     ids = cpb_comprobante.objects.all().values_list('id',flat=True)

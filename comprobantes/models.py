@@ -219,7 +219,6 @@ class cpb_comprobante(models.Model):
             e=self.estado        
         return e
 
-
     def get_nro_afip(self):
         try:
             c = cpb_nro_afip.objects.get(cpb_tipo=self.cpb_tipo.tipo,letra=self.letra)
@@ -234,7 +233,6 @@ class cpb_comprobante(models.Model):
     def get_cpb_tipo(self):                
         return u'%s: %s-%s-%s ' % (self.cpb_tipo,"{num:>05}".format(num=str(self.pto_vta)),self.letra,"{num:>08}".format(num=str(self.numero)))
 
-
     def get_cobranzas(self):                
         cobranzas = cpb_cobranza.objects.filter(cpb_comprobante=self,cpb_comprobante__estado__pk__lt=3).select_related('cpb_factura','cpb_factura__cpb_tipo','cpb_comprobante')
         return list(cobranzas)
@@ -245,7 +243,6 @@ class cpb_comprobante(models.Model):
     def tiene_cobranzasREC_OP(self):                
         return cpb_cobranza.objects.filter(cpb_comprobante=self).count() > 0 
         
-
     def get_listado(self):        
         if self.cpb_tipo.pk in [1,3,5,14,20,23]:
             return reverse('cpb_venta_listado')
@@ -557,15 +554,16 @@ def recalcular_saldo_cpb(idCpb):# pragma: no cover
     tot_perc_imp = 0    
     
     # Cobros y Pagos sólos no recalculan IVA ni detalles, etc
-    if cpb.cpb_tipo.tipo in [4,5,7,8]:
+    if cpb.cpb_tipo.tipo in [4,7,8]:
         cpb.importe_gravado = importe_gravado    
         cpb.importe_iva = importe_iva
         cpb.importe_no_gravado = importe_no_gravado
         cpb.importe_exento = importe_exento        
         cpb.importe_perc_imp = 0    
         cpb.saldo = 0
-        cpb.importe_subtotal = importe_gravado + importe_no_gravado + importe_exento
-        cpb.importe_total = importe_subtotal  + tot_perc_imp + importe_iva 
+        if cpb.cpb_tipo.tipo in [5]:
+            cpb.importe_subtotal = importe_gravado + importe_no_gravado + importe_exento
+            cpb.importe_total = importe_subtotal  + tot_perc_imp + importe_iva 
         cpb.save()
 
     elif cpb.cpb_tipo.tipo in [1,2,3,6,9,14]:
@@ -636,6 +634,61 @@ def recalcular_saldo_cpb(idCpb):# pragma: no cover
             tasa = gral_tipo_iva.objects.get(pk=cc['tasa_iva'])       
             cpb_ti = cpb_comprobante_tot_iva(cpb_comprobante=cpb,tasa_iva=tasa,importe_total=cc['importe_total'],importe_base=cc['importe_base'])
             cpb_ti.save()
+
+def recalcular_saldos_cobranzas(idCpb):# pragma: no cover
+    cpb=cpb_comprobante.objects.get(pk=idCpb)           
+    importe_no_gravado = 0
+    importe_exento = 0
+    importe_gravado = 0
+    importe_iva = 0
+    importe_subtotal = 0
+    importe_total = 0
+    tot_perc_imp = 0    
+    
+    try:
+        tot_perc_imp = cpb_comprobante_perc_imp.objects.filter(cpb_comprobante=cpb).aggregate(sum=Sum('importe_total'))['sum']        
+    except:
+        tot_perc_imp = 0
+    if not tot_perc_imp:
+        tot_perc_imp = 0
+
+    importe_subtotal = importe_gravado + importe_no_gravado + importe_exento
+
+    importe_total = importe_subtotal  + tot_perc_imp + importe_iva 
+        
+    
+    cpb.importe_gravado = importe_gravado    
+    cpb.importe_iva = importe_iva
+    cpb.importe_subtotal = importe_subtotal
+    cpb.importe_no_gravado = importe_no_gravado
+    cpb.importe_exento = importe_exento        
+    cpb.importe_perc_imp = tot_perc_imp    
+    cpb.importe_total = importe_total    
+
+
+    #Las cobranzas/pagos activos del Comprobante de Venta/Compra
+    cobranzas = cpb_cobranza.objects.filter(cpb_comprobante=cpb,cpb_comprobante__estado__pk__lt=3).aggregate(sum=Sum('importe_total'))
+    print cobranzas       
+    importes = cobranzas['sum']    
+
+    if not importes:
+      total = cpb.importe_total
+    else:
+        #Suma segun el signo
+        if cpb.cpb_tipo.usa_ctacte:
+          total = (cpb.importe_total - Decimal(importes)*cpb.cpb_tipo.signo_ctacte)  
+        else:
+          total = (cpb.importe_total - Decimal(importes))
+    
+    cpb.saldo=total
+    
+    estado=cpb_estado.objects.get(pk=1)
+    if (total == 0)and(cpb.estado.pk<3):
+        estado=cpb_estado.objects.get(pk=2)        
+                            
+    cpb.estado=estado
+    cpb.save()
+
 
 def ultimoNro(tipoCpb,ptoVenta,letra,entidad=None):    
     try:    

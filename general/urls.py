@@ -14,6 +14,7 @@ urlpatterns = patterns('general.views',
     
     url(r'^$', PrincipalView.as_view(),name="principal"),
     url(r'^buscarDatosAPICUIT/$', 'buscarDatosAPICUIT', name='buscarDatosAPICUIT'),
+    url(r'^buscarDatosEmpresa/$', 'buscarDatosEmpresa', name='buscarDatosEmpresa'),
     url(r'^recargar_clientes/$', recargar_clientes, name='recargar_clientes'),
     url(r'^recargar_vendedores/$', recargar_vendedores, name='recargar_vendedores'),
     url(r'^recargar_proveedores/$', recargar_proveedores, name='recargar_proveedores'),

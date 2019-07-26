@@ -59,6 +59,22 @@ def buscarDatosAPICUIT(request):
     d= []
    return HttpResponse( json.dumps(d), content_type='application/json' ) 
 
+@login_required 
+def buscarDatosEmpresa(request):      
+   #from django.forms.models import model_to_dict
+   empresa = empresa_actual(request).__dict__
+   print empresa
+   
+   # try:                            
+   #  
+   #  empresa = model_to_dict(empresa_actual(request))
+   
+   #  d=[]
+
+   # except:
+   #  d= []
+   return HttpResponse( json.dumps(empresa,cls=DecimalEncoder), content_type='application/json' ) 
+
 def getVariablesMixin(request):
     context = {} 
     context['ENTIDAD_ID'] = settings.ENTIDAD_ID
