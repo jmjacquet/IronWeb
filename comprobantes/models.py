@@ -88,7 +88,7 @@ class cpb_pto_vta(models.Model):
     iibb = models.CharField(u'Nº IIBB',max_length=50,blank=True, null=True)   
     fecha_inicio_activ = models.DateTimeField('Fecha Inicio Actividades',null=True)
     nombre_fantasia = models.CharField(u'Nombre Fantasía',max_length=200,blank=True, null=True)     
-    ruta_logo = models.ImageField(upload_to=get_image_name,db_column='ruta_logo', max_length=100,null=True, blank=True) # Field name made lowercase.    
+    ruta_logo = models.CharField(db_column='ruta_logo', max_length=100,null=True, blank=True) # Field name made lowercase.    
     tipo_logo_factura = models.IntegerField(u'Tipo Logotipo',choices=TIPO_LOGOTIPO, blank=True, null=True)  
     fe_crt = models.CharField('Nombre Archivo CRT',max_length=50,blank=True, null=True) 
     fe_key = models.CharField('Nombre Archivo Key',max_length=50,blank=True, null=True) 
