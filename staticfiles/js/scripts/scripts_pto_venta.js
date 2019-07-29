@@ -122,8 +122,7 @@ $( "#copiarEmpresa" ).click(function() {
               },
               success : function(data) {                   
                     if (data!='')
-                      {                          
-                          $("#id_nombre").val(data['nombre']);              
+                      {                                                    
                           $("#id_nombre_fantasia").val(data['nombre_fantasia']);              
                           $("#id_cuit").val(data['cuit']);                          
                           $("#id_categ_fiscal").find('option[value="'+data['categ_fiscal']+'"]').attr("selected",true);
