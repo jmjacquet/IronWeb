@@ -764,3 +764,16 @@ def prod_stock_nuevo(request):
         form = CrearStockForm(None,request=request)          
         variables = RequestContext(request, {'form':form})        
         return render_to_response("productos/nuevo_stock.html", variables)
+
+
+@login_required 
+def prod_stock_generar(request):        
+    prods=prod_productos.objects.all()
+    for p in prods:        
+        dep = prod_ubicacion.objects.get(pk=1) 
+        up = prod_producto_ubicac.objects.filter(producto=p,ubicacion=dep)
+        if not up:
+            ubi_prod = prod_producto_ubicac(producto=p,ubicacion=dep)
+            ubi_prod.save()
+    return HttpResponseRedirect(reverse('principal'))
+    
