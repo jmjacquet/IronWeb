@@ -138,7 +138,8 @@ $( "#copiarEmpresa" ).click(function() {
                           $("#id_telefono").val(data['telefono']);                          
                           $("#id_celular").val(data['celular']);  
 
-                          
+                          $("#id_ruta_logo").val(data['ruta_logo']);                          
+                          $("#id_tipo_logo_factura").val(data['tipo_logo_factura']);  
                         
                       }
               },
