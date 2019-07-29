@@ -120,7 +120,7 @@ INSTALLED_APPS = (
     'django.contrib.sites',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-    # 'django.contrib.admin',    
+    'django.contrib.admin',    
     'django.contrib.humanize',
     'bootstrap3',
     'crispy_forms',
