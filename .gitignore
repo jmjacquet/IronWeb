@@ -2,10 +2,8 @@
 *.pyc
 *.log
 !generarI25.pyc
-/ggcontable/settings.py
 errores.log
 /static/*
 *.conf
-errores.log
-manage.py
+
 
