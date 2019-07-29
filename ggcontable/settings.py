@@ -5,10 +5,6 @@ PROJECT_ROOT = os.path.join(os.path.dirname(__file__), '..') #every dot represen
 
 SITE_ROOT = PROJECT_ROOT
 
-DEBUG = True
-# DEBUG = False
-
-TEMPLATE_DEBUG = DEBUG
 
 ADMINS = (
     ('JuanMa', 'errores_web@grupoguadalupe.com.ar'),
@@ -103,8 +99,7 @@ MIDDLEWARE_CLASSES = (
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     # Uncomment the next line for simple clickjacking protection:
-    'django.middleware.clickjacking.XFrameOptionsMiddleware',
-    # 'debug_toolbar.middleware.DebugToolbarMiddleware',#Barra DEBUG
+    'django.middleware.clickjacking.XFrameOptionsMiddleware',    
 )
 
 ROOT_URLCONF = 'ggcontable.urls'
@@ -125,8 +120,7 @@ INSTALLED_APPS = (
     'bootstrap3',
     'crispy_forms',
     'fm',
-    'django_extensions',
-    # 'debug_toolbar',
+    'django_extensions',    
     'localflavor',
     'modal',    
     'general',
@@ -234,52 +228,52 @@ CERTIFICADOS_PATH = os.path.join(MEDIA_ROOT,'certificados',)
 #Traigo si la empresa figura en Modo homologacion(Prueba)
 
 
-BOOTSTRAP3 = {
+# BOOTSTRAP3 = {
 
-    # The Bootstrap base URL
-    'base_url': os.path.join(SITE_ROOT, 'staticfiles/css/'),
+#     # The Bootstrap base URL
+#     'base_url': os.path.join(SITE_ROOT, 'staticfiles/css/'),
 
-    # The complete URL to the Bootstrap CSS file (None means derive it from base_url)
-    'css_url': None,
+#     # The complete URL to the Bootstrap CSS file (None means derive it from base_url)
+#     'css_url': None,
 
-    # The complete URL to the Bootstrap CSS file (None means no theme)
-    'theme_url': None,
+#     # The complete URL to the Bootstrap CSS file (None means no theme)
+#     'theme_url': None,
 
-    # The complete URL to the Bootstrap JavaScript file (None means derive it from base_url)
-    'javascript_url': None,
+#     # The complete URL to the Bootstrap JavaScript file (None means derive it from base_url)
+#     'javascript_url': None,
 
-    # Put JavaScript in the HEAD section of the HTML document (only relevant if you use bootstrap3.html)
-    'javascript_in_head': False,
+#     # Put JavaScript in the HEAD section of the HTML document (only relevant if you use bootstrap3.html)
+#     'javascript_in_head': False,
 
-    # Include jQuery with Bootstrap JavaScript (affects django-bootstrap3 template tags)
-    'include_jquery': False,
+#     # Include jQuery with Bootstrap JavaScript (affects django-bootstrap3 template tags)
+#     'include_jquery': False,
 
-    # Label class to use in horizontal forms
-    'horizontal_label_class': 'col-md-2',
+#     # Label class to use in horizontal forms
+#     'horizontal_label_class': 'col-md-2',
 
-    # Field class to use in horizontal forms
-    'horizontal_field_class': 'col-md-5',
+#     # Field class to use in horizontal forms
+#     'horizontal_field_class': 'col-md-5',
 
-    # Set HTML required attribute on required fields
-    'set_required': True,
+#     # Set HTML required attribute on required fields
+#     'set_required': True,
 
-    # Set HTML disabled attribute on disabled fields
-    'set_disabled': False,
+#     # Set HTML disabled attribute on disabled fields
+#     'set_disabled': False,
 
-    # Set placeholder attributes to label if no placeholder is provided
-    'set_placeholder': True,
+#     # Set placeholder attributes to label if no placeholder is provided
+#     'set_placeholder': True,
 
-    # Class to indicate required (better to set this in your Django form)
-    'required_css_class': '',
+#     # Class to indicate required (better to set this in your Django form)
+#     'required_css_class': '',
 
-    # Class to indicate error (better to set this in your Django form)
-    'error_css_class': 'has-error',
+#     # Class to indicate error (better to set this in your Django form)
+#     'error_css_class': 'has-error',
 
-    # Class to indicate success, meaning the field has valid input (better to set this in your Django form)
-    'success_css_class': 'has-success',
+#     # Class to indicate success, meaning the field has valid input (better to set this in your Django form)
+#     'success_css_class': 'has-success',
 
 
-}
+# }
 
 from django.contrib.messages import constants as message_constants
 MESSAGE_TAGS = {message_constants.DEBUG: 'debug',

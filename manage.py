@@ -3,7 +3,7 @@ import os
 import sys
 
 if __name__ == "__main__":
-	os.environ.setdefault("DJANGO_SETTINGS_MODULE", "ggcontable.settings")
+	os.environ.setdefault("DJANGO_SETTINGS_MODULE", "ggcontable.development")
 	os.environ.setdefault("ENTIDAD_DB", "gg_ironweb")
 	os.environ.setdefault("ENTIDAD_ID", "000")
 	os.environ.setdefault("ENTIDAD_DIR", "prueba")
