@@ -1,4 +1,4 @@
-# Django settings for sistema_bomberos project.
+# -*- coding: utf-8 -*-
 from __future__ import unicode_literals
 import os,sys
 PROJECT_ROOT = os.path.join(os.path.dirname(__file__), '..') #every dot represent the location of the folder so when you try to delete one dot, the path will be change
