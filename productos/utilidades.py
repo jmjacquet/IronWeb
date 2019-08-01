@@ -27,3 +27,8 @@ MOSTRAR_PRODUCTO_ = (
     (2, u'Sólo Compras'),
     (3, u'Ventas y Compras'),    
 )
+
+#Valor ITC default
+vitc = 5.733
+#Valor TASA default
+vtasa = 0.504

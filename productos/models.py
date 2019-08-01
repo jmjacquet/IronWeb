@@ -126,6 +126,9 @@ class prod_producto_lprecios(models.Model):
     precio_cimp = models.DecimalField('Precio c/Imp.',max_digits=15, decimal_places=2,default=0,blank=True, null=True)
     coef_ganancia = models.DecimalField(max_digits=5, decimal_places=3,default=1)
     precio_venta = models.DecimalField('Precio Venta',max_digits=15, decimal_places=2,default=0,blank=True, null=True)
+
+    precio_itc = models.DecimalField('Valor ITC',max_digits=15, decimal_places=2,default=0,blank=True, null=True)
+    precio_tasa = models.DecimalField('Valor Tasa',max_digits=15, decimal_places=2,default=0,blank=True, null=True)
     class Meta:
         db_table = 'prod_producto_lprecios'
         ordering = ['producto__nombre','lista_precios']
