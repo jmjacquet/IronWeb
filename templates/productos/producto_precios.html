@@ -50,6 +50,8 @@
                                 <th class="imprimir text-right">Precio c/Imp.</th>
                                 <th class="imprimir text-right">Coef.Gan.</th>                                                               
                                 <th class="imprimir text-right">Precio Venta</th>                                                                                               
+                                <th class="imprimir text-right">Valor ITC</th>                                                               
+                                <th class="imprimir text-right">Valor Tasa</th>
                             </tr>
                         </thead>
                         <tbody>                                                   
@@ -78,6 +80,8 @@
                                     <td class="importe">${{pp.precio_cimp|default_if_none:0|floatformat:2}}</td>                                                                     
                                     <td class="importe">{{pp.coef_ganancia|default_if_none:0|floatformat:2}}</td>                                                                     
                                     <td class="importe_total">${{pp.precio_venta|default_if_none:0|floatformat:2}}</td>
+                                    <td class="importe_total">${{pp.precio_itc|default_if_none:0|floatformat:2}}</td>
+                                    <td class="importe_total">${{pp.precio_tasa|default_if_none:0|floatformat:2}}</td>
                                 </tr>
                             {% endfor %}                        
                         </tbody>
@@ -92,6 +96,8 @@
                                 <th class="importe"></th>                                 
                                 <th class="importe"></th>                                 
                                 <th class="importe_total"></th>  
+                                <th class="importe"></th>                                 
+                                <th class="importe"></th>                                 
                             </tr>
                         </tfoot>
                     </table>                                                 
