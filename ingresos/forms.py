@@ -112,7 +112,7 @@ class CPBVentaForm(forms.ModelForm):
 		except gral_empresa.DoesNotExist:
 			empresa = None
 		
-		if (importe_total > 1000)and(cliente_categ_fiscal==5)and(entidad.fact_cuit=='')and(entidad.nro_doc=='')and(cpb_tipo.facturable):
+		if (importe_total > 1000)and(cliente_categ_fiscal==5)and(entidad.fact_cuit=='')and(entidad.nro_doc=='')and(cpb_tipo.facturable)and(pto_vta.fe_electronica):
 			raise forms.ValidationError(u"El total de comprobante no puede superar los $1000.00 para Consumidor Final sin que el mismo posea un Documento ó CUIT válidos!.")			
 		
 		
