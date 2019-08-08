@@ -7,7 +7,7 @@ from datetime import datetime,date
 from dateutil.relativedelta import *
 from django.conf import settings
 import os 
-from general.utilidades import TIPO_USR
+from general.utilidades import TIPO_USR,CONDICION_PAGO
 
 
 class UsuCategPermisos(models.Model):
@@ -56,7 +56,10 @@ class usu_usuario(models.Model):
     baja = models.BooleanField(default=False)
     cpb_pto_vta = models.ForeignKey('comprobantes.cpb_pto_vta',verbose_name=u'Punto Vta', db_column='cpb_pto_vta',blank=True, null=True,on_delete=models.SET_NULL)
     usuario_relacionado = models.ForeignKey('self',to_field='id_usuario',db_column='usuario_relacionado',related_name='usuario_relac',blank=True, null=True,on_delete=models.SET_NULL)
-    
+
+    vendedor_defecto = models.ForeignKey('entidades.egr_entidad',db_column='vendedor',related_name='usu_vendedor',blank=True, null=True,on_delete=models.SET_NULL)
+    cpb_tipo = models.ForeignKey('comprobantes.cpb_tipo',verbose_name=u'Tipo CPB',related_name='usu_cpbTipo',db_column='cpb_tipo',blank=True, null=True)
+    condic_pago = models.IntegerField(choices=CONDICION_PAGO, blank=True, null=True,default=1)
     class Meta:
         db_table = 'usu_usuario'
 

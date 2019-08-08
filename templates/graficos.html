@@ -98,7 +98,7 @@ jQuery(document).ready(function($) {
               stack: 'ventas'
               
           }, {
-              name: 'Por Cobrar',
+              name: 'Cobrado',
               data: {{ ventas_pagos|safe }},
               stack: 'ventas'
           },
@@ -108,7 +108,7 @@ jQuery(document).ready(function($) {
               stack: 'compras'
           },
           {
-              name: 'Por Pagar',
+              name: 'Pagado',
               data: {{ compras_pagos|safe }},
               stack: 'compras'
             }]

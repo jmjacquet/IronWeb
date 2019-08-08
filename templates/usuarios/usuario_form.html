@@ -37,16 +37,34 @@
 						        <div class="row ">							       	
 								    <div class="col-xs-12">
 								       	  <div class="row">										       	
-										       		<fieldset>
-										       		<legend>DATOS GENERALES</legend>
-												       <div class="col-sm-12">
-										                <div class="row cerca">
-													       	<div class="col-sm-3">{% bootstrap_field form.nombre %}</div>
-															<div class="col-sm-3">{% bootstrap_field form.usuario %}</div>																	
-															<div class="col-sm-3 pull-right">{% bootstrap_field form.grupo %}</div>												
-													     </div>
-										               </div>                                       						         
-										       		</fieldset>										       	
+										       		<div class="col-xs-8">
+										       			<fieldset>
+											       		<legend>DATOS GENERALES</legend>
+													       <div class="col-sm-12">
+											                <div class="row cerca">
+														       	<div class="col-sm-3">{% bootstrap_field form.nombre %}</div>
+																<div class="col-sm-3">{% bootstrap_field form.usuario %}</div>	
+																<div class="col-sm-3 pull-right">{% bootstrap_field form.grupo %}</div>												
+														     </div>
+											               </div>                                       						         
+											       		</fieldset>
+											       	</div>
+											       	<div class="col-xs-4">
+										       			<fieldset>
+											       		<legend>Preferencias</legend>
+													       <div class="col-sm-12">
+											                <div class="row cerca">
+														       	<div class="col-sm-12">{% bootstrap_field form.vendedor_defecto %}</div>
+														    </div>
+														    <div class="row cerca">
+																<div class="col-sm-12">{% bootstrap_field form.cpb_tipo %}</div>																		
+														     </div>
+														     <div class="row cerca">
+																<div class="col-sm-12">{% bootstrap_field form.condic_pago %}</div>																		
+														     </div>
+											               </div>                                       						         
+											       		</fieldset>
+											       	</div>										       	
 									      </div>									   
 					                      								       
 								         <div class="row">
@@ -77,7 +95,7 @@
 	                    
 	                    <div class="row">
 		                    <div class="col-xs-12">                                                        
-		                     <a href="{% url 'principal' %}" class="btn pull-left btn red-flamingo"><i class="fa fa-times"></i> Cancelar </a>
+		                     <a href="{% url 'usuarios' %}" class="btn pull-left btn red-flamingo"><i class="fa fa-times"></i> Cancelar </a>
 		                     <button id="Guardar" type="submit" class="btn pull-right blue-steel"><i class="fa fa-check"></i> Guardar </button>
 		                    </div>
 	                   </div>

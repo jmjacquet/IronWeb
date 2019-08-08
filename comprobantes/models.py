@@ -115,7 +115,6 @@ class cpb_pto_vta_numero(models.Model):
     def __unicode__(self):
         return u'%s %s-%s-%s' % (self.cpb_tipo,self.letra,self.cpb_pto_vta.numero,self.ultimo_nro)
 
-
 class cpb_comprobante(models.Model):
     id = models.AutoField(primary_key=True,db_index=True)
     cpb_tipo = models.ForeignKey('cpb_tipo',verbose_name=u'Tipo CPB', db_column='cpb_tipo',blank=True, null=True)

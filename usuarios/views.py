@@ -123,7 +123,7 @@ def UsuarioCreateView(request):
       
     usuario = usuario_actual(request)
     if request.method == 'POST':
-        form = UsuarioForm(usuario,request.POST,request.FILES)
+        form = UsuarioForm(request,usuario,request.POST,request.FILES)
         if form.is_valid():
             post = form.save(commit=False)                                    
             post.save()
@@ -131,7 +131,7 @@ def UsuarioCreateView(request):
             messages.success(request, u'Los datos se guardaron con éxito!')
             return HttpResponseRedirect(reverse('usuarios'))  
     else:
-        form = UsuarioForm(usuario=usuario)
+        form = UsuarioForm(request,usuario=usuario)
 
     context['form'] = form
     return render(request, 'usuarios/usuario_form.html',context)
@@ -151,7 +151,7 @@ def UsuarioEditView(request,id):
     usr = get_object_or_404(usu_usuario, id_usuario=id)
 
     if request.method == 'POST':
-        form = UsuarioForm(usuario,request.POST,request.FILES,instance=usr)
+        form = UsuarioForm(request,usuario,request.POST,request.FILES,instance=usr)
         if form.is_valid():
             post = form.save(commit=False)                                    
             post.save()
@@ -159,7 +159,7 @@ def UsuarioEditView(request,id):
             messages.success(request, u'Los datos se guardaron con éxito!')
             return HttpResponseRedirect(reverse('usuarios'))                    
     else:
-        form = UsuarioForm(usuario,instance=usr)
+        form = UsuarioForm(request,usuario,instance=usr)
 
     context['form'] = form
     return render(request, 'usuarios/usuario_form.html',context)
