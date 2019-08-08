@@ -9,7 +9,8 @@ from django.utils.html import conditional_escape
 from itertools import chain
 from general.utilidades import *
 from general.forms import pto_vta_habilitados
-from comprobantes.models import cpb_pto_vta
+from comprobantes.models import cpb_pto_vta,cpb_tipo
+from entidades.models import egr_entidad
 
 class CHKMultiplePermisos(forms.CheckboxSelectMultiple):   
      def __init__(self,usuario=None, *args, **kwargs):        
@@ -69,13 +70,18 @@ class UsuarioForm(forms.ModelForm):
     usuario = forms.CharField(label=u'Usuario',required = True)        
     email = forms.EmailField(max_length=50,label='E-Mail',required = False)     
     permisos = forms.ModelMultipleChoiceField(queryset=UsuPermiso.objects.all(), required=False, widget=CHKMultiplePermisos())
+    cpb_tipo = forms.ModelChoiceField(label='Tipo Comprobante',queryset=cpb_tipo.objects.filter(compra_venta='V',baja=False,tipo__in=[1,2,3,9]),required = False)
+    condic_pago = forms.ChoiceField(label=u'Tipo Cobro',choices=CONDICION_PAGO,required=False,initial=1)
     class Meta:
     	model = usu_usuario	
         exclude = ['baja','password','numero_documento','tipoUsr','empresa']
 
-    def __init__(self,usuario, *args, **kwargs):        
+    def __init__(self,request,usuario, *args, **kwargs):                
         super(UsuarioForm, self).__init__(*args, **kwargs)            
         self.fields['permisos'].widget=CHKMultiplePermisos(usuario)
+        self.fields['vendedor_defecto'].label = 'Vendedor'
+        self.fields['vendedor_defecto'].queryset = egr_entidad.objects.filter(tipo_entidad=3,baja=False,empresa__id__in=empresas_habilitadas(request)).order_by('apellido_y_nombre')
+
         
       
 class UsuarioCambiarPasswdForm(forms.Form):      

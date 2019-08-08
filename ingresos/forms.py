@@ -76,7 +76,7 @@ class CPBVentaForm(forms.ModelForm):
 			letras = tipo_comprob_fiscal(empresa.categ_fiscal)
 			self.fields['letra'].choices = letras			
 			pto_vta = pto_vta_habilitados(request)
-			self.fields['pto_vta'].choices = [(pto.numero, pto.__unicode__()) for pto in pto_vta]			
+			self.fields['pto_vta'].choices = [(pto.numero, pto.__unicode__()) for pto in pto_vta]						
 			self.fields['pto_vta'].initial = get_pv_defecto(request)
 			#self.fields['pto_vta'].queryset = pto_vta
 			self.fields['lista_precios'].queryset = prod_lista_precios.objects.filter(baja=False,empresa__id__in=empresas_habilitadas(request)).order_by('default')
@@ -85,6 +85,14 @@ class CPBVentaForm(forms.ModelForm):
 			self.fields['entidad'].queryset = egr_entidad.objects.filter(tipo_entidad=1,baja=False,empresa__id__in=empresas_habilitadas(request)).order_by('apellido_y_nombre')
 			self.fields['vendedor'].queryset = egr_entidad.objects.filter(tipo_entidad=3,baja=False,empresa__id__in=empresas_habilitadas(request)).order_by('apellido_y_nombre')
 			self.fields['fecha_vto'].initial = datetime.now()+timedelta(days=empresa.get_dias_venc())
+			usr = usuario_actual(request)
+			if usr.vendedor_defecto:
+				self.fields['vendedor'].initial = usr.vendedor_defecto.id
+			if usr.cpb_tipo:
+				self.fields['cpb_tipo'].initial = usr.cpb_tipo.id
+			if usr.condic_pago:
+				self.fields['condic_pago'].initial = usr.condic_pago
+			
 
 		except gral_empresa.DoesNotExist:
 			empresa = None
@@ -345,6 +353,9 @@ class CPBPresupForm(forms.ModelForm):
 			self.fields['origen_destino'].queryset = prod_ubicacion.objects.filter(baja=False,empresa__id__in=empresas_habilitadas(request)).order_by('default')			
 			self.fields['entidad'].queryset = egr_entidad.objects.filter(tipo_entidad=1,baja=False,empresa__id__in=empresas_habilitadas(request)).order_by('apellido_y_nombre')
 			self.fields['fecha_vto'].initial = datetime.now()+timedelta(days=empresa.get_dias_venc())
+			usr = usuario_actual(request)
+			if usr.vendedor_defecto:
+				self.fields['vendedor'].initial = usr.vendedor_defecto.id			
 
 		except gral_empresa.DoesNotExist:
 			empresa = None
@@ -448,6 +459,9 @@ class CPBPresupLiteForm(forms.ModelForm):
 			self.fields['origen_destino'].queryset = prod_ubicacion.objects.filter(baja=False,empresa__id__in=empresas_habilitadas(request)).order_by('default')
 			self.fields['entidad'].queryset = egr_entidad.objects.filter(tipo_entidad=1,baja=False,empresa__id__in=empresas_habilitadas(request)).order_by('apellido_y_nombre')
 			self.fields['fecha_vto'].initial = datetime.now()+timedelta(days=empresa.get_dias_venc())
+			usr = usuario_actual(request)
+			if usr.vendedor_defecto:
+				self.fields['vendedor'].initial = usr.vendedor_defecto.id
 
 		except gral_empresa.DoesNotExist:
 			empresa = None	
@@ -547,6 +561,7 @@ class CPBRecCobranzaForm(forms.ModelForm):
 			self.fields['pto_vta'].choices = [(pto.numero, pto.__unicode__()) for pto in pventa]			
 			self.fields['pto_vta'].initial = get_pv_defecto(request)			
 			self.fields['entidad'].queryset = egr_entidad.objects.filter(tipo_entidad=1,baja=False,empresa__id__in=empresas_habilitadas(request)).order_by('apellido_y_nombre')
+			
 		except gral_empresa.DoesNotExist:
 			empresa = None
 		

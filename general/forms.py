@@ -66,7 +66,11 @@ def pto_vta_buscador(request):
 def get_pv_defecto(request):
         pvs = pto_vta_habilitados_list(request)
         num_pv=empresa_actual(request).pto_vta_defecto.numero
-        if num_pv in pvs:
+        usuario = usuario_actual(request)
+        pvusr = usuario.cpb_pto_vta
+        if pvusr:
+        	return pvusr.numero
+        elif num_pv in pvs:
             return num_pv
         else:
             return 1

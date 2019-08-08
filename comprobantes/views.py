@@ -159,8 +159,10 @@ def buscarDatosProd(request):
        coeficiente = 0
        stock = 1
        pventa = 0
-       pcosto = 0
+       pcosto = 0       
        tasa_iva = 5 #Por defecto 0.21
+       pitc = 0.00
+       ptasa = 0.00
        unidad = 'u.'
        if idProd:
         p = prod_productos.objects.get(id=idProd)
@@ -184,6 +186,8 @@ def buscarDatosProd(request):
                if prod_lista:
                     pventa = prod_lista.precio_venta
                     pcosto = prod_lista.precio_cimp           
+                    #pitc = prod_lista.precio_itc
+                    #ptasa = prod_lista.precio_tasa
 
        precio_siva = pventa /(1+coeficiente)
        costo_siva = pcosto
