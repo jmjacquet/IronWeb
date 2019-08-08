@@ -186,8 +186,8 @@ def buscarDatosProd(request):
                if prod_lista:
                     pventa = prod_lista.precio_venta
                     pcosto = prod_lista.precio_cimp           
-                    pitc = prod_lista.precio_itc
-                    ptasa = prod_lista.precio_tasa
+                    #pitc = prod_lista.precio_itc
+                    #ptasa = prod_lista.precio_tasa
 
        precio_siva = pventa /(1+coeficiente)
        costo_siva = pcosto
