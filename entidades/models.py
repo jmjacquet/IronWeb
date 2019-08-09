@@ -8,7 +8,6 @@ from datetime import datetime,date
 from dateutil.relativedelta import *
 from django.conf import settings
 from general.utilidades import *
-# from general.models import gral_empresa
 # from usuarios.models import usu_usuario
 import os 
 
@@ -29,9 +28,9 @@ class egr_entidad(models.Model):
 	telefono = models.CharField(u'Teléfono',max_length=50,blank=True, null=True)   
 	celular = models.CharField('Celular',max_length=50,blank=True, null=True)   
 	# cta_contable = 
-	# lista_precio_defecto = 
+	
 	tipo_entidad = models.IntegerField(choices=TIPO_ENTIDAD, blank=True, null=True,default=1)
-	dcto_general = models.DecimalField('Dcto.Gral',max_digits=15, decimal_places=3,default=0,blank=True, null=True) 
+	dcto_general = models.DecimalField('% Dcto.Gral',max_digits=15, decimal_places=3,default=0,blank=True, null=True) 
 	fact_razon_social = models.CharField(u'Razón Social',max_length=200,blank=True, null=True)	
 	fact_cuit = models.CharField('CUIT',max_length=50,blank=True, null=True)   
 	fact_direccion = models.CharField(u'Dirección',max_length=200,blank=True, null=True)   
@@ -47,6 +46,9 @@ class egr_entidad(models.Model):
 	empresa =  models.ForeignKey('general.gral_empresa',db_column='empresa',blank=True, null=True,on_delete=models.SET_NULL)
 	usuario = models.ForeignKey('usuarios.usu_usuario',db_column='usuario',blank=True, null=True,related_name='usu_usuario_entidad',on_delete=models.SET_NULL)
 	
+	tope_cta_cte = models.DecimalField('Tope CtaCte',max_digits=15, decimal_places=3,default=0,blank=True, null=True) 
+	lista_precios_defecto = models.ForeignKey('productos.prod_lista_precios',db_column='lista_precios_defecto',blank=True, null=True) #Cliente/Pro
+
 	contacto1_nombre=models.CharField('Detalle Contacto 1',max_length=200,blank=True, null=True)   
 	contacto1_email=models.EmailField('Email',blank=True, null=True)
 	contacto1_tel=models.CharField(u'Teléfono',max_length=50,blank=True, null=True)   
@@ -62,6 +64,8 @@ class egr_entidad(models.Model):
 	contacto5_nombre=models.CharField('Detalle Contacto 5',max_length=200,blank=True, null=True)   
 	contacto5_email=models.EmailField('Email',blank=True, null=True)
 	contacto5_tel=models.CharField(u'Teléfono',max_length=50,blank=True, null=True)   
+
+
 	class Meta:
 		db_table = 'egr_entidad'
 		ordering = ['apellido_y_nombre','codigo']
@@ -152,6 +156,20 @@ class egr_entidad(models.Model):
 			return str(self.email)
 		else:
 			return None
+
+	def get_saldo_pendiente(self):
+		from comprobantes.models import cpb_comprobante
+		from django.db.models import Sum,F,DecimalField		
+		if self.tipo_entidad == 1:
+			cpbCV='V'
+		elif self.tipo_entidad == 2:
+			cpbCV='C'
+		else:
+			return 0
+		
+		total = cpb_comprobante.objects.filter(entidad=self,cpb_tipo__usa_ctacte=True,cpb_tipo__compra_venta=cpbCV,estado__in=[1,2]).aggregate(saldo=Sum(F('importe_total')*F('cpb_tipo__signo_ctacte'), output_field=DecimalField()))['saldo'] or 0
+		return total
+		
 
 	
 

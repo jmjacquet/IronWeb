@@ -16,10 +16,14 @@
 					</li>
 					<li>
 						<a href="#tab_15_2" data-toggle="tab">
-						CONTACTOS EXTRA </a>
+						FACTURACIÓN </a>
 					</li>
 					<li>
 						<a href="#tab_15_3" data-toggle="tab">
+						CONTACTOS EXTRA </a>
+					</li>
+					<li>
+						<a href="#tab_15_4" data-toggle="tab">
 						DATOS EXTRA </a>
 					</li>					
 				</ul>
@@ -108,6 +112,21 @@
 					<div class="tab-pane" id="tab_15_2">
 						<div class="col-xs-12">
 							<div class="row cerca">
+				             <div class="col-sm-3">
+				                 {{form.dcto_general|as_crispy_field}}
+				             </div>         
+				             <div class="col-sm-3">
+				                 {{form.tope_cta_cte|as_crispy_field}}
+				             </div>         
+				             <div class="col-sm-6">
+				                 {{form.lista_precios_defecto|as_crispy_field}}
+				             </div>         
+					        </div>					       
+				        </div>	
+					</div>
+					<div class="tab-pane" id="tab_15_3">
+						<div class="col-xs-12">
+							<div class="row cerca">
 				             <div class="col-sm-6">
 				                 {{form.contacto1_nombre|as_crispy_field}}
 				             </div>         
@@ -164,8 +183,8 @@
 					        </div>
 					       
 				        </div>	
-					</div>
-					<div class="tab-pane" id="tab_15_3">
+					</div>					
+					<div class="tab-pane" id="tab_15_4">
 						<div class="col-xs-12">
 					        <div class="row cerca">
 					             <div class="col-xs-12">

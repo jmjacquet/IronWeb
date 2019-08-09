@@ -87,13 +87,13 @@ class prod_productos(models.Model):
     nombre = models.CharField(u'Nombre/Descripción',max_length=100)
     codigo = models.CharField(u'Código',max_length=50,blank=True, null=True)
     codigo_barras = models.CharField(u'Código Barras',max_length=200,blank=True, null=True)
-    categoria = models.ForeignKey(prod_categoria,verbose_name=u'Categoría', db_column='categoria',blank=True, null=True,on_delete=models.SET_NULL)
+    categoria = models.ForeignKey('prod_categoria',verbose_name=u'Categoría', db_column='categoria',blank=True, null=True,on_delete=models.SET_NULL)
     tipo_producto = models.IntegerField('Tipo',choices=TIPO_PRODUCTO,default=1)
     mostrar_en = models.IntegerField('Mostrar en',choices=MOSTRAR_PRODUCTO,default=3)    
     unidad = models.IntegerField('Unidad',choices=TIPO_UNIDAD,default=0)
     llevar_stock = models.BooleanField('Llevar Stock',default=False)
     stock_negativo = models.BooleanField('Stock Negativo',default=True)    
-    tasa_iva = models.ForeignKey(gral_tipo_iva,verbose_name='Tasa IVA', db_column='tasa_iva',blank=True, null=True,on_delete=models.SET_NULL)
+    tasa_iva = models.ForeignKey('gral_tipo_iva',verbose_name='Tasa IVA', db_column='tasa_iva',blank=True, null=True,on_delete=models.SET_NULL)
     descripcion = models.TextField(blank=True, null=True)    
     ruta_img = models.ImageField(upload_to=get_image_name,db_column='ruta_img', max_length=100, blank=True) # Field name made lowercase.    
     baja = models.BooleanField(default=False)
@@ -120,8 +120,8 @@ class prod_productos(models.Model):
 
 class prod_producto_lprecios(models.Model):
     id = models.AutoField(primary_key=True,db_index=True)
-    producto = models.ForeignKey(prod_productos,db_column='producto',related_name='producto_lprecios',blank=True, null=True) #Cliente/Pro
-    lista_precios = models.ForeignKey(prod_lista_precios,db_column='lista_precios',related_name='lista_precios',blank=True, null=True) #Cliente/Pro
+    producto = models.ForeignKey('prod_productos',db_column='producto',related_name='producto_lprecios',blank=True, null=True) #Cliente/Pro
+    lista_precios = models.ForeignKey('prod_lista_precios',db_column='lista_precios',related_name='lista_precios',blank=True, null=True) #Cliente/Pro
     precio_costo = models.DecimalField('Precio Costo',max_digits=15, decimal_places=2,default=0,blank=True, null=True) 
     precio_cimp = models.DecimalField('Precio c/Imp.',max_digits=15, decimal_places=2,default=0,blank=True, null=True)
     coef_ganancia = models.DecimalField(max_digits=5, decimal_places=3,default=1)
@@ -141,8 +141,8 @@ class prod_producto_lprecios(models.Model):
 from comprobantes.models import cpb_comprobante_detalle
 class prod_producto_ubicac(models.Model):
     id = models.AutoField(primary_key=True,db_index=True)
-    producto = models.ForeignKey(prod_productos,db_column='producto',related_name='producto_stock',blank=True, null=True) #Cliente/Pro
-    ubicacion = models.ForeignKey(prod_ubicacion,db_column='ubicacion',related_name='ubicacion',blank=True, null=True) #Cliente/Pro    
+    producto = models.ForeignKey('prod_productos',db_column='producto',related_name='producto_stock',blank=True, null=True) #Cliente/Pro
+    ubicacion = models.ForeignKey('prod_ubicacion',db_column='ubicacion',related_name='ubicacion',blank=True, null=True) #Cliente/Pro    
     class Meta:
         db_table = 'prod_producto_ubicac'
         ordering = ['producto__nombre','ubicacion']

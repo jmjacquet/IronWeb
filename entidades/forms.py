@@ -17,6 +17,7 @@ from general.utilidades import *
 from general.models import gral_empresa
 from general.forms import empresas_buscador
 from general.flavor import ARCUITField,ARDNIField,ARPostalCodeField
+from productos.models import prod_lista_precios
 				
 
 class EntidadesForm(forms.ModelForm):
@@ -29,6 +30,9 @@ class EntidadesForm(forms.ModelForm):
 	cod_postal = ARPostalCodeField(label='CP',required = False)		
 	tipo_entidad = forms.IntegerField(widget = forms.HiddenInput(), required = False)
 	empresa = forms.ModelChoiceField(queryset=gral_empresa.objects.all(),empty_label=None)
+	dcto_general = forms.DecimalField(label=u'% Dcto.General',initial=0,decimal_places=2,required = False)	
+	tope_cta_cte = forms.DecimalField(widget=PrependWidget(attrs={'class':'form-control','step':0.00},base_widget=NumberInput, data='$'),initial=0.00,decimal_places=2,required = False)
+	lista_precios_defecto = forms.ModelChoiceField(label=u'Lista Precios x Defecto',queryset=prod_lista_precios.objects.all(),required = False)
 	class Meta:
 			model = egr_entidad
 			exclude = ['id','fecha_creacion','fecha_modif','usuario']
@@ -36,7 +40,7 @@ class EntidadesForm(forms.ModelForm):
 	def __init__(self, *args, **kwargs):
 		request = kwargs.pop('request', None)
 		super(EntidadesForm, self).__init__(*args, **kwargs)
-		
+		self.fields['lista_precios_defecto'].queryset = prod_lista_precios.objects.filter(baja=False,empresa__id__in=empresas_habilitadas(request))		
 		try:
 			empresas = empresas_buscador(request)			
 			self.fields['empresa'].queryset = empresas
@@ -81,7 +85,9 @@ class EntidadesEditForm(forms.ModelForm):
 	tipo_entidad = forms.IntegerField(widget = forms.HiddenInput(), required = False)	
 	tipo_doc = forms.ChoiceField(label=u'Tipo Documento',required = True,choices=TIPO_DOC,initial=80)
 	empresa = forms.ModelChoiceField(queryset=gral_empresa.objects.all(),empty_label=None)
-
+	dcto_general = forms.DecimalField(label=u'% Dcto.General',initial=0,decimal_places=2,required = False)	
+	tope_cta_cte = forms.DecimalField(widget=PrependWidget(attrs={'class':'form-control','step':0.00},base_widget=NumberInput, data='$'),initial=0.00,decimal_places=2,required = False)
+	lista_precios_defecto = forms.ModelChoiceField(label=u'Lista Precios x Defecto',queryset=prod_lista_precios.objects.all(),required = False)
 	class Meta:
 			model = egr_entidad
 			exclude = ['id','fecha_creacion','fecha_modif','usuario']
@@ -89,7 +95,7 @@ class EntidadesEditForm(forms.ModelForm):
 	def __init__(self, *args, **kwargs):
 		request = kwargs.pop('request', None)
 		super(EntidadesEditForm, self).__init__(*args, **kwargs)
-		
+		self.fields['lista_precios_defecto'].queryset = prod_lista_precios.objects.filter(baja=False,empresa__id__in=empresas_habilitadas(request))		
 		try:
 			empresas = empresas_buscador(request)			
 			self.fields['empresa'].queryset = empresas			

@@ -1465,7 +1465,7 @@ name .popover .popover-content,
 .tabbable-line > .nav-tabs > li.active{border-bottom:4px solid #F3565D;position:relative;}
 .tabbable-line > .nav-tabs > li.active > a{border:0;color:#333;}
 .tabbable-line > .nav-tabs > li.active > a > i{color:#404040;}
-.tabbable-line > .tab-content{margin-top:-3px;background-color:#fff;border:0;border-top:1px solid #eee;padding:15px 0;}
+.tabbable-line > .tab-content{margin-top:-3px;background-color:#fff;border:0;border-top:1px solid #eee;padding:10px;}
 .portlet .tabbable-line > .tab-content{padding-bottom:0;}
 .tabbable-line.tabs-below > .nav-tabs > li{border-top:4px solid transparent;}
 .tabbable-line.tabs-below > .nav-tabs > li > a{margin-top:0;}

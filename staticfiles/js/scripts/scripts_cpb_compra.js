@@ -20,9 +20,9 @@ $("#id_entidad").change(function(){
                 success : function(data) {                     
                      if (data!='')
                         {
-                          $("#id_cliente_categ_fiscal").val(data[0]['fact_categFiscal']); 
-                          if (data[0]['dcto_general']==''){
-                            $("#id_cliente_descuento").val(data[0]['dcto_general'])
+                          $("#id_cliente_categ_fiscal").val(data['fact_categFiscal']); 
+                          if (data['dcto_general']==''){
+                            $("#id_cliente_descuento").val(data['dcto_general'])
                           }else {$("#id_cliente_descuento").val(0);};
                           
                         }

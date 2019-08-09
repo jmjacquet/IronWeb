@@ -234,14 +234,25 @@ def buscarPrecioProd(prod,letra,cant,precio):
   
 @login_required 
 def buscarDatosEntidad(request):                     
-   
-   try:                          
+   lista= {}
+   try:
     id = request.GET['id']
-    entidad = egr_entidad.objects.filter(id=id)[:1]
-    entidad=list(entidad.values('fact_categFiscal','dcto_general'))        
+    entidad = egr_entidad.objects.get(id=id)   
+    dcto=entidad.dcto_general or 0
+    tope_cta_cte = entidad.tope_cta_cte
+    lista_precios = 1
+    if entidad.lista_precios_defecto:
+        lista_precios = entidad.lista_precios_defecto.id   
+    if tope_cta_cte>0:
+        saldo = entidad.get_saldo_pendiente()
+    else:
+        saldo = 0    
+    saldo_sobrepaso = saldo - tope_cta_cte
+    print saldo_sobrepaso
+    lista = {'fact_categFiscal':entidad.fact_categFiscal,'dcto_general':dcto,'saldo_sobrepaso':saldo_sobrepaso,'lista_precios':lista_precios}
    except:
-    entidad= []
-   return HttpResponse( json.dumps(entidad, cls=DjangoJSONEncoder), content_type='application/json' )  
+    lista= {}
+   return HttpResponse( json.dumps(lista, cls=DjangoJSONEncoder), content_type='application/json' )  
 
 @login_required 
 def setearLetraCPB(request):
@@ -1897,7 +1908,6 @@ def imprimir_detalles(request):
     limpiar_sesion(request)        
     id_cpbs = [int(x) for x in request.GET.getlist('id_cpb')]        
     cpbs_detalles = cpb_comprobante_detalle.objects.filter(cpb_comprobante__id__in=id_cpbs,cpb_comprobante__empresa = empresa_actual(request)).order_by('cpb_comprobante__fecha_cpb','producto__nombre')
-
     context = {}
     context = getVariablesMixin(request)  
     context['cpbs_detalles'] = cpbs_detalles
