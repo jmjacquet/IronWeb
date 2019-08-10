@@ -350,6 +350,14 @@ class cpb_comprobante_detalle(models.Model):
         #return self.importe_unitario * (1+self.coef_iva)
         return self.cantidad * self.cpb_comprobante.cpb_tipo.signo_stock
 
+    @property
+    def get_costo_total(self):                
+        return self.cantidad*self.importe_costo
+
+    @property
+    def get_utilidad_total(self):                
+        return (self.importe_subtotal-(self.cantidad*self.importe_costo))
+
 class cpb_perc_imp(models.Model):
     id = models.AutoField(primary_key=True,db_index=True)
     nombre = models.CharField(u'Nombre',max_length=100)

@@ -223,10 +223,12 @@
                         <a class="acceso_menu" href="{% url 'producto_nuevo' %}">+</a>
                       </li>
                       {% endif %}
-                      {% if 'prod_productos_abm' in permisos_grupo %} 
+                      {% if 'prod_precios' in permisos_grupo %} 
                       <li>
                         <a href="{% url 'prod_precios_listado' %}"><i class="fa fa-list-alt"></i>Actualización Precios</a>
-                      </li>                       
+                      </li> 
+                      {% endif %}
+                      {% if 'prod_stock' in permisos_grupo %}                       
                       <li>
                         <a href="{% url 'prod_stock_listado' %}"><i class="fa fa-cubes"></i>Mantenimiento Stock</a>
                       </li>             

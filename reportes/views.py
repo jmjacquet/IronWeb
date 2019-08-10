@@ -915,8 +915,8 @@ class vencimientos_cpbs(VariablesMixin,ListView):
     @method_decorator(login_required)
     def dispatch(self, *args, **kwargs):         
         limpiar_sesion(self.request)        
-        # if not tiene_permiso(self.request,'rep_caja_diaria'):
-        #     return redirect(reverse('principal'))  
+        if not tiene_permiso(self.request,'rep_varios'):
+            return redirect(reverse('principal'))  
         return super(vencimientos_cpbs, self).dispatch(*args,**kwargs)
 
     def get_context_data(self, **kwargs):
@@ -984,8 +984,8 @@ class seguimiento_cheques(VariablesMixin,ListView):
     @method_decorator(login_required)
     def dispatch(self, *args, **kwargs):         
         limpiar_sesion(self.request)        
-        # if not tiene_permiso(self.request,'rep_caja_diaria'):
-        #     return redirect(reverse('principal'))  
+        if not tiene_permiso(self.request,'rep_seguim_cheques'):
+            return redirect(reverse('principal'))  
         return super(seguimiento_cheques, self).dispatch(*args,**kwargs)
 
     def get_context_data(self, **kwargs):
@@ -1035,7 +1035,7 @@ class ProdHistoricoView(VariablesMixin,ListView):
     @method_decorator(login_required)
     def dispatch(self, *args, **kwargs):         
         limpiar_sesion(self.request)        
-        if not tiene_permiso(self.request,'gral_configuracion'):
+        if not tiene_permiso(self.request,'rep_varios'):
             return redirect(reverse('principal'))
         return super(ProdHistoricoView, self).dispatch(*args,**kwargs)
 
@@ -1057,7 +1057,7 @@ class ProdHistoricoView(VariablesMixin,ListView):
             fdesde = form.cleaned_data['fdesde']   
             fhasta = form.cleaned_data['fhasta']       
             
-            movimientos = cpb_comprobante_detalle.objects.filter(cpb_comprobante__estado__in=[1,2],cpb_comprobante__cpb_tipo__usa_stock=True,cpb_comprobante__empresa=empresa,cpb_comprobante__fecha_cpb__gte=fdesde,cpb_comprobante__fecha_cpb__lte=fhasta).order_by('-cpb_comprobante__fecha_cpb','-producto')        
+            movimientos = cpb_comprobante_detalle.objects.filter(cpb_comprobante__estado__in=[1,2],cpb_comprobante__cpb_tipo__usa_stock=True,cpb_comprobante__empresa=empresa,cpb_comprobante__fecha_cpb__gte=fdesde,cpb_comprobante__fecha_cpb__lte=fhasta).order_by('-cpb_comprobante__fecha_cpb','-cpb_comprobante__id','-producto')        
             
             if producto:
                 movimientos = movimientos.filter(Q(producto__nombre__icontains=producto))
@@ -1078,8 +1078,8 @@ class RankingsView(VariablesMixin,TemplateView):
     @method_decorator(login_required)
     def dispatch(self, *args, **kwargs):         
         limpiar_sesion(self.request)        
-        # if not tiene_permiso(self.request,'rep_caja_diaria'):
-        #     return redirect(reverse('principal'))  
+        if not tiene_permiso(self.request,'rep_varios'):
+            return redirect(reverse('principal'))  
         return super(RankingsView, self).dispatch(*args,**kwargs)
 
     def get_context_data(self, **kwargs):
@@ -1180,6 +1180,52 @@ class RankingsView(VariablesMixin,TemplateView):
     def post(self, *args, **kwargs):
         return self.get(*args, **kwargs)
 
+################################################################
+
+class costo_producto_vendidoView(VariablesMixin,ListView):
+    model = cpb_comprobante_detalle
+    template_name = 'reportes/varios/costo_producto_vendido.html'
+    context_object_name = 'movimientos'    
+
+    @method_decorator(login_required)
+    def dispatch(self, *args, **kwargs):         
+        limpiar_sesion(self.request)        
+        if not tiene_permiso(self.request,'rep_varios'):
+            return redirect(reverse('principal'))
+        return super(costo_producto_vendidoView, self).dispatch(*args,**kwargs)
+
+    def get_context_data(self, **kwargs):
+        context = super(costo_producto_vendidoView, self).get_context_data(**kwargs)
+        try:
+            empresa = empresa_actual(self.request)
+        except gral_empresa.DoesNotExist:
+            empresa = None 
+        fecha = date.today()
+        
+        form = ConsultaHistStockProd(self.request.POST or None)   
+
+        movimientos = cpb_comprobante_detalle.objects.none()
+        #movimientos = cpb_comprobante_detalle.objects.filter(cpb_comprobante__empresa=empresa,cpb_comprobante__fecha_cpb=hoy()).select_related('producto','cpb_comprobante').order_by('producto')
+        
+        if form.is_valid():                                            
+            producto = form.cleaned_data['producto']                                                              
+            fdesde = form.cleaned_data['fdesde']   
+            fhasta = form.cleaned_data['fhasta']       
+            
+            movimientos = cpb_comprobante_detalle.objects.filter(cpb_comprobante__cpb_tipo__compra_venta='V',cpb_comprobante__estado__in=[1,2],cpb_comprobante__cpb_tipo__usa_stock=True,cpb_comprobante__empresa=empresa,cpb_comprobante__fecha_cpb__gte=fdesde,cpb_comprobante__fecha_cpb__lte=fhasta).order_by('-cpb_comprobante__fecha_cpb','-cpb_comprobante__id','-producto')        
+            
+            if producto:
+                movimientos = movimientos.filter(Q(producto__nombre__icontains=producto))
+
+            movimientos=movimientos.select_related('cpb_comprobante','cpb_comprobante__cpb_tipo','producto','producto__categoria')
+                       
+        context['form'] = form
+        context['movimientos'] = movimientos
+        return context
+    def post(self, *args, **kwargs):
+        return self.get(*args, **kwargs)         
+
+################################################################
 
 from django.http import JsonResponse
 
@@ -1213,8 +1259,8 @@ def ver_grafico(request):
 @login_required 
 def reporte_retenciones_imp(request):    
     limpiar_sesion(request)
-    # if not tiene_permiso(request,'rep_libro_iva'):
-    #         return redirect(reverse('principal'))  
+    if not tiene_permiso(request,'rep_retenciones_imp'):
+            return redirect(reverse('principal'))  
     context = {}
     context = getVariablesMixin(request)    
     try:

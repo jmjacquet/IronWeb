@@ -32,8 +32,17 @@ from django.utils.functional import curry
 from django.forms.models import model_to_dict
 
 @login_required 
-def recalcular_cpbs(request):
+def recalcular_precios(request):
+    detalles = cpb_comprobante_detalle.objects.filter(cpb_comprobante__cpb_tipo__tipo__in=[1,2,3,9,14],cpb_comprobante__cpb_tipo__usa_stock=True)
+    for c in detalles:
+        lp = prod_producto_lprecios.objects.get(producto=c.producto,lista_precios=c.lista_precios)
+        c.importe_costo = lp.precio_costo
+        c.save()
 
+    return HttpResponseRedirect(reverse('principal')) 
+
+@login_required 
+def recalcular_cpbs(request):
     comprobantes = cpb_comprobante.objects.all()
     for c in comprobantes:
         recalcular_saldo_cpb(c.id)
@@ -190,7 +199,7 @@ def buscarDatosProd(request):
                     #ptasa = prod_lista.precio_tasa
 
        precio_siva = pventa /(1+coeficiente)
-       costo_siva = pcosto
+       costo_siva = prod_lista.precio_costo
        total_iva = pventa - precio_siva
        precio_tot = pventa
        

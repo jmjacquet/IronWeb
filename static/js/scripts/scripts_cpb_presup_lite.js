@@ -150,7 +150,7 @@ function cargarProd(i){
                  if (data!='')
                     {
                       
-                      $("[name='formDetalle-"+i+"-importe_costo']").val(data['precio_costo']); 
+                      $("[name='formDetalle-"+i+"-importe_costo']").val(data['costo_siva']); 
                       $("[name='formDetalle-"+i+"-coef_iva']").val(data['tasa_iva__coeficiente']); 
                       $("[name='formDetalle-"+i+"-tasa_iva']").val(data['tasa_iva__id']); 
                       $("[name='formDetalle-"+i+"-unidad']").val(data['unidad']);                     
@@ -213,7 +213,7 @@ function recargarProd(i){
                  
                  if (data!='')
                     {                      
-                      $("[name='formDetalle-"+i+"-importe_costo']").val(data['precio_costo']); 
+                      $("[name='formDetalle-"+i+"-importe_costo']").val(data['costo_siva']); 
                       $("[name='formDetalle-"+i+"-coef_iva']").val(data['tasa_iva__coeficiente']); 
                       $("[name='formDetalle-"+i+"-tasa_iva']").val(data['tasa_iva__id']); 
                       $("[name='formDetalle-"+i+"-unidad']").val(data['unidad']);                                           
