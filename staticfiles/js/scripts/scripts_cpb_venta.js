@@ -102,8 +102,7 @@ function calcularProd(i){
   var coef_iva = parseFloat($("input[name='formDetalle-"+i+"-coef_iva']").val())|| 0;            
   var importe_unitario = parseFloat($("input[name='formDetalle-"+i+"-importe_unitario']").val())|| 0;    
   var importe_parcial = (importe_unitario * cant)*(1-porcDcto/100)
-   
-  
+     
   letra = $("#id_letra").val();                      
   if (letra=='A'){ 
     importe_iva = importe_parcial * coef_iva;
@@ -502,13 +501,10 @@ $("#recargarProductos").click(function () {
                 $("[name='formDetalle-"+j+"-producto']").append('<option value="' + item['id'] + '">' + item['codigo']+' - '+item['nombre'] + '</option>');                
             }); 
             $("[name='formDetalle-"+j+"-producto']").trigger("chosen:updated");           
-             
+            calcularProd(j); 
           });           
         });
   });
-
-
-
 
       
 $( "#GuardarVenta" ).click(function() {    
@@ -582,14 +578,19 @@ $("#id_letra").change(function(){
      
      $('.segunLetra').each(function() {
         if (letra != 'A'){
-          $(this).hide();          
+          $(this).hide();
+          $("#tit_precio").attr('data-original-title', "Precio Venta con impuestos");
+          $("#tit_total").attr('data-original-title', "Importe Total");
         }
         else{
           $(this).show();
+          $("#tit_precio").attr('data-original-title', "Precio Venta sin impuestos");
+          $("#tit_total").attr('data-original-title', "Importe Subtotal + IVA");
         };
        });
      
      ultimoNumCPB(cpb_tipo,letra,pto_vta);
+     $("#recargarProductos").trigger("click");
  });  
 $("#id_pto_vta").change(function(){
      letra = $("#id_letra").val();

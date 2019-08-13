@@ -114,7 +114,7 @@ textarea.form-control{height:auto}
 .control-label{margin-top:1px;text-align:right;}
 .verdadero{color:#fff;text-shadow:1px 1px 1px #ccc;font-size:1.5em;}
 .has-error .help-block, .has-error .help-inline, .has-error .control-label, .has-error .radio, .has-error .checkbox, .has-error .radio-inline, .has-error .checkbox-inline{color:#a94442;font-size:9px;}
-.recargarDatos{margin-left: 3px; font-size:10px;font-weight:bold;color:#4f5a67;line-height:1.42857143;height:25px;}
+.recargarDatos{margin-left: 3px; font-size:10px;font-weight:bold;color:#4f5a67;line-height:1.42857143;}
 .recargarDatos i{margin-left: 3px; font-size:10px;font-weight:bold;color:#4f5a67;}
 .panel_centrado{max-width:1000px;display:block;margin-right:auto;margin-left:auto;}
 .tabla_cpbs th{background:#4f5a67;vertical-align:middle;#fff;font-weight:400;font-size:10px;height:20px;}

@@ -87,7 +87,7 @@
 
 								</div>
 							</div>
-							<hr>
+							
 				    
 						     <div class="row">
 						         <div class="col-sm-12">                          						                
@@ -96,18 +96,19 @@
 						                          <tr>
 						                              <th style="width: 30%;">Producto/Servicio  											
 									                    	{% if not sitio_mobile %}
-									                    		<a id="recargarProductos" href="#" class="recargarDatos" type="button" data-toggle="tooltip" data-placement="top" 
+									                    		<a id="recargarProductos" href="#" class="recargarDatos" 
+									                    		type="button" data-toggle="tooltip" data-placement="top" 
 									                    		title="Recargar listados de Productos"><i class="fa fa-refresh"></i></a>
 									                    	{% endif %}
 									                  </th>						                          												
 						                              <th style="width: 20%;">Detalle</th>
 						                              <th style="width: 20px;">Cant.</th>
 						                              <th style="width: 20px;"></th>
-						                              <th style="width: 70px;">Precio</th>
+						                              <th style="width: 70px;">Precio <i id="tit_precio" class="fa fa-question-circle recargarDatos" data-toggle="tooltip" data-placement="top" title="Precio"/></th>
 						                              <th style="width: 20px;">% Dcto.</th>
-						                              <th class="segunLetra" style="width: 60px;">Importe</th>
-						                              <th class="segunLetra" style="width: 60px;">IVA</th>
-						                              <th style="width: 60px;">Total</th>
+						                              <th class="segunLetra" style="width: 60px;">Importe <i class="fa fa-question-circle recargarDatos" data-toggle="tooltip" data-placement="top" title="Importe Subtotal"/></th>
+						                              <th class="segunLetra" style="width: 60px;">IVA <i class="fa fa-question-circle recargarDatos" data-toggle="tooltip" data-placement="top" title="Cálculo del IVA sobre el Importe (según producto)"/></th>
+						                              <th style="width: 60px;">Total <i id="tit_total" class="fa fa-question-circle recargarDatos" data-toggle="tooltip" data-placement="top" title="Suma del Importe + IVA"/></th>
 						                              <th style="width: 10px;" class="remove-sorting"></th>
 						                          </tr>
 						                    </thead>					                    

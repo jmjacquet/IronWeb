@@ -25,4 +25,4 @@
 .botonera{margin-left:5px;padding:1px;vertical-align:middle;font-size:10px;}
 .botonera a{margin-left:5px;}
 .cpb .unidades{font-size:11px;font-weight:normal;padding-bottom:3px;}
-.cpb .ayuda_form{margin-left:5px;}
+.cpb .ayuda_form{float: right;font-weight: bold;font-size: 8px;}

@@ -355,6 +355,7 @@ function recalcular(){
             calcularTotales();      
          });
         $("input[name='formDetalle-"+j+"-importe_total']").change(function(){            
+            calcularProd(j);
             calcularTotales();      
          }); 
 

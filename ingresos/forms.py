@@ -140,7 +140,7 @@ class CPBVentaDetalleForm(forms.ModelForm):
 	porc_dcto = forms.DecimalField(initial=0,decimal_places=2)	
 	cantidad = forms.DecimalField(initial=1,decimal_places=2)	
 	unidad = forms.CharField(required = False,widget=forms.TextInput(attrs={ 'class':'form-control unidades','readonly':'readonly'}),initial='u.')
-	importe_unitario = forms.DecimalField(widget=PrependWidget(attrs={'class':'form-control','step':0.00},base_widget=NumberInput, data='$'),initial=0.00,decimal_places=2)
+	importe_unitario = forms.DecimalField(widget=PrependWidget(attrs={'class':'form-control','readonly':'readonly','step':0.00},base_widget=NumberInput, data='$'),initial=0.00,decimal_places=2)
 	cpb_comprobante = forms.IntegerField(widget = forms.HiddenInput(), required = False)	
 	importe_costo = forms.DecimalField(widget = forms.HiddenInput(), required = False)
 	importe_subtotal = forms.DecimalField(widget=PrependWidget(attrs={'class':'form-control','readonly':'readonly','step':0},base_widget=NumberInput, data='$'),initial=0.00,decimal_places=2)	
