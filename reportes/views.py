@@ -1227,6 +1227,61 @@ class costo_producto_vendidoView(VariablesMixin,ListView):
 
 ################################################################
 
+class comisiones_vendedoresView(VariablesMixin,ListView):
+    model = cpb_comprobante
+    template_name = 'reportes/varios/comisiones_vendedores.html'
+    context_object_name = 'cpbs'    
+
+    @method_decorator(login_required)
+    def dispatch(self, *args, **kwargs):         
+        limpiar_sesion(self.request)        
+        if not tiene_permiso(self.request,'rep_varios'):
+            return redirect(reverse('principal'))
+        return super(comisiones_vendedoresView, self).dispatch(*args,**kwargs)
+
+    def get_context_data(self, **kwargs):
+        context = super(comisiones_vendedoresView, self).get_context_data(**kwargs)
+        try:
+            empresa = empresa_actual(self.request)
+        except gral_empresa.DoesNotExist:
+            empresa = None 
+        form = ConsultaVendedores(self.request.POST or None,empresa=empresa,request=self.request)            
+        comprobantes = None
+        porcCom = None        
+        campo = 'importe_subtotal'
+        if form.is_valid():                                
+            vendedor = form.cleaned_data['vendedor']                                                              
+            cliente = form.cleaned_data['cliente']
+            fdesde = form.cleaned_data['fdesde']   
+            fhasta = form.cleaned_data['fhasta']                                                 
+            pto_vta = form.cleaned_data['pto_vta']               
+            porcCom = form.cleaned_data['comision']
+            campo = form.cleaned_data['campo']
+            comprobantes = cpb_comprobante.objects.filter(cpb_tipo__tipo__in=[1,3,9])
+
+            if fdesde:
+                comprobantes= comprobantes.filter(fecha_cpb__gte=fdesde)
+            if fhasta:
+                comprobantes= comprobantes.filter(fecha_cpb__lte=fhasta)
+            if vendedor:
+                comprobantes= comprobantes.filter(vendedor=vendedor)
+            if cliente:
+                comprobantes= comprobantes.filter(entidad__apellido_y_nombre__icontains=cliente)
+            if pto_vta:
+                comprobantes= comprobantes.filter(pto_vta=pto_vta)            
+
+            if porcCom:
+                comision = Decimal(porcCom)/100
+                comprobantes= comprobantes.annotate(total=F(campo)).annotate(comision=Sum(ExpressionWrapper(F(campo)*comision, output_field=FloatField())) )
+        
+        context['porcCom'] = porcCom
+        context['form'] = form
+        context['comprobantes'] = comprobantes       
+        return context
+    def post(self, *args, **kwargs):
+        return self.get(*args, **kwargs)         
+
+################################################################
 from django.http import JsonResponse
 
 def ValuesQuerySetToDict(vqs):

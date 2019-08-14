@@ -3,81 +3,76 @@
 {% load i18n %}
 {% load bootstrap3 %}
 {% load humanize %}
-{% block extra_js %}      
-    {{ block.super }}      
-    <script src="{% static 'js/scripts/scripts_prod_stock.js'%}?{% now "Ymd"%}" type="text/javascript"></script>   
-{% endblock %}
-{% block main %}   
 
-        <div class="col-md-12">   
-            <div class="portlet box toolbar_green">
+{% block main %} 
+
+          <div class="col-md-12">   
+            <div class="portlet box toolbar_blue">
                 <div class="portlet-title">
-                    <div class="caption bold"><i class="fa fa-cubes"></i>COSTO POR PRODUCTOS VENDIDOS <small>consulta y detalles</small></div>
-                </div> 
-            </div>         
-            <div class="row">
-                <div class="col-sm-12">
-                 <form class="form" accept-charset="UTF-8" role="form" action="" method="post">
-                    {% csrf_token %} 
-                    <div class="barra_busqueda col-sm-12">                   
-                        <div class="col-sm-5">{% bootstrap_field form.producto  %}</div>                                                                             
-                        <div class="col-sm-1">{% bootstrap_field form.fdesde  %}</div>                                           
-                        <div class="col-sm-1">{% bootstrap_field form.fhasta  %}</div>                                           
-                        <div class="col-sm-2"><button style="float:left;margin-left:20px;" class="btn btn-sm green-meadow" type="submit">Buscar</button></div>
-                    </div>     
-                    </form>         
-                </div>
-            </div>           
-            <table id="dataTables-historico" class="table table-striped compact table-hover table-no-bordered tabla_nueva nowrap">         
-                <thead>
-                    <tr>                                                               
-                        <th class="text-center">Fecha Mov.</th>
-                        <th class="text-left">Nº CPB</th>
-                        <th class="text-left">Tipo Movimiento</th>
-                        <th class="">Producto</th>                                                                
-                        <th>Categoría</th>                        
-                        <th class="text-right">Cantidad</th>                                                
-                        <th class="text-right">Total Costo</th>
-                        <th class="text-right">Total Venta</th>
-                        <th class="text-right">Diferencia</th>
+                    <div class="caption bold">
+                                <i class="icon-calendar"></i>COMISIONES x VENDEDOR
+                    </div>
 
-                    </tr>
-                </thead>
-                <tbody>                                                   
-                    {% for m in movimientos %}
-                        <tr  {% if m.producto.baja %} class='danger' {% endif %}>                                                                                                        
-                            <td class="text-center">{{m.cpb_comprobante.fecha_cpb|date:'d/m/Y'}}</td>
-                            {% with cpb=m.cpb_comprobante %}                            
-                            <td class="text-left" title="{{ cpb.cpb_tipo|default_if_none:'' }}">{% include "general/varios/cpb_ver.html" %}{{ cpb}}</td>
-                            <td class="">{{ cpb.cpb_tipo|default_if_none:'' }}</td>
-                            {% endwith %}                            
-                            <td {% if m.producto.baja %} title='DADO DE BAJA' {% endif %}>{% if m.producto %} <a href="{% url 'producto_ver' id=m.producto.pk %}" class="modal-detail" data-modal-head="DETALLE PRODUCTO {{m.producto.codigo}}" data-fm-callback="reload">{% endif %}
-                            <strong>{{m.producto|default_if_none:''|truncatechars:60}}</strong></a></td>           
-                            <td>{{ m.producto.categoria|default_if_none:'' }}</td>
-                            <td class="">{{m.cantidad|default_if_none:0|floatformat:2}}[{{m.producto.get_unidad_display|default_if_none:''}}]</td>                                                        
-                            <td class="importe">${{m.get_costo_total|default_if_none:0|floatformat:2}}</td>
-                            <td class="importe">${{m.importe_subtotal|default_if_none:0|floatformat:2}}</td>
-                            <td class="importe">${{m.get_utilidad_total|default_if_none:0|floatformat:2}}</td>
-                        </tr>
-                    {% endfor %}                        
-                </tbody>
-                <tfoot>
-                    <tr>
-                        <th></th> 
-                        <th></th> 
-                        <th></th>
-                        <th></th>                                                                 
-                        <th></th>                        
-                        <th></th>
-                        <th class="importe"></th>   
-                        <th class="importe"></th>   
-                        <th class="importe"></th>                                   
-                    </tr>
-                </tfoot>
-            </table>
-                         
+                </div> 
+            </div>                 
+                    <div class="row">
+                        <div class="col-md-12">
+                         <form class="form" accept-charset="UTF-8" role="form" action="" method="post">
+                            {% csrf_token %} 
+                            <div class="barra_busqueda col-sm-12">                                                                
+                                    <div class="col-sm-3">{% bootstrap_field form.vendedor  %}</div>
+                                    <div class="col-sm-1">{% bootstrap_field form.comision  %}</div>
+                                    <div class="col-sm-1">{% bootstrap_field form.campo  %}</div>
+                                    <div class="col-sm-1">{% bootstrap_field form.pto_vta  %}</div>
+                                    <div class="col-sm-3">{% bootstrap_field form.cliente  %}</div>
+                                    <div class="col-sm-1">{% bootstrap_field form.fdesde  %}</div>                                
+                                    <div class="col-sm-1">{% bootstrap_field form.fhasta  %}</div>                                    
+                                    <div class="col-sm-1"><button class="btn btn-sm blue-hoki text-center" type="submit">Buscar</button></div>
+                            </div>     
+                            </form>         
+                        </div>
+                    </div>                    
+                    <table id="dataTables-comisiones" class="table table-striped compact table-hover table-no-bordered tabla_nueva nowrap">         
+                        <thead>
+                            <tr>                               
+                                <th style="width:5%;" class="text-center">Fecha</th> 
+                                <th style="width:5%;" class="text-center">Estado</th> 
+                                <th style="width:5%;" class="text-center">Vencimiento</th>                                
+                                <th style="width:10%;">Comprobante</th>                                
+                                <th class="text-center">Cliente</th>                                                               
+                                <th style="width:10%;" class="importe">Total Venta</th>
+                                <th style="width:10%;" class="importe">Comisión {%if porcCom%}{{porcCom}}%{%endif%}</th>                                
+                            </tr>
+                        </thead>
+                        <tbody>                        
+                            {% for cpb in comprobantes %}
+                                <tr>                                
+                                    <td class="text-center">{{cpb.fecha_cpb|date:'d/m/Y'}}</td>                              
+                                    <td class="listado_estado {{cpb.estado.color}}">{{cpb.estado.nombre}}</td>
+                                    <td class="text-center">{{cpb.fecha_vto|date:'d/m/Y'}}</td>
+                                    <td>{% include "general/varios/cpb_ver.html" %}{{ cpb}}</td> 
+                                    <td>{% include "entidades/entidad_ver.html" %}</td>
+                                    <td class="importe">${{cpb.total|default_if_none:0|floatformat:2}}</td> 
+                                    <td class="importe">${{cpb.comision|default_if_none:0|floatformat:2}}</td>
+                                </tr>
+                            {% endfor %}
+                        </tbody>
+                        <tfoot>
+                            <tr>
+                                <th></th> 
+                                <th></th> 
+                                <th></th> 
+                                <th></th>                                
+                                <th></th>
+                                <th class="importe"></th> 
+                                <th class="importe"></th>                                 
+                            </tr>
+                        </tfoot>
+                    </table>                                                 
+                
+            </div>
+           </div>
         </div>
-       
 
 
 <script type="text/javascript">
@@ -103,7 +98,7 @@ $.fn.datepicker.dates['es'] = {
 moment.locale('es');
 $.fn.dataTable.moment('DD/MM/YYYY'); 
 
-var tabla = $('#dataTables-historico').DataTable({
+var tabla = $('#dataTables-comisiones').DataTable({
             "language": {
                 "decimal": ",",
                 "thousands": ".",                
@@ -166,7 +161,7 @@ var tabla = $('#dataTables-historico').DataTable({
                     extend:    'excel',
                     text:      '<i class="fa fa-file-excel-o"></i>',
                     titleAttr: 'Excel',
-                    filename: 'COSTOS_VENTAS',                    
+                    filename: 'COMISIONES',                    
                     exportOptions: {  modifier: {
                                         page: 'current'
                                     }, 
@@ -224,7 +219,7 @@ var tabla = $('#dataTables-historico').DataTable({
             ],
             initComplete: function () {
                // this.api().columns().every( function () {[0, 1, 9]
-                this.api().columns([2,4]).every( function () {
+                this.api().columns([1]).every( function () {
                     var column = this;
                     var select = $('<select class="form-control"><option value="">Todos</option></select>')
                         .appendTo( $(column.footer()).empty() )
@@ -274,13 +269,12 @@ var tabla = $('#dataTables-historico').DataTable({
                 }
             };
                         
-                        
+            pageTotal = api.column(5, { page: 'current'} ).data().reduce( function (a, b) {return floatVal(a) + floatVal(b);}, 0 )
+            $( api.column(5).footer() ).html(pageTotal.toFixed(2));            
              pageTotal = api.column(6, { page: 'current'} ).data().reduce( function (a, b) {return floatVal(a) + floatVal(b);}, 0 )
             $( api.column(6).footer() ).html(pageTotal.toFixed(2));
-            pageTotal = api.column(7, { page: 'current'} ).data().reduce( function (a, b) {return floatVal(a) + floatVal(b);}, 0 )
-            $( api.column(7).footer() ).html(pageTotal.toFixed(2));
-            pageTotal = api.column(8, { page: 'current'} ).data().reduce( function (a, b) {return floatVal(a) + floatVal(b);}, 0 )
-            $( api.column(8).footer() ).html(pageTotal.toFixed(2));           
+            
+                
             
             
             }
@@ -290,6 +284,12 @@ var tabla = $('#dataTables-historico').DataTable({
 
 </script>
 {% endblock main %}
+
+
+
+
+
+
 
 
 
