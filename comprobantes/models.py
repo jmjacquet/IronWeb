@@ -355,7 +355,7 @@ class cpb_comprobante_detalle(models.Model):
         return self.cantidad*self.importe_costo
 
     @property
-    def get_utilidad_total(self):                
+    def get_utilidad_total(self):                        
         return (self.importe_subtotal-(self.cantidad*self.importe_costo))
 
 class cpb_perc_imp(models.Model):

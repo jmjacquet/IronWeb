@@ -159,7 +159,7 @@ def obtener_stock(prod_ubi):
 
 @login_required 
 def buscarDatosProd(request):                                  
-   try:                          
+   #try:                          
        prod= {}
        idProd = request.GET.get('idp', '')
        idubi = request.GET.get('idubi', '')       
@@ -168,6 +168,10 @@ def buscarDatosProd(request):
        coeficiente = 0
        stock = 1
        pventa = 0
+       precio_siva = 0
+       costo_siva = 0
+       total_iva=0
+       precio_tot = 0
        pcosto = 0       
        tasa_iva = 5 #Por defecto 0.21
        pitc = 0.00
@@ -199,16 +203,18 @@ def buscarDatosProd(request):
                     #ptasa = prod_lista.precio_tasa
 
        precio_siva = pventa /(1+coeficiente)
+       precio_siva = Decimal(round(precio_siva,2))
        costo_siva = prod_lista.precio_costo
        total_iva = pventa - precio_siva
+       total_iva = Decimal(round(total_iva, 2))
        precio_tot = pventa
        
        prod={'precio_venta':pventa,'precio_costo':pcosto,'stock':stock,'tasa_iva__id':tasa_iva,'tasa_iva__coeficiente':coeficiente
             ,'unidad':unidad,'precio_siva':precio_siva,'total_iva':total_iva,'precio_tot':precio_tot,'costo_siva':costo_siva}  
            
-   except:
-     prod= {}
-   return HttpResponse( json.dumps(prod, cls=DjangoJSONEncoder), content_type='application/json' )     
+   # except:
+   #   prod= {}
+       return HttpResponse( json.dumps(prod, cls=DjangoJSONEncoder), content_type='application/json' )     
   
 def buscarPrecioProd(prod,letra,cant,precio):                                  
                                        

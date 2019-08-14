@@ -36,9 +36,9 @@
                         <th class="text-left">Tipo Movimiento</th>
                         <th class="">Producto</th>                                                                
                         <th>Categoría</th>                        
-                        <th class="text-right">Cantidad</th>
-                        <th class="text-left">Unidad</th>
+                        <th class="text-right">Cantidad</th>                        
                         <th class="text-right">Precio Costo</th>
+                        <th class="text-right">Total costo</th>
                         <th class="text-right">Precio Venta</th>
                         <th class="text-right">Total Venta</th>
                         <th class="text-right">Diferencia</th>
@@ -56,9 +56,9 @@
                             <td {% if m.producto.baja %} title='DADO DE BAJA' {% endif %}>{% if m.producto %} <a href="{% url 'producto_ver' id=m.producto.pk %}" class="modal-detail" data-modal-head="DETALLE PRODUCTO {{m.producto.codigo}}" data-fm-callback="reload">{% endif %}
                             <strong>{{m.producto|default_if_none:''|truncatechars:60}}</strong></a></td>           
                             <td>{{ m.producto.categoria|default_if_none:'' }}</td>
-                            <td class="importe">{{m.cantidad|default_if_none:0|floatformat:2}}</td>
-                            <td class="text-left">{{m.producto.get_unidad_display|default_if_none:''}}</td>
+                            <td class="importe">{{m.cantidad|default_if_none:0|floatformat:2}}[{{m.producto.get_unidad_display|default_if_none:''}}]</td>                            
                             <td class="importe">${{m.importe_costo|default_if_none:0|floatformat:2}}</td>
+                            <td class="importe">${{m.get_costo_total|default_if_none:0|floatformat:2}}</td>
                             <td class="importe">${{m.importe_unitario|default_if_none:0|floatformat:2}}</td>
                             <td class="importe">${{m.importe_subtotal|default_if_none:0|floatformat:2}}</td>
                             <td class="importe">${{m.get_utilidad_total|default_if_none:0|floatformat:2}}</td>
@@ -73,7 +73,7 @@
                         <th></th>                                                                 
                         <th></th>                        
                         <th class="importe"></th>   
-                        <th class="text-left"></th> 
+                        <th class="importe"></th>   
                         <th class="importe"></th>   
                         <th class="importe"></th>   
                         <th class="importe"></th>   
@@ -230,7 +230,7 @@ var tabla = $('#dataTables-historico').DataTable({
             ],
             initComplete: function () {
                // this.api().columns().every( function () {[0, 1, 9]
-                this.api().columns([2,4,6]).every( function () {
+                this.api().columns([2,4]).every( function () {
                     var column = this;
                     var select = $('<select class="form-control"><option value="">Todos</option></select>')
                         .appendTo( $(column.footer()).empty() )
@@ -281,8 +281,8 @@ var tabla = $('#dataTables-historico').DataTable({
             };
                         
             
-            pageTotal = api.column(5, { page: 'current'} ).data().reduce( function (a, b) {return floatVal(a) + floatVal(b);}, 0 )
-            $( api.column(5).footer() ).html(pageTotal.toFixed(2));
+            pageTotal = api.column(6, { page: 'current'} ).data().reduce( function (a, b) {return floatVal(a) + floatVal(b);}, 0 )
+            $( api.column(6).footer() ).html(pageTotal.toFixed(2));
             pageTotal = api.column(7, { page: 'current'} ).data().reduce( function (a, b) {return floatVal(a) + floatVal(b);}, 0 )
             $( api.column(7).footer() ).html(pageTotal.toFixed(2));
             pageTotal = api.column(8, { page: 'current'} ).data().reduce( function (a, b) {return floatVal(a) + floatVal(b);}, 0 )

@@ -3851,3 +3851,39 @@ Traceback (most recent call last):
   File "D:\Repo\ironStable\comprobantes\views.py", line 38, in recalcular_precios
     lp = prod_producto_lprecios.get(producto=c.producto,lista_precios=c.lista_precios)
 AttributeError: type object 'prod_producto_lprecios' has no attribute 'get'
+[13/Aug/2019 21:59:00] ERROR [django.request:256] Internal Server Error: /comprobantes/buscarDatosProd/
+Traceback (most recent call last):
+  File "C:\Python27\lib\site-packages\django\core\handlers\base.py", line 132, in get_response
+    response = wrapped_callback(request, *callback_args, **callback_kwargs)
+  File "C:\Python27\lib\site-packages\django\contrib\auth\decorators.py", line 22, in _wrapped_view
+    return view_func(request, *args, **kwargs)
+  File "D:\Repo\ironStable\comprobantes\views.py", line 204, in buscarDatosProd
+    total_iva = pventa - precio_siva
+TypeError: unsupported operand type(s) for -: 'Decimal' and 'float'
+[13/Aug/2019 22:00:15] ERROR [django.request:256] Internal Server Error: /comprobantes/buscarDatosProd/
+Traceback (most recent call last):
+  File "C:\Python27\lib\site-packages\django\core\handlers\base.py", line 132, in get_response
+    response = wrapped_callback(request, *callback_args, **callback_kwargs)
+  File "C:\Python27\lib\site-packages\django\contrib\auth\decorators.py", line 22, in _wrapped_view
+    return view_func(request, *args, **kwargs)
+  File "D:\Repo\ironStable\comprobantes\views.py", line 170, in buscarDatosProd
+    pventa,precio_siva,costo_siva,total_iva,precio_tot = 0
+TypeError: 'int' object is not iterable
+[13/Aug/2019 22:01:11] ERROR [django.request:256] Internal Server Error: /comprobantes/buscarDatosProd/
+Traceback (most recent call last):
+  File "C:\Python27\lib\site-packages\django\core\handlers\base.py", line 132, in get_response
+    response = wrapped_callback(request, *callback_args, **callback_kwargs)
+  File "C:\Python27\lib\site-packages\django\contrib\auth\decorators.py", line 22, in _wrapped_view
+    return view_func(request, *args, **kwargs)
+  File "D:\Repo\ironStable\comprobantes\views.py", line 208, in buscarDatosProd
+    total_iva = pventa - precio_siva
+TypeError: unsupported operand type(s) for -: 'Decimal' and 'float'
+[13/Aug/2019 22:02:23] ERROR [django.request:256] Internal Server Error: /comprobantes/buscarDatosProd/
+Traceback (most recent call last):
+  File "C:\Python27\lib\site-packages\django\core\handlers\base.py", line 132, in get_response
+    response = wrapped_callback(request, *callback_args, **callback_kwargs)
+  File "C:\Python27\lib\site-packages\django\contrib\auth\decorators.py", line 22, in _wrapped_view
+    return view_func(request, *args, **kwargs)
+  File "D:\Repo\ironStable\comprobantes\views.py", line 207, in buscarDatosProd
+    costo_siva = prod_lista.precio_costo
+UnboundLocalError: local variable 'prod_lista' referenced before assignment

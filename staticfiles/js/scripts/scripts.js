@@ -98,4 +98,6 @@
             $("#recargarProductos").trigger("click");
         }); 
      };     
+
+
 	   
