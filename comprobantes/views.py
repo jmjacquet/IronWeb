@@ -177,6 +177,7 @@ def buscarDatosProd(request):
        pitc = 0.00
        ptasa = 0.00
        unidad = 'u.'
+       prod_lista = None
        if idProd:
         p = prod_productos.objects.get(id=idProd)
         if p:
@@ -204,7 +205,8 @@ def buscarDatosProd(request):
 
        precio_siva = pventa /(1+coeficiente)
        precio_siva = Decimal(round(precio_siva,2))
-       costo_siva = prod_lista.precio_costo
+       if prod_lista:
+        costo_siva = prod_lista.precio_costo
        total_iva = pventa - precio_siva
        total_iva = Decimal(round(total_iva, 2))
        precio_tot = pventa
