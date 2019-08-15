@@ -383,9 +383,13 @@ $("#id_letra").change(function(){
      $('.segunLetra').each(function() {
         if (letra != 'A'){
           $(this).hide();          
+          $("#tit_precio").attr('data-original-title', "Precio Venta con impuestos");
+          $("#tit_total").attr('data-original-title', "Importe Total");
         }
         else{
           $(this).show();
+          $("#tit_precio").attr('data-original-title', "Precio Venta sin impuestos");
+          $("#tit_total").attr('data-original-title', "Importe Subtotal + IVA");
         };
        });
      

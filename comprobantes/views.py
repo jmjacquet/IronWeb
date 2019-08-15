@@ -159,7 +159,7 @@ def obtener_stock(prod_ubi):
 
 @login_required 
 def buscarDatosProd(request):                                  
-   #try:                          
+   try:                          
        prod= {}
        idProd = request.GET.get('idp', '')
        idubi = request.GET.get('idubi', '')       
@@ -212,9 +212,9 @@ def buscarDatosProd(request):
        prod={'precio_venta':pventa,'precio_costo':pcosto,'stock':stock,'tasa_iva__id':tasa_iva,'tasa_iva__coeficiente':coeficiente
             ,'unidad':unidad,'precio_siva':precio_siva,'total_iva':total_iva,'precio_tot':precio_tot,'costo_siva':costo_siva}  
            
-   # except:
-   #   prod= {}
-       return HttpResponse( json.dumps(prod, cls=DjangoJSONEncoder), content_type='application/json' )     
+   except:
+     prod= {}
+   return HttpResponse( json.dumps(prod, cls=DjangoJSONEncoder), content_type='application/json' )     
   
 def buscarPrecioProd(prod,letra,cant,precio):                                  
                                        
@@ -251,20 +251,24 @@ def buscarPrecioProd(prod,letra,cant,precio):
 def buscarDatosEntidad(request):                     
    lista= {}
    try:
-    id = request.GET['id']
-    entidad = egr_entidad.objects.get(id=id)   
-    dcto=entidad.dcto_general or 0
-    tope_cta_cte = entidad.tope_cta_cte
-    lista_precios = 1
-    if entidad.lista_precios_defecto:
-        lista_precios = entidad.lista_precios_defecto.id   
-    if tope_cta_cte>0:
-        saldo = entidad.get_saldo_pendiente()
-    else:
-        saldo = 0    
-    saldo_sobrepaso = saldo - tope_cta_cte
-    print saldo_sobrepaso
-    lista = {'fact_categFiscal':entidad.fact_categFiscal,'dcto_general':dcto,'saldo_sobrepaso':saldo_sobrepaso,'lista_precios':lista_precios}
+      id = request.GET['id']
+      entidad = egr_entidad.objects.get(id=id)   
+      dcto=entidad.dcto_general or 0    
+      tope_cta_cte = entidad.tope_cta_cte
+
+      lista_precios = 1
+      if entidad.lista_precios_defecto:
+          lista_precios = entidad.lista_precios_defecto.id   
+      if tope_cta_cte>0:
+          saldo = entidad.get_saldo_pendiente()
+      else:
+          saldo = 0    
+      if not tope_cta_cte:
+        saldo_sobrepaso = 0
+      else:
+        saldo_sobrepaso = saldo - tope_cta_cte
+
+      lista = {'fact_categFiscal':entidad.fact_categFiscal,'dcto_general':dcto,'saldo_sobrepaso':saldo_sobrepaso,'lista_precios':lista_precios}
    except:
     lista= {}
    return HttpResponse( json.dumps(lista, cls=DjangoJSONEncoder), content_type='application/json' )  

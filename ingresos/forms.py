@@ -115,6 +115,8 @@ class CPBVentaForm(forms.ModelForm):
 		try:
 			empresa = self.initial['request'].user.userprofile.id_usuario.empresa						
 			if (not facturacion_cliente_letra(letra,cliente_categ_fiscal,empresa.categ_fiscal))and(cpb_tipo.facturable):
+				print cliente_categ_fiscal
+				print empresa.categ_fiscal
 				raise forms.ValidationError(u'Letra no válida para el Cliente seleccionado!')	
 
 		except gral_empresa.DoesNotExist:

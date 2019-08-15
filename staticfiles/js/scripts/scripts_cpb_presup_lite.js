@@ -356,7 +356,18 @@ $("#id_letra").change(function(){
      letra = $("#id_letra").val();
      pto_vta = $("#id_pto_vta").val();
      cpb_tipo = 11; 
-     
+     $('.segunLetra').each(function() {
+        if (letra != 'A'){
+          $(this).hide();          
+          $("#tit_precio").attr('data-original-title', "Precio Venta con impuestos");
+          $("#tit_total").attr('data-original-title', "Importe Total");
+        }
+        else{
+          $(this).show();
+          $("#tit_precio").attr('data-original-title', "Precio Venta sin impuestos");
+          $("#tit_total").attr('data-original-title', "Importe Subtotal + IVA");
+        };
+       });
      ultimoNumCPB(cpb_tipo,letra,pto_vta);
  });  
 
