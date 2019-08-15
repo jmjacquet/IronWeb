@@ -317,7 +317,7 @@ def tipo_comprob_fiscal(id):
     return COMPROB_FISCAL
 
 def facturacion_cliente_letra(letra, cliente_categ,empresa_categ):
-    #RI    
+    #RI        
     if empresa_categ==1:
         #RI
         if cliente_categ==1:

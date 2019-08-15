@@ -27,8 +27,9 @@ function quitarProds(){
 
 
 $("#id_entidad").change(function(){
-    var id =  $("#id_entidad").val();
-
+  var id =  $("#id_entidad").val();
+  if (id!='')
+    {
           $.ajax({
                 data: {'id': id},
                 url: '/comprobantes/buscarDatosEntidad/',
@@ -38,18 +39,24 @@ $("#id_entidad").change(function(){
                      
                      if (data!='')
                         {
-                          $("#id_cliente_categ_fiscal").val(data[0]['fact_categFiscal']); 
-                          if (data[0]['dcto_general']==''){
-                            $("#id_cliente_descuento").val(data[0]['dcto_general'])
-                          }else {$("#id_cliente_descuento").val(0);};
-                          
+                          $("#id_cliente_categ_fiscal").val(data['fact_categFiscal']); 
+                          if (data['dcto_general']==''){
+                            $("#id_cliente_descuento").val(data['dcto_general'])
+                          }else {$("#id_cliente_descuento").val(0);};                          
+                          if (data['lista_precios']!=''){
+                             $("#id_lista_precios").find('option[value="'+data['lista_precios']+'"]').attr("selected",true);
+                          };
+
+                          var tot = data['saldo_sobrepaso'];
+                          if (tot>0){
+                            alertify.alert("TOPE SALDO PERMITIDO CLIENTES","¡El saldo pendiente sobrepasa al tope permitido por <b>$"+tot+"</b>!"); 
+                          };
                         }
                         else{                 
                          $("#id_cliente_categ_fiscal").val(5); 
                           $("#id_cliente_descuento").val(0); 
                         };
 
-                                                
                         calcularTotales();
                 },
                 error : function(message) {
@@ -57,28 +64,30 @@ $("#id_entidad").change(function(){
                      console.log(message);
                   }
               });
-    if ($('#id_tipo_form').val()=='ALTA')
-    {        
-          $.ajax({
-                data: {'id': id},
-                url: '/comprobantes/setearLetraCPB/',
-                type: 'get',
-                cache: true,          
-                success : function(data) {
-                     
-                     if (data!='')
-                        {
-                          $("#id_letra").val(data[0]); 
-                          $("#id_letra").trigger("change");
-                        }
+
+      if ($('#id_tipo_form').val()=='ALTA')
+      {        
+            $.ajax({
+                  data: {'id': id},
+                  url: '/comprobantes/setearLetraCPB/',
+                  type: 'get',
+                  cache: true,          
+                  success : function(data) {
                        
-                },
-                error : function(message) {
-                     /*alertify.alert('Búsqueda por CUIT','No se encontró el Proveedor.');*/
-                     console.log(message);
-                  }
-              });
-      }
+                       if (data!='')
+                          {
+                            $("#id_letra").val(data[0]); 
+                            $("#id_letra").trigger("change");
+                          }
+                         
+                  },
+                  error : function(message) {
+                       /*alertify.alert('Búsqueda por CUIT','No se encontró el Proveedor.');*/
+                       console.log(message);
+                    }
+                });
+        }
+    }
 
   }); 
 
@@ -88,28 +97,27 @@ function calcularProd(i){
   var cant = parseFloat($("input[name='formDetalle-"+i+"-cantidad']").val())|| 0;
   var porcDcto = parseFloat($("input[name='formDetalle-"+i+"-porc_dcto']").val())|| 0;
   var importe_subtotal = 0;
-  var importe_iva = 0;
+  var importe_iva = parseFloat($("input[name='formDetalle-"+i+"-importe_total']").val())
   var importe_total = 0;
   var coef_iva = parseFloat($("input[name='formDetalle-"+i+"-coef_iva']").val())|| 0;            
   var importe_unitario = parseFloat($("input[name='formDetalle-"+i+"-importe_unitario']").val())|| 0;    
-  var importe_parcial = (importe_unitario * cant)*(1-porcDcto/100)
-   
+  var pventa = parseFloat($("input[name='formDetalle-"+i+"-pventa']").val())|| 0;  
+  
+  importe_subtotal = (importe_unitario * cant)*(1-porcDcto/100);
   
   letra = $("#id_letra").val();                      
   if (letra=='A'){ 
-    importe_iva = importe_parcial * coef_iva;
-    importe_subtotal = importe_parcial;
+    importe_iva = importe_subtotal*coef_iva;
     importe_total = importe_subtotal + importe_iva;    
   }else
   {if  (letra=='X') {    
-    importe_iva = 0
-    importe_total = importe_parcial; 
-    importe_subtotal = importe_total - importe_iva;
+    importe_iva = 0    
+    importe_total = importe_subtotal;
   }  
   else{    
-    importe_iva = importe_parcial-(importe_parcial/(1+coef_iva))
-    importe_total = importe_parcial; 
-    importe_subtotal = importe_total - importe_iva;
+    importe_total = importe_subtotal;
+    importe_subtotal = importe_total/(1+coef_iva)
+    importe_iva =importe_total - importe_subtotal;
   }}  
   $("input[name='formDetalle-"+i+"-importe_subtotal']").val(importe_subtotal.toFixed(2));  
   $("input[name='formDetalle-"+i+"-importe_total']").val(importe_total.toFixed(2)); 
@@ -133,10 +141,11 @@ function recargarProd(i){
                  
                  if (data!='')
                     {                      
-                      $("[name='formDetalle-"+i+"-importe_costo']").val(data['precio_costo']); 
+                      $("[name='formDetalle-"+i+"-importe_costo']").val(data['costo_siva']); 
                       $("[name='formDetalle-"+i+"-coef_iva']").val(data['tasa_iva__coeficiente']); 
                       $("[name='formDetalle-"+i+"-tasa_iva']").val(data['tasa_iva__id']); 
-                      $("[name='formDetalle-"+i+"-unidad']").val(data['unidad']);                                           
+                      $("[name='formDetalle-"+i+"-unidad']").val(data['unidad']);
+                      $("[name='formDetalle-"+i+"-pventa']").val(data['precio_tot']);                                           
                     }
             },
             error : function(message) {
@@ -205,60 +214,78 @@ function cargarProd(i){
     var idlista =  $("#id_lista_precios").val();
     var dcto = $("#id_cliente_descuento").val();   
     if (dcto == undefined) {dcto=0;};
-    $.ajax({
-            data: {'idp': idp,'idubi':idubi,'idlista':idlista},
-            url: '/comprobantes/buscarDatosProd/',
-            type: 'get',
-            cache: true,          
-            success : function(data) {
-                 
-                 if (data!='')
-                    {                      
-                      $("[name='formDetalle-"+i+"-importe_costo']").val(data['precio_costo']); 
-                      $("[name='formDetalle-"+i+"-coef_iva']").val(data['tasa_iva__coeficiente']); 
-                      $("[name='formDetalle-"+i+"-tasa_iva']").val(data['tasa_iva__id']); 
-                      $("[name='formDetalle-"+i+"-unidad']").val(data['unidad']);                     
-                      $("[name='formDetalle-"+i+"-porc_dcto']").val(dcto); 
-                      $("[name='formDetalle-"+i+"-cantidad']").val('1');                  
-                      var $porcDcto = dcto;
-                      var $importe_unitario = data['precio_venta'];
-                      var $importe_iva = data['total_iva'];
-                      var $importe_tot = data['precio_tot'];                              
-                      var $importe_siva = data['precio_siva'];                   
-                      var $coef_iva = data['tasa_iva__coeficiente'];
-                      letra = $("#id_letra").val();                      
-                      if (letra=='A'){ 
-                        $("[name='formDetalle-"+i+"-importe_unitario']").val(parseFloat($importe_siva).toFixed(2));
-                      }else
-                      {
-                        $("[name='formDetalle-"+i+"-importe_unitario']").val(parseFloat($importe_unitario).toFixed(2));
-                      };
-                      
-                      $("[name='formDetalle-"+i+"-importe_total']").val(parseFloat($importe_tot).toFixed(2));                      
-                      $("[name='formDetalle-"+i+"-importe_iva']").val(parseFloat($importe_iva).toFixed(2));
-                    }
-                    else{                 
-                      $("[name='formDetalle-"+i+"-importe_unitario']").val('0');
-                      $("[name='formDetalle-"+i+"-coef_iva']").val('0'); 
-                      $("[name='formDetalle-"+i+"-importe_costo']").val('0');
-                      $("[name='formDetalle-"+i+"-tasa_iva']").val('0');  
-                      $("[name='formDetalle-"+i+"-unidad']").val('u.');
-                      $("[name='formDetalle-"+i+"-porc_dcto']").val(dcto); 
-                      $("[name='formDetalle-"+i+"-cantidad']").val('0'); 
-                      $("[name='formDetalle-"+i+"-importe_total']").val('0');
-                      $("[name='formDetalle-"+i+"-importe_iva']").val('0');
-                    };
-                    $("[name='formDetalle-"+i+"-lista_precios']").val(idlista); 
-                    $("[name='formDetalle-"+i+"-origen_destino']").val(idubi);
+    if (idp!=''){     
+          $.ajax({
+                  data: {'idp': idp,'idubi':idubi,'idlista':idlista},
+                  url: '/comprobantes/buscarDatosProd/',
+                  type: 'get',
+                  async: false,
+                  cache: true,          
+                  success : function(data) {
+                       
+                       if (data!='')
+                          {                      
+                            $("[name='formDetalle-"+i+"-importe_costo']").val(data['costo_siva']); 
+                            $("[name='formDetalle-"+i+"-coef_iva']").val(data['tasa_iva__coeficiente']); 
+                            $("[name='formDetalle-"+i+"-tasa_iva']").val(data['tasa_iva__id']); 
+                            $("[name='formDetalle-"+i+"-unidad']").val(data['unidad']);                     
+                            $("[name='formDetalle-"+i+"-porc_dcto']").val(dcto); 
+                            $("[name='formDetalle-"+i+"-cantidad']").val('1');                  
+                            var $porcDcto = dcto;
+                            var $importe_unitario = data['precio_venta'];
+                            var $importe_iva = data['total_iva'];
+                            var $importe_tot = data['precio_tot'];                              
+                            var $importe_siva = data['precio_siva'];                   
+                            var $coef_iva = data['tasa_iva__coeficiente'];
+                            $("[name='formDetalle-"+i+"-pventa']").val(parseFloat($importe_unitario).toFixed(2));  
+                            letra = $("#id_letra").val();                      
+                            if (letra=='A'){ 
+                              $("[name='formDetalle-"+i+"-importe_unitario']").val(parseFloat($importe_siva).toFixed(2));
+                              $("[name='formDetalle-"+i+"-importe_subtotal']").val(parseFloat($importe_siva).toFixed(2)); 
+                            }else
+                            {
+                              $("[name='formDetalle-"+i+"-importe_unitario']").val(parseFloat($importe_unitario).toFixed(2));
+                              $("[name='formDetalle-"+i+"-importe_subtotal']").val(parseFloat($importe_unitario).toFixed(2)); 
+                            };                      
+                            
+                            $("[name='formDetalle-"+i+"-importe_total']").val(parseFloat($importe_tot).toFixed(2));                      
+                            $("[name='formDetalle-"+i+"-importe_iva']").val(parseFloat($importe_iva).toFixed(2));
+                          }
+                          else{                 
+                            $("[name='formDetalle-"+i+"-importe_unitario']").val('0');
+                            $("[name='formDetalle-"+i+"-coef_iva']").val('0'); 
+                            $("[name='formDetalle-"+i+"-importe_costo']").val('0');
+                            $("[name='formDetalle-"+i+"-tasa_iva']").val('0');  
+                            $("[name='formDetalle-"+i+"-unidad']").val('u.');
+                            $("[name='formDetalle-"+i+"-porc_dcto']").val(dcto); 
+                            $("[name='formDetalle-"+i+"-cantidad']").val('0'); 
+                            $("[name='formDetalle-"+i+"-importe_total']").val('0');
+                            $("[name='formDetalle-"+i+"-importe_subtotal']").val('0');
+                            $("[name='formDetalle-"+i+"-importe_iva']").val('0');
+                          };
+                          $("[name='formDetalle-"+i+"-lista_precios']").val(idlista); 
+                          $("[name='formDetalle-"+i+"-origen_destino']").val(idubi);
 
-                    calcularProd(i);                       
-                    calcularTotales();
-            },
-            error : function(message) {
-                 /*alertify.alert('Búsqueda por CUIT','No se encontró el Proveedor.');*/
-                 console.log(message);
-              }
-          });  
+                          calcularProd(i);                       
+                          calcularTotales();
+                  },
+                  error : function(message) {
+                       /*alertify.alert('Búsqueda por CUIT','No se encontró el Proveedor.');*/
+                       console.log(message);
+                    }
+                });  
+        }else{                 
+            $("[name='formDetalle-"+i+"-importe_unitario']").val('0');
+            $("[name='formDetalle-"+i+"-coef_iva']").val('0'); 
+            $("[name='formDetalle-"+i+"-importe_costo']").val('0');
+            $("[name='formDetalle-"+i+"-tasa_iva']").val('0');  
+            $("[name='formDetalle-"+i+"-unidad']").val('u.');
+            $("[name='formDetalle-"+i+"-porc_dcto']").val(dcto); 
+            $("[name='formDetalle-"+i+"-cantidad']").val('0'); 
+            $("[name='formDetalle-"+i+"-importe_total']").val('0');
+            $("[name='formDetalle-"+i+"-importe_subtotal']").val('0');
+            $("[name='formDetalle-"+i+"-importe_iva']").val('0');
+                }
     };
 
 
@@ -405,7 +432,7 @@ $('.formDetalle').formset({
             });
             $("[name='formDetalle-"+i1+"-producto']").focus();
              $("#id_letra").trigger("change");
-            cargarProd(i1);   
+            calcularProd(i1);   
             recalcular();
             
            },
@@ -492,14 +519,10 @@ $("#recargarProductos").click(function () {
             $.each(c["productos"], function (idx, item) {
                 $("[name='formDetalle-"+j+"-producto']").append('<option value="' + item['id'] + '">' + item['codigo']+' - '+item['nombre'] + '</option>');                
             }); 
-            $("[name='formDetalle-"+j+"-producto']").trigger("chosen:updated");           
-             
+            $("[name='formDetalle-"+j+"-producto']").trigger("chosen:updated");                       
           });           
         });
   });
-
-
-
 
       
 $( "#GuardarVenta" ).click(function() {    
@@ -546,6 +569,7 @@ function ultimoNumCPB(cpb_tipo,letra,pto_vta){
           url: '/comprobantes/ultimp_nro_cpb_ajax/',
           type: 'get',
           cache: true,          
+          async: false,
           success : function(data) {
                
                if (data!='')
@@ -573,14 +597,18 @@ $("#id_letra").change(function(){
      
      $('.segunLetra').each(function() {
         if (letra != 'A'){
-          $(this).hide();          
+          $(this).hide();
+          $("#tit_precio").attr('data-original-title', "Precio Venta con impuestos");
+          $("#tit_total").attr('data-original-title', "Importe Total");
         }
         else{
           $(this).show();
+          $("#tit_precio").attr('data-original-title', "Precio Venta sin impuestos");
+          $("#tit_total").attr('data-original-title', "Importe Subtotal + IVA");
         };
        });
      
-     ultimoNumCPB(cpb_tipo,letra,pto_vta);
+     ultimoNumCPB(cpb_tipo,letra,pto_vta);    
  });  
 $("#id_pto_vta").change(function(){
      letra = $("#id_letra").val();

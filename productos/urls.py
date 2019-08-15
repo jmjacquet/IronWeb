@@ -6,7 +6,8 @@ from django.views.generic import RedirectView,TemplateView
 
 urlpatterns = patterns('productos.views',
 	
-    # url(r'^estudios/$', EstudiosView.as_view(),name="padrones_estudio"),
+    url(r'^coeficiente_iva/$', coeficiente_iva,name="coeficiente_iva"),
+
     url(r'^$', ProductosView.as_view(),name="productos_listado"),
     url(r'^producto_nuevo/$', ProductosCreateView.as_view(), name="producto_nuevo"),
     url(r'^producto_editar/(?P<id>\d+)/$', ProductosEditView.as_view(), name="producto_editar"),

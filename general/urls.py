@@ -4,6 +4,7 @@ from django.conf import settings
 import os
 from views import *
 from django.views.generic import RedirectView,TemplateView
+from django.contrib import admin
 
 # Uncomment the next two lines to enable the admin:
 
@@ -11,7 +12,7 @@ from django.views.generic import RedirectView,TemplateView
 urlpatterns = patterns('general.views',
 	
     # url(r'^estudios/$', EstudiosView.as_view(),name="padrones_estudio"),
-    
+    url(r'^admin/', include(admin.site.urls)),
     url(r'^$', PrincipalView.as_view(),name="principal"),
     url(r'^buscarDatosAPICUIT/$', 'buscarDatosAPICUIT', name='buscarDatosAPICUIT'),
     url(r'^buscarDatosEmpresa/$', 'buscarDatosEmpresa', name='buscarDatosEmpresa'),

@@ -33,4 +33,8 @@ urlpatterns = patterns('reportes.views',
 
  url(r'^reporte_retenciones_imp/$', reporte_retenciones_imp, name="reporte_retenciones_imp"),
 
+ url(r'^costo_producto_vendido/$', costo_producto_vendidoView.as_view(), name="costo_producto_vendido"),
+
+ url(r'^comisiones_vendedores/$', comisiones_vendedoresView.as_view(),name="comisiones_vendedores"),
+
 )

@@ -32,8 +32,17 @@ from django.utils.functional import curry
 from django.forms.models import model_to_dict
 
 @login_required 
-def recalcular_cpbs(request):
+def recalcular_precios(request):
+    detalles = cpb_comprobante_detalle.objects.filter(cpb_comprobante__cpb_tipo__tipo__in=[1,2,3,9,14],cpb_comprobante__cpb_tipo__usa_stock=True)
+    for c in detalles:
+        lp = prod_producto_lprecios.objects.get(producto=c.producto,lista_precios=c.lista_precios)
+        c.importe_costo = lp.precio_costo
+        c.save()
 
+    return HttpResponseRedirect(reverse('principal')) 
+
+@login_required 
+def recalcular_cpbs(request):
     comprobantes = cpb_comprobante.objects.all()
     for c in comprobantes:
         recalcular_saldo_cpb(c.id)
@@ -159,6 +168,10 @@ def buscarDatosProd(request):
        coeficiente = 0
        stock = 1
        pventa = 0
+       precio_siva = 0
+       costo_siva = 0
+       total_iva=0
+       precio_tot = 0
        pcosto = 0       
        tasa_iva = 5 #Por defecto 0.21
        pitc = 0.00
@@ -190,8 +203,10 @@ def buscarDatosProd(request):
                     #ptasa = prod_lista.precio_tasa
 
        precio_siva = pventa /(1+coeficiente)
-       costo_siva = pcosto
+       precio_siva = Decimal(round(precio_siva,2))
+       costo_siva = prod_lista.precio_costo
        total_iva = pventa - precio_siva
+       total_iva = Decimal(round(total_iva, 2))
        precio_tot = pventa
        
        prod={'precio_venta':pventa,'precio_costo':pcosto,'stock':stock,'tasa_iva__id':tasa_iva,'tasa_iva__coeficiente':coeficiente
@@ -234,14 +249,29 @@ def buscarPrecioProd(prod,letra,cant,precio):
   
 @login_required 
 def buscarDatosEntidad(request):                     
-   
-   try:                          
-    id = request.GET['id']
-    entidad = egr_entidad.objects.filter(id=id)[:1]
-    entidad=list(entidad.values('fact_categFiscal','dcto_general'))        
+   lista= {}
+   try:
+      id = request.GET['id']
+      entidad = egr_entidad.objects.get(id=id)   
+      dcto=entidad.dcto_general or 0    
+      tope_cta_cte = entidad.tope_cta_cte
+
+      lista_precios = 1
+      if entidad.lista_precios_defecto:
+          lista_precios = entidad.lista_precios_defecto.id   
+      if tope_cta_cte>0:
+          saldo = entidad.get_saldo_pendiente()
+      else:
+          saldo = 0    
+      if not tope_cta_cte:
+        saldo_sobrepaso = 0
+      else:
+        saldo_sobrepaso = saldo - tope_cta_cte
+
+      lista = {'fact_categFiscal':entidad.fact_categFiscal,'dcto_general':dcto,'saldo_sobrepaso':saldo_sobrepaso,'lista_precios':lista_precios}
    except:
-    entidad= []
-   return HttpResponse( json.dumps(entidad, cls=DjangoJSONEncoder), content_type='application/json' )  
+    lista= {}
+   return HttpResponse( json.dumps(lista, cls=DjangoJSONEncoder), content_type='application/json' )  
 
 @login_required 
 def setearLetraCPB(request):
@@ -1897,7 +1927,6 @@ def imprimir_detalles(request):
     limpiar_sesion(request)        
     id_cpbs = [int(x) for x in request.GET.getlist('id_cpb')]        
     cpbs_detalles = cpb_comprobante_detalle.objects.filter(cpb_comprobante__id__in=id_cpbs,cpb_comprobante__empresa = empresa_actual(request)).order_by('cpb_comprobante__fecha_cpb','producto__nombre')
-
     context = {}
     context = getVariablesMixin(request)  
     context['cpbs_detalles'] = cpbs_detalles

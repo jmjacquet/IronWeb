@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 from django import forms
 from django.forms import ModelForm
 import datetime
@@ -178,3 +179,24 @@ class ConsultaRepRetencImp(forms.Form):
     def __init__(self, *args, **kwargs):		
 		request = kwargs.pop('request', None)   
 		super(ConsultaRepRetencImp, self).__init__(*args, **kwargs)
+
+from ingresos.forms import EntidadModelChoiceField
+
+CAMPO = (    
+    ('importe_subtotal', u'Importe Bruto'),
+    ('importe_total', u'Importe Neto'),    
+)
+
+class ConsultaVendedores(forms.Form):               
+	vendedor = EntidadModelChoiceField(label='Vendedor',queryset=egr_entidad.objects.filter(tipo_entidad=3,baja=False),empty_label='---',required = True)
+	cliente = forms.CharField(label='Cliente',max_length=100,widget=forms.TextInput(attrs={'class':'form-control','text-transform': 'uppercase'}),required=False)    
+	campo = forms.ChoiceField(label='Calculado sobre',choices=CAMPO,required=True)	
+	fdesde =  forms.DateField(label='Fecha Desde',widget=forms.DateInput(attrs={'class': 'form-control datepicker'}),required = False,initial=inicioMes())
+	fhasta =  forms.DateField(label='Fecha Hasta',widget=forms.DateInput(attrs={'class': 'form-control datepicker'}),required = False,initial=finMes())    	
+	pto_vta = forms.IntegerField(label='Pto. Vta.',required = False)		
+	comision = forms.DecimalField(label=u'Comisión',widget=PrependWidget(attrs={'class':'form-control'},base_widget=NumberInput, data='%'),initial=5.00,decimal_places=2)
+	def __init__(self, *args, **kwargs):
+		empresa = kwargs.pop('empresa', None)  
+		request = kwargs.pop('request', None) 
+		super(ConsultaVendedores, self).__init__(*args, **kwargs)						
+		self.fields['vendedor'].queryset = egr_entidad.objects.filter(tipo_entidad=3,baja=False,empresa__id__in=empresas_habilitadas(request)).order_by('apellido_y_nombre')

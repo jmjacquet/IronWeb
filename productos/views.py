@@ -20,6 +20,20 @@ from usuarios.views import tiene_permiso
 from django.utils.functional import curry 
 from django.db.models.expressions import RawSQL
 from comprobantes.models import actualizar_stock_multiple,actualizar_stock
+from django.core.serializers.json import DjangoJSONEncoder
+
+@login_required
+def coeficiente_iva(request):
+    id = request.GET['id']
+    if not id:
+        coef = {'tiva':0}
+    else:
+        try:
+            tiva = gral_tipo_iva.objects.get(pk=id) 
+            coef = {'tiva':tiva.coeficiente}
+        except:
+            coef = {'tiva':0}
+    return HttpResponse( json.dumps(coef,cls=DjangoJSONEncoder), content_type='application/json' ) 
 
 #************* PRODUCTOS **************
 class ProductosView(VariablesMixin,ListView):

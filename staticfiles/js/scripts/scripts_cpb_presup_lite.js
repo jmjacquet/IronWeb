@@ -30,9 +30,9 @@ $("#id_entidad").change(function(){
                      
                      if (data!='')
                         {
-                          $("#id_cliente_categ_fiscal").val(data[0]['fact_categFiscal']); 
-                          if (data[0]['dcto_general']==''){
-                            $("#id_cliente_descuento").val(data[0]['dcto_general'])
+                          $("#id_cliente_categ_fiscal").val(data['fact_categFiscal']); 
+                          if (data['dcto_general']==''){
+                            $("#id_cliente_descuento").val(data['dcto_general'])
                           }else {$("#id_cliente_descuento").val(0);};
                           
                         }
@@ -150,7 +150,7 @@ function cargarProd(i){
                  if (data!='')
                     {
                       
-                      $("[name='formDetalle-"+i+"-importe_costo']").val(data['precio_costo']); 
+                      $("[name='formDetalle-"+i+"-importe_costo']").val(data['costo_siva']); 
                       $("[name='formDetalle-"+i+"-coef_iva']").val(data['tasa_iva__coeficiente']); 
                       $("[name='formDetalle-"+i+"-tasa_iva']").val(data['tasa_iva__id']); 
                       $("[name='formDetalle-"+i+"-unidad']").val(data['unidad']);                     
@@ -213,7 +213,7 @@ function recargarProd(i){
                  
                  if (data!='')
                     {                      
-                      $("[name='formDetalle-"+i+"-importe_costo']").val(data['precio_costo']); 
+                      $("[name='formDetalle-"+i+"-importe_costo']").val(data['costo_siva']); 
                       $("[name='formDetalle-"+i+"-coef_iva']").val(data['tasa_iva__coeficiente']); 
                       $("[name='formDetalle-"+i+"-tasa_iva']").val(data['tasa_iva__id']); 
                       $("[name='formDetalle-"+i+"-unidad']").val(data['unidad']);                                           
@@ -356,7 +356,18 @@ $("#id_letra").change(function(){
      letra = $("#id_letra").val();
      pto_vta = $("#id_pto_vta").val();
      cpb_tipo = 11; 
-     
+     $('.segunLetra').each(function() {
+        if (letra != 'A'){
+          $(this).hide();          
+          $("#tit_precio").attr('data-original-title', "Precio Venta con impuestos");
+          $("#tit_total").attr('data-original-title', "Importe Total");
+        }
+        else{
+          $(this).show();
+          $("#tit_precio").attr('data-original-title', "Precio Venta sin impuestos");
+          $("#tit_total").attr('data-original-title', "Importe Subtotal + IVA");
+        };
+       });
      ultimoNumCPB(cpb_tipo,letra,pto_vta);
  });  
 

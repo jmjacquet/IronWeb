@@ -223,10 +223,12 @@
                         <a class="acceso_menu" href="{% url 'producto_nuevo' %}">+</a>
                       </li>
                       {% endif %}
-                      {% if 'prod_productos_abm' in permisos_grupo %} 
+                      {% if 'prod_precios' in permisos_grupo %} 
                       <li>
                         <a href="{% url 'prod_precios_listado' %}"><i class="fa fa-list-alt"></i>Actualización Precios</a>
-                      </li>                       
+                      </li> 
+                      {% endif %}
+                      {% if 'prod_stock' in permisos_grupo %}                       
                       <li>
                         <a href="{% url 'prod_stock_listado' %}"><i class="fa fa-cubes"></i>Mantenimiento Stock</a>
                       </li>             
@@ -277,26 +279,6 @@
                         <a href="{% url 'saldos_proveedores' %}"><i class="icon-bar-chart"></i>Saldos Proveedores</a>
                       </li>
                       {% endif %}                                                              
-                      {% if 'rep_varios' in permisos_grupo %} 
-                      <li>
-                        <h3>REPORTES VARIOS</h3>
-                      </li>                      
-                      <li>
-                        <a href="{% url 'vencimientos_cpbs' %}"><i class="icon-bar-chart"></i>Consulta Comprobantes</a>
-                      </li>
-                      <li>
-                        <a href="{% url 'movimientos_stock' %}"><i class="icon-bar-chart"></i>Movimientos Productos/Stock</a>
-                      </li>
-                      <li>
-                        <a href="{% url 'rankings' %}"><i class="icon-bar-chart"></i>Estadísticas Ventas/Compras</a>
-                      </li>
-                      {% endif %} 
-                    {% endif %} 
-                    </ul>
-                  </div>
-                {% endif %}                
-                  <div class="col-sm-6">
-                    <ul class="mega-menu-submenu">
                       {% if permisos_rep_contables %}
                       <li>
                         <h3>REPORTES CONTABLES</h3>
@@ -318,7 +300,38 @@
                       </li> 
                       {% endif %}
                      {% endif %}
-                     {% if permisos_rep_finanzas %}
+
+                      
+
+
+                    {% endif %} 
+                    </ul>
+                  </div>
+                {% endif %}                
+                  <div class="col-sm-6">
+                    <ul class="mega-menu-submenu">
+                      {% if 'rep_varios' in permisos_grupo %} 
+                      <li>
+                        <h3>REPORTES VARIOS</h3>
+                      </li>                      
+                      <li>
+                        <a href="{% url 'vencimientos_cpbs' %}"><i class="icon-bar-chart"></i>Consulta Comprobantes</a>
+                      </li>
+                      <li>
+                        <a href="{% url 'movimientos_stock' %}"><i class="icon-bar-chart"></i>Movimientos Productos/Stock</a>
+                      </li>
+                      <li>
+                        <a href="{% url 'rankings' %}"><i class="icon-bar-chart"></i>Estadísticas Ventas/Compras</a>
+                      </li>
+                      <li>
+                        <a href="{% url 'costo_producto_vendido' %}"><i class="icon-bar-chart"></i>Reporte Costos x Ventas</a>
+                      </li>
+                      <li>
+                        <a href="{% url 'comisiones_vendedores' %}"><i class="icon-bar-chart"></i>Comisiones x Ventas</a>
+                      </li>
+                      {% endif %} 
+
+                      {% if permisos_rep_finanzas %}
                       <li>
                         <h3>REPORTES FINANZAS</h3>
                       </li>                      
@@ -337,6 +350,8 @@
                         <a href="{% url 'seguimiento_cheques' %}"><i class="icon-bar-chart"></i>Seguimiento Cheques</a>
                       </li>
                       {% endif %}                 
+
+                     
                       {% endif %}
                     </ul>
                   </div> 

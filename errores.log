@@ -3802,3 +3802,88 @@ Traceback (most recent call last):
   File "C:\Python27\lib\site-packages\MySQLdb\connections.py", line 36, in defaulterrorhandler
     raise errorvalue
 IntegrityError: (1062, "Duplicate entry '1' for key 'usuusuario_id'")
+[09/Aug/2019 20:36:58] ERROR [django.request:256] Internal Server Error: /reportes/reporte_retenciones_imp/
+Traceback (most recent call last):
+  File "C:\Python27\lib\site-packages\django\core\handlers\base.py", line 132, in get_response
+    response = wrapped_callback(request, *callback_args, **callback_kwargs)
+  File "C:\Python27\lib\site-packages\django\contrib\auth\decorators.py", line 22, in _wrapped_view
+    return view_func(request, *args, **kwargs)
+  File "D:\Repo\ironStable\reportes\views.py", line 1219, in reporte_retenciones_imp
+    context = getVariablesMixin(request)
+  File "D:\Repo\ironStable\general\views.py", line 101, in getVariablesMixin
+    empresa = usr.userprofile.id_usuario.empresa
+  File "C:\Python27\lib\site-packages\django\utils\functional.py", line 226, in inner
+    return func(self._wrapped, *args)
+  File "C:\Python27\lib\site-packages\django\db\models\fields\related.py", line 470, in __get__
+    self.related.get_accessor_name()
+RelatedObjectDoesNotExist: User has no userprofile.
+[09/Aug/2019 21:45:27] ERROR [django.request:256] Internal Server Error: /comprobantes/recalcular_precios/
+Traceback (most recent call last):
+  File "C:\Python27\lib\site-packages\django\core\handlers\base.py", line 132, in get_response
+    response = wrapped_callback(request, *callback_args, **callback_kwargs)
+  File "C:\Python27\lib\site-packages\django\contrib\auth\decorators.py", line 22, in _wrapped_view
+    return view_func(request, *args, **kwargs)
+  File "D:\Repo\ironStable\comprobantes\views.py", line 36, in recalcular_precios
+    detalles = cpb_comprobante.objects.filter(cpb_comprobante__cpb_tipo__tipo__in=[1,2,3,9,14],cpb_comprobante__cpb_tipo__usa_stock=True)
+  File "C:\Python27\lib\site-packages\django\db\models\manager.py", line 127, in manager_method
+    return getattr(self.get_queryset(), name)(*args, **kwargs)
+  File "C:\Python27\lib\site-packages\django\db\models\query.py", line 679, in filter
+    return self._filter_or_exclude(False, *args, **kwargs)
+  File "C:\Python27\lib\site-packages\django\db\models\query.py", line 697, in _filter_or_exclude
+    clone.query.add_q(Q(*args, **kwargs))
+  File "C:\Python27\lib\site-packages\django\db\models\sql\query.py", line 1310, in add_q
+    clause, require_inner = self._add_q(where_part, self.used_aliases)
+  File "C:\Python27\lib\site-packages\django\db\models\sql\query.py", line 1338, in _add_q
+    allow_joins=allow_joins, split_subq=split_subq,
+  File "C:\Python27\lib\site-packages\django\db\models\sql\query.py", line 1150, in build_filter
+    lookups, parts, reffed_expression = self.solve_lookup_type(arg)
+  File "C:\Python27\lib\site-packages\django\db\models\sql\query.py", line 1036, in solve_lookup_type
+    _, field, _, lookup_parts = self.names_to_path(lookup_splitted, self.get_meta())
+  File "C:\Python27\lib\site-packages\django\db\models\sql\query.py", line 1397, in names_to_path
+    "Choices are: %s" % (name, ", ".join(available)))
+FieldError: Cannot resolve keyword 'cpb_comprobante' into field. Choices are: anulacion_fecha, anulacion_motivo, cae, cae_errores, cae_excepcion, cae_observaciones, cae_traceback, cae_vto, cae_xml_request, cae_xml_response, condic_pago, cpb_cobranza_cpb, cpb_cobranza_factura, cpb_comprobante_detalle, cpb_comprobante_fp, cpb_comprobante_padre, cpb_comprobante_perc_imp, cpb_comprobante_retenciones, cpb_comprobante_tot_iva, cpb_tipo, cpb_tipo_id, empresa, empresa_id, entidad, entidad_id, estado, estado_id, fecha_cpb, fecha_creacion, fecha_envio_mail, fecha_imputacion, fecha_recepcion_mail, fecha_vto, id, id_cpb_padre, id_cpb_padre_id, importe_exento, importe_gravado, importe_iva, importe_no_gravado, importe_perc_imp, importe_ret, importe_subtotal, importe_total, letra, numero, observacion, op_presupuesto, op_venta, presup_aprobacion, presup_aprobacion_id, presup_forma_pago, presup_tiempo_entrega, pto_vta, saldo, seguimiento, usuario, usuario_id, vendedor, vendedor_id
+[09/Aug/2019 21:46:17] ERROR [django.request:256] Internal Server Error: /comprobantes/recalcular_precios/
+Traceback (most recent call last):
+  File "C:\Python27\lib\site-packages\django\core\handlers\base.py", line 132, in get_response
+    response = wrapped_callback(request, *callback_args, **callback_kwargs)
+  File "C:\Python27\lib\site-packages\django\contrib\auth\decorators.py", line 22, in _wrapped_view
+    return view_func(request, *args, **kwargs)
+  File "D:\Repo\ironStable\comprobantes\views.py", line 38, in recalcular_precios
+    lp = prod_producto_lprecios.get(producto=c.producto,lista_precios=c.lista_precios)
+AttributeError: type object 'prod_producto_lprecios' has no attribute 'get'
+[13/Aug/2019 21:59:00] ERROR [django.request:256] Internal Server Error: /comprobantes/buscarDatosProd/
+Traceback (most recent call last):
+  File "C:\Python27\lib\site-packages\django\core\handlers\base.py", line 132, in get_response
+    response = wrapped_callback(request, *callback_args, **callback_kwargs)
+  File "C:\Python27\lib\site-packages\django\contrib\auth\decorators.py", line 22, in _wrapped_view
+    return view_func(request, *args, **kwargs)
+  File "D:\Repo\ironStable\comprobantes\views.py", line 204, in buscarDatosProd
+    total_iva = pventa - precio_siva
+TypeError: unsupported operand type(s) for -: 'Decimal' and 'float'
+[13/Aug/2019 22:00:15] ERROR [django.request:256] Internal Server Error: /comprobantes/buscarDatosProd/
+Traceback (most recent call last):
+  File "C:\Python27\lib\site-packages\django\core\handlers\base.py", line 132, in get_response
+    response = wrapped_callback(request, *callback_args, **callback_kwargs)
+  File "C:\Python27\lib\site-packages\django\contrib\auth\decorators.py", line 22, in _wrapped_view
+    return view_func(request, *args, **kwargs)
+  File "D:\Repo\ironStable\comprobantes\views.py", line 170, in buscarDatosProd
+    pventa,precio_siva,costo_siva,total_iva,precio_tot = 0
+TypeError: 'int' object is not iterable
+[13/Aug/2019 22:01:11] ERROR [django.request:256] Internal Server Error: /comprobantes/buscarDatosProd/
+Traceback (most recent call last):
+  File "C:\Python27\lib\site-packages\django\core\handlers\base.py", line 132, in get_response
+    response = wrapped_callback(request, *callback_args, **callback_kwargs)
+  File "C:\Python27\lib\site-packages\django\contrib\auth\decorators.py", line 22, in _wrapped_view
+    return view_func(request, *args, **kwargs)
+  File "D:\Repo\ironStable\comprobantes\views.py", line 208, in buscarDatosProd
+    total_iva = pventa - precio_siva
+TypeError: unsupported operand type(s) for -: 'Decimal' and 'float'
+[13/Aug/2019 22:02:23] ERROR [django.request:256] Internal Server Error: /comprobantes/buscarDatosProd/
+Traceback (most recent call last):
+  File "C:\Python27\lib\site-packages\django\core\handlers\base.py", line 132, in get_response
+    response = wrapped_callback(request, *callback_args, **callback_kwargs)
+  File "C:\Python27\lib\site-packages\django\contrib\auth\decorators.py", line 22, in _wrapped_view
+    return view_func(request, *args, **kwargs)
+  File "D:\Repo\ironStable\comprobantes\views.py", line 207, in buscarDatosProd
+    costo_siva = prod_lista.precio_costo
+UnboundLocalError: local variable 'prod_lista' referenced before assignment

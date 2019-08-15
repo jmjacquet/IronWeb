@@ -7,13 +7,12 @@ from dateutil.relativedelta import *
 from django.conf import settings
 import os 
 from general.utilidades import *
-from entidades.models import egr_entidad
 from productos.models import prod_productos,gral_tipo_iva,prod_ubicacion,prod_lista_precios
 from django.db.models import Sum
 from decimal import Decimal
 from django.utils import timezone
 from django.dispatch import receiver
-
+from entidades.models import egr_entidad
 
 class cpb_estado(models.Model):
     id = models.AutoField(primary_key=True,db_index=True)
@@ -104,9 +103,9 @@ class cpb_pto_vta(models.Model):
 
 class cpb_pto_vta_numero(models.Model):
     id = models.AutoField(primary_key=True,db_index=True)
-    cpb_tipo = models.ForeignKey('cpb_tipo',verbose_name=u'Tipo CPB', db_column='cpb_tipo',blank=True, null=True)
+    cpb_tipo = models.ForeignKey('comprobantes.cpb_tipo',verbose_name=u'Tipo CPB', db_column='cpb_tipo',blank=True, null=True)
     letra = models.CharField(u'Letra',choices=COMPROB_FISCAL,max_length=1,blank=True, null=True)
-    cpb_pto_vta = models.ForeignKey('cpb_pto_vta',verbose_name=u'Punto Vta', db_column='cpb_pto_vta',blank=True, null=True,on_delete=models.SET_NULL)
+    cpb_pto_vta = models.ForeignKey('comprobantes.cpb_pto_vta',verbose_name=u'Punto Vta', db_column='cpb_pto_vta',blank=True, null=True,on_delete=models.SET_NULL)
     ultimo_nro = models.PositiveIntegerField(u'Último Nº',default=0,blank=True, null=True)
     empresa =  models.ForeignKey('general.gral_empresa',db_column='empresa',blank=True, null=True,on_delete=models.SET_NULL)
     class Meta:
@@ -117,7 +116,7 @@ class cpb_pto_vta_numero(models.Model):
 
 class cpb_comprobante(models.Model):
     id = models.AutoField(primary_key=True,db_index=True)
-    cpb_tipo = models.ForeignKey('cpb_tipo',verbose_name=u'Tipo CPB', db_column='cpb_tipo',blank=True, null=True)
+    cpb_tipo = models.ForeignKey('comprobantes.cpb_tipo',verbose_name=u'Tipo CPB', db_column='cpb_tipo',blank=True, null=True)
     entidad = models.ForeignKey('entidades.egr_entidad',db_column='entidad',related_name='cpb_entidad',blank=True, null=True,on_delete=models.SET_NULL) #Cliente/Proveedor
     vendedor = models.ForeignKey('entidades.egr_entidad',db_column='vendedor',related_name='cpb_vendedor',blank=True, null=True,on_delete=models.SET_NULL)
     pto_vta = models.IntegerField(blank=True, null=True,db_column='pto_vta')
@@ -131,7 +130,7 @@ class cpb_comprobante(models.Model):
     fecha_vto = models.DateField(blank=True, null=True)
     presup_tiempo_entrega =  models.CharField(u'Tiempo de Entrega',max_length=100,blank=True, null=True)
     presup_forma_pago =  models.CharField(u'Forma de Pago',max_length=200,blank=True, null=True)    
-    presup_aprobacion =  models.ForeignKey('cpb_estado',related_name='presup_estado',blank=True, null=True,on_delete=models.SET_NULL)
+    presup_aprobacion =  models.ForeignKey('comprobantes.cpb_estado',related_name='presup_estado',blank=True, null=True,on_delete=models.SET_NULL)
     cae =  models.CharField(u'CAE',max_length=100,blank=True, null=True)
     cae_vto = models.DateField('CAE Vto.',blank=True, null=True)    
     importe_gravado = models.DecimalField(max_digits=15, decimal_places=2, blank=True, null=True,default=0)#Todo lo que tiene IVA
@@ -142,11 +141,11 @@ class cpb_comprobante(models.Model):
     importe_perc_imp = models.DecimalField(max_digits=15, decimal_places=2, blank=True, null=True,default=0)#Suma de Percepciones e Impuestos
     importe_ret = models.DecimalField(max_digits=15, decimal_places=2, blank=True, null=True,default=0)#Suma de Retenciones
     importe_total = models.DecimalField(max_digits=15, decimal_places=2, blank=True, null=True,default=0)#Suma de todo
-    estado = models.ForeignKey('cpb_estado',related_name='estado',blank=True, null=True,on_delete=models.SET_NULL)
+    estado = models.ForeignKey('comprobantes.cpb_estado',related_name='estado',blank=True, null=True,on_delete=models.SET_NULL)
     anulacion_motivo = models.CharField(u'Motivo Anulación',max_length=200,blank=True, null=True)
     anulacion_fecha = models.DateField(blank=True, null=True)
     observacion = models.TextField(max_length=500, blank=True, null=True) # Field name made lowercase.
-    id_cpb_padre = models.ForeignKey('cpb_comprobante', db_column='id_cpb_padre',related_name="cpb_comprobante_padre",blank=True, null=True,on_delete=models.SET_NULL)
+    id_cpb_padre = models.ForeignKey('comprobantes.cpb_comprobante', db_column='id_cpb_padre',related_name="cpb_comprobante_padre",blank=True, null=True,on_delete=models.SET_NULL)
     saldo = models.DecimalField(max_digits=15, decimal_places=2, blank=True, null=True,default=0)
     empresa =  models.ForeignKey('general.gral_empresa',db_column='empresa',blank=True, null=True,on_delete=models.SET_NULL)
     usuario = models.ForeignKey('usuarios.usu_usuario',db_column='usuario',blank=True, null=True,related_name='usu_usuario_cpb',on_delete=models.SET_NULL)
@@ -322,7 +321,7 @@ class cpb_comprobante(models.Model):
     
 class cpb_comprobante_detalle(models.Model):
     id = models.AutoField(primary_key=True,db_index=True)
-    cpb_comprobante = models.ForeignKey('cpb_comprobante',verbose_name=u'CPB', db_column='cpb_comprobante',blank=True, null=True,on_delete=models.CASCADE)
+    cpb_comprobante = models.ForeignKey('comprobantes.cpb_comprobante',verbose_name=u'CPB', db_column='cpb_comprobante',blank=True, null=True,on_delete=models.CASCADE)
     producto = models.ForeignKey('productos.prod_productos',db_column='producto',related_name='producto',blank=True, null=True,on_delete=models.SET_NULL) #Cliente/Proveedor
     cantidad = models.DecimalField(max_digits=15, decimal_places=2, blank=True, null=True,default=1)
     tasa_iva = models.ForeignKey('productos.gral_tipo_iva',verbose_name='Tasa IVA', db_column='tasa_iva',blank=True, null=True,on_delete=models.SET_NULL)
@@ -351,6 +350,14 @@ class cpb_comprobante_detalle(models.Model):
         #return self.importe_unitario * (1+self.coef_iva)
         return self.cantidad * self.cpb_comprobante.cpb_tipo.signo_stock
 
+    @property
+    def get_costo_total(self):                
+        return self.cantidad*self.importe_costo
+
+    @property
+    def get_utilidad_total(self):                        
+        return (self.importe_subtotal-(self.cantidad*self.importe_costo))
+
 class cpb_perc_imp(models.Model):
     id = models.AutoField(primary_key=True,db_index=True)
     nombre = models.CharField(u'Nombre',max_length=100)
@@ -365,8 +372,8 @@ class cpb_perc_imp(models.Model):
 
 class cpb_comprobante_perc_imp(models.Model):
     id = models.AutoField(primary_key=True,db_index=True)
-    cpb_comprobante = models.ForeignKey('cpb_comprobante',verbose_name=u'CPB', db_column='cpb_comprobante',blank=True, null=True,on_delete=models.CASCADE)
-    perc_imp = models.ForeignKey('cpb_perc_imp',db_column='perc_imp',blank=True, null=True,on_delete=models.SET_NULL) #Cliente/Proveedor    
+    cpb_comprobante = models.ForeignKey('comprobantes.cpb_comprobante',verbose_name=u'CPB', db_column='cpb_comprobante',blank=True, null=True,on_delete=models.CASCADE)
+    perc_imp = models.ForeignKey('comprobantes.cpb_perc_imp',db_column='perc_imp',blank=True, null=True,on_delete=models.SET_NULL) #Cliente/Proveedor    
     detalle = models.TextField(max_length=500,blank=True, null=True) # Field name made lowercase.   
     importe_total = models.DecimalField(max_digits=15, decimal_places=2, blank=True, null=True,default=0)    
     class Meta:
@@ -390,8 +397,8 @@ class cpb_retenciones(models.Model):
 
 class cpb_comprobante_retenciones(models.Model):
     id = models.AutoField(primary_key=True,db_index=True)
-    cpb_comprobante = models.ForeignKey('cpb_comprobante',verbose_name=u'CPB', db_column='cpb_comprobante',blank=True, null=True,on_delete=models.CASCADE)
-    retencion = models.ForeignKey('cpb_retenciones',db_column='retencion',blank=True, null=True,on_delete=models.SET_NULL)
+    cpb_comprobante = models.ForeignKey('comprobantes.cpb_comprobante',verbose_name=u'CPB', db_column='cpb_comprobante',blank=True, null=True,on_delete=models.CASCADE)
+    retencion = models.ForeignKey('comprobantes.cpb_retenciones',db_column='retencion',blank=True, null=True,on_delete=models.SET_NULL)
     ret_nrocpb = models.CharField(verbose_name=u'Nº Certif. Retención',max_length=30,blank=True, null=True)  #Número del certificado de retención recibido.
     ret_importe_isar = models.DecimalField(verbose_name=u'Importe Sujeto a Retención',max_digits=15, decimal_places=2, blank=True, null=True,default=0) # Importe neto sujeto a la retención sufrida.
     ret_fecha_cpb = models.DateField(verbose_name=u'Fecha Retención',blank=True, null=True) #Fecha del certificado de retención recibido.
@@ -405,7 +412,7 @@ class cpb_comprobante_retenciones(models.Model):
 
 class cpb_comprobante_tot_iva(models.Model):
     id = models.AutoField(primary_key=True,db_index=True)
-    cpb_comprobante = models.ForeignKey('cpb_comprobante',verbose_name=u'CPB', db_column='cpb_comprobante',blank=True, null=True,on_delete=models.CASCADE)
+    cpb_comprobante = models.ForeignKey('comprobantes.cpb_comprobante',verbose_name=u'CPB', db_column='cpb_comprobante',blank=True, null=True,on_delete=models.CASCADE)
     importe_base = models.DecimalField(max_digits=15, decimal_places=2, blank=True, null=True,default=0)
     tasa_iva = models.ForeignKey('productos.gral_tipo_iva',verbose_name='Tasa IVA', db_column='cpb_tasa_iva',blank=True, null=True)    
     importe_total = models.DecimalField(max_digits=15, decimal_places=2, blank=True, null=True,default=0)    
@@ -418,9 +425,9 @@ class cpb_comprobante_tot_iva(models.Model):
 class cpb_cobranza(models.Model):
     id = models.AutoField(primary_key=True,db_index=True)
     #ID del RECIBO o de la ORDEN PAGO
-    cpb_comprobante = models.ForeignKey('cpb_comprobante',verbose_name=u'CPB',related_name='cpb_cobranza_cpb', db_column='cpb_comprobante',blank=True, null=True,on_delete=models.CASCADE)
+    cpb_comprobante = models.ForeignKey('comprobantes.cpb_comprobante',verbose_name=u'CPB',related_name='cpb_cobranza_cpb', db_column='cpb_comprobante',blank=True, null=True,on_delete=models.CASCADE)
     #ID de la factura que voy a cancelar ya sea de COMPRA (para la ORDEN PAGO) o VENTA (para el RECIBO)
-    cpb_factura = models.ForeignKey('cpb_comprobante',verbose_name=u'Factura',related_name='cpb_cobranza_factura', db_column='cpb_factura',blank=True, null=True,on_delete=models.CASCADE)
+    cpb_factura = models.ForeignKey('comprobantes.cpb_comprobante',verbose_name=u'Factura',related_name='cpb_cobranza_factura', db_column='cpb_factura',blank=True, null=True,on_delete=models.CASCADE)
     importe_total = models.DecimalField(max_digits=15, decimal_places=2, blank=True, null=True,default=0)    
     #Descuento o Recargo que tuvo la factura
     desc_rec = models.DecimalField(max_digits=15, decimal_places=2, blank=True, null=True,default=0)    
@@ -450,10 +457,10 @@ class cpb_cuenta(models.Model):
     nro_cuenta_bancaria = models.CharField(u'CBU',max_length=100,blank=True, null=True)
     empresa =  models.ForeignKey('general.gral_empresa',db_column='empresa',blank=True, null=True,on_delete=models.SET_NULL)        
     tipo = models.IntegerField(u'Tipo Cuenta',choices=TIPO_CTA_DISPO,default=0,blank=True, null=True)
-    tipo_forma_pago = models.ForeignKey('cpb_tipo_forma_pago',db_column='tipo_forma_pago',related_name='tipo_fp',blank=True, null=True,on_delete=models.SET_NULL) 
+    tipo_forma_pago = models.ForeignKey('comprobantes.cpb_tipo_forma_pago',db_column='tipo_forma_pago',related_name='tipo_fp',blank=True, null=True,on_delete=models.SET_NULL) 
     modificable = models.BooleanField(default=True)  
     baja = models.BooleanField(default=False)  
-    banco = models.ForeignKey('cpb_banco',db_column='banco',related_name='cuenta_banco',blank=True, null=True,on_delete=models.SET_NULL) 
+    banco = models.ForeignKey('comprobantes.cpb_banco',db_column='banco',related_name='cuenta_banco',blank=True, null=True,on_delete=models.SET_NULL) 
     class Meta:
         db_table = 'cpb_cuenta'
     
@@ -465,7 +472,7 @@ class cpb_tipo_forma_pago(models.Model):
     codigo = models.CharField(u'Código',max_length=10,blank=True, null=True)  
     nombre = models.CharField(u'Nombre',max_length=200,blank=True, null=True)  
     signo = models.IntegerField(u'Signo Cta.Cte.',choices=SIGNO,default=1,blank=True, null=True)
-    cuenta = models.ForeignKey('cpb_cuenta',db_column='cuenta',related_name='fp_cuenta',blank=True, null=True,on_delete=models.SET_NULL) 
+    cuenta = models.ForeignKey('comprobantes.cpb_cuenta',db_column='cuenta',related_name='fp_cuenta',blank=True, null=True,on_delete=models.SET_NULL) 
     empresa =  models.ForeignKey('general.gral_empresa',db_column='empresa',blank=True, null=True,on_delete=models.SET_NULL)    
     baja = models.BooleanField(default=False)  
     class Meta:
@@ -476,17 +483,17 @@ class cpb_tipo_forma_pago(models.Model):
 
 class cpb_comprobante_fp(models.Model):
     id = models.AutoField(primary_key=True,db_index=True)
-    cpb_comprobante = models.ForeignKey('cpb_comprobante',verbose_name=u'CPB', db_column='cpb_comprobante',blank=True, null=True,on_delete=models.CASCADE)
-    tipo_forma_pago = models.ForeignKey('cpb_tipo_forma_pago',db_column='tipo_forma_pago',related_name='tipo_forma_pago',blank=True, null=True,on_delete=models.SET_NULL) 
-    cta_egreso = models.ForeignKey('cpb_cuenta',db_column='cta_egreso',related_name='cta_egreso',blank=True, null=True,on_delete=models.SET_NULL) 
-    cta_ingreso = models.ForeignKey('cpb_cuenta',db_column='cta_ingreso',related_name='cta_ingreso',blank=True, null=True,on_delete=models.SET_NULL) 
+    cpb_comprobante = models.ForeignKey('comprobantes.cpb_comprobante',verbose_name=u'CPB', db_column='cpb_comprobante',blank=True, null=True,on_delete=models.CASCADE)
+    tipo_forma_pago = models.ForeignKey('comprobantes.cpb_tipo_forma_pago',db_column='tipo_forma_pago',related_name='tipo_forma_pago',blank=True, null=True,on_delete=models.SET_NULL) 
+    cta_egreso = models.ForeignKey('comprobantes.cpb_cuenta',db_column='cta_egreso',related_name='cta_egreso',blank=True, null=True,on_delete=models.SET_NULL) 
+    cta_ingreso = models.ForeignKey('comprobantes.cpb_cuenta',db_column='cta_ingreso',related_name='cta_ingreso',blank=True, null=True,on_delete=models.SET_NULL) 
     mdcp_fecha = models.DateField('Fecha',blank=True, null=True)
-    mdcp_banco = models.ForeignKey('cpb_banco',verbose_name='Banco', db_column='mdcp_banco',blank=True, null=True,on_delete=models.SET_NULL)
+    mdcp_banco = models.ForeignKey('comprobantes.cpb_banco',verbose_name='Banco', db_column='mdcp_banco',blank=True, null=True,on_delete=models.SET_NULL)
     mdcp_cheque = models.CharField(u'Cheque Nº',max_length=50,blank=True, null=True)  
     importe = models.DecimalField('Importe',max_digits=15, decimal_places=2, blank=True, null=True,default=0)    
     detalle = models.TextField(max_length=500,blank=True, null=True) # Field name made lowercase.   
     fecha_creacion = models.DateTimeField(auto_now_add = True)    
-    mdcp_salida = models.ForeignKey('cpb_comprobante_fp',db_column='mdcp_salida',related_name='fp_mov_salida',blank=True, null=True,on_delete=models.SET_NULL)     
+    mdcp_salida = models.ForeignKey('comprobantes.cpb_comprobante_fp',db_column='mdcp_salida',related_name='fp_mov_salida',blank=True, null=True,on_delete=models.SET_NULL)     
     class Meta:
         db_table = 'cpb_comprobante_fp'
     

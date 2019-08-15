@@ -85,17 +85,35 @@ $('.formPrecios').formset({
       });
 
   function calcularProd(i){
-  var $precio_costo = parseFloat($("input[name='formPrecios-"+i+"-precio_costo']").val())|| 0;
-  var $precio_cimp = parseFloat($("input[name='formPrecios-"+i+"-precio_cimp']").val())|| 0;
+  var $precio_costo = parseFloat($("input[name='formPrecios-"+i+"-precio_costo']").val())|| 0;  
   var $coef_ganancia = parseFloat($("input[name='formPrecios-"+i+"-coef_ganancia']").val())|| 0;
   
   var $precio_venta = 0;
-
-  if ($precio_cimp == '') {$precio_cimp=$precio_costo;};             
+  var $precio_cimp = 0;
+  var coef=0.00;
+               
   if ($coef_ganancia == '') {$coef_ganancia=1;}; 
-
+  
+  var id = $("#id_tasa_iva").val()|| 0;
+  $.ajax({
+            data: {'id': id},
+            url: '/productos/coeficiente_iva/',
+            type: 'get',
+            async: false,
+            cache: true,          
+            success : function(data) {                 
+                if (data!='')
+                    {coef=parseFloat(data['tiva']);}
+            },
+            error : function(message) {                
+                 console.log(message);
+              }
+          });      
+  
+  $precio_cimp = $precio_costo * (coef+1);
+  console.log(coef+1);
   $precio_venta = $precio_cimp * ($coef_ganancia+1);  
-
+   
   $("input[name='formPrecios-"+i+"-precio_costo']").val($precio_costo.toFixed(2));  
   $("input[name='formPrecios-"+i+"-precio_cimp']").val($precio_cimp.toFixed(2)); 
   $("input[name='formPrecios-"+i+"-coef_ganancia']").val($coef_ganancia.toFixed(2));
