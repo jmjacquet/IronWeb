@@ -194,7 +194,7 @@ class ConsultaVendedores(forms.Form):
 	fdesde =  forms.DateField(label='Fecha Desde',widget=forms.DateInput(attrs={'class': 'form-control datepicker'}),required = False,initial=inicioMes())
 	fhasta =  forms.DateField(label='Fecha Hasta',widget=forms.DateInput(attrs={'class': 'form-control datepicker'}),required = False,initial=finMes())    	
 	pto_vta = forms.IntegerField(label='Pto. Vta.',required = False)		
-	comision = forms.DecimalField(label=u'Comisión',widget=PrependWidget(attrs={'class':'form-control'},base_widget=NumberInput, data='%'),initial=5.00,decimal_places=2)
+	comision = forms.DecimalField(label=u'Comisión',required = False,widget=PrependWidget(attrs={'class':'form-control','step':0.01},base_widget=NumberInput, data='%'),initial=5.00,decimal_places=2)
 	def __init__(self, *args, **kwargs):
 		empresa = kwargs.pop('empresa', None)  
 		request = kwargs.pop('request', None) 

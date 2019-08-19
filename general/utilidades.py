@@ -311,9 +311,9 @@ def tipo_comprob_fiscal(id):
     if id==6:
         COMPROB_FISCAL = (('C', 'C'),('X', 'X'))
     elif id==1:
-        COMPROB_FISCAL = (('A', 'A'),('B', 'B'),('M', 'M'), ('E', 'E'),('X', 'X') )
+        COMPROB_FISCAL = (('A', 'A'),('B', 'B'),('X', 'X') )
     else:
-        COMPROB_FISCAL = (('A', 'A'),('B', 'B'),('C', 'C'),('M', 'M'), ('E', 'E'),('X', 'X') )
+        COMPROB_FISCAL = (('A', 'A'),('B', 'B'),('C', 'C'),('X', 'X') )
     return COMPROB_FISCAL
 
 def facturacion_cliente_letra(letra, cliente_categ,empresa_categ):
