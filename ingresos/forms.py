@@ -115,15 +115,20 @@ class CPBVentaForm(forms.ModelForm):
 		try:
 			empresa = self.initial['request'].user.userprofile.id_usuario.empresa						
 			if (not facturacion_cliente_letra(letra,cliente_categ_fiscal,empresa.categ_fiscal))and(cpb_tipo.facturable):
-				print cliente_categ_fiscal
-				print empresa.categ_fiscal
-				raise forms.ValidationError(u'Letra no válida para el Cliente seleccionado!')	
+				raise forms.ValidationError(u'Letra no válida para el Cliente/CPB seleccionado!')	
 
 		except gral_empresa.DoesNotExist:
 			empresa = None
 		
-		if (importe_total > 1000)and(cliente_categ_fiscal==5)and(entidad.fact_cuit=='')and(entidad.nro_doc=='')and(cpb_tipo.facturable)and(pto_vta.fe_electronica):
-			raise forms.ValidationError(u"El total de comprobante no puede superar los $1000.00 para Consumidor Final sin que el mismo posea un Documento ó CUIT válidos!.")			
+
+		if (importe_total > 1000)and(cliente_categ_fiscal==5)and(entidad.fact_cuit=='')and(entidad.nro_doc=='')and(cpb_tipo.facturable):
+			try:
+				pv = cpb_pto_vta.objects.get(numero=int(pto_vta),empresa=empresa)  
+				if pv.fe_electronica:
+					raise forms.ValidationError(u"El total de comprobante no puede superar los $1000.00 para Consumidor Final sin que el mismo posea un Documento ó CUIT válidos!.")			
+			except:
+				pass	
+			
 		
 		
 		id_cpbs=cpb_comprobante.objects.filter(numero=numero,pto_vta=pto_vta,letra=letra,cpb_tipo=cpb_tipo,empresa=empresa).values_list('id',flat=True)
@@ -381,7 +386,7 @@ class CPBPresupForm(forms.ModelForm):
 		try:
 			empresa = self.initial['request'].user.userprofile.id_usuario.empresa			
 			if not nofacturac_cliente_letra(letra,cliente_categ_fiscal,empresa.categ_fiscal):
-				raise forms.ValidationError(u'Letra no válida para el Cliente seleccionado!')	
+				raise forms.ValidationError(u'Letra no válida para el Cliente/CPB seleccionado!')	
 
 		except gral_empresa.DoesNotExist:
 			empresa = None
@@ -487,7 +492,7 @@ class CPBPresupLiteForm(forms.ModelForm):
 		try:
 			empresa = self.initial['request'].user.userprofile.id_usuario.empresa			
 			if not nofacturac_cliente_letra(letra,cliente_categ_fiscal,empresa.categ_fiscal):
-				raise forms.ValidationError(u'Letra no válida para el Cliente seleccionado!')	
+				raise forms.ValidationError(u'Letra no válida para el Cliente/CPB seleccionado!')	
 
 		except gral_empresa.DoesNotExist:
 			empresa = None
