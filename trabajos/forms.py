@@ -32,8 +32,8 @@ class OPForm(forms.ModelForm):
 	muestra_enviada = forms.ModelChoiceField(label='Muestra Enviada a',queryset=egr_entidad.objects.filter(tipo_entidad__lte=2,baja=False),empty_label='---',required = False)		
 	importe_total = forms.DecimalField(label='',widget=PrependWidget(attrs={'class':'form-control','readonly':'readonly'},base_widget=NumberInput, data='$'),initial=0.00,decimal_places=2,required = False)	
 	detalle = forms.CharField(label='Otros Detalles',widget=forms.Textarea(attrs={ 'class':'form-control2','rows': 5}),required = False)				
-	lista_precios = forms.ModelChoiceField(label='Lista de Precios',queryset=prod_lista_precios.objects.filter(baja=False).order_by('default'),required = True,empty_label=None,initial=1)
-	origen_destino = forms.ModelChoiceField(label=u'Ubicación',queryset=prod_ubicacion.objects.filter(baja=False).order_by('default'),required = True,empty_label=None,initial=1)
+	lista_precios = forms.ModelChoiceField(label='Lista de Precios',queryset=prod_lista_precios.objects.filter(baja=False),required = True,empty_label=None,initial=1)
+	origen_destino = forms.ModelChoiceField(label=u'Ubicación',queryset=prod_ubicacion.objects.filter(baja=False),required = True,empty_label=None,initial=1)
 	tipo_form = forms.CharField(widget = forms.HiddenInput(), required = False)	
 	class Meta:
 			model = orden_pedido			
@@ -45,8 +45,8 @@ class OPForm(forms.ModelForm):
 		super(OPForm, self).__init__(*args, **kwargs)
 		try:
 			empresa = usr.userprofile.id_usuario.empresa
-			self.fields['lista_precios'].queryset = prod_lista_precios.objects.filter(baja=False,empresa__id__in=empresas_habilitadas(request)).order_by('default')
-			self.fields['origen_destino'].queryset = prod_ubicacion.objects.filter(baja=False,empresa__id__in=empresas_habilitadas(request)).order_by('default')
+			self.fields['lista_precios'].queryset = prod_lista_precios.objects.filter(baja=False,empresa__id__in=empresas_habilitadas(request))
+			self.fields['origen_destino'].queryset = prod_ubicacion.objects.filter(baja=False,empresa__id__in=empresas_habilitadas(request))
 		except gral_empresa.DoesNotExist:
 			empresa = None
 
@@ -97,7 +97,7 @@ class OTForm(forms.ModelForm):
 	fecha = forms.DateField(required = True,widget=forms.DateInput(attrs={'class': 'datepicker'}),initial=timezone.now().date())							
 	fecha_estimada = forms.DateField(label='Fecha Estimada',required = True,widget=forms.DateInput(attrs={'class': 'datepicker'}))								
 	detalle = forms.CharField(label='Otros Detalles',widget=forms.Textarea(attrs={ 'class':'form-control2','rows': 5}),required = False)				
-	origen_destino = forms.ModelChoiceField(label=u'Ubicación',queryset=prod_ubicacion.objects.filter(baja=False).order_by('default'),required = True,empty_label=None,initial=1)
+	origen_destino = forms.ModelChoiceField(label=u'Ubicación',queryset=prod_ubicacion.objects.filter(baja=False),required = True,empty_label=None,initial=1)
 	tipo_form = forms.CharField(widget = forms.HiddenInput(), required = False)	
 
 	class Meta:
@@ -110,7 +110,7 @@ class OTForm(forms.ModelForm):
 		super(OTForm, self).__init__(*args, **kwargs)
 		try:
 			empresa = usr.userprofile.id_usuario.empresa
-			self.fields['origen_destino'].queryset = prod_ubicacion.objects.filter(baja=False,empresa__id__in=empresas_habilitadas(request)).order_by('default')
+			self.fields['origen_destino'].queryset = prod_ubicacion.objects.filter(baja=False,empresa__id__in=empresas_habilitadas(request))
 		except gral_empresa.DoesNotExist:
 			empresa = None
 

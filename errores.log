@@ -3978,3 +3978,30 @@ Traceback (most recent call last):
   File "D:\Repo\ironStable\productos\views.py", line 662, in get_context_data
     productos = prod_producto_ubicac.objects.filter(producto__empresa__id__in=empresas_habilitadas(self.request)).annotate(stock=F(get_stock_)).select_related('producto','producto__categoria')
 NameError: global name 'get_stock_' is not defined
+[26/Aug/2019 20:00:48] ERROR [django.request:256] Internal Server Error: /productos/prod_stock/
+Traceback (most recent call last):
+  File "C:\Python27\lib\site-packages\django\core\handlers\base.py", line 132, in get_response
+    response = wrapped_callback(request, *callback_args, **callback_kwargs)
+  File "C:\Python27\lib\site-packages\django\views\generic\base.py", line 71, in view
+    return self.dispatch(request, *args, **kwargs)
+  File "C:\Python27\lib\site-packages\django\utils\decorators.py", line 34, in _wrapper
+    return bound_func(*args, **kwargs)
+  File "C:\Python27\lib\site-packages\django\contrib\auth\decorators.py", line 22, in _wrapped_view
+    return view_func(request, *args, **kwargs)
+  File "C:\Python27\lib\site-packages\django\utils\decorators.py", line 30, in bound_func
+    return func.__get__(self, type(self))(*args2, **kwargs2)
+  File "D:\Repo\ironStable\productos\views.py", line 640, in dispatch
+    return super(ProdStockView, self).dispatch(*args,**kwargs)
+  File "C:\Python27\lib\site-packages\django\views\generic\base.py", line 89, in dispatch
+    return handler(request, *args, **kwargs)
+  File "C:\Python27\lib\site-packages\django\views\generic\list.py", line 174, in get
+    context = self.get_context_data()
+  File "D:\Repo\ironStable\productos\views.py", line 651, in get_context_data
+    form = ConsultaStockProd(self.request.POST or None,request =self.request )
+  File "D:\Repo\ironStable\productos\forms.py", line 198, in __init__
+    self.fields['ubicacion'].queryset = prod_ubicacion.objects.filter(baja=False,empresa__id__in=empresas_habilitadas(request)).order_by('default')
+  File "C:\Python27\lib\site-packages\django\db\models\query.py", line 813, in order_by
+    obj.query.add_ordering(*field_names)
+  File "C:\Python27\lib\site-packages\django\db\models\sql\query.py", line 1729, in add_ordering
+    raise FieldError('Invalid order_by arguments: %s' % errors)
+FieldError: Invalid order_by arguments: ['default=True']

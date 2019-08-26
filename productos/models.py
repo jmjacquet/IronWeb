@@ -33,7 +33,7 @@ class prod_lista_precios(models.Model):
     empresa =  models.ForeignKey('general.gral_empresa',db_column='empresa',blank=True, null=True,on_delete=models.SET_NULL)
     class Meta:
         db_table = 'prod_lista_precios'
-        ordering = ['nombre']
+        ordering = ['-default','nombre']
 
     def save(self):
         self.nombre = self.nombre.upper()
@@ -50,7 +50,7 @@ class prod_ubicacion(models.Model):
     empresa =  models.ForeignKey('general.gral_empresa',db_column='empresa',blank=True, null=True,on_delete=models.SET_NULL)
     class Meta:
         db_table = 'prod_ubicacion'
-        ordering = ['nombre']
+        ordering = ['-default','nombre']
 
     def save(self):
         self.nombre = self.nombre.upper()
