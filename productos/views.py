@@ -123,7 +123,6 @@ class ProductosCreateView(VariablesMixin,CreateView):
         else:
             return self.form_invalid(form, prod_precios)        
 
-
     def form_valid(self, form, prod_precios):
         self.object = form.save(commit=False)        
         self.object.empresa = empresa_actual(self.request)        

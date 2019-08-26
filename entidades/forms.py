@@ -47,8 +47,7 @@ class EntidadesForm(forms.ModelForm):
 			self.fields['empresa'].initial = 1
 		except:
 			empresas = empresa_actual(request)  
-			self.fields['empresa'].queryset = empresas
-		
+			self.fields['empresa'].queryset = empresas		
 			
 
 	def clean(self):		

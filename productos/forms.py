@@ -28,7 +28,6 @@ class ConsultaProds(forms.Form):
 	nombre = forms.CharField(label='Nombre',max_length=100,widget=forms.TextInput(attrs={'class':'form-control','text-transform': 'uppercase'}),required=False)    
    	estado = forms.ChoiceField(label='Estado',choices=ESTADO_,required=False,initial=0)	    
 				
-
 class ProductosForm(forms.ModelForm):
 	descripcion = forms.CharField(label='Observaciones / Datos adicionales',widget=forms.Textarea(attrs={'class':'form-control2', 'rows': 3}),required = False)			
 	tasa_iva = forms.ModelChoiceField(queryset=gral_tipo_iva.objects.all(),required = True,initial=5)	
