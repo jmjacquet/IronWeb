@@ -37,7 +37,8 @@ class ProductosForm(forms.ModelForm):
 	cta_ingreso = chosenforms.ChosenModelChoiceField(label='Cuenta Ingreso',queryset=gral_plan_cuentas.objects.filter(baja=False),empty_label='---',required = False)
 	cta_egreso = chosenforms.ChosenModelChoiceField(label='Cuenta Egreso',queryset=gral_plan_cuentas.objects.filter(baja=False),empty_label='---',required = False)
 	ubicacion = forms.ModelChoiceField(queryset=prod_ubicacion.objects.filter(baja=False),required = False)	
-	stock = forms.DecimalField(initial=1,decimal_places=2,required = False)	
+	stock = forms.DecimalField(label='Stock Inicial',initial=1,decimal_places=2,required = False)	
+	ppedido = forms.DecimalField(label='Punto Pedido',initial=0,decimal_places=2,required = False)	
 	class Meta:
 			model = prod_productos
 			exclude = ['id','baja','fecha_creacion','fecha_modif','empresa']
@@ -200,17 +201,18 @@ class ConsultaStockProd(forms.Form):
 OPERACION2_ = (
  (21,'Movimiento Ingreso Stock'),	
  (22,'Movimiento Egreso Stock'), 
+ (0,'Actualizar Punto Pedido'), 
 )
 
 class ActualizarStockForm(forms.Form):	
-	tipo_operacion = forms.ChoiceField(label=u'Operación',choices=OPERACION2_,required=True,initial=0)		
+	tipo_operacion = forms.ChoiceField(label=u'Operación',choices=OPERACION2_,required=True,initial=21)		
 	valor = forms.DecimalField(label='Cantidad',initial=0.00,decimal_places=2)	
 
 class CrearStockForm(forms.Form):		
 	ubicacion = forms.ModelChoiceField(label=u'Ubicación',queryset=prod_ubicacion.objects.filter(baja=False),initial=0,required = True)	
 	producto = forms.ModelChoiceField(queryset=prod_productos.objects.filter(baja=False,mostrar_en__in=(1,3)),initial=0,required = True)	
 	valor = forms.DecimalField(label='Cantidad',initial=0.00,decimal_places=2,required = True)	
-	
+	ppedido = forms.DecimalField(label='P.Pedido',initial=0.00,decimal_places=2,required = False)
 	def __init__(self, *args, **kwargs):
 		request = kwargs.pop('request', None)
 		super(CrearStockForm, self).__init__(*args, **kwargs)				

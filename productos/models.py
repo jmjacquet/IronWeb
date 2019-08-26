@@ -143,6 +143,7 @@ class prod_producto_ubicac(models.Model):
     id = models.AutoField(primary_key=True,db_index=True)
     producto = models.ForeignKey('prod_productos',db_column='producto',related_name='producto_stock',blank=True, null=True) #Cliente/Pro
     ubicacion = models.ForeignKey('prod_ubicacion',db_column='ubicacion',related_name='ubicacion',blank=True, null=True) #Cliente/Pro    
+    punto_pedido = models.DecimalField('Punto Pedido',max_digits=15, decimal_places=2,default=0,blank=True, null=True) 
     class Meta:
         db_table = 'prod_producto_ubicac'
         ordering = ['producto__nombre','ubicacion']
@@ -153,9 +154,16 @@ class prod_producto_ubicac(models.Model):
     def get_stock_(self):             
         qs = cpb_comprobante_detalle.objects.filter(cpb_comprobante__estado__in=[1,2],cpb_comprobante__cpb_tipo__usa_stock=True,producto__id=self.producto.id,origen_destino__id=self.ubicacion.id)
         total_stock = qs.aggregate(total=Sum(F('cantidad') *F('cpb_comprobante__cpb_tipo__signo_stock'),output_field=DecimalField()))['total'] or 0        
-        return total_stock
+        return total_stock    
 
     get_stock = property(get_stock_)
+
+    def get_reposicion(self):        
+        if self.punto_pedido:
+            if self.punto_pedido>0:
+                stock = self.get_stock_()
+                return stock <= self.punto_pedido
+        return False
 
 
 

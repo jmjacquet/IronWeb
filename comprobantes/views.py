@@ -192,6 +192,7 @@ def buscarDatosProd(request):
                     prod_ubi = None
                 if prod_ubi:
                     stock = prod_ubi.get_stock_()
+                    ppedido = prod_ubi.get_reposicion()
             if idlista:
                try:
                     prod_lista = prod_producto_lprecios.objects.get(producto=p,lista_precios__id=idlista) 
@@ -211,7 +212,7 @@ def buscarDatosProd(request):
        total_iva = Decimal(round(total_iva, 2))
        precio_tot = pventa
        
-       prod={'precio_venta':pventa,'precio_costo':pcosto,'stock':stock,'tasa_iva__id':tasa_iva,'tasa_iva__coeficiente':coeficiente
+       prod={'precio_venta':pventa,'precio_costo':pcosto,'stock':stock,'ppedido':ppedido,'tasa_iva__id':tasa_iva,'tasa_iva__coeficiente':coeficiente
             ,'unidad':unidad,'precio_siva':precio_siva,'total_iva':total_iva,'precio_tot':precio_tot,'costo_siva':costo_siva}  
            
    except:

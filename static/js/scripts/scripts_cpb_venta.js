@@ -219,7 +219,6 @@ function cargarProd(i){
                   data: {'idp': idp,'idubi':idubi,'idlista':idlista},
                   url: '/comprobantes/buscarDatosProd/',
                   type: 'get',
-                  async: false,
                   cache: true,          
                   success : function(data) {
                        
@@ -569,7 +568,6 @@ function ultimoNumCPB(cpb_tipo,letra,pto_vta){
           url: '/comprobantes/ultimp_nro_cpb_ajax/',
           type: 'get',
           cache: true,          
-          async: false,
           success : function(data) {
                
                if (data!='')
