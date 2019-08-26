@@ -62,7 +62,6 @@ class ProductosForm(forms.ModelForm):
 			self._errors['ubicacion'] = [u'Debe seleccionar una Ubicación!']
 
 
-
 class Producto_ListaPreciosForm(forms.ModelForm):
 	producto = forms.IntegerField(widget = forms.HiddenInput(), required = False)	
 	lista_precios = forms.ModelChoiceField(queryset=prod_lista_precios.objects.filter(baja=False),required = False)	
@@ -91,8 +90,6 @@ class Producto_ListaPreciosForm(forms.ModelForm):
 		lista_precios = self.cleaned_data.get('lista_precios')
 		if not lista_precios:
 			self._errors['lista_precios'] = [u'Debe seleccionar una Lista de Precios!']
-		
-		
 		
 
 class Producto_StockForm(forms.ModelForm):
