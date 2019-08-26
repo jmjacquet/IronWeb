@@ -191,7 +191,6 @@ class ConsultaStockProd(forms.Form):
 	categoria = forms.ModelChoiceField(queryset=prod_categoria.objects.filter(baja=False),required = False)
 	tipo_prod = forms.ChoiceField(label=u'Tipo',choices=TIPO_PRODUCTO_,initial=0)	
 	lleva_stock = forms.ChoiceField(label=u'Lleva Stock',required = True,choices=SINO,initial=1)
-	stock_pp = forms.ChoiceField(label=u'Stock Bajo PPedido',required = False,choices=SINO)
 
 	def __init__(self, *args, **kwargs):
 		request = kwargs.pop('request', None)
