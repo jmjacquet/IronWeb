@@ -659,6 +659,7 @@ class ProdStockView(VariablesMixin,ListView):
             categoria = form.cleaned_data['categoria']   
             tipo_prod = int(form.cleaned_data['tipo_prod'])             
             lleva_stock = form.cleaned_data['lleva_stock']                         
+            stock_pp = int(form.cleaned_data['stock_pp'])                         
             productos = prod_producto_ubicac.objects.filter(producto__empresa__id__in=empresas_habilitadas(self.request)).select_related('producto','producto__categoria')            
         
             if producto:
@@ -672,6 +673,12 @@ class ProdStockView(VariablesMixin,ListView):
                 productos= productos.filter(producto__categoria=categoria)                     
             if ubicacion:
                 productos = productos.filter(ubicacion=ubicacion)                       
+            if stock_pp>0:
+                if stock_pp==1:
+                    ids = [p.id for p in productos if p.get_reposicion()]
+                else:
+                    ids = [p.id for p in productos if not p.get_reposicion()]
+                productos = productos.filter(id__in=ids)
                        
         context['form'] = form
         context['productos'] = productos

@@ -58,7 +58,7 @@ class EntidadesForm(forms.ModelForm):
 		tipo_doc = self.cleaned_data.get('tipo_doc')
 		if fact_cuit: 
 			try:
-				entidad=egr_entidad.objects.get(fact_cuit=fact_cuit,tipo_entidad=tipo_entidad,baja=False)				
+				entidad=egr_entidad.objects.filter(fact_cuit=fact_cuit,tipo_entidad=tipo_entidad,baja=False)				
 				if entidad:
 					raise forms.ValidationError("El Nº de CUIT ingresado ya existe en el Sistema! Verifique.")
 			except egr_entidad.DoesNotExist:
