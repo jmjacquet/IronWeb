@@ -171,6 +171,15 @@ function cargarProd(i){
                       var $importe_tot = data['precio_tot'];                              
                       var $importe_siva = data['precio_siva'];                   
                       var $coef_iva = data['tasa_iva__coeficiente'];
+                      var $stock = data['stock'];
+                      var $ppedido = data['ppedido'];
+                      var $unidad = data['unidad'];
+                            
+                            if ($ppedido){
+                                alertify.alert("PUNTO DE PEDIDO",
+                                  "¡El Stock del producto seleccionado há alcanzado el nivel de Punto de Pedido máximo!"+"<br>"+
+                                  "Stock Actual: <b>"+$stock+" ["+$unidad+"]</b>"); 
+                            };
                       letra = $("#id_letra").val();                      
                       if (letra=='A'){ 
                         $("[name='formDetalle-"+i+"-importe_unitario']").val(parseFloat($importe_siva).toFixed(2));
