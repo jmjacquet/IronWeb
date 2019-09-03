@@ -38,6 +38,7 @@ class ProductosForm(forms.ModelForm):
 	ubicacion = forms.ModelChoiceField(queryset=prod_ubicacion.objects.filter(baja=False),required = False)	
 	stock = forms.DecimalField(label='Stock Inicial',initial=1,decimal_places=2,required = False)	
 	ppedido = forms.DecimalField(label='Punto Pedido',initial=0,decimal_places=2,required = False)	
+	coef_iva = forms.DecimalField(widget = forms.HiddenInput(), required = False,decimal_places=2)	
 	class Meta:
 			model = prod_productos
 			exclude = ['id','baja','fecha_creacion','fecha_modif','empresa']
@@ -68,9 +69,9 @@ class Producto_ListaPreciosForm(forms.ModelForm):
 	precio_costo = forms.DecimalField(label='Precio Costo',widget=PrependWidget(attrs={'class':'form-control','step':0.00},base_widget=NumberInput, data='$'),initial=0.00,decimal_places=2)
 	precio_cimp = forms.DecimalField(label='Precio c/Imp.',widget=PrependWidget(attrs={'class':'form-control','step':0.00},base_widget=NumberInput, data='$'),initial=0.00,decimal_places=2)
 	precio_venta = forms.DecimalField(label='Precio Venta',widget=PrependWidget(attrs={'class':'form-control','step':0.00},base_widget=NumberInput, data='$'),initial=0.00,decimal_places=2)	
-	#precio_itc = forms.DecimalField(label='Valor ITC',widget=PrependWidget(attrs={'class':'form-control','step':0.00},base_widget=NumberInput, data='$'),initial=vitc,decimal_places=3)
-	#precio_tasa = forms.DecimalField(label='Valor Tasa',widget=PrependWidget(attrs={'class':'form-control','step':0.00},base_widget=NumberInput, data='$'),initial=vtasa,decimal_places=3)	
-	coef_ganancia = forms.DecimalField(initial=1,decimal_places=3)		
+	precio_itc = forms.DecimalField(label='Valor ITC',widget=PrependWidget(attrs={'class':'form-control','step':0.00},base_widget=NumberInput, data='$'),initial=vitc,decimal_places=3)
+	precio_tasa = forms.DecimalField(label='Valor TH',widget=PrependWidget(attrs={'class':'form-control','step':0.00},base_widget=NumberInput, data='$'),initial=vtasa,decimal_places=3)	
+	coef_ganancia = forms.DecimalField(initial=0,decimal_places=3)		
 
 	class Meta:
 			model = prod_producto_lprecios
@@ -150,8 +151,8 @@ class Producto_EditarPrecioForm(forms.ModelForm):
 	precio_costo = forms.DecimalField(label='Precio Costo',widget=PrependWidget(attrs={'class':'form-control','step':0.00},base_widget=NumberInput, data='$'),initial=0.00,decimal_places=2)
 	precio_cimp = forms.DecimalField(label='Precio c/Imp.',widget=PrependWidget(attrs={'class':'form-control','step':0.00},base_widget=NumberInput, data='$'),initial=0.00,decimal_places=2)
 	precio_venta = forms.DecimalField(label='Precio Venta',widget=PrependWidget(attrs={'class':'form-control','step':0.00},base_widget=NumberInput, data='$'),initial=0.00,decimal_places=2)	
-	#precio_itc = forms.DecimalField(label='Valor ITC',widget=PrependWidget(attrs={'class':'form-control','step':0.00},base_widget=NumberInput, data='$'),initial=vitc,decimal_places=2,required = False)	
-	#precio_tasa = forms.DecimalField(label='Valor Tasa',widget=PrependWidget(attrs={'class':'form-control','step':0.00},base_widget=NumberInput, data='$'),initial=vtasa,decimal_places=2,required = False)		
+	precio_itc = forms.DecimalField(label='Valor ITC',widget=PrependWidget(attrs={'class':'form-control','step':0.00},base_widget=NumberInput, data='$'),initial=vitc,decimal_places=2,required = False)	
+	precio_tasa = forms.DecimalField(label='Valor Tasa',widget=PrependWidget(attrs={'class':'form-control','step':0.00},base_widget=NumberInput, data='$'),initial=vtasa,decimal_places=2,required = False)		
 	coef_ganancia = forms.DecimalField(initial=1,decimal_places=3)		
 	class Meta:
 			model = prod_producto_lprecios

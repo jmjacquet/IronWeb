@@ -31,4 +31,4 @@ MOSTRAR_PRODUCTO_ = (
 #Valor ITC default
 vitc = 5.733
 #Valor TASA default
-vtasa = 0.504
+vtasa = 0.704

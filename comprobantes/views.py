@@ -201,8 +201,8 @@ def buscarDatosProd(request):
                if prod_lista:
                     pventa = prod_lista.precio_venta
                     pcosto = prod_lista.precio_cimp           
-                    #pitc = prod_lista.precio_itc
-                    #ptasa = prod_lista.precio_tasa
+                    pitc = prod_lista.precio_itc
+                    ptasa = prod_lista.precio_tasa
 
        precio_siva = pventa /(1+coeficiente)
        precio_siva = Decimal(round(precio_siva,2))
@@ -213,7 +213,7 @@ def buscarDatosProd(request):
        precio_tot = pventa
        
        prod={'precio_venta':pventa,'precio_costo':pcosto,'stock':stock,'ppedido':ppedido,'tasa_iva__id':tasa_iva,'tasa_iva__coeficiente':coeficiente
-            ,'unidad':unidad,'precio_siva':precio_siva,'total_iva':total_iva,'precio_tot':precio_tot,'costo_siva':costo_siva}  
+            ,'unidad':unidad,'precio_siva':precio_siva,'total_iva':total_iva,'precio_tot':precio_tot,'costo_siva':costo_siva,'pitc':pitc,'ptasa':ptasa}  
            
    except:
      prod= {}

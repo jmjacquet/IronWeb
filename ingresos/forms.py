@@ -57,7 +57,8 @@ class CPBVentaForm(forms.ModelForm):
 	cliente_descuento = forms.DecimalField(initial=0.00,decimal_places=2,widget = forms.HiddenInput(), required = False)	
 	lista_precios = forms.ModelChoiceField(label='Lista de Precios',queryset=prod_lista_precios.objects.filter(baja=False),required = True,empty_label=None,initial=1)
 	origen_destino = forms.ModelChoiceField(label=u'Ubicación',queryset=prod_ubicacion.objects.filter(baja=False),required = True,empty_label=None,initial=1)
-	
+	importe_tot_tasa1 = forms.DecimalField(initial=0.00,decimal_places=2,widget = forms.HiddenInput(), required = False)	
+	importe_tot_tasa2 = forms.DecimalField(initial=0.00,decimal_places=2,widget = forms.HiddenInput(), required = False)	
 	class Meta:
 			model = cpb_comprobante
 			exclude = ['id','fecha_creacion','fecha_imputacion','cae','cae_vto','estado','anulacion_motivo','anulacion_fecha','empresa','usuario','presup_tiempo_entrega','presup_forma_pago','presup_aprobacion']
@@ -141,7 +142,6 @@ class CPBVentaForm(forms.ModelForm):
 
 		return self.cleaned_data
 	
-
 class CPBVentaDetalleForm(forms.ModelForm):
 	producto = forms.ModelChoiceField(queryset=prod_productos.objects.filter(baja=False,mostrar_en__in=(1,3)),required = True)	
 	porc_dcto = forms.DecimalField(initial=0,decimal_places=2)	
@@ -152,6 +152,8 @@ class CPBVentaDetalleForm(forms.ModelForm):
 	importe_costo = forms.DecimalField(widget = forms.HiddenInput(), required = False)
 	importe_subtotal = forms.DecimalField(widget=PrependWidget(attrs={'class':'form-control','readonly':'readonly','step':0},base_widget=NumberInput, data='$'),initial=0.00,decimal_places=2)	
 	pventa = forms.DecimalField(widget = forms.HiddenInput(), required = False)
+	importe_tasa1 = forms.DecimalField(widget = forms.HiddenInput(), required = False)
+	importe_tasa2 = forms.DecimalField(widget = forms.HiddenInput(), required = False)
 	coef_iva = forms.DecimalField(widget = forms.HiddenInput(), required = False)
 	tasa_iva = forms.ModelChoiceField(queryset=gral_tipo_iva.objects.all(),widget = forms.HiddenInput(),required = False)
 	importe_iva = forms.DecimalField(widget=PrependWidget(attrs={'class':'form-control','readonly':'readonly','step':0},base_widget=NumberInput, data='$'),initial=0.00,decimal_places=2)	
@@ -159,6 +161,11 @@ class CPBVentaDetalleForm(forms.ModelForm):
 	lista_precios = forms.ModelChoiceField(queryset=prod_lista_precios.objects.all(),widget = forms.HiddenInput(),required = False)
 	origen_destino = forms.ModelChoiceField(queryset=prod_ubicacion.objects.all(),widget = forms.HiddenInput(),required = False)
 	comprobante_original = forms.IntegerField(widget = forms.HiddenInput(), required = False)	
+	coef_tasa1 = forms.DecimalField(initial=0.000,decimal_places=3,widget = forms.HiddenInput(), required = False)	
+	coef_tasa2 = forms.DecimalField(initial=0.000,decimal_places=3,widget = forms.HiddenInput(), required = False)
+	importe_tasa1 = forms.DecimalField(initial=0.00,decimal_places=2,widget = forms.HiddenInput(), required = False)	
+	importe_tasa2 = forms.DecimalField(initial=0.00,decimal_places=2,widget = forms.HiddenInput(), required = False)	
+	importe_no_gravado = forms.DecimalField(initial=0.00,decimal_places=2,widget = forms.HiddenInput(), required = False)	
 	class Meta:
 			model = cpb_comprobante_detalle
 			exclude = ['id','fecha_creacion']
@@ -223,7 +230,6 @@ class CPBVentaPercImpForm(forms.ModelForm):
 
 		return self.cleaned_data
 
-
 class CPBFPForm(forms.ModelForm):
 	tipo_forma_pago = forms.ModelChoiceField(label='FP',queryset=cpb_tipo_forma_pago.objects.filter(baja=False),empty_label=None,required = False)
 	mdcp_fecha = forms.DateField(widget=forms.DateInput(attrs={'class': 'form-control datepicker'}),initial=datetime.now(),required = False)
@@ -262,7 +268,6 @@ class CPBFPForm(forms.ModelForm):
 
 		return self.cleaned_data
 
-	
 
 #*************************************************************************
 
@@ -572,7 +577,6 @@ class CPBRecCobranzaForm(forms.ModelForm):
 			
 		except gral_empresa.DoesNotExist:
 			empresa = None
-		
 
 class CPBRecCPBForm(forms.ModelForm):	
 	detalle_cpb = forms.CharField(widget=forms.TextInput(attrs={'class':'form-control','disabled':'disabled'}),required = False)	
