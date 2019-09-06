@@ -630,6 +630,9 @@ def recalcular_saldo_cpb(idCpb):# pragma: no cover
         if cpb.cpb_tipo.compra_venta == 'V':
             cpb.importe_tasa1 = importe_tasa1
             cpb.importe_tasa2 = importe_tasa2
+        else:
+            cpb.importe_tasa1 = 0
+            cpb.importe_tasa2 = 0
             
         #Impuestos no gravados suman al No gravado
         importe_no_gravado = importe_no_gravado + cpb.importe_tasa1 + cpb.importe_tasa2

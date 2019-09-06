@@ -69,6 +69,7 @@ class CPBCompraForm(forms.ModelForm):
 			if not empresa.usa_impuestos:
 				self.fields['importe_tot_tasa1'].widget=forms.HiddenInput()
 				self.fields['importe_tot_tasa2'].widget=forms.HiddenInput()
+
 		except:
 			empresa = None  
 
@@ -133,6 +134,8 @@ class CPBCompraDetalleForm(forms.ModelForm):
 			self.fields['producto'].queryset = prod_productos.objects.filter(baja=False,mostrar_en__in=(2,3),empresa__id__in=empresas_habilitadas(request)).order_by('nombre')			
 			self.fields['lista_precios'].queryset = prod_lista_precios.objects.filter(baja=False,empresa__id__in=empresas_habilitadas(request))		
 			self.fields['origen_destino'].queryset = prod_ubicacion.objects.filter(baja=False,empresa__id__in=empresas_habilitadas(request))		
+			if empresa.usa_impuestos:
+				self.fields['detalle'].widget=forms.HiddenInput()
 		except:
 			empresa = None			
 
