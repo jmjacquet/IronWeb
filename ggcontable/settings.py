@@ -57,16 +57,16 @@ TIME_INPUT_FORMATS = ('%H:%M',)
 DATE_INPUT_FORMATS = ('%d/%m/%Y',)
 MEDIA_ROOT = os.path.join(SITE_ROOT, 'media')
 MEDIA_URL = '/media/'
-# STATIC_ROOT = os.path.join(SITE_ROOT, 'static')
+STATIC_ROOT = os.path.join(SITE_ROOT, 'static')
 # STATIC_ROOT = '/home/grupogua/webapps/ironweb/ggcontable/staticfiles'
-STATIC_URL = '/static/'
+STATIC_URL = '/staticfiles/'
 
 TEMPLATE_DIRS = (
     os.path.join(SITE_ROOT, 'templates'),
 )
 
 STATICFILES_DIRS = (
-    os.path.join(SITE_ROOT, "static"),   
+    os.path.join(SITE_ROOT, "staticfiles"),   
 )
 
 

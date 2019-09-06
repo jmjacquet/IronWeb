@@ -590,8 +590,7 @@ def armarCodBar(cod):
 def imprimirFactura(request,id,pdf=None):   
     cpb = cpb_comprobante.objects.get(id=id)        
     #puedeVerPadron(request,c.id_unidad.pk)    
-        
-        
+                
     detalle_comprobante = cpb_comprobante_detalle.objects.filter(cpb_comprobante=cpb)
     detalle_totales_iva = cpb_comprobante_tot_iva.objects.filter(cpb_comprobante=cpb)    
     
@@ -630,9 +629,16 @@ def imprimirFactura(request,id,pdf=None):
     context = Context()    
     fecha = hoy()
 
-    
     try:
-        config = gral_empresa.objects.get(id=settings.ENTIDAD_ID)        
+      total_imp1 = cpb.importe_tasa1
+      total_imp2 = cpb.importe_tasa2
+      total_imp = total_imp1 + total_imp2
+    except:
+      total_imp1=0
+      total_imp2=0
+      total_imp=0
+    try:
+        config = empresa_actual(request)
     except gral_empresa.DoesNotExist:
         config = None 
     
@@ -714,7 +720,7 @@ def imprimirFacturaHTML(request,id,pdf=None):
     context = Context()    
     fecha = datetime.now()    
     try:
-        config = gral_empresa.objects.get(id=settings.ENTIDAD_ID)        
+        config = empresa_actual(request)
     except gral_empresa.DoesNotExist:
         config = None 
     
@@ -755,7 +761,7 @@ def imprimirPresupuesto(request,id,pdf=None):
     cpb = cpb_comprobante.objects.get(id=id)        
     #puedeVerPadron(request,c.id_unidad.pk)    
     try:
-        config = gral_empresa.objects.get(id=settings.ENTIDAD_ID)        
+        config = empresa_actual(request)
     except gral_empresa.DoesNotExist:
         config = None 
     
@@ -800,7 +806,7 @@ def imprimirRemito(request,id,pdf=None):
     cpb = cpb_comprobante.objects.get(id=id)        
     #puedeVerPadron(request,c.id_unidad.pk)    
     try:
-        config = gral_empresa.objects.get(id=settings.ENTIDAD_ID)        
+        config = empresa_actual(request)
     except gral_empresa.DoesNotExist:
         config = None 
     
@@ -837,10 +843,10 @@ def imprimirRemito(request,id,pdf=None):
 def imprimirCobranza(request,id,pdf=None):   
     cpb = cpb_comprobante.objects.get(id=id)        
     #puedeVerPadron(request,c.id_unidad.pk)    
-    try:        
-        empresa = empresa_actual(request)
+    try:
+        config = empresa_actual(request)
     except gral_empresa.DoesNotExist:
-        empresa = None 
+        config = None  
     
     c = empresa
     
@@ -874,10 +880,10 @@ def imprimirCobranza(request,id,pdf=None):
 def imprimirCobranzaCtaCte(request,id,pdf=None):   
     cpb = cpb_comprobante.objects.get(id=id)        
     #puedeVerPadron(request,c.id_unidad.pk)    
-    try:        
-        empresa = empresa_actual(request)
+    try:
+        config = empresa_actual(request)
     except gral_empresa.DoesNotExist:
-        empresa = None 
+        config = None 
     
     c = empresa
     
@@ -915,7 +921,7 @@ def imprimirPago(request,id,pdf=None):
     cpb = cpb_comprobante.objects.get(id=id)        
     #puedeVerPadron(request,c.id_unidad.pk)    
     try:
-        config = gral_empresa.objects.get(id=settings.ENTIDAD_ID)        
+        config = empresa_actual(request)
     except gral_empresa.DoesNotExist:
         config = None 
     
@@ -961,7 +967,7 @@ def mandarEmail(request,id):
             return HttpResponseRedirect(cpb.get_listado())
         mail_destino.append(direccion)
         try:
-            config = gral_empresa.objects.get(id=settings.ENTIDAD_ID)        
+          config = empresa_actual(request)    
         except gral_empresa.DoesNotExist:
              raise ValueError
 
@@ -1084,9 +1090,9 @@ class MovInternosViewList(VariablesMixin,ListView):
     def get_context_data(self, **kwargs):
         context = super(MovInternosViewList, self).get_context_data(**kwargs)
         try:
-            empresa = empresa_actual(self.request)
+            config = empresa_actual(request)
         except gral_empresa.DoesNotExist:
-            empresa = None 
+            config = None 
         form = ConsultaCpbsCompras(self.request.POST or None,empresa=empresa,request=self.request)   
         movimientos = cpb_comprobante_fp.objects.filter(cpb_comprobante__cpb_tipo__id=13,cpb_comprobante__empresa__id__in=empresas_habilitadas(self.request)).order_by('-cpb_comprobante__fecha_cpb','-cpb_comprobante__fecha_creacion').select_related('cpb_comprobante')                
         if form.is_valid():                                
@@ -1271,9 +1277,9 @@ class ComprobantesVerView(VariablesMixin,DetailView):
     def get_context_data(self, **kwargs):        
         context = super(ComprobantesVerView, self).get_context_data(**kwargs)
         try:
-            config = gral_empresa.objects.get(id=settings.ENTIDAD_ID)        
+            config = empresa_actual(request)
         except gral_empresa.DoesNotExist:
-            config = None        
+            config = None 
         cpb = self.object
         context['config'] = config
         detalle_comprobante = cpb_comprobante_detalle.objects.filter(cpb_comprobante=cpb).select_related('producto','tasa_iva')       
@@ -1295,9 +1301,9 @@ class RecibosVerView(VariablesMixin,DetailView):
     def get_context_data(self, **kwargs):        
         context = super(RecibosVerView, self).get_context_data(**kwargs)
         try:
-            config = gral_empresa.objects.get(id=settings.ENTIDAD_ID)        
+            config = empresa_actual(request)
         except gral_empresa.DoesNotExist:
-            config = None        
+            config = None 
         cpb = self.object
         context['config'] = config
         detalle = cpb_comprobante_fp.objects.filter(cpb_comprobante=cpb).select_related('tipo_forma_pago','mdcp_banco','cta_ingreso','cta_egreso')       
@@ -1319,9 +1325,9 @@ class OrdenPagoVerView(VariablesMixin,DetailView):
     def get_context_data(self, **kwargs):        
         context = super(OrdenPagoVerView, self).get_context_data(**kwargs)
         try:
-            config = gral_empresa.objects.get(id=settings.ENTIDAD_ID)        
+            config = empresa_actual(request)
         except gral_empresa.DoesNotExist:
-            config = None        
+            config = None 
         cpb = self.object
         context['config'] = config
         detalle = cpb_comprobante_fp.objects.filter(cpb_comprobante=cpb).select_related('tipo_forma_pago','mdcp_banco','cta_ingreso','cta_egreso')       
@@ -1343,9 +1349,9 @@ class NCNDVerView(VariablesMixin,DetailView):
     def get_context_data(self, **kwargs):        
         context = super(NCNDVerView, self).get_context_data(**kwargs)
         try:
-            config = gral_empresa.objects.get(id=settings.ENTIDAD_ID)        
+            config = empresa_actual(request)
         except gral_empresa.DoesNotExist:
-            config = None        
+            config = None 
         cpb = self.object
         context['config'] = config
         detalle_comprobante = cpb_comprobante_detalle.objects.filter(cpb_comprobante=cpb).select_related('producto','tasa_iva')       
@@ -1365,9 +1371,9 @@ class RemitoVerView(VariablesMixin,DetailView):
     def get_context_data(self, **kwargs):        
         context = super(RemitoVerView, self).get_context_data(**kwargs)
         try:
-            config = gral_empresa.objects.get(id=settings.ENTIDAD_ID)        
+            config = empresa_actual(request)
         except gral_empresa.DoesNotExist:
-            config = None        
+            config = None 
         cpb = self.object
         context['config'] = config
         detalle_comprobante = cpb_comprobante_detalle.objects.filter(cpb_comprobante=cpb).select_related('producto','tasa_iva')       
@@ -1387,9 +1393,9 @@ class PresupVerView(VariablesMixin,DetailView):
     def get_context_data(self, **kwargs):        
         context = super(PresupVerView, self).get_context_data(**kwargs)
         try:
-            config = gral_empresa.objects.get(id=settings.ENTIDAD_ID)        
+            config = empresa_actual(request)
         except gral_empresa.DoesNotExist:
-            config = None        
+            config = None 
         cpb = self.object
         context['config'] = config
         detalle_comprobante = cpb_comprobante_detalle.objects.filter(cpb_comprobante=cpb).select_related('producto','tasa_iva')       

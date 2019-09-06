@@ -1,0 +1,245 @@
+.tabla{
+  min-height:297px;
+  font-size: 10px;
+}
+
+p{
+  margin: 0;
+  padding: 0;
+}
+tr { 
+  line-height: 12px;vertical-align: middle;padding-top: 1px;padding-bottom: 1px;
+ }
+
+th {
+  
+  font-size: 10px;
+  text-align: center;
+  font-weight: bold;  background-color: #E1EFFF;
+  line-height: 12px;
+}
+
+.tabla_footer {  
+  font-size: 11px;  
+  font-weight: bold;  background-color: #E1EFFF;
+  line-height: 12px;
+  text-align: right;
+  padding-right: 3px;
+  padding-top: 2px;
+  padding-bottom: 0px;
+}
+
+#tabla_totales{  
+  padding-bottom: 0px;
+}
+
+.tabla_header {  
+  font-size: 10px;  
+  font-weight: bold;  background-color: #E1EFFF;
+  line-height: 12px;
+  padding-right: 3px;
+  padding-top: 2px;
+  padding-bottom: 0px;
+}
+
+td {  
+
+  padding-top: 3px;
+  padding-bottom: 1px;
+  padding-right: 3px;
+  padding-left: 3px;
+}
+
+.empresa {	
+  font-size: 20px;
+	font-weight: bold;
+	text-align: center;
+  line-height: 20px;
+}
+
+.nombre_cpb {
+  font-size: 20px;
+  font-weight: bold;
+  text-align: center;
+}
+
+
+.texto_cpb {
+  font-size: 12px;  
+  text-align: center;
+  padding-left: 3px; 
+}
+
+.letra_cpb {
+	font-size: 32px;
+	text-align: center;
+	vertical-align: top;
+	font-weight: bold;
+/*  background-color: #000;
+  color: #fff;*/
+  padding-left:4px;
+  background-color: #E1EFFF;
+}
+
+.letra_cod {
+  font-size: 7px;
+  text-align: center;
+  vertical-align: bottom;
+  font-weight: bold;
+  
+
+}
+
+
+.borde{
+  border-color:#000000;
+  border-style:solid;
+  border-width:0.5px;
+}
+
+.borde_arriba{
+  border-top-color:#000000;  
+  border-top-width:1px;
+  border-style:solid;
+}
+
+.borde_der{ 
+  border-right-color:#000000;  
+  border-right-width:1px;
+  border-style:solid;
+}
+
+.borde_abajo{
+  border-bottom-color:#000000;  
+  border-bottom-width:1px;
+  border-style:solid;
+}
+
+.borde_izq{
+  border-left-color:#000000;  
+  border-left-width:1px; 
+  border-style:solid;
+}
+
+
+.listado_izq {
+  font-size: 10px;
+  text-align: left;
+  font-weight: normal; 
+  padding-left: 3px; 
+}
+
+.listado_der {
+  font-size: 10px;
+  text-align: right;
+  font-weight: normal;
+  padding-right: 3px;  
+}
+
+.listado_centro {
+  font-size: 10px;
+  text-align: center;
+  font-weight: normal;
+  padding-right: 3px;  
+}
+
+.listado_subtot {
+  font-size: 11px;
+  text-align: right;
+  font-weight: bold;  
+}
+.listado_subtot_imp {
+  font-size: 13px;
+  text-align: right;
+  font-weight: bold;  
+}
+
+.listado_final {
+  font-size: 11px;
+  text-align: right;
+  font-weight: bold;  
+}
+
+.texto_izq {
+  font-size: 10px;  
+  text-align: left;
+  padding-left: 1px;  
+}
+.texto_der {
+  font-size: 10px;  
+  text-align: right;
+  padding-right: 1px;  
+}
+
+.texto_cen {
+  font-size: 10px;  
+  text-align: center;
+  padding-right: 1px;  
+}
+
+.texto_firma {
+  font-size: 10px;  
+  text-align: center;
+  border-top: 0.5px dotted gray; 
+}
+
+.cae_obs {
+  font-size: 8px;
+  font-weight: bold;
+  text-align: center;
+  text-decoration: underline;
+
+}
+.cae_detalle {
+  font-size: 8px;
+  text-align: left;
+  font-style: italic;
+}
+.cae_autorizado {
+  font-size: 10px;
+  font-weight: bold;
+  vertical-align: middle;
+  font-style: italic;
+}
+.cae_leyenda {
+  font-size: 7px;
+  font-weight: bold;
+  text-align: left;
+  font-style: italic;
+}
+
+.titulo_reporte {
+  font-size: 26px;
+  font-weight: bold;
+  text-align: center;
+  background-color: #bfbfbf;
+}
+
+.logo_factura{
+  width: 220px;
+  height: 150px;
+}
+
+.logo_reporte{
+  width: 120px;
+  height: 100px;
+}
+
+.pie_sistema{
+  font-size: 7px;  
+  text-align: left;
+  font-style: italic;
+  padding-bottom: 0px;
+}
+
+.pie_logo{
+  width: 10px;    
+  margin-bottom: -6px;
+}
+
+
+.pie_texto{
+  text-align: right;   
+  font-style: italic;
+  padding-bottom: 0px;
+}

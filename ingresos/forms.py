@@ -53,12 +53,12 @@ class CPBVentaForm(forms.ModelForm):
 	cpb_tipo = forms.ModelChoiceField(label='Tipo CPB',queryset=cpb_tipo.objects.filter(compra_venta='V',baja=False,tipo__in=[1,2,3,9]),required = True,empty_label=None)
 	condic_pago = forms.ChoiceField(label=u'Condición Pago',choices=CONDICION_PAGO,required=False,initial=1)
 	tipo_form = forms.CharField(widget = forms.HiddenInput(), required = False)	
-	cliente_categ_fiscal = forms.IntegerField(widget = forms.HiddenInput(), required = False,initial=5)	
+	cliente_categ_fiscal = forms.IntegerField(widget = forms.HiddenInput(), required = False,initial=5)		
 	cliente_descuento = forms.DecimalField(initial=0.00,decimal_places=2,widget = forms.HiddenInput(), required = False)	
 	lista_precios = forms.ModelChoiceField(label='Lista de Precios',queryset=prod_lista_precios.objects.filter(baja=False),required = True,empty_label=None,initial=1)
 	origen_destino = forms.ModelChoiceField(label=u'Ubicación',queryset=prod_ubicacion.objects.filter(baja=False),required = True,empty_label=None,initial=1)
-	importe_tot_tasa1 = forms.DecimalField(initial=0.00,decimal_places=2,widget = forms.HiddenInput(), required = False)	
-	importe_tot_tasa2 = forms.DecimalField(initial=0.00,decimal_places=2,widget = forms.HiddenInput(), required = False)	
+	importe_tot_tasa1 = forms.DecimalField(label='',widget=PrependWidget(attrs={'class':'form-control','readonly':'readonly'},base_widget=NumberInput, data='$'),initial=0.00,decimal_places=2,required = False)
+	importe_tot_tasa2 = forms.DecimalField(label='',widget=PrependWidget(attrs={'class':'form-control','readonly':'readonly'},base_widget=NumberInput, data='$'),initial=0.00,decimal_places=2,required = False)	
 	class Meta:
 			model = cpb_comprobante
 			exclude = ['id','fecha_creacion','fecha_imputacion','cae','cae_vto','estado','anulacion_motivo','anulacion_fecha','empresa','usuario','presup_tiempo_entrega','presup_forma_pago','presup_aprobacion']
@@ -93,6 +93,9 @@ class CPBVentaForm(forms.ModelForm):
 				self.fields['cpb_tipo'].initial = usr.cpb_tipo.id
 			if usr.condic_pago:
 				self.fields['condic_pago'].initial = usr.condic_pago
+			if not empresa.usa_impuestos:
+				self.fields['importe_tot_tasa1'].widget=forms.HiddenInput()
+				self.fields['importe_tot_tasa2'].widget=forms.HiddenInput()
 			
 
 		except gral_empresa.DoesNotExist:

@@ -39,6 +39,8 @@ class CPBCompraForm(forms.ModelForm):
 	cliente_descuento = forms.DecimalField(initial=0.00,decimal_places=2,widget = forms.HiddenInput(), required = False)
 	lista_precios = forms.ModelChoiceField(label='Lista de Precios',queryset=prod_lista_precios.objects.filter(baja=False),required = True,empty_label=None,initial=1)
 	origen_destino = forms.ModelChoiceField(label=u'Ubicación',queryset=prod_ubicacion.objects.filter(baja=False),required = True,empty_label=None,initial=1)
+	importe_tot_tasa1 = forms.DecimalField(label='',widget=PrependWidget(attrs={'class':'form-control'},base_widget=NumberInput, data='$'),initial=0.00,decimal_places=2,required = False)
+	importe_tot_tasa2 = forms.DecimalField(label='',widget=PrependWidget(attrs={'class':'form-control'},base_widget=NumberInput, data='$'),initial=0.00,decimal_places=2,required = False)	
 	class Meta:
 			model = cpb_comprobante
 			exclude = ['id','fecha_creacion','cae','cae_vto','estado','anulacion_motivo','anulacion_fecha','empresa','usuario','presup_tiempo_entrega','presup_forma_pago','presup_aprobacion','cpb_nro_afip']
@@ -64,6 +66,9 @@ class CPBCompraForm(forms.ModelForm):
 			self.fields['entidad'].queryset = egr_entidad.objects.filter(tipo_entidad=2,baja=False,empresa__id__in=empresas_habilitadas(request)).order_by('apellido_y_nombre')
 			self.fields['fecha_vto'].initial = hoy()+timedelta(days=empresa.get_dias_venc())
 			self.fields['cpb_tipo'].queryset = cpb_tipo.objects.filter(Q(baja=False)&Q(tipo__in=get_compra_venta())&(Q(compra_venta='C')|Q(tipo=14)))
+			if not empresa.usa_impuestos:
+				self.fields['importe_tot_tasa1'].widget=forms.HiddenInput()
+				self.fields['importe_tot_tasa2'].widget=forms.HiddenInput()
 		except:
 			empresa = None  
 
@@ -109,6 +114,11 @@ class CPBCompraDetalleForm(forms.ModelForm):
 	importe_total = forms.DecimalField(widget=PrependWidget(attrs={'class':'form-control','step':0},base_widget=NumberInput, data='$'),initial=0.00,decimal_places=2)	
 	lista_precios = forms.ModelChoiceField(queryset=prod_lista_precios.objects.all(),widget = forms.HiddenInput(),required = False)
 	origen_destino = forms.ModelChoiceField(queryset=prod_ubicacion.objects.all(),widget = forms.HiddenInput(),required = False)
+	coef_tasa1 = forms.DecimalField(initial=0.000,decimal_places=3,widget = forms.HiddenInput(), required = False)	
+	coef_tasa2 = forms.DecimalField(initial=0.000,decimal_places=3,widget = forms.HiddenInput(), required = False)
+	importe_tasa1 = forms.DecimalField(initial=0.00,decimal_places=2,widget = forms.HiddenInput(), required = False)	
+	importe_tasa2 = forms.DecimalField(initial=0.00,decimal_places=2,widget = forms.HiddenInput(), required = False)	
+	importe_no_gravado = forms.DecimalField(initial=0.00,decimal_places=2,widget = forms.HiddenInput(), required = False)
 	class Meta:
 			model = cpb_comprobante_detalle
 			exclude = ['id','fecha_creacion']			

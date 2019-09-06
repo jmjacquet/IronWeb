@@ -83,6 +83,9 @@ class Producto_ListaPreciosForm(forms.ModelForm):
 		try:
 			empresa = empresa_actual(request)			
 			self.fields['lista_precios'].queryset = prod_lista_precios.objects.filter(baja=False,empresa__id__in=empresas_habilitadas(request))			
+			if not empresa.usa_impuestos:
+				self.fields['precio_itc'].initial = 0
+				self.fields['precio_tasa'].initial = 0
 		except gral_empresa.DoesNotExist:
 			empresa = None  
 

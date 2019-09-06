@@ -7,7 +7,7 @@ from dateutil.relativedelta import *
 from django.conf import settings
 import os 
 from general.utilidades import *
-from productos.models import prod_productos,gral_tipo_iva,prod_ubicacion,prod_lista_precios
+from productos.models import prod_productos,gral_tipo_iva,prod_ubicacion,prod_lista_precios,prod_producto_lprecios
 from django.db.models import Sum
 from decimal import Decimal
 from django.utils import timezone
@@ -368,6 +368,23 @@ class cpb_comprobante_detalle(models.Model):
     def get_utilidad_total(self):                        
         return (self.importe_subtotal-(self.cantidad*self.importe_costo))
 
+    @property
+    def get_itc(self):                        
+        lpl = prod_producto_lprecios.objects.get(producto=self.producto,lista_precios=self.lista_precios)
+        try:
+            lpl = prod_producto_lprecios.objects.get(producto=self.producto,lista_precios=self.lista_precios)
+        except:
+            return None        
+        return lpl.precio_itc
+    
+    @property
+    def get_th(self):                        
+        try:
+            lpl = prod_producto_lprecios.objects.get(producto=self.producto,lista_precios=self.lista_precios)
+        except:
+            return None        
+        return lpl.precio_tasa        
+
 class cpb_perc_imp(models.Model):
     id = models.AutoField(primary_key=True,db_index=True)
     nombre = models.CharField(u'Nombre',max_length=100)
@@ -610,8 +627,12 @@ def recalcular_saldo_cpb(idCpb):# pragma: no cover
         if not tot_perc_imp:
             tot_perc_imp = 0
 
+        if cpb.cpb_tipo.compra_venta == 'V':
+            cpb.importe_tasa1 = importe_tasa1
+            cpb.importe_tasa2 = importe_tasa2
+            
         #Impuestos no gravados suman al No gravado
-        importe_no_gravado = importe_tasa1 + importe_tasa2
+        importe_no_gravado = importe_no_gravado + cpb.importe_tasa1 + cpb.importe_tasa2
 
         importe_subtotal = importe_gravado + importe_no_gravado + importe_exento
 
@@ -625,8 +646,8 @@ def recalcular_saldo_cpb(idCpb):# pragma: no cover
         cpb.importe_exento = importe_exento        
         cpb.importe_perc_imp = tot_perc_imp    
         cpb.importe_total = importe_total    
-        cpb.importe_tasa1 = importe_tasa1
-        cpb.importe_tasa2 = importe_tasa2
+        #Si es de compra dejo lo que se cargó oportunamente en el comprobante
+        
 
         #Las cobranzas/pagos activos del Comprobante de Venta/Compra
         cobranzas = cpb_cobranza.objects.filter(cpb_factura=cpb,cpb_comprobante__estado__pk__lt=3).aggregate(sum=Sum('importe_total'))

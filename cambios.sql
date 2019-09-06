@@ -12,3 +12,6 @@ ALTER TABLE `prod_producto_lprecios`
         ADD COLUMN `precio_tasa` numeric(15, 3);
 ALTER TABLE `prod_producto_lprecios`
         ADD COLUMN `precio_itc` numeric(15, 3);                
+
+ALTER TABLE `gral_empresa`
+        ADD COLUMN `usa_impuestos` bool NOT NULL;        
