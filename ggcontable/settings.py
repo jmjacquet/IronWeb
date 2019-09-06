@@ -59,7 +59,7 @@ MEDIA_ROOT = os.path.join(SITE_ROOT, 'media')
 MEDIA_URL = '/media/'
 STATIC_ROOT = os.path.join(SITE_ROOT, 'static')
 # STATIC_ROOT = '/home/grupogua/webapps/ironweb/ggcontable/staticfiles'
-STATIC_URL = '/staticfiles/'
+STATIC_URL = '/static/'
 
 TEMPLATE_DIRS = (
     os.path.join(SITE_ROOT, 'templates'),
