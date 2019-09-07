@@ -98,7 +98,7 @@ function calcularProd(i){
   $("input[name='formDetalle-"+i+"-importe_subtotal']").val(importe_subtotal.toFixed(2));  
   $("input[name='formDetalle-"+i+"-importe_total']").val(importe_total.toFixed(2)); 
   $("input[name='formDetalle-"+i+"-importe_iva']").val(importe_iva.toFixed(2));
-  var importe_tasa1 = coef_tasa1 * cant;
+  var importe_tasa1 = coef_tasa1 * cant;  
   var importe_tasa2 = coef_tasa2 * cant;
   $("input[name='formDetalle-"+i+"-importe_tasa1']").val(importe_tasa1.toFixed(2));  
   $("input[name='formDetalle-"+i+"-importe_tasa2']").val(importe_tasa2.toFixed(2)); 
@@ -114,6 +114,7 @@ function calcularTotales(){
       $('.form-detalles tr').each(function(j) {
              if ($(this).is(':visible'))
           {
+            console.log(j);
             var $importe_tot_prod = parseFloat($("input[name='formDetalle-"+j+"-importe_total']").val())|| 0;               
             var $iva_parcial = parseFloat($("input[name='formDetalle-"+j+"-importe_iva']").val())|| 0; 
             var $importe_parcial = parseFloat($("input[name='formDetalle-"+j+"-importe_subtotal']").val())|| 0;               
@@ -128,7 +129,7 @@ function calcularTotales(){
             totImp2 = totImp2 + importe_tasa2;
           }
        });
-      $("#id_importe_subtotal").val((tot_prod-totIVA).toFixed(2));
+      $("#id_importe_subtotal").val((totParcial).toFixed(2));
       $("#id_importe_iva").val(totIVA.toFixed(2));
       var tot=0;
       $('.form-detallesPI tr').each(function(j) {
@@ -158,8 +159,8 @@ function calcularTotales(){
 
       var $importe_total = 0;        
       var $importe_subtot = parseFloat($("#id_importe_subtotal").val())|| 0;      
-      $("#id_importe_tot_tasa1").val(totImp1.toFixed(2));
-      $("#id_importe_tot_tasa2").val(totImp2.toFixed(2));
+      $("#id_importe_tasa1").val(totImp1.toFixed(2));
+      $("#id_importe_tasa2").val(totImp2.toFixed(2));
       $importe_no_gravado = totImp1 + totImp2;
       $("#id_importe_no_gravado").val($importe_no_gravado.toFixed(2));
 
@@ -190,7 +191,7 @@ function cargarProd(i){
                             $("[name='formDetalle-"+i+"-porc_dcto']").val(dcto); 
                             $("[name='formDetalle-"+i+"-cantidad']").val('1');
                             $("[name='formDetalle-"+i+"-coef_tasa1']").val(data['pitc']); 
-                            $("[name='formDetalle-"+i+"-coef_tasa2']").val(data['ptasa']);                   
+                            $("[name='formDetalle-"+i+"-coef_tasa2']").val(data['ptasa']);                                               
                             var $porcDcto = dcto;
                             var $importe_unitario = data['precio_costo'];
                             var $importe_iva = data['total_iva'];

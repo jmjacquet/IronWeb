@@ -219,8 +219,8 @@ function calcularTotales(){
       var $importe_total = 0;        
       var $importe_subtot = parseFloat($("#id_importe_subtotal").val())|| 0;      
 
-      $("#id_importe_tot_tasa1").val(totImp1.toFixed(2));
-      $("#id_importe_tot_tasa2").val(totImp2.toFixed(2));
+      $("#id_importe_tasa1").val(totImp1.toFixed(2));
+      $("#id_importe_tasa2").val(totImp2.toFixed(2));
       $importe_no_gravado = totImp1 + totImp2;
       $("#id_importe_no_gravado").val($importe_no_gravado.toFixed(2));
 

@@ -113,7 +113,7 @@ function calcularTotales(){
       var totImp2=0;
       $('.form-detalles tr').each(function(j) {
              if ($(this).is(':visible'))
-          {
+          {           
             var $importe_tot_prod = parseFloat($("input[name='formDetalle-"+j+"-importe_total']").val())|| 0;               
             var $iva_parcial = parseFloat($("input[name='formDetalle-"+j+"-importe_iva']").val())|| 0; 
             var $importe_parcial = parseFloat($("input[name='formDetalle-"+j+"-importe_subtotal']").val())|| 0;               
@@ -128,7 +128,7 @@ function calcularTotales(){
             totImp2 = totImp2 + importe_tasa2;
           }
        });
-      $("#id_importe_subtotal").val((tot_prod-totIVA).toFixed(2));
+      $("#id_importe_subtotal").val((totParcial).toFixed(2));
       $("#id_importe_iva").val(totIVA.toFixed(2));
       var tot=0;
       $('.form-detallesPI tr').each(function(j) {
@@ -158,8 +158,8 @@ function calcularTotales(){
 
       var $importe_total = 0;        
       var $importe_subtot = parseFloat($("#id_importe_subtotal").val())|| 0;      
-      $("#id_importe_tot_tasa1").val(totImp1.toFixed(2));
-      $("#id_importe_tot_tasa2").val(totImp2.toFixed(2));
+      $("#id_importe_tasa1").val(totImp1.toFixed(2));
+      $("#id_importe_tasa2").val(totImp2.toFixed(2));
       $importe_no_gravado = totImp1 + totImp2;
       $("#id_importe_no_gravado").val($importe_no_gravado.toFixed(2));
 

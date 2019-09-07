@@ -1277,7 +1277,7 @@ class ComprobantesVerView(VariablesMixin,DetailView):
     def get_context_data(self, **kwargs):        
         context = super(ComprobantesVerView, self).get_context_data(**kwargs)
         try:
-            config = empresa_actual(request)
+            config = empresa_actual(self.request)
         except gral_empresa.DoesNotExist:
             config = None 
         cpb = self.object
@@ -1301,7 +1301,7 @@ class RecibosVerView(VariablesMixin,DetailView):
     def get_context_data(self, **kwargs):        
         context = super(RecibosVerView, self).get_context_data(**kwargs)
         try:
-            config = empresa_actual(request)
+            config = empresa_actual(self.request)
         except gral_empresa.DoesNotExist:
             config = None 
         cpb = self.object
@@ -1325,7 +1325,7 @@ class OrdenPagoVerView(VariablesMixin,DetailView):
     def get_context_data(self, **kwargs):        
         context = super(OrdenPagoVerView, self).get_context_data(**kwargs)
         try:
-            config = empresa_actual(request)
+            config = empresa_actual(self.request)
         except gral_empresa.DoesNotExist:
             config = None 
         cpb = self.object
@@ -1349,7 +1349,7 @@ class NCNDVerView(VariablesMixin,DetailView):
     def get_context_data(self, **kwargs):        
         context = super(NCNDVerView, self).get_context_data(**kwargs)
         try:
-            config = empresa_actual(request)
+            config = empresa_actual(self.request)
         except gral_empresa.DoesNotExist:
             config = None 
         cpb = self.object
@@ -1371,7 +1371,7 @@ class RemitoVerView(VariablesMixin,DetailView):
     def get_context_data(self, **kwargs):        
         context = super(RemitoVerView, self).get_context_data(**kwargs)
         try:
-            config = empresa_actual(request)
+            config = empresa_actual(self.request)
         except gral_empresa.DoesNotExist:
             config = None 
         cpb = self.object
@@ -1393,7 +1393,7 @@ class PresupVerView(VariablesMixin,DetailView):
     def get_context_data(self, **kwargs):        
         context = super(PresupVerView, self).get_context_data(**kwargs)
         try:
-            config = empresa_actual(request)
+            config = empresa_actual(self.request)
         except gral_empresa.DoesNotExist:
             config = None 
         cpb = self.object
