@@ -113,8 +113,7 @@ function calcularTotales(){
       var totImp2=0;
       $('.form-detalles tr').each(function(j) {
              if ($(this).is(':visible'))
-          {
-            console.log(j);
+          {           
             var $importe_tot_prod = parseFloat($("input[name='formDetalle-"+j+"-importe_total']").val())|| 0;               
             var $iva_parcial = parseFloat($("input[name='formDetalle-"+j+"-importe_iva']").val())|| 0; 
             var $importe_parcial = parseFloat($("input[name='formDetalle-"+j+"-importe_subtotal']").val())|| 0;               

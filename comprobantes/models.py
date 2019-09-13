@@ -276,6 +276,8 @@ class cpb_comprobante(models.Model):
 
     def get_importe_subtotal(self):
         signo = self.cpb_tipo.signo_ctacte
+        if not self.importe_subtotal:
+            return 0
         if signo:
             return self.importe_subtotal * signo
         else:
@@ -283,6 +285,8 @@ class cpb_comprobante(models.Model):
 
     def get_importe_iva(self):
         signo = self.cpb_tipo.signo_ctacte
+        if not self.importe_iva:
+            return 0
         if signo:
             return self.importe_iva * signo
         else:
@@ -292,6 +296,8 @@ class cpb_comprobante(models.Model):
         signo = self.cpb_tipo.signo_ctacte
         if not self.saldo:
             return 0
+        if not self.saldo:
+            return 0
         if signo:
             return self.saldo * signo
         else:
@@ -299,6 +305,8 @@ class cpb_comprobante(models.Model):
 
     def get_importe_gravado(self):
         signo = self.cpb_tipo.signo_ctacte
+        if not self.importe_gravado:
+            return 0
         if signo:
             return self.importe_gravado * signo
         else:
@@ -306,6 +314,8 @@ class cpb_comprobante(models.Model):
 
     def get_importe_no_gravado(self):
         signo = self.cpb_tipo.signo_ctacte
+        if not self.importe_no_gravado:
+            return 0
         if signo:
             return self.importe_no_gravado * signo
         else:
@@ -313,6 +323,8 @@ class cpb_comprobante(models.Model):
 
     def get_importe_exento(self):
         signo = self.cpb_tipo.signo_ctacte
+        if not self.importe_exento:
+            return 0
         if signo:
             return self.importe_exento * signo
         else:
@@ -320,6 +332,8 @@ class cpb_comprobante(models.Model):
 
     def get_importe_perc_imp(self):
         signo = self.cpb_tipo.signo_ctacte
+        if not self.importe_perc_imp:
+            return 0
         if signo:
             return self.importe_perc_imp * signo
         else:

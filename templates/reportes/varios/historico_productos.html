@@ -173,9 +173,9 @@ var tabla = $('#dataTables-historico').DataTable({
                                             if (typeof i === "number") {
                                                 return i;
                                             } else if (typeof i === "string") {
-                                                i = i.replace("$", "")
-                                                i = i.replace(",", "")
-                                                i = i.replace(".", "")
+                                                i = i.replace(/\$/g, "");
+                    i = i.replace(/\,/g ,"");                    
+                    i = i.replace(/\./g, "");
                                                 var result = parseFloat(i)/100;
                                                 // console.log(result);
                                                 if (isNaN(result)) {
@@ -247,9 +247,9 @@ var tabla = $('#dataTables-historico').DataTable({
                 if (typeof i === "number") {
                     return i;
                 } else if (typeof i === "string") {
-                    i = i.replace("$", "")
-                    i = i.replace(",", "")
-                    i = i.replace(".", "")
+                    i = i.replace(/\$/g, "");
+                    i = i.replace(/\,/g ,"");                    
+                    i = i.replace(/\./g, "");
                     var result = parseFloat(i)/100;
                     // console.log(result);
                     if (isNaN(result)) {

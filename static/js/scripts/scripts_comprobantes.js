@@ -90,9 +90,9 @@ var tabla = $('#dataTables-cpb_venta').DataTable({
                                             if (typeof i === "number") {
                                                 return i;
                                             } else if (typeof i === "string") {
-                                                i = i.replace("$", "")
-                                                i = i.replace(",", "")
-                                                i = i.replace(".", "")
+                                                i = i.replace(/\$/g, "");
+                    i = i.replace(/\,/g ,"");                    
+                    i = i.replace(/\./g, "");
                                                 var result = parseFloat(i)/100;
                                                 // console.log(result);
                                                 if (isNaN(result)) {
@@ -172,9 +172,9 @@ var tabla = $('#dataTables-cpb_venta').DataTable({
                 if (typeof i === "number") {
                     return i;
                 } else if (typeof i === "string") {
-                    i = i.replace("$", "")
-                    i = i.replace(",", "")
-                    i = i.replace(".", "")
+                    i = i.replace(/\$/g, "");
+                    i = i.replace(/\,/g ,"");                    
+                    i = i.replace(/\./g, "");
                     var result = parseFloat(i)/100;
                     // console.log(result);
                     if (isNaN(result)) {
@@ -197,7 +197,7 @@ var tabla = $('#dataTables-cpb_venta').DataTable({
                         
             
             pageTotal1 = api.column(8, { page: 'current'} ).data().reduce( function (a, b) {return floatVal(a) + floatVal(b);}, 0 );            
-            $( api.column(8).footer() ).html('$'+pageTotal1.toFixed(2));            
+            $( api.column(8).footer() ).html('$'+pageTotal1.toLocaleString());            
             },
                                   
         });

@@ -100,8 +100,8 @@ var tabla = $('#dataTables-cpb_venta').DataTable({
                                                 return i;
                                             } else if (typeof i === "string") {
                                                 i = i.replace("$", "")
-                                                i = i.replace(",", "")
-                                                i = i.replace(".", "")
+                                                i = i.replace("/,/g", "")
+                                                i = i.replace("/./g", "")
                                                 var result = parseFloat(i)/100;
                                                 // console.log(result);
                                                 if (isNaN(result)) {
@@ -181,11 +181,11 @@ var tabla = $('#dataTables-cpb_venta').DataTable({
                 if (typeof i === "number") {
                     return i;
                 } else if (typeof i === "string") {
-                    i = i.replace("$", "")
-                    i = i.replace(",", "")
-                    i = i.replace(".", "")
+                    i = i.replace(/\$/g, "");
+                    i = i.replace(/\,/g ,"");                    
+                    i = i.replace(/\./g, "");                    
                     var result = parseFloat(i)/100;
-                    // console.log(result);
+                    
                     if (isNaN(result)) {
                         try {
                             var result = $jq(i).text();
@@ -206,19 +206,19 @@ var tabla = $('#dataTables-cpb_venta').DataTable({
                         
             
             pageTotal = api.column(9, { page: 'current'} ).data().reduce( function (a, b) {return floatVal(a) + floatVal(b);}, 0 );            
-            $( api.column(9).footer() ).html('$'+pageTotal.toFixed(2));
+            $( api.column(9).footer() ).html('$'+pageTotal.toLocaleString());
 
             pageTotal = api.column(10, { page: 'current'} ).data().reduce( function (a, b) {return floatVal(a) + floatVal(b);}, 0 );            
-            $( api.column(10).footer() ).html('$'+pageTotal.toFixed(2));
+            $( api.column(10).footer() ).html('$'+pageTotal.toLocaleString());
 
             pageTotal = api.column(11, { page: 'current'} ).data().reduce( function (a, b) {return floatVal(a) + floatVal(b);}, 0 );            
-            $( api.column(11).footer() ).html('$'+pageTotal.toFixed(2));
+            $( api.column(11).footer() ).html('$'+pageTotal.toLocaleString());
 
             pageTotal = api.column(12, { page: 'current'} ).data().reduce( function (a, b) {return floatVal(a) + floatVal(b);}, 0 );            
-            $( api.column(12).footer() ).html('$'+pageTotal.toFixed(2));
+            $( api.column(12).footer() ).html('$'+pageTotal.toLocaleString());
 
             pageTotal = api.column(13, { page: 'current'} ).data().reduce( function (a, b) {return floatVal(a) + floatVal(b);}, 0 );            
-            $( api.column(13).footer() ).html('$'+pageTotal.toFixed(2));
+            $( api.column(13).footer() ).html('$'+pageTotal.toLocaleString());
         }
         });
 
