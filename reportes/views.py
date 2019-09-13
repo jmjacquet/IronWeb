@@ -1325,7 +1325,7 @@ def reporte_retenciones_imp(request):
     form = ConsultaRepRetencImp(request.POST or None,request=request)            
     fecha = date.today()
     
-    cpbs = rets = None
+    cpbs = rets = impuestos = None
     if form.is_valid():                                
         entidad = form.cleaned_data['entidad']                                                              
         fdesde = form.cleaned_data['fdesde']   
