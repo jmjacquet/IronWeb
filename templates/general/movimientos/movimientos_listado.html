@@ -324,7 +324,7 @@ var tabla = $('#dataTables-cpb_movimientos').DataTable({
                 }
             };
             pageTotal = api.column(7, { page: 'current'} ).data().reduce( function (a, b) {return floatVal(a) + floatVal(b);}, 0 );            
-            $( api.column(7).footer() ).html('$'+pageTotal.toLocaleString());
+            $( api.column(7).footer() ).html('$'+pageTotal.toLocaleString(undefined,{minimumFractionDigits:2}));
           
         }
         });

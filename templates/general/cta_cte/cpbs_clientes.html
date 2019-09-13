@@ -227,7 +227,7 @@ var tabla = $('#dataTables-cpb_venta').DataTable({
                         
             
             pageTotal = api.column(5, { page: 'current'} ).data().reduce( function (a, b) {return floatVal(a) + floatVal(b);}, 0 );            
-            $( api.column(5).footer() ).html('$'+pageTotal.toLocaleString());
+            $( api.column(5).footer() ).html('$'+pageTotal.toLocaleString(undefined,{minimumFractionDigits:2}));
            
             },
             initComplete: function () {

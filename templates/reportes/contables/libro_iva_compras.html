@@ -287,28 +287,28 @@ var tabla = $('#dataTables-cpb_venta').DataTable({
                 }
             };
             pageTotal = api.column(4, { page: 'current'} ).data().reduce( function (a, b) {return floatVal(a) + floatVal(b);}, 0 );            
-            $( api.column(4).footer() ).html('$'+pageTotal.toLocaleString());
+            $( api.column(4).footer() ).html('$'+pageTotal.toLocaleString(undefined,{minimumFractionDigits:2}));
             pageTotal = api.column(5, { page: 'current'} ).data().reduce( function (a, b) {return floatVal(a) + floatVal(b);}, 0 );
-            $( api.column(5).footer() ).html('$'+pageTotal.toLocaleString());      
+            $( api.column(5).footer() ).html('$'+pageTotal.toLocaleString(undefined,{minimumFractionDigits:2}));      
             pageTotal = api.column(6, { page: 'current'} ).data().reduce( function (a, b) {return floatVal(a) + floatVal(b);}, 0 );
-            $( api.column(6).footer() ).html('$'+pageTotal.toLocaleString());      
+            $( api.column(6).footer() ).html('$'+pageTotal.toLocaleString(undefined,{minimumFractionDigits:2}));      
             pageTotal = api.column(7, { page: 'current'} ).data().reduce( function (a, b) {return floatVal(a) + floatVal(b);}, 0 );            
-            $( api.column(7).footer() ).html('$'+pageTotal.toLocaleString());            
+            $( api.column(7).footer() ).html('$'+pageTotal.toLocaleString(undefined,{minimumFractionDigits:2}));            
             
             {% if empresa.usa_impuestos %}
                 pageTotal = api.column(8, { page: 'current'} ).data().reduce( function (a, b) {return floatVal(a) + floatVal(b);}, 0 );
-                $( api.column(8).footer() ).html('$'+pageTotal.toLocaleString());
+                $( api.column(8).footer() ).html('$'+pageTotal.toLocaleString(undefined,{minimumFractionDigits:2}));
                 pageTotal = api.column(9, { page: 'current'} ).data().reduce( function (a, b) {return floatVal(a) + floatVal(b);}, 0 );
-                $( api.column(9).footer() ).html('$'+pageTotal.toLocaleString());                            
+                $( api.column(9).footer() ).html('$'+pageTotal.toLocaleString(undefined,{minimumFractionDigits:2}));                            
                 pageTotal = api.column(10, { page: 'current'} ).data().reduce( function (a, b) {return floatVal(a) + floatVal(b);}, 0 );            
-                $( api.column(10).footer() ).html('$'+pageTotal.toLocaleString());
+                $( api.column(10).footer() ).html('$'+pageTotal.toLocaleString(undefined,{minimumFractionDigits:2}));
                 pageTotal = api.column(11, { page: 'current'} ).data().reduce( function (a, b) {return floatVal(a) + floatVal(b);}, 0 );            
-                $( api.column(11).footer() ).html('$'+pageTotal.toLocaleString());
+                $( api.column(11).footer() ).html('$'+pageTotal.toLocaleString(undefined,{minimumFractionDigits:2}));
             {% else %}                
                 pageTotal = api.column(8, { page: 'current'} ).data().reduce( function (a, b) {return floatVal(a) + floatVal(b);}, 0 );
-                $( api.column(8).footer() ).html('$'+pageTotal.toLocaleString());
+                $( api.column(8).footer() ).html('$'+pageTotal.toLocaleString(undefined,{minimumFractionDigits:2}));
                 pageTotal = api.column(9, { page: 'current'} ).data().reduce( function (a, b) {return floatVal(a) + floatVal(b);}, 0 );
-                $( api.column(9).footer() ).html('$'+pageTotal.toLocaleString());                            
+                $( api.column(9).footer() ).html('$'+pageTotal.toLocaleString(undefined,{minimumFractionDigits:2}));                            
 
             {% endif %}
 
