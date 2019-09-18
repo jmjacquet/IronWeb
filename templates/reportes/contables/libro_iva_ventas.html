@@ -47,8 +47,10 @@
                                 <th >Cliente</th>                                                                    
                                 <th class="text-right">Gravado</th>
                                 <th class="text-right">IVA</th>                                
-                                <th class="text-right">Perc/Imp.</th>                            
-                                <th class="text-right">No Grav.</th>
+                                <th class="text-right">Perc/Imp.</th>                                                            
+                                <th class="text-right">No Grav.{% if empresa.usa_impuestos %}(NG+ITC+TH){% endif %}</th>
+                                {% if empresa.usa_impuestos %}<th class="text-right">ITC</th>{% endif %}
+                                {% if empresa.usa_impuestos %}<th class="text-right">TH</th>{% endif %}
                                 <th class="text-right">Exento</th>
                                 <th class="text-right">Total</th>                                                                      
                             </tr>
@@ -65,6 +67,8 @@
                                 <td class="importe">${{cpb.get_importe_iva|default_if_none:0|floatformat:2}}</td>
                                 <td class="importe">${{cpb.get_importe_perc_imp|default_if_none:0|floatformat:2}}</td>
                                 <td class="importe">${{cpb.get_importe_no_gravado|default_if_none:0|floatformat:2}}</td>
+                                {% if empresa.usa_impuestos %}<td class="importe">${{cpb.importe_tasa1|default_if_none:0|floatformat:2}}</td>{% endif %}
+                                {% if empresa.usa_impuestos %}<td class="importe">${{cpb.importe_tasa2|default_if_none:0|floatformat:2}}</td>{% endif %}
                                 <td class="importe">${{cpb.get_importe_exento|default_if_none:0|floatformat:2}}</td>
                                 <td class="importe">${{cpb.get_importe_total|default_if_none:0|floatformat:2}}</td>
                             </tr>
@@ -81,6 +85,8 @@
                                 <th class="importe"></th>                                 
                                 <th class="importe"></th>                                 
                                 <th class="importe"></th>                                 
+                                {% if empresa.usa_impuestos %}<th class="importe"></th>{% endif %}
+                                {% if empresa.usa_impuestos %}<th class="importe"></th>{% endif %}
                                 <th class="importe"></th>                                 
                                 <th class="importe"></th>                                 
                             </tr>
@@ -287,26 +293,30 @@ var tabla = $('#dataTables-cpb_venta').DataTable({
             };
             
             pageTotal = api.column(5, { page: 'current'} ).data().reduce( function (a, b) {return floatVal(a) + floatVal(b);}, 0 );            
-            $( api.column(5).footer() ).html('$'+pageTotal.toLocaleString());    
+            $( api.column(5).footer() ).html('$'+pageTotal.toLocaleString(undefined,{minimumFractionDigits:2}));    
             pageTotal = api.column(6, { page: 'current'} ).data().reduce( function (a, b) {return floatVal(a) + floatVal(b);}, 0 );
-            $( api.column(6).footer() ).html('$'+pageTotal.toLocaleString()); 
-          
+            $( api.column(6).footer() ).html('$'+pageTotal.toLocaleString(undefined,{minimumFractionDigits:2}));           
             pageTotal = api.column(7, { page: 'current'} ).data().reduce( function (a, b) {return floatVal(a) + floatVal(b);}, 0 );
-            $( api.column(7).footer() ).html('$'+pageTotal.toLocaleString());      
-            
+            $( api.column(7).footer() ).html('$'+pageTotal.toLocaleString(undefined,{minimumFractionDigits:2}));                  
             pageTotal = api.column(8, { page: 'current'} ).data().reduce( function (a, b) {return floatVal(a) + floatVal(b);}, 0 );
-            $( api.column(8).footer() ).html('$'+pageTotal.toLocaleString());
-            
-            pageTotal = api.column(9, { page: 'current'} ).data().reduce( function (a, b) {return floatVal(a) + floatVal(b);}, 0 );
-            $( api.column(9).footer() ).html('$'+pageTotal.toLocaleString());
-            
-            pageTotal = api.column(10, { page: 'current'} ).data().reduce( function (a, b) {return floatVal(a) + floatVal(b);}, 0 );
-            $( api.column(10).footer() ).html('$'+pageTotal.toLocaleString());
-            
-            
-             
-            
-                 
+            $( api.column(8).footer() ).html('$'+pageTotal.toLocaleString(undefined,{minimumFractionDigits:2}));
+                       
+            {% if empresa.usa_impuestos %}
+                pageTotal = api.column(9, { page: 'current'} ).data().reduce( function (a, b) {return floatVal(a) + floatVal(b);}, 0 );
+                $( api.column(9).footer() ).html('$'+pageTotal.toLocaleString(undefined,{minimumFractionDigits:2}));
+                pageTotal = api.column(10, { page: 'current'} ).data().reduce( function (a, b) {return floatVal(a) + floatVal(b);}, 0 );
+                $( api.column(10).footer() ).html('$'+pageTotal.toLocaleString(undefined,{minimumFractionDigits:2}));                            
+                 pageTotal = api.column(11, { page: 'current'} ).data().reduce( function (a, b) {return floatVal(a) + floatVal(b);}, 0 );            
+                $( api.column(11).footer() ).html('$'+pageTotal.toLocaleString(undefined,{minimumFractionDigits:2}));
+                pageTotal = api.column(12, { page: 'current'} ).data().reduce( function (a, b) {return floatVal(a) + floatVal(b);}, 0 );            
+                $( api.column(12).footer() ).html('$'+pageTotal.toLocaleString(undefined,{minimumFractionDigits:2}));
+            {% else %}                
+                pageTotal = api.column(9, { page: 'current'} ).data().reduce( function (a, b) {return floatVal(a) + floatVal(b);}, 0 );
+                $( api.column(9).footer() ).html('$'+pageTotal.toLocaleString(undefined,{minimumFractionDigits:2}));
+                pageTotal = api.column(10, { page: 'current'} ).data().reduce( function (a, b) {return floatVal(a) + floatVal(b);}, 0 );
+                $( api.column(10).footer() ).html('$'+pageTotal.toLocaleString(undefined,{minimumFractionDigits:2}));                            
+
+            {% endif %}
         }
         });
 });

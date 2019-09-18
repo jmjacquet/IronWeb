@@ -67,7 +67,7 @@ class gral_empresa(models.Model):
     ruta_logo = models.CharField(db_column='ruta_logo', max_length=100,null=True, blank=True) # Field name made lowercase.    
     tipo_logo_factura = models.IntegerField(u'Tipo Logotipo',choices=TIPO_LOGOTIPO, blank=True, null=True)  
 
-    usa_impuestos = models.BooleanField(u'Utiliza impuestos extra en Compras/Ventas',default=False)
+    usa_impuestos = models.BooleanField(u'Utiliza impuestos Combustibles',default=False)
 
     class Meta:
         db_table = 'gral_empresa'

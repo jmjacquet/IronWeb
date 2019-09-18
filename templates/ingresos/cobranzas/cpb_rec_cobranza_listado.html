@@ -294,11 +294,11 @@ var tabla = $('#dataTables-cobranzas').DataTable({
             };
             
             pageTotal = api.column(4, { page: 'current'} ).data().reduce( function (a, b) {return floatVal(a) + floatVal(b);}, 0 );            
-            $( api.column(4).footer() ).html('$'+pageTotal.toLocaleString());
+            $( api.column(4).footer() ).html('$'+pageTotal.toLocaleString(undefined,{minimumFractionDigits:2}));
             pageTotal = api.column(5, { page: 'current'} ).data().reduce( function (a, b) {return floatVal(a) + floatVal(b);}, 0 );            
-            $( api.column(5).footer() ).html('$'+pageTotal.toLocaleString());
+            $( api.column(5).footer() ).html('$'+pageTotal.toLocaleString(undefined,{minimumFractionDigits:2}));
             pageTotal = api.column(6, { page: 'current'} ).data().reduce( function (a, b) {return floatVal(a) + floatVal(b);}, 0 );            
-            $( api.column(6).footer() ).html('$'+pageTotal.toLocaleString());
+            $( api.column(6).footer() ).html('$'+pageTotal.toLocaleString(undefined,{minimumFractionDigits:2}));
         }
         });
 });

@@ -1325,7 +1325,7 @@ def reporte_retenciones_imp(request):
     form = ConsultaRepRetencImp(request.POST or None,request=request)            
     fecha = date.today()
     
-    cpbs = rets = None
+    cpbs = rets = impuestos = None
     if form.is_valid():                                
         entidad = form.cleaned_data['entidad']                                                              
         fdesde = form.cleaned_data['fdesde']   
@@ -1341,22 +1341,30 @@ def reporte_retenciones_imp(request):
             .select_related('cpb_comprobante','retencion','cpb_comprobante__cpb_tipo','cpb_comprobante__entidad')\
             .only('id','retencion','cpb_comprobante','ret_nrocpb','ret_importe_isar','ret_fecha_cpb','importe_total','detalle').order_by('-cpb_comprobante__fecha_imputacion','-id')  
 
+        impuestos = cpb_comprobante.objects.filter(empresa=empresa,fecha_imputacion__gte=fdesde,fecha_imputacion__lte=fhasta)\
+            .annotate(tot_imp=Sum(F('importe_tasa1')+F('importe_tasa2'), output_field=DecimalField())).filter(tot_imp__gt=0)\
+            .select_related('cpb_tipo','entidad').order_by('-fecha_imputacion','-id')            
+
         if entidad:
                 cpbs= cpbs.filter(cpb_comprobante__entidad__apellido_y_nombre__icontains=entidad)
                 rets= rets.filter(cpb_comprobante__entidad__apellido_y_nombre__icontains=entidad)
+                impuestos = impuestos.filter(entidad__apellido_y_nombre__icontains=entidad)
         
         if pto_vta:
                cpbs= cpbs.filter(cpb_comprobante__pto_vta=pto_vta)        
                rets= rets.filter(cpb_comprobante__pto_vta=pto_vta)        
+               impuestos = impuestos.filter(pto_vta=pto_vta)
 
         if nro_cpb:
                cpbs= cpbs.filter(cpb_comprobante__numero=nro_cpb)        
                rets= rets.filter(cpb_comprobante__numero=nro_cpb)        
+               impuestos = impuestos.filter(numero=nro_cpb)
 
         
     context['form'] = form
     context['cpbs'] = cpbs
     context['rets'] = rets
+    context['impuestos'] = impuestos
     context['fecha'] = fecha          
     return render(request,'reportes/contables/retenc_imp.html',context )
 
