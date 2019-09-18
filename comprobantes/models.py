@@ -630,8 +630,9 @@ def recalcular_saldo_cpb(idCpb):# pragma: no cover
                 importe_gravado = importe_gravado + c.importe_subtotal
 
             importe_iva += c.importe_iva
-            importe_tasa1 += c.importe_tasa1
-            importe_tasa2 += c.importe_tasa2
+            if cpb.empresa.usa_impuestos:
+                importe_tasa1 += c.importe_tasa1
+                importe_tasa2 += c.importe_tasa2
             
         
         try:
