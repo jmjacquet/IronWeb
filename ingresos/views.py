@@ -361,7 +361,10 @@ class CPBVentaNCCreateView(VariablesMixin,CreateView):
             for c in detalles:            
                 det.append({'producto': c.producto,'cantidad':c.cantidad,'detalle':c.detalle,'porc_dcto':c.porc_dcto,'tasa_iva':c.tasa_iva,
                     'coef_iva':c.coef_iva,'lista_precios':c.lista_precios,'importe_costo':c.importe_costo,'importe_unitario':c.importe_unitario,
-                    'importe_subtotal':c.importe_subtotal,'importe_iva':c.importe_iva,'importe_total':c.importe_total,'origen_destino':c.origen_destino})                        
+                    'importe_subtotal':c.importe_subtotal,'importe_iva':c.importe_iva,'importe_total':c.importe_total,'origen_destino':c.origen_destino,
+                    'importe_tasa1':c.importe_tasa1,'importe_tasa2':c.importe_tasa2
+
+                    })                        
             CPBDetalleFormSet = inlineformset_factory(cpb_comprobante, cpb_comprobante_detalle,form=CPBVentaDetalleForm,fk_name='cpb_comprobante',formset=CPBVentaDetalleFormSet, can_delete=True,extra=0,min_num=len(det))
         else:
             detalles = None       
@@ -593,7 +596,8 @@ class CPBVentaUnificarView(VariablesMixin,CreateView):
                 for c in detalles:            
                     det.append({'producto': c.producto,'cantidad':c.cantidad,'detalle':c.detalle,'porc_dcto':c.porc_dcto,'tasa_iva':c.tasa_iva,
                         'coef_iva':c.coef_iva,'lista_precios':c.lista_precios,'importe_costo':c.importe_costo,'importe_unitario':c.importe_unitario,
-                        'importe_subtotal':c.importe_subtotal,'importe_iva':c.importe_iva,'importe_total':c.importe_total,'origen_destino':c.origen_destino,'comprobante_original':int(c.cpb_comprobante.id)})                        
+                        'importe_subtotal':c.importe_subtotal,'importe_iva':c.importe_iva,'importe_total':c.importe_total,'origen_destino':c.origen_destino,'comprobante_original':int(c.cpb_comprobante.id),
+                        'importe_tasa1':c.importe_tasa1,'importe_tasa2':c.importe_tasa2})                        
             CPBDetalleFormSet = inlineformset_factory(cpb_comprobante, cpb_comprobante_detalle,form=CPBVentaDetalleForm,fk_name='cpb_comprobante',formset=CPBVentaDetalleFormSet, can_delete=True,extra=0,min_num=len(det))
         else:
             return redirect(reverse('cpb_venta_listado')) 
@@ -805,7 +809,8 @@ class CPBVentaClonarCreateView(VariablesMixin,CreateView):
             for c in detalles:            
                 det.append({'producto': c.producto,'cantidad':c.cantidad,'detalle':c.detalle,'porc_dcto':c.porc_dcto,'tasa_iva':c.tasa_iva,
                     'coef_iva':c.coef_iva,'lista_precios':c.lista_precios,'importe_costo':c.importe_costo,'importe_unitario':c.importe_unitario,
-                    'importe_subtotal':c.importe_subtotal,'importe_iva':c.importe_iva,'importe_total':c.importe_total,'origen_destino':c.origen_destino})                        
+                    'importe_subtotal':c.importe_subtotal,'importe_iva':c.importe_iva,'importe_total':c.importe_total,'origen_destino':c.origen_destino,
+                    'importe_tasa1':c.importe_tasa1,'importe_tasa2':c.importe_tasa2})                        
             CPBDetalleFormSet = inlineformset_factory(cpb_comprobante, cpb_comprobante_detalle,form=CPBVentaDetalleForm,fk_name='cpb_comprobante',formset=CPBVentaDetalleFormSet, can_delete=True,extra=0,min_num=len(det))
         else:
             detalles = None       
