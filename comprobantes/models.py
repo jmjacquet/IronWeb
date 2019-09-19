@@ -631,8 +631,10 @@ def recalcular_saldo_cpb(idCpb):# pragma: no cover
 
             importe_iva += c.importe_iva
             if cpb.empresa.usa_impuestos:
-                importe_tasa1 += c.importe_tasa1
-                importe_tasa2 += c.importe_tasa2
+                if c.importe_tasa1:
+                    importe_tasa1 += c.importe_tasa1
+                if c.importe_tasa2:
+                    importe_tasa2 += c.importe_tasa2
                     
         try:
             tot_perc_imp = cpb_comprobante_perc_imp.objects.filter(cpb_comprobante=cpb).aggregate(sum=Sum('importe_total'))['sum']        
