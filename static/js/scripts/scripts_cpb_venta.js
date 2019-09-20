@@ -478,7 +478,7 @@ $('.formFP').formset({
           formCssClass: 'dynamic-form3',
           keepFieldValues:'',
           added: function (row) {
-            var i = $(row).index(); 
+            var i = $("#id_formFP-TOTAL_FORMS").val()-1;
             var tot = parseFloat($("#id_importe_total").val()) - parseFloat($("#id_importe_cobrado").val());
             tot =  parseFloat(tot).toFixed(2);             
             $("[name='formFP-"+i+"-importe']").val(tot);

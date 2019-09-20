@@ -606,7 +606,15 @@ $("#id_condic_pago").change(function(){
            if ( $('#id_condic_pago').val() == 1){
             $('#id_pagos').hide(); }
            else{
-             $('#id_pagos').show();}           
+            $('#id_pagos').show();
+             var i = $("#id_formFP-TOTAL_FORMS").val();
+             if (i<2)
+             {
+               var tot = parseFloat($("#id_importe_total").val()) - parseFloat($("#id_importe_cobrado").val());
+               tot =  parseFloat(tot).toFixed(2);             
+               $("[name='formFP-0-importe']").val(tot);
+            }
+             }
          });   
 
 
