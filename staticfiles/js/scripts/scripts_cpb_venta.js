@@ -160,8 +160,8 @@ function calcularSubtotal(i){
   $("input[name='formDetalle-"+i+"-importe_total']").val(importe_total.toFixed(2)); 
   $("input[name='formDetalle-"+i+"-importe_iva']").val(importe_iva.toFixed(2)); 
   var importe_unitario = parseFloat($("input[name='formDetalle-"+i+"-importe_unitario']").val())|| 0;
-  var cant = 0;
-  if (importe_unitario>0)
+  var cant = parseFloat($("input[name='formDetalle-"+i+"-cantidad']").val())|| 0; 
+  if ((importe_unitario>0)&&(cant==0))
     {
       cant = importe_subtotal / importe_unitario;
 
@@ -169,7 +169,7 @@ function calcularSubtotal(i){
   var coef_tasa1 = parseFloat($("input[name='formDetalle-"+i+"-coef_tasa1']").val())|| 0;  
   var coef_tasa2 = parseFloat($("input[name='formDetalle-"+i+"-coef_tasa2']").val())|| 0;  
    
-  $("input[name='formDetalle-"+i+"-importe_subtotal']").val(importe_subtotal.toFixed(2));    
+  $("input[name='formDetalle-"+i+"-importe_subtotal']").val(importe_subtotal.toFixed(2));      
   $("input[name='formDetalle-"+i+"-cantidad']").val(cant.toFixed(2));
   $("input[name='formDetalle-"+i+"-importe_iva']").val(importe_iva.toFixed(2));
   
@@ -217,8 +217,8 @@ function adivinarProd(i){
     importe_iva =importe_total - importe_subtotal;
   }}; 
   var importe_unitario = parseFloat($("input[name='formDetalle-"+i+"-importe_unitario']").val())|| 0;
-  var cant = 0;
-  if (importe_unitario>0)
+  var cant = parseFloat($("input[name='formDetalle-"+i+"-cantidad']").val())|| 0; 
+  if ((importe_unitario>0)&&(cant==0))
     {
       cant = importe_subtotal / importe_unitario;
 
@@ -226,14 +226,14 @@ function adivinarProd(i){
   var coef_tasa1 = parseFloat($("input[name='formDetalle-"+i+"-coef_tasa1']").val())|| 0;  
   var coef_tasa2 = parseFloat($("input[name='formDetalle-"+i+"-coef_tasa2']").val())|| 0;  
    
-  $("input[name='formDetalle-"+i+"-importe_subtotal']").val(importe_subtotal.toFixed(2));    
+  $("input[name='formDetalle-"+i+"-importe_subtotal']").val(importe_subtotal.toFixed(2));      
   $("input[name='formDetalle-"+i+"-cantidad']").val(cant.toFixed(2));
   $("input[name='formDetalle-"+i+"-importe_iva']").val(importe_iva.toFixed(2));
   
   var importe_tasa1 = coef_tasa1 * cant;
   var importe_tasa2 = coef_tasa2 * cant;
   $("input[name='formDetalle-"+i+"-importe_tasa1']").val(importe_tasa1.toFixed(2));  
-  $("input[name='formDetalle-"+i+"-importe_tasa2']").val(importe_tasa2.toFixed(2));  
+  $("input[name='formDetalle-"+i+"-importe_tasa2']").val(importe_tasa2.toFixed(2));   
 };
 
 function recargarProd(i){
