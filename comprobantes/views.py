@@ -1207,8 +1207,7 @@ class MovInternosEditView(VariablesMixin,UpdateView):
     def get(self, request, *args, **kwargs):
         self.object = self.get_object()
         form_class = self.get_form_class()
-        form = self.get_form(form_class)               
-        form.fields['pto_vta'].widget.attrs['disabled'] = True        
+        form = self.get_form(form_class)                       
         form.fields['numero'].widget.attrs['disabled'] = True        
         CPBFPFormSet.form = staticmethod(curry(MovimCuentasFPForm,request=request))
         cpb_fp = CPBFPFormSet(instance=self.object,prefix='formFP')
