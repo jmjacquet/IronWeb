@@ -49,6 +49,8 @@ class gral_empresa(models.Model):
     pprincipal_estadisticas = models.BooleanField(u'Panel Estadísticas',default=False)
     fp_facturas = models.BooleanField(u'Mostrar FP en Facturas',default=True)
 
+    firma_facturas = models.BooleanField(u'Mostrar Firma en Facturas',default=True)
+
     barra_busq_meses_atras = models.IntegerField(blank=True, null=True,default=2)
     pto_vta_defecto =  models.ForeignKey('comprobantes.cpb_pto_vta',verbose_name=u'Pto. Venta x Defecto',db_column='pto_vta_defecto',blank=True, null=True,on_delete=models.SET_NULL)    
     fe_crt = models.CharField('Nombre Archivo CRT',max_length=50,blank=True, null=True) 

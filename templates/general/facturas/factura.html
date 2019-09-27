@@ -147,6 +147,34 @@
     <td colspan="5" class="tabla_footer">Subtotal: ${{total_bruto|default_if_none:0|floatformat:2|intcomma}}</td>
   </tr>
 </table>
+{% if config.firma_facturas %}
+<br>
+  <table width="100%" >
+      <tr>
+        <td colspan="5" class=""></td>
+      </tr>
+      <tr>
+        <td width="10%"></td>
+        <td width="30%" class=" texto_firma">Transportista</td>    
+        <td width="20%" class=" "></td>
+        <td width="30%" class="texto_firma">CUIT</td>
+        <td width="10%"></td>
+      </tr>
+      <tr>
+        <td colspan="5" class=""></td>
+      </tr>
+      <tr>
+        <td colspan="5" class=""></td>
+      </tr>
+      <tr>
+        <td width="10%"></td>
+        <td width="30%" class="texto_firma">Recibí Conforme</td>    
+        <td width="20%" class=" "></td>
+        <td width="30%" class="texto_firma">Firma y Aclaración</td>
+        <td width="10%"></td>  
+      </tr>
+  </table>
+{% endif %}
 <div id="page-footer">
   <table id="tabla_totales" width="100%"  align="center" >    
     <tr>

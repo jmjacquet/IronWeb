@@ -15,3 +15,7 @@ ALTER TABLE `prod_producto_lprecios`
 
 ALTER TABLE `gral_empresa`
         ADD COLUMN `usa_impuestos` bool NOT NULL;        
+
+
+ALTER TABLE `gral_empresa`
+        ADD COLUMN `firma_facturas` bool NOT NULL;        
