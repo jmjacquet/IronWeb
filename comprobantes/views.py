@@ -1090,7 +1090,7 @@ class MovInternosViewList(VariablesMixin,ListView):
     def get_context_data(self, **kwargs):
         context = super(MovInternosViewList, self).get_context_data(**kwargs)
         try:
-            config = empresa_actual(request)
+            config = empresa_actual(self.request)
         except gral_empresa.DoesNotExist:
             config = None 
         form = ConsultaCpbsCompras(self.request.POST or None,empresa=empresa,request=self.request)   
