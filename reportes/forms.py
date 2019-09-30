@@ -112,8 +112,8 @@ class ConsultaCajaDiaria(forms.Form):
 		empresa = kwargs.pop('empresa', None)  
 		request = kwargs.pop('request', None) 
 		super(ConsultaCajaDiaria, self).__init__(*args, **kwargs)				
-		cuentas = cpb_cuenta.objects.filter(baja=False,empresa__id__in=empresas_habilitadas(request)).order_by('codigo')
-		self.fields['cuenta'].queryset = cuentas		
+		self.fields['cuenta'].queryset = cpb_cuenta.objects.filter(baja=False,empresa__id__in=empresas_habilitadas(request)).order_by('codigo')
+		self.fields['tipo_forma_pago'].queryset = cpb_tipo_forma_pago.objects.filter(empresa__id__in=empresas_habilitadas(request),baja=False)			
 #############################################################################	
 
 class ConsultaSaldosCuentas(forms.Form):                   
@@ -125,8 +125,7 @@ class ConsultaSaldosCuentas(forms.Form):
 		empresa = kwargs.pop('empresa', None)  
 		request = kwargs.pop('request', None) 
 		super(ConsultaSaldosCuentas, self).__init__(*args, **kwargs)				
-		cuentas = cpb_cuenta.objects.filter(baja=False,empresa__id__in=empresas_habilitadas(request)).order_by('codigo')
-		self.fields['cuenta'].queryset = cuentas
+		self.fields['cuenta'].queryset = cpb_cuenta.objects.filter(baja=False,empresa__id__in=empresas_habilitadas(request)).order_by('codigo')
 
 #############################################################################	
 
