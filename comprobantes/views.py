@@ -160,61 +160,62 @@ def obtener_stock(prod_ubi):
 @login_required 
 def buscarDatosProd(request):                                  
    try:                          
-       prod= {}
-       idProd = request.GET.get('idp', '')
-       idubi = request.GET.get('idubi', '')       
-       idlista = request.GET.get('idlista', '')
-       p = None
-       coeficiente = 0
-       stock = 1
-       pventa = 0
-       precio_siva = 0
-       costo_siva = 0
-       total_iva=0
-       precio_tot = 0
-       pcosto = 0       
-       tasa_iva = 5 #Por defecto 0.21
-       pitc = 0.00
-       ptasa = 0.00
-       unidad = 'u.'
-       prod_lista = None
-       if idProd:
-        p = prod_productos.objects.get(id=idProd)
-        if p:
-            coeficiente = p.tasa_iva.coeficiente       
-            tasa_iva = p.tasa_iva.id
-            unidad = p.get_unidad_display()
-            if idubi:
-               
-                try:
-                    prod_ubi = prod_producto_ubicac.objects.get(producto=p,ubicacion__id=idubi)            
-                except:
-                    prod_ubi = None
-                if prod_ubi:
-                    stock = prod_ubi.get_stock_()
-                    ppedido = prod_ubi.get_reposicion()
-            if idlista:
-               try:
-                    prod_lista = prod_producto_lprecios.objects.get(producto=p,lista_precios__id=idlista) 
-               except:
-                    prod_lista = None
-               if prod_lista:
-                    pventa = prod_lista.precio_venta
-                    pcosto = prod_lista.precio_cimp           
-                    pitc = prod_lista.precio_itc
-                    ptasa = prod_lista.precio_tasa
+     prod= {}
+     idProd = request.GET.get('idp', '')
+     idubi = request.GET.get('idubi', None)       
+     idlista = request.GET.get('idlista', None)
+     p = None
+     coeficiente = 0
+     ppedido = 0
+     stock = 1
+     pventa = 0
+     precio_siva = 0
+     costo_siva = 0
+     total_iva=0
+     precio_tot = 0
+     pcosto = 0       
+     tasa_iva = 5 #Por defecto 0.21
+     pitc = 0.00
+     ptasa = 0.00
+     unidad = 'u.'
+     prod_lista = None
+     if idProd:
+      p = prod_productos.objects.get(id=idProd)
+      if p:
+          coeficiente = p.tasa_iva.coeficiente       
+          tasa_iva = p.tasa_iva.id
+          unidad = p.get_unidad_display()
+          if idubi:
+             
+              try:
+                  prod_ubi = prod_producto_ubicac.objects.get(producto=p,ubicacion__id=idubi)            
+              except:
+                  prod_ubi = None
+              if prod_ubi:
+                  stock = prod_ubi.get_stock_()
+                  ppedido = prod_ubi.get_reposicion()
+          if idlista:
+             try:
+                  prod_lista = prod_producto_lprecios.objects.get(producto=p,lista_precios__id=idlista) 
+             except:
+                  prod_lista = None
+             if prod_lista:
+                  pventa = prod_lista.precio_venta
+                  pcosto = prod_lista.precio_cimp           
+                  pitc = prod_lista.precio_itc
+                  ptasa = prod_lista.precio_tasa
 
-       precio_siva = pventa /(1+coeficiente)
-       precio_siva = Decimal(round(precio_siva,2))
-       if prod_lista:
-        costo_siva = prod_lista.precio_costo
-       total_iva = pventa - precio_siva
-       total_iva = Decimal(round(total_iva, 2))
-       precio_tot = pventa
-       
-       prod={'precio_venta':pventa,'precio_costo':pcosto,'stock':stock,'ppedido':ppedido,'tasa_iva__id':tasa_iva,'tasa_iva__coeficiente':coeficiente
-            ,'unidad':unidad,'precio_siva':precio_siva,'total_iva':total_iva,'precio_tot':precio_tot,'costo_siva':costo_siva,'pitc':pitc,'ptasa':ptasa}  
-           
+     precio_siva = pventa /(1+coeficiente)
+     precio_siva = Decimal(round(precio_siva,2))
+     if prod_lista:
+      costo_siva = prod_lista.precio_costo
+     total_iva = pventa - precio_siva
+     total_iva = Decimal(round(total_iva, 2))
+     precio_tot = pventa
+     
+     prod={'precio_venta':pventa,'precio_costo':pcosto,'stock':stock,'ppedido':ppedido,'tasa_iva__id':tasa_iva,'tasa_iva__coeficiente':coeficiente
+          ,'unidad':unidad,'precio_siva':precio_siva,'total_iva':total_iva,'precio_tot':precio_tot,'costo_siva':costo_siva,'pitc':pitc,'ptasa':ptasa}  
+             
    except:
      prod= {}
    return HttpResponse( json.dumps(prod, cls=DjangoJSONEncoder), content_type='application/json' )     

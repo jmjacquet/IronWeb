@@ -20,6 +20,7 @@ urlpatterns = patterns('ingresos.views',
     url(r'^ventas/clonar/(?P<id>\d+)/$', CPBVentaClonarCreateView.as_view(), name="cpb_venta_clonar"),    
 
     url(r'^remitos/$',  CPBRemitoViewList.as_view() ,name="cpb_remito_listado"),
+    url(r'^remitos/nuevo/$', CPBRemitoCreateViewNew.as_view(), name="cpb_remito_nuevo_vacio"),    
     url(r'^remitos/nuevo/(?P<id>\d+)/$', CPBRemitoCreateView.as_view(), name="cpb_remito_nuevo"),    
     url(r'^remitos/editar/(?P<id>\d+)/$', CPBRemitoEditView.as_view(), name="cpb_remito_editar"),
     url(r'^remitos/eliminar/(?P<id>\d+)/$', CPBRemitoDeleteView, name="cpb_remito_eliminar"),
