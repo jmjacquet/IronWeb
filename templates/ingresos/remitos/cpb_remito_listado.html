@@ -17,6 +17,11 @@
                     </div> 
                 </div>
                     {% include "general/varios/barra_busqueda_compras.html" %}                                
+                    <div class="btn-group btnAccion" style="float:left;margin-right:10px;margin-bottom:10px;"> 
+                   
+                    <a class="btn btn-sm color_barra"  style="margin-right:10px;" href="{% url 'cpb_remito_nuevo_vacio' %}">Nuevo Remito</a>
+                   
+                    </div>
                     <table id="dataTables-cpb_remito" class="table table-striped compact table-hover table-no-bordered tabla_nueva nowrap">          
                         <thead>
                             <tr>
