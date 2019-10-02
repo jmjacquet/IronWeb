@@ -279,9 +279,10 @@ class CPBRemitoForm(forms.ModelForm):
 	observacion = forms.CharField(label='Detalle',widget=forms.Textarea(attrs={ 'class':'form-control2','rows': 5}),required = False)						
 	letra = forms.ChoiceField(label='Letra',choices=COMPROB_FISCAL_X,required=False,initial=1)	
 	tipo_form = forms.CharField(widget = forms.HiddenInput(), required = False)	
+	pto_vta = forms.ChoiceField(label='Pto. Vta.',choices=[(pto.numero, pto.__unicode__()) for pto in cpb_pto_vta.objects.filter(baja=False)],required = False)
 	class Meta:
 			model = cpb_comprobante
-			exclude = ['id','fecha_creacion','cpb_tipo','numero','fecha_imputacion','cae','cae_vto','estado','anulacion_motivo','anulacion_fecha','empresa','usuario','presup_tiempo_entrega','presup_forma_pago','presup_aprobacion','cpb_nro_afip','cpb_tipo']
+			exclude = ['id','fecha_creacion','cpb_tipo','fecha_imputacion','cae','cae_vto','estado','anulacion_motivo','anulacion_fecha','empresa','usuario','presup_tiempo_entrega','presup_forma_pago','presup_aprobacion','cpb_nro_afip','cpb_tipo']
 
 	def __init__(self, *args, **kwargs):
 		request = kwargs.pop('request', None)		
@@ -290,6 +291,10 @@ class CPBRemitoForm(forms.ModelForm):
 		try:
 			empresa = empresa_actual(request)			
 			self.fields['entidad'].queryset = egr_entidad.objects.filter(tipo_entidad=1,baja=False,empresa__id__in=empresas_habilitadas(request)).order_by('apellido_y_nombre')
+			pto_vta = pto_vta_habilitados(request)
+			self.fields['pto_vta'].choices = [(pto.numero, pto.__unicode__()) for pto in pto_vta]
+			self.fields['pto_vta'].initial = get_pv_defecto(request)
+			self.fields['numero'].initial= ultimoNro(8,pto_vta[0],'X')
 
 		except gral_empresa.DoesNotExist:
 			empresa = None

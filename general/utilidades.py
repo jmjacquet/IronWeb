@@ -140,7 +140,7 @@ CONDICION_PAGO = (
 TIPO_LOGOTIPO = (    
     (1, 'Sin LOGOTIPO'),
     (2, 'Con LOGOTIPO total'),
-    (3, 'Con LOGOTIPO y detalles'),
+    (3, 'Con LOGOTIPO y detalles'),    
 )
 
 SIGNO = (

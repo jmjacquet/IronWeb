@@ -1046,6 +1046,75 @@ class CPBRemitoCreateView(VariablesMixin,CreateView):
         return reverse('cpb_remito_listado')
 
 
+class CPBRemitoCreateViewNew(VariablesMixin,CreateView):
+    form_class = CPBRemitoForm
+    template_name = 'ingresos/remitos/cpb_remito_form.html' 
+    model = cpb_comprobante
+    pk_url_kwarg = 'id'
+    
+    @method_decorator(login_required)
+    def dispatch(self, *args, **kwargs):            
+        if not tiene_permiso(self.request,'cpb_remitos_abm'):
+            return redirect(reverse('principal'))    
+        return super(CPBRemitoCreateViewNew, self).dispatch(*args, **kwargs)
+    
+    def get_initial(self):    
+        initial = super(CPBRemitoCreateViewNew, self).get_initial()        
+        initial['tipo_form'] = 'ALTA'
+        initial['request'] = self.request        
+        return initial   
+
+    def get_form_kwargs(self):
+        kwargs = super(CPBRemitoCreateViewNew, self).get_form_kwargs()
+        kwargs['request'] = self.request
+        return kwargs
+
+    def get(self, request, *args, **kwargs):
+        self.object = None
+        form_class = self.get_form_class()
+        form = self.get_form(form_class)                                        
+        CPBRemitoDetalleFS.form = staticmethod(curry(CPBRemitoDetalleForm,request=request))
+        remito_detalle = CPBRemitoDetalleFS(prefix='formDetalle')
+                
+        return self.render_to_response(self.get_context_data(form=form,remito_detalle = remito_detalle))
+
+    def post(self, request, *args, **kwargs):
+        self.object = None
+        form_class = self.get_form_class()
+        form = self.get_form(form_class)          
+        CPBRemitoDetalleFS.form = staticmethod(curry(CPBRemitoDetalleForm,request=request))
+        remito_detalle = CPBRemitoDetalleFS(self.request.POST,prefix='formDetalle')
+        if form.is_valid() and remito_detalle.is_valid():
+            return self.form_valid(form, remito_detalle)
+        else:
+            return self.form_invalid(form, remito_detalle)
+
+
+    def form_valid(self, form, remito_detalle):
+        self.object = form.save(commit=False)        
+        estado=cpb_estado.objects.get(pk=1)
+        self.object.estado=estado   
+        tipo=cpb_tipo.objects.get(pk=8)
+        self.object.empresa = empresa_actual(self.request)
+        self.object.usuario = usuario_actual(self.request)
+        self.object.letra = 'X'
+        self.object.cpb_tipo=tipo
+        self.object.fecha_imputacion=self.object.fecha_cpb
+        self.object.save()
+        remito_detalle.instance = self.object
+        remito_detalle.cpb_comprobante = self.object.id        
+        remito_detalle.save()        
+        recalcular_saldo_cpb(self.object.pk)
+        messages.success(self.request, u'Los datos se guardaron con éxito!')
+        return HttpResponseRedirect(reverse('cpb_remito_listado'))
+
+    def form_invalid(self, form,remito_detalle):
+        return self.render_to_response(self.get_context_data(form=form,remito_detalle = remito_detalle))
+        
+    def get_success_url(self):        
+        return reverse('cpb_remito_listado')
+
+
 class CPBRemitoEditView(VariablesMixin,UpdateView):
     form_class = CPBRemitoForm
     template_name = 'ingresos/remitos/cpb_remito_form.html' 

@@ -22,6 +22,43 @@ function recalcular(){
       });
 };
 
+function cargarProd(i){
+    //Traigo todos los datos del producto
+    var idp =  $("[name='formDetalle-"+i+"-producto']").val();
+
+    if (idp!=''){     
+          $.ajax({
+                  data: {'idp': idp},
+                  url: '/comprobantes/buscarDatosProd/',
+                  type: 'get',
+                  cache: true,          
+                  success : function(data) {
+                       
+                       if (data!='')
+                          {                                                  
+                            $("[name='formDetalle-"+i+"-unidad']").val(data['unidad']);                                                
+                            $("[name='formDetalle-"+i+"-cantidad']").val('1');                  
+                          }
+                          else{                 
+                            $("[name='formDetalle-"+i+"-unidad']").val('u.');                            
+                            $("[name='formDetalle-"+i+"-cantidad']").val('0'); 
+                          };
+
+                          
+                  },
+                  error : function(message) {
+                       /*alertify.alert('Búsqueda por CUIT','No se encontró el Proveedor.');*/
+                       console.log(message);
+                    }
+                });  
+        }else{                            
+            $("[name='formDetalle-"+i+"-unidad']").val('u.');            
+            $("[name='formDetalle-"+i+"-cantidad']").val('0'); 
+             }
+    };
+
+
+
 $('.formDetalle').formset({
           addText: 'Agregar Detalle',
           addCssClass: 'add-row btn blue-hoki ',       
@@ -44,7 +81,7 @@ $('.formDetalle').formset({
             $("[name='formDetalle-"+i1+"-producto']").focus();
 
 
-            $("[name='formDetalle-"+i+"-producto']").change(function(){
+            $("[name='formDetalle-"+i1+"-producto']").change(function(){
               cargarProd(i);
              });
              $("[name='formDetalle-"+i1+"-producto']").trigger("change"); 
