@@ -72,7 +72,7 @@
                 jQuery("<option/>").text(item['apellido_y_nombre']+' - '+item['fact_cuit']).attr("value", item['id']).appendTo("#id_entidad");
             })
             $('#id_entidad').trigger("chosen:updated");
-            $("#recargarProductos").trigger("click");
+            $("#recargarClientes").trigger("click");
         });      
 		};
 
