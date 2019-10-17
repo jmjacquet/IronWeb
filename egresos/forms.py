@@ -45,13 +45,7 @@ class CPBCompraForm(forms.ModelForm):
 	class Meta:
 			model = cpb_comprobante
 			exclude = ['id','fecha_creacion','cae','cae_vto','estado','anulacion_motivo','anulacion_fecha','empresa','usuario','presup_tiempo_entrega','presup_forma_pago','presup_aprobacion','cpb_nro_afip']
-
-
-	def clean_entidad(self):		
-		entidad = self.cleaned_data['entidad']
-		if not entidad:			
-				raise forms.ValidationError(u"Debe seleccionar un Proveedor.")				
-		return entidad
+	
 
 	def __init__(self, *args, **kwargs):
 		request = kwargs.pop('request', None)
@@ -77,6 +71,8 @@ class CPBCompraForm(forms.ModelForm):
 	def clean(self):						
 		super(forms.ModelForm,self).clean()	
 		entidad = self.cleaned_data.get('entidad')
+		if not entidad:			
+				raise forms.ValidationError(u"Debe seleccionar un Cliente.")
 		tipo_form = self.cleaned_data.get('tipo_form')
 		importe_cobrado = self.cleaned_data.get('importe_cobrado')
 		importe_total = self.cleaned_data.get('importe_total')
