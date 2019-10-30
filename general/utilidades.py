@@ -522,6 +522,8 @@ def ValuesQuerySetToDict(vqs):
 
 def validar_cuit(cuit):
     # validaciones minimas    
+    if not cuit:
+        return False
     if len(cuit) < 11:
         return False
 
