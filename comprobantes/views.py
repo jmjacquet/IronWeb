@@ -591,7 +591,10 @@ def armarCodBar(cod):
 def imprimirFactura(request,id,pdf=None):   
     cpb = cpb_comprobante.objects.get(id=id)        
     #puedeVerPadron(request,c.id_unidad.pk)    
-                
+    
+    if not cpb:
+      raise Http404            
+
     detalle_comprobante = cpb_comprobante_detalle.objects.filter(cpb_comprobante=cpb)
     detalle_totales_iva = cpb_comprobante_tot_iva.objects.filter(cpb_comprobante=cpb)    
     
@@ -682,7 +685,9 @@ def imprimirFactura(request,id,pdf=None):
 def imprimirFacturaHTML(request,id,pdf=None):   
     cpb = cpb_comprobante.objects.get(id=id)        
     #puedeVerPadron(request,c.id_unidad.pk)    
-    
+    if not cpb:
+      raise Http404   
+
     detalle_comprobante = cpb_comprobante_detalle.objects.filter(cpb_comprobante=cpb)
     detalle_totales_iva = cpb_comprobante_tot_iva.objects.filter(cpb_comprobante=cpb)    
     
@@ -760,6 +765,8 @@ def imprimirFacturaHTML(request,id,pdf=None):
 @login_required 
 def imprimirPresupuesto(request,id,pdf=None):   
     cpb = cpb_comprobante.objects.get(id=id)        
+    if not cpb:
+      raise Http404   
     #puedeVerPadron(request,c.id_unidad.pk)    
     try:
         config = empresa_actual(request)
@@ -805,6 +812,8 @@ def imprimirPresupuesto(request,id,pdf=None):
 @login_required 
 def imprimirRemito(request,id,pdf=None):   
     cpb = cpb_comprobante.objects.get(id=id)        
+    if not cpb:
+      raise Http404   
     #puedeVerPadron(request,c.id_unidad.pk)    
     try:
         config = empresa_actual(request)
@@ -843,6 +852,8 @@ def imprimirRemito(request,id,pdf=None):
 @login_required 
 def imprimirCobranza(request,id,pdf=None):   
     cpb = cpb_comprobante.objects.get(id=id)        
+    if not cpb:
+      raise Http404   
     #puedeVerPadron(request,c.id_unidad.pk)    
     try:
         config = empresa_actual(request)
@@ -880,6 +891,8 @@ def imprimirCobranza(request,id,pdf=None):
 @login_required 
 def imprimirCobranzaCtaCte(request,id,pdf=None):   
     cpb = cpb_comprobante.objects.get(id=id)        
+    if not cpb:
+      raise Http404   
     #puedeVerPadron(request,c.id_unidad.pk)    
     try:
         config = empresa_actual(request)
@@ -920,6 +933,8 @@ def imprimirCobranzaCtaCte(request,id,pdf=None):
 @login_required 
 def imprimirPago(request,id,pdf=None):   
     cpb = cpb_comprobante.objects.get(id=id)        
+    if not cpb:
+      raise Http404   
     #puedeVerPadron(request,c.id_unidad.pk)    
     try:
         config = empresa_actual(request)
