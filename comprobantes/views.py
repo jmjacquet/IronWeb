@@ -588,6 +588,8 @@ def armarCodBar(cod):
 @login_required 
 def imprimirFactura(request,id,pdf=None):   
     cpb = cpb_comprobante.objects.get(id=id)        
+    if not cpb:
+      raise Http404
     #puedeVerPadron(request,c.id_unidad.pk)    
         
         
@@ -673,6 +675,8 @@ def imprimirFactura(request,id,pdf=None):
 @login_required 
 def imprimirFacturaHTML(request,id,pdf=None):   
     cpb = cpb_comprobante.objects.get(id=id)        
+    if not cpb:
+      raise Http404
     #puedeVerPadron(request,c.id_unidad.pk)    
     
     detalle_comprobante = cpb_comprobante_detalle.objects.filter(cpb_comprobante=cpb)
@@ -752,6 +756,8 @@ def imprimirFacturaHTML(request,id,pdf=None):
 @login_required 
 def imprimirPresupuesto(request,id,pdf=None):   
     cpb = cpb_comprobante.objects.get(id=id)        
+    if not cpb:
+      raise Http404
     #puedeVerPadron(request,c.id_unidad.pk)    
     try:
         config = gral_empresa.objects.get(id=settings.ENTIDAD_ID)        
@@ -797,6 +803,8 @@ def imprimirPresupuesto(request,id,pdf=None):
 @login_required 
 def imprimirRemito(request,id,pdf=None):   
     cpb = cpb_comprobante.objects.get(id=id)        
+    if not cpb:
+      raise Http404
     #puedeVerPadron(request,c.id_unidad.pk)    
     try:
         config = gral_empresa.objects.get(id=settings.ENTIDAD_ID)        
@@ -835,6 +843,8 @@ def imprimirRemito(request,id,pdf=None):
 @login_required 
 def imprimirCobranza(request,id,pdf=None):   
     cpb = cpb_comprobante.objects.get(id=id)        
+    if not cpb:
+      raise Http404
     #puedeVerPadron(request,c.id_unidad.pk)    
     try:        
         empresa = empresa_actual(request)
@@ -872,6 +882,8 @@ def imprimirCobranza(request,id,pdf=None):
 @login_required 
 def imprimirCobranzaCtaCte(request,id,pdf=None):   
     cpb = cpb_comprobante.objects.get(id=id)        
+    if not cpb:
+      raise Http404
     #puedeVerPadron(request,c.id_unidad.pk)    
     try:        
         empresa = empresa_actual(request)
@@ -912,6 +924,8 @@ def imprimirCobranzaCtaCte(request,id,pdf=None):
 @login_required 
 def imprimirPago(request,id,pdf=None):   
     cpb = cpb_comprobante.objects.get(id=id)        
+    if not cpb:
+      raise Http404
     #puedeVerPadron(request,c.id_unidad.pk)    
     try:
         config = gral_empresa.objects.get(id=settings.ENTIDAD_ID)        
