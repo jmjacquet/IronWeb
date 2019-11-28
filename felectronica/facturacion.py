@@ -52,7 +52,7 @@ def _autenticar(request,crt,key,service="wsfe", ttl=60*60*10,cuit=None):
         raise HTTP(500,"Servicio %s incorrecto" % service)
     
     # verifico archivo temporal con el ticket de acceso
-    TA = os.path.join(CERTIFICADOS_PATH, "TA-%s.xml" % service)
+    TA = os.path.join(CERTIFICADOS_PATH, "TA-%s-%s.xml" % (cuit,service)
     ttl = 60*60*5
     if not os.path.exists(TA) or os.path.getmtime(TA)+(ttl)<time.time():
         # solicito una nueva autenticación
