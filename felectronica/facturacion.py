@@ -179,14 +179,12 @@ def consultar_cae(request,idcpb):
         tipo_cpb = cpb_nafip     
         pto_vta = int(cpb.pto_vta)
         nro_cpb = int(cpb.numero)
-
     except:
         data['errores']=u'¡El comprobante no es válido!'
         return data
     
     #Si el pto_vta no admite factura electrónica    
     if not cpb.get_pto_vta().fe_electronica:
-        
         data['errores']=u'¡El comprobante no es válido!'
         return data
     
@@ -609,7 +607,7 @@ def facturarAFIP(request,idCpb):
             p_nro = int(p.numero)
             wsfev1.AgregarCmpAsoc(p_tipo, p_pv, p_nro)                   
             
-    except:
+    except:        
         data['excepcion']=wsfev1.Excepcion
         data['traceback']=wsfev1.Traceback
         data['XmlRequest']=wsfev1.XmlRequest
