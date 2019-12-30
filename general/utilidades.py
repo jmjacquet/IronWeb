@@ -111,6 +111,9 @@ TIPO_COMPROBANTE = (
     (12,u'Orden Colocación'),
     (13,u'Movimientos Stock'),
     (14,u'Liquido Producto'),
+    (21,u'Factura Crédito Electrónica'),    
+    (22,u'Nota Débito Electrónica'),
+    (23,u'Nota Crédito Electrónica'),
 )
 
 COMPROB_FISCAL = (
@@ -522,6 +525,8 @@ def ValuesQuerySetToDict(vqs):
 
 def validar_cuit(cuit):
     # validaciones minimas    
+    if not cuit:
+        return False
     if len(cuit) < 11:
         return False
 
@@ -542,6 +547,7 @@ def validar_cuit(cuit):
         aux = 9
 
     return aux == int(cuit[10])
+
 
 import os
 def get_image_name(instance, filename):

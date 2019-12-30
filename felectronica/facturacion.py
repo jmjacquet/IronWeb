@@ -52,7 +52,7 @@ def _autenticar(request,crt,key,service="wsfe", ttl=60*60*10,cuit=None):
         raise HTTP(500,"Servicio %s incorrecto" % service)
     
     # verifico archivo temporal con el ticket de acceso
-    TA = os.path.join(CERTIFICADOS_PATH, "TA-%s.xml" % service)
+    TA = os.path.join(CERTIFICADOS_PATH, "TA-%s-%s.xml" % (cuit,service))
     ttl = 60*60*5
     if not os.path.exists(TA) or os.path.getmtime(TA)+(ttl)<time.time():
         # solicito una nueva autenticación
@@ -590,15 +590,16 @@ def facturarAFIP(request,idCpb):
                 # importe: importe liquidado
             cpb_perc = cpb_comprobante_perc_imp.objects.filter(cpb_comprobante=f)
             for p in cpb_perc:            
-                id = p.perc_imp.id 
-                if (id==99)and(p.detalle):
-                    desc=p.detalle
-                else:
-                    desc = p.perc_imp.nombre
-                base_imp = p.importe_total
-                alic = 100
-                importe = p.importe_total
-                wsfev1.AgregarTributo(id, desc, base_imp, alic, importe)  
+                if p.perc_imp:
+                    id = p.perc_imp.id 
+                    if (id==99)and(p.detalle):
+                        desc=p.detalle
+                    else:
+                        desc = p.perc_imp.nombre
+                    base_imp = p.importe_total
+                    alic = 100
+                    importe = p.importe_total
+                    wsfev1.AgregarTributo(id, desc, base_imp, alic, importe)  
 
          # Agrego los comprobantes asociados (solo para notas de crédito y débito):
         if (f.cpb_tipo.tipo in [2,3])and(f.id_cpb_padre):

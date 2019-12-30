@@ -33,7 +33,7 @@ from django.forms.models import model_to_dict
 
 @login_required 
 def recalcular_precios(request):
-    detalles = cpb_comprobante_detalle.objects.filter(cpb_comprobante__cpb_tipo__tipo__in=[1,2,3,9,14],cpb_comprobante__cpb_tipo__usa_stock=True)
+    detalles = cpb_comprobante_detalle.objects.filter(cpb_comprobante__cpb_tipo__tipo__in=[1,2,3,9,14,21,22,23],cpb_comprobante__cpb_tipo__usa_stock=True)
     for c in detalles:
         lp = prod_producto_lprecios.objects.get(producto=c.producto,lista_precios=c.lista_precios)
         c.importe_costo = lp.precio_costo
@@ -86,7 +86,7 @@ def recalcular_compras(request):
         empresa = usr.userprofile.id_usuario.empresa
     except gral_empresa.DoesNotExist:
         empresa = None           
-    comprobantes = cpb_comprobante.objects.filter(cpb_tipo__tipo__in=[1,2,3,9],cpb_tipo__compra_venta='C',empresa=empresa).order_by('-fecha_cpb','-id','-fecha_creacion')
+    comprobantes = cpb_comprobante.objects.filter(cpb_tipo__tipo__in=[1,2,3,9,21,22,23],cpb_tipo__compra_venta='C',empresa=empresa).order_by('-fecha_cpb','-id','-fecha_creacion')
     for c in comprobantes:
         recalcular_saldo_cpb(c.id)
 
@@ -372,7 +372,7 @@ def verifUnificacion(request):
     cant = 0
     data= {}
     if cpbs: 
-        comprobantes = cpb_comprobante.objects.filter(id__in=cpbs,cae=None,estado__id__lte=2,cpb_tipo__tipo__in=[1,2,3,9])                                       
+        comprobantes = cpb_comprobante.objects.filter(id__in=cpbs,cae=None,estado__id__lte=2,cpb_tipo__tipo__in=[1,2,3,9,21,22,23])                                       
         cant_cpbs = len(set(list(comprobantes.values_list('id',flat=True))))        
         cant_entidades = len(set(list(comprobantes.values_list('entidad',flat=True))))
         cant_cpb_tipo = len(set(list(comprobantes.values_list('cpb_tipo',flat=True))))                    
@@ -591,7 +591,10 @@ def armarCodBar(cod):
 def imprimirFactura(request,id,pdf=None):   
     cpb = cpb_comprobante.objects.get(id=id)        
     #puedeVerPadron(request,c.id_unidad.pk)    
-                
+    
+    if not cpb:
+      raise Http404            
+
     detalle_comprobante = cpb_comprobante_detalle.objects.filter(cpb_comprobante=cpb)
     detalle_totales_iva = cpb_comprobante_tot_iva.objects.filter(cpb_comprobante=cpb)    
     
@@ -682,7 +685,9 @@ def imprimirFactura(request,id,pdf=None):
 def imprimirFacturaHTML(request,id,pdf=None):   
     cpb = cpb_comprobante.objects.get(id=id)        
     #puedeVerPadron(request,c.id_unidad.pk)    
-    
+    if not cpb:
+      raise Http404   
+
     detalle_comprobante = cpb_comprobante_detalle.objects.filter(cpb_comprobante=cpb)
     detalle_totales_iva = cpb_comprobante_tot_iva.objects.filter(cpb_comprobante=cpb)    
     
@@ -760,6 +765,8 @@ def imprimirFacturaHTML(request,id,pdf=None):
 @login_required 
 def imprimirPresupuesto(request,id,pdf=None):   
     cpb = cpb_comprobante.objects.get(id=id)        
+    if not cpb:
+      raise Http404   
     #puedeVerPadron(request,c.id_unidad.pk)    
     try:
         config = empresa_actual(request)
@@ -805,6 +812,8 @@ def imprimirPresupuesto(request,id,pdf=None):
 @login_required 
 def imprimirRemito(request,id,pdf=None):   
     cpb = cpb_comprobante.objects.get(id=id)        
+    if not cpb:
+      raise Http404   
     #puedeVerPadron(request,c.id_unidad.pk)    
     try:
         config = empresa_actual(request)
@@ -843,6 +852,8 @@ def imprimirRemito(request,id,pdf=None):
 @login_required 
 def imprimirCobranza(request,id,pdf=None):   
     cpb = cpb_comprobante.objects.get(id=id)        
+    if not cpb:
+      raise Http404   
     #puedeVerPadron(request,c.id_unidad.pk)    
     try:
         config = empresa_actual(request)
@@ -880,6 +891,8 @@ def imprimirCobranza(request,id,pdf=None):
 @login_required 
 def imprimirCobranzaCtaCte(request,id,pdf=None):   
     cpb = cpb_comprobante.objects.get(id=id)        
+    if not cpb:
+      raise Http404   
     #puedeVerPadron(request,c.id_unidad.pk)    
     try:
         config = empresa_actual(request)
@@ -920,6 +933,8 @@ def imprimirCobranzaCtaCte(request,id,pdf=None):
 @login_required 
 def imprimirPago(request,id,pdf=None):   
     cpb = cpb_comprobante.objects.get(id=id)        
+    if not cpb:
+      raise Http404   
     #puedeVerPadron(request,c.id_unidad.pk)    
     try:
         config = empresa_actual(request)
