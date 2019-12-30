@@ -582,7 +582,7 @@ def libro_iva_ventas(request):
         fact_x = form.cleaned_data['fact_x']  
         cae = form.cleaned_data['cae']  
         total = 0                    
-        cpbs = cpb_comprobante.objects.filter(cpb_tipo__compra_venta='V',cpb_tipo__tipo__in=[1,2,3,9,14],empresa=empresa,fecha_imputacion__gte=fdesde,fecha_imputacion__lte=fhasta)\
+        cpbs = cpb_comprobante.objects.filter(cpb_tipo__compra_venta='V',cpb_tipo__tipo__in=[1,2,3,9,14,21,22,23],empresa=empresa,fecha_imputacion__gte=fdesde,fecha_imputacion__lte=fhasta)\
             .exclude(letra='X').filter(Q(pto_vta__in=pto_vta_habilitados_list(request)) | Q(cpb_tipo__tipo=14)).select_related('cpb_tipo','entidad')\
             .only('id','pto_vta','letra','numero','fecha_imputacion','cpb_tipo__codigo','cpb_tipo__nombre','cpb_tipo__tipo','cpb_tipo__signo_ctacte','cae_vto','cae',\
             'entidad__id','entidad__apellido_y_nombre','entidad__tipo_entidad','entidad__codigo','entidad__fact_cuit','entidad__nro_doc','entidad__fact_categFiscal',\
@@ -646,7 +646,7 @@ def libro_iva_compras(request):
         fact_x = form.cleaned_data['fact_x']  
         pto_vta = form.cleaned_data['pto_vta'] 
                 
-        cpbs = cpb_comprobante.objects.filter(cpb_tipo__libro_iva=True,cpb_tipo__tipo__in=[1,2,3,9],cpb_tipo__compra_venta='C',empresa=empresa,fecha_imputacion__gte=fdesde,fecha_imputacion__lte=fhasta)\
+        cpbs = cpb_comprobante.objects.filter(cpb_tipo__libro_iva=True,cpb_tipo__tipo__in=[1,2,3,9,21,22,23],cpb_tipo__compra_venta='C',empresa=empresa,fecha_imputacion__gte=fdesde,fecha_imputacion__lte=fhasta)\
             .select_related('cpb_tipo','entidad')\
             .only('id','pto_vta','letra','numero','fecha_imputacion','cpb_tipo__codigo','cpb_tipo__nombre','cpb_tipo__tipo','cpb_tipo__signo_ctacte','cae_vto','cae',\
             'entidad__id','entidad__apellido_y_nombre','entidad__tipo_entidad','entidad__codigo','entidad__fact_cuit','entidad__nro_doc','entidad__fact_categFiscal',\
@@ -1093,7 +1093,7 @@ class RankingsView(VariablesMixin,TemplateView):
         form = ConsultaRankings(self.request.POST or None,empresa=empresa,request=self.request)            
         fecha = date.today()        
 
-        comprobantes = cpb_comprobante.objects.filter(cpb_tipo__tipo__in=[1,2,3,9],estado__in=[1,2])        
+        comprobantes = cpb_comprobante.objects.filter(cpb_tipo__tipo__in=[1,2,3,9,21,22,23],estado__in=[1,2])        
         
         meses = list()
         import locale        
@@ -1294,12 +1294,12 @@ class Month(Func):
 
 @login_required
 def ver_grafico(request):
-    productos_vendidos = cpb_comprobante_detalle.objects.filter(cpb_comprobante__cpb_tipo__compra_venta='V',cpb_comprobante__cpb_tipo__tipo__in=[1,2,3,9],cpb_comprobante__estado__in=[1,2],cpb_comprobante__fecha_cpb__year=hoy().year)
+    productos_vendidos = cpb_comprobante_detalle.objects.filter(cpb_comprobante__cpb_tipo__compra_venta='V',cpb_comprobante__cpb_tipo__tipo__in=[1,2,3,9,21,22,23],cpb_comprobante__estado__in=[1,2],cpb_comprobante__fecha_cpb__year=hoy().year)
     productos_vendidos_total = productos_vendidos.aggregate(sum=Sum(F('cantidad')*F('cpb_comprobante__cpb_tipo__signo_ctacte'), output_field=DecimalField()))['sum'] or 0 
     productos_vendidos = productos_vendidos.values('producto__nombre').annotate(tot=Sum(F('cantidad')*F('cpb_comprobante__cpb_tipo__signo_ctacte'),output_field=DecimalField())).order_by('-tot')[:20]
     
 
-    # comprobantes = cpb_comprobante.objects.filter(pto_vta__in=pto_vta_habilitados(request),cpb_tipo__tipo__in=[1,2,3,9],estado__in=[1,2],fecha_cpb__year=2018)
+    # comprobantes = cpb_comprobante.objects.filter(pto_vta__in=pto_vta_habilitados(request),cpb_tipo__tipo__in=[1,2,3,9,21,22,23],estado__in=[1,2],fecha_cpb__year=2018)
     # comprobantes = comprobantes.annotate(m=Month('fecha_cpb')).values('cpb_tipo__compra_venta','m')\
     #         .annotate(cant=Count('id'),total=Sum(F('importe_total')*F('cpb_tipo__signo_ctacte'),output_field=DecimalField())).order_by(F('m'),F('cpb_tipo__compra_venta'))        
     productos_vendidos = ValuesQuerySetToDict(productos_vendidos)
@@ -1325,7 +1325,7 @@ def reporte_retenciones_imp(request):
     form = ConsultaRepRetencImp(request.POST or None,request=request)            
     fecha = date.today()
     
-    cpbs = rets = None
+    cpbs = rets = impuestos = None
     if form.is_valid():                                
         entidad = form.cleaned_data['entidad']                                                              
         fdesde = form.cleaned_data['fdesde']   
@@ -1341,22 +1341,30 @@ def reporte_retenciones_imp(request):
             .select_related('cpb_comprobante','retencion','cpb_comprobante__cpb_tipo','cpb_comprobante__entidad')\
             .only('id','retencion','cpb_comprobante','ret_nrocpb','ret_importe_isar','ret_fecha_cpb','importe_total','detalle').order_by('-cpb_comprobante__fecha_imputacion','-id')  
 
+        impuestos = cpb_comprobante.objects.filter(empresa=empresa,fecha_imputacion__gte=fdesde,fecha_imputacion__lte=fhasta)\
+            .annotate(tot_imp=Sum(F('importe_tasa1')+F('importe_tasa2'), output_field=DecimalField())).filter(tot_imp__gt=0)\
+            .select_related('cpb_tipo','entidad').order_by('-fecha_imputacion','-id')            
+
         if entidad:
                 cpbs= cpbs.filter(cpb_comprobante__entidad__apellido_y_nombre__icontains=entidad)
                 rets= rets.filter(cpb_comprobante__entidad__apellido_y_nombre__icontains=entidad)
+                impuestos = impuestos.filter(entidad__apellido_y_nombre__icontains=entidad)
         
         if pto_vta:
                cpbs= cpbs.filter(cpb_comprobante__pto_vta=pto_vta)        
                rets= rets.filter(cpb_comprobante__pto_vta=pto_vta)        
+               impuestos = impuestos.filter(pto_vta=pto_vta)
 
         if nro_cpb:
                cpbs= cpbs.filter(cpb_comprobante__numero=nro_cpb)        
                rets= rets.filter(cpb_comprobante__numero=nro_cpb)        
+               impuestos = impuestos.filter(numero=nro_cpb)
 
         
     context['form'] = form
     context['cpbs'] = cpbs
     context['rets'] = rets
+    context['impuestos'] = impuestos
     context['fecha'] = fecha          
     return render(request,'reportes/contables/retenc_imp.html',context )
 

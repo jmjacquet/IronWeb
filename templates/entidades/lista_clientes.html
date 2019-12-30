@@ -20,7 +20,7 @@
                     {% if 'ent_clientes_abm' in permisos_grupo %}
                     <a class="btn btn-sm blue-hoki fm-create" style="float:left;margin-right:20px;" href="{% url 'cliente_nuevo' %}" data-fm-head="AGREGAR CLIENTE" data-fm-callback="reload">Nuevo Cliente</a>
                     {% endif %}
-                    <table width="100%" id="dataTables-primary"style="display:none;"  class="table table-striped compact table-hover table-no-bordered tabla_nueva nowrap">         
+                    <table width="100%" id="dataTables-primary"style="display:none;"  class="table table-striped compact table-hover table-no-bordered tabla_nueva text-nowrap">         
                         <thead >
                             <tr>
                                 <th></th>
@@ -171,9 +171,9 @@ var tabla = $('#dataTables-primary').DataTable({
                                             if (typeof i === "number") {
                                                 return i;
                                             } else if (typeof i === "string") {
-                                                i = i.replace("$", "")
-                                                i = i.replace(",", "")
-                                                i = i.replace(".", "")
+                                                i = i.replace(/\$/g, "");
+                    i = i.replace(/\,/g ,"");                    
+                    i = i.replace(/\./g, "");
                                                 var result = parseFloat(i)/100;
                                                 // console.log(result);
                                                 if (isNaN(result)) {

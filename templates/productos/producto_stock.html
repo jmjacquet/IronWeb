@@ -21,11 +21,12 @@
          <form class="form" accept-charset="UTF-8" role="form" action="" method="post">
             {% csrf_token %} 
             <div class="barra_busqueda col-sm-12">                                                                   
-                <div class="col-sm-3">{% bootstrap_field form.producto  %}</div>                                                                                                      
+                <div class="col-sm-3">{% bootstrap_field form.producto  %}</div>                             
                 <div class="col-sm-2">{% bootstrap_field form.ubicacion  %}</div>
                 <div class="col-sm-2">{% bootstrap_field form.categoria  %}</div>                                    
                 <div class="col-sm-2">{% bootstrap_field form.tipo_prod  %}</div>
                 <div class="col-sm-1">{% bootstrap_field form.lleva_stock  %}</div>                                           
+                <div class="col-sm-1">{% bootstrap_field form.stock_pp  %}</div> 
                 <div class="col-sm-1"><button style="float:left;margin-left:20px;" class="btn btn-sm green-meadow" type="submit">Buscar</button></div>
             </div>     
             </form>         
@@ -47,6 +48,7 @@
                 <th class="imprimir text-center">Lleva Stock</th>
                 <th class="imprimir text-right">Stock</th>
                 <th class="imprimir text-left">Unidad</th>
+                <th class="imprimir text-right">PuntoPedido</th>
                                                                                                               
             </tr>
         </thead>
@@ -54,6 +56,8 @@
             {% for pp in productos %}
                 <tr  {% if pp.producto.baja %}
                 class='danger'
+                {% elif pp.get_reposicion %}
+                class='warning'                
              {% endif %}>                                                                                                                            
                     <td title="{{pp.pk|safe}}" class="no-sort text-center"></td>
                     <td class="text-center">
@@ -64,8 +68,9 @@
                     <td>{{ pp.producto.categoria|default_if_none:'' }}</td>                                
                     <td>{{ pp.producto.get_tipo_producto_display|default_if_none:'' }}</td>
                      <td class="text-center">{% if pp.producto.llevar_stock %}<i class="fa fa-check text-success"></i>{% endif %}</td>
-                    <td class="importe_total">{{pp.get_stock|default_if_none:0|floatformat:2}}</td>
+                    <td class="importe_total">{% if pp.producto.llevar_stock %}{{pp.get_stock|default_if_none:0|floatformat:2}}{% else %}-{% endif %}</td>
                     <td class="text-left">[{{pp.producto.get_unidad_display|default_if_none:''}}]</td>
+                    <td class="importe_total">{{pp.punto_pedido|default_if_none:0|floatformat:2}}</td>
                 </tr>
             {% endfor %}                        
         </tbody>
@@ -78,7 +83,8 @@
                 <th></th>                                                                 
                 <th></th>       
                 <th class="importe_total"></th>   
-                <th class="text-left"></th>                                 
+                <th class="text-left"></th> 
+                <th></th>                                   
 
             </tr>
         </tfoot>
@@ -182,9 +188,9 @@ var tabla = $('#dataTables-stock').DataTable({
                                             if (typeof i === "number") {
                                                 return i;
                                             } else if (typeof i === "string") {
-                                                i = i.replace("$", "")
-                                                i = i.replace(",", "")
-                                                i = i.replace(".", "")
+                                                i = i.replace(/\$/g, "");
+                    i = i.replace(/\,/g ,"");                    
+                    i = i.replace(/\./g, "");
                                                 var result = parseFloat(i)/100;
                                                 // console.log(result);
                                                 if (isNaN(result)) {
@@ -256,9 +262,9 @@ var tabla = $('#dataTables-stock').DataTable({
                 if (typeof i === "number") {
                     return i;
                 } else if (typeof i === "string") {
-                    i = i.replace("$", "")
-                    i = i.replace(",", "")
-                    i = i.replace(".", "")
+                    i = i.replace(/\$/g, "");
+                    i = i.replace(/\,/g ,"");                    
+                    i = i.replace(/\./g, "");
                     var result = parseFloat(i)/100;
                     // console.log(result);
                     if (isNaN(result)) {

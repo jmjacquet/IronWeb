@@ -49,6 +49,8 @@ class gral_empresa(models.Model):
     pprincipal_estadisticas = models.BooleanField(u'Panel Estadísticas',default=False)
     fp_facturas = models.BooleanField(u'Mostrar FP en Facturas',default=True)
 
+    firma_facturas = models.BooleanField(u'Mostrar Firma en Facturas',default=True)
+
     barra_busq_meses_atras = models.IntegerField(blank=True, null=True,default=2)
     pto_vta_defecto =  models.ForeignKey('comprobantes.cpb_pto_vta',verbose_name=u'Pto. Venta x Defecto',db_column='pto_vta_defecto',blank=True, null=True,on_delete=models.SET_NULL)    
     fe_crt = models.CharField('Nombre Archivo CRT',max_length=50,blank=True, null=True) 
@@ -66,6 +68,8 @@ class gral_empresa(models.Model):
     #ruta_logo = models.ImageField(upload_to=get_image_name,db_column='ruta_logo', max_length=100,null=True, blank=True) # Field name made lowercase.    
     ruta_logo = models.CharField(db_column='ruta_logo', max_length=100,null=True, blank=True) # Field name made lowercase.    
     tipo_logo_factura = models.IntegerField(u'Tipo Logotipo',choices=TIPO_LOGOTIPO, blank=True, null=True)  
+
+    usa_impuestos = models.BooleanField(u'Utiliza impuestos Combustibles',default=False)
 
     class Meta:
         db_table = 'gral_empresa'

@@ -1,4 +1,4 @@
-{% load static from staticfiles %}
+{% load static  %}
 {% load humanize %}
 {% load comprobantes_filters %}
 
@@ -81,7 +81,11 @@
   {% for item in detalle_comprobante %}
     <tr>
       <td class="listado_der borde_izq">{{item.cantidad|default_if_none:0|floatformat:2|intcomma}} {{item.producto.get_unidad_display}}</td>
-      <td class="listado_izq borde_izq"  {% if not discrimina_iva %}colspan="2"{% endif %}>{{item.producto}} {% if item.detalle %} - {{item.detalle}} {% endif %}</td>
+      <td class="listado_izq borde_izq"  {% if not discrimina_iva %}colspan="2"{% endif %}>{{item.producto}} 
+        {% if item.importe_tasa1 > 0 %} ITC: {{item.get_itc|default_if_none:0|floatformat:2|intcomma}}[$/lts.] {% endif %}
+        {% if item.importe_tasa2 > 0 %} TH: {{item.get_th|default_if_none:0|floatformat:2|intcomma}}[$/lts.] {% endif %}
+        {% if item.detalle %} - {{item.detalle}} {% endif %}
+      </td>
       {%if discrimina_iva %}
         <td class="listado_der borde_izq">${{item.importe_unitario|default_if_none:0|floatformat:2|intcomma}}</td>      
         <td class="listado_der borde_izq">{{item.tasa_iva|default_if_none:''}}</td>
@@ -130,10 +134,47 @@
       <td class="listado_der borde_der borde_izq"></td>
     </tr>       
   {% endfor cobranzas %}
+  {% if total_imp %}
+    <tr>
+      <td class="listado_der borde_izq">&nbsp;</td>
+      <td  {% if not discrimina_iva %}colspan="2"{% endif %} class="listado_izq borde_izq">Total ITC/TH</td>      
+      <td class="listado_der borde_izq"></td>
+      {%if discrimina_iva %}<td class="listado_der borde_izq"></td> {% endif %}
+      <td class="listado_der borde_der borde_izq">${{total_imp|default_if_none:0|floatformat:2|intcomma}}</td>
+    </tr>       
+  {% endif %} 
   <tr class="borde_izq borde_der borde_arriba borde_abajo ">
     <td colspan="5" class="tabla_footer">Subtotal: ${{total_bruto|default_if_none:0|floatformat:2|intcomma}}</td>
   </tr>
 </table>
+{% if config.firma_facturas %}
+<br>
+  <table width="100%" >
+      <tr>
+        <td colspan="5" class=""></td>
+      </tr>
+      <tr>
+        <td width="10%"></td>
+        <td width="30%" class=" texto_firma">Transportista</td>    
+        <td width="20%" class=" "></td>
+        <td width="30%" class="texto_firma"></td>
+        <td width="10%"></td>
+      </tr>
+      <tr>
+        <td colspan="5" class=""></td>
+      </tr>
+      <tr>
+        <td colspan="5" class=""></td>
+      </tr>
+      <tr>
+        <td width="10%"></td>
+        <td width="30%" class="texto_firma">Recibí Conforme</td>    
+        <td width="20%" class=" "></td>
+        <td width="30%" class="texto_firma">Firma y Aclaración</td>
+        <td width="10%"></td>  
+      </tr>
+  </table>
+{% endif %}
 <div id="page-footer">
   <table id="tabla_totales" width="100%"  align="center" >    
     <tr>

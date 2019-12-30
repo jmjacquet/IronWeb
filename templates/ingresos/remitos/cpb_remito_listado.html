@@ -17,6 +17,11 @@
                     </div> 
                 </div>
                     {% include "general/varios/barra_busqueda_compras.html" %}                                
+                    <div class="btn-group btnAccion" style="float:left;margin-right:10px;margin-bottom:10px;"> 
+                   
+                    <a class="btn btn-sm color_barra"  style="margin-right:10px;" href="{% url 'cpb_remito_nuevo_vacio' %}">Nuevo Remito</a>
+                   
+                    </div>
                     <table id="dataTables-cpb_remito" class="table table-striped compact table-hover table-no-bordered tabla_nueva nowrap">          
                         <thead>
                             <tr>
@@ -170,9 +175,9 @@ var tabla = $('#dataTables-cpb_remito').DataTable({
                                             if (typeof i === "number") {
                                                 return i;
                                             } else if (typeof i === "string") {
-                                                i = i.replace("$", "")
-                                                i = i.replace(",", "")
-                                                i = i.replace(".", "")
+                                                i = i.replace(/\$/g, "");
+                    i = i.replace(/\,/g ,"");                    
+                    i = i.replace(/\./g, "");
                                                 var result = parseFloat(i)/100;
                                                 // console.log(result);
                                                 if (isNaN(result)) {

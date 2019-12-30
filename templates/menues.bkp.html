@@ -1,0 +1,426 @@
+{% load static from staticfiles %}
+<div class="hor-menu hidden-xs">
+      <ul class="nav navbar-nav" >
+        <!-- DOC: Remove data-hover="dropdown" and data-close-others="true" attributes below to disable the horizontal opening on mouse hover -->
+       
+        <li class="logo">   
+          <a href="{% url 'principal' %}" title="Página Principal">
+              <img   src="{% static 'images/iron_barra.png' %}"/>
+            </a>
+        </li>
+       
+       {% if permisos_ingresos or permisos_egresos %} 
+        <li class="mega-menu-dropdown">
+            <a data-toggle="dropdown" href="#" class="dropdown-toggle hover-initialized" data-hover="dropdown" data-close-others="true">
+              COMPROBANTES <i class="fa fa-angle-down"></i>
+            </a>
+
+          <ul class="dropdown-menu" style="min-width: 450px;" >
+            <li>
+              <!-- Content container to add padding -->
+              <div class="mega-menu-content">
+                <div class="row">
+                  {% if permisos_ingresos %}
+                  <div class="col-sm-6">
+                    <ul class="mega-menu-submenu">
+                      <li>
+                        <h3>INGRESOS</h3>
+                      </li>
+                      {% if 'cpb_ventas' in permisos_grupo %}
+                      <li>                         
+                        <a class="left" href="{% url 'cpb_venta_listado' %}"><i class="icon-note"></i>Comprobantes de Venta</a>
+                        {% if 'cpb_ventas_abm' in permisos_grupo %}
+                        <a class="acceso_menu" href="{% url 'cpb_venta_nuevo' %}">+</a>
+                        {% endif %}
+                      </li>
+                      {% endif %}
+                      {% if 'cpb_liqprod_abm' in permisos_grupo %}
+                      <li>                         
+                        <a class="left" href="{% url 'cpb_liqprod_nuevo' %}"><i class="icon-note"></i>Nuevo CPB Liq.Prod.</a>                        
+                      </li>
+                      {% endif %}
+                      {% if 'cpb_cobranzas' in permisos_grupo %}
+                      <li>
+                        <a href="{% url 'cpb_rec_cobranza_listado' %}"><i class="icon-wallet"></i>Recibos Cobranzas</a>
+                        {% if 'cpb_cobranzas_abm' in permisos_grupo %}
+                        <a class="acceso_menu" href="{% url 'cpb_rec_cobranza_nuevo' %}">+</a>
+                        {% endif %}
+                      </li>
+                      {% endif %}
+                      {% if 'cpb_remitos' in permisos_grupo %}
+                      <li>
+                        <a href="{% url 'cpb_remito_listado' %}"><i class="fa  fa-truck"></i>Remitos de Venta</a>
+                        <a class="acceso_menu" href="{% url 'cpb_remito_nuevo_vacio' %}">+</a>
+                      </li>
+                      {% endif %}
+                      {% if 'cpb_presupuestos' in permisos_grupo %}
+                      <li>
+                        <a href="{% url 'cpb_presup_listado' %}"><i class="icon-briefcase"></i>Presupuestos</a>
+                        {% if 'cpb_presup_abm' in permisos_grupo %}
+                        <a class="acceso_menu" href="{% url 'cpb_presup_nuevo' %}">+</a>
+                        {% endif %}                      
+                      </li>                      
+                      {% endif %}                      
+                    </ul>
+                  </div>                  
+                  {% endif %} 
+                  {% if permisos_egresos %}                   
+                  <div class="col-md-6">
+                    <ul class="mega-menu-submenu">
+                      <li>
+                        <h3>EGRESOS</h3>
+                      </li>
+                      {% if 'cpb_compras' in permisos_grupo %}
+                      <li>
+                        <a href="{% url 'cpb_compra_listado' %}"><i class="icon-note"></i>Comprobantes de Compra</a>
+                        {% if 'cpb_compras_abm' in permisos_grupo %}
+                        <a class="acceso_menu" href="{% url 'cpb_compra_nuevo' %}">+</a>
+                        {% endif %}
+                      </li>
+                      {% endif %}
+                      {% if 'cpb_pagos' in permisos_grupo %}
+                      <li>
+                         <a href="{% url 'cpb_pago_listado' %}"><i class="icon-wallet"></i>Órdenes de Pago</a>
+                         {% if 'cpb_compras_abm' in permisos_grupo %}
+                         <a class="acceso_menu" href="{% url 'cpb_pago_nuevo' %}">+</a>
+                         {% endif %}
+                      </li>                      
+                      {% endif %}
+                      {% if 'cpb_remitosc' in permisos_grupo %}
+                      <li>
+                        <a href="{% url 'cpb_remitoc_listado' %}"><i class="fa  fa-truck"></i>Remitos de Compra</a>
+                         {% if 'cpb_remitosc_abm' in permisos_grupo %}
+                         <a class="acceso_menu" href="{% url 'cpb_remitoc_nuevo' %}">+</a>
+                         {% endif %}
+                      </li>
+                      {% endif %}
+                      {% if 'cpb_movimientos' in permisos_grupo %}
+                      <li>
+                        <h3>FINANZAS</h3>
+                      </li>
+                      <li>
+                         <a href="{% url 'movimientos_listado' %}"><i class="icon-shuffle"></i>Movimientos entre Cuentas</a>
+                          {% if 'cpb_mov_abm' in permisos_grupo %}
+                         <a class="acceso_menu" href="{% url 'movimientos_nuevo' %}">+</a>
+                         {% endif %}                   
+                      </li>
+                      {% endif %}                   
+                    </ul>
+                  </div>
+                  {% endif %} 
+                </div>
+               
+              </div>
+            </li>
+          </ul>
+        </li>
+        {% endif %}
+        {% if permisos_trabajos %} 
+        <li class="mega-menu-dropdown">
+          <a data-toggle="dropdown" href="javascript:;" class="dropdown-toggle hover-initialized"  data-hover="dropdown" data-close-others="true">
+          PEDIDOS/TRABAJOS <i class="fa fa-angle-down"></i>
+          </a>
+          <ul class="dropdown-menu" style="min-width: 200px;">
+            <li>
+              <!-- Content container to add padding -->
+              <div class="mega-menu-content">
+                {% if 'trab_pedidos' in permisos_grupo %}
+                <div class="row">
+                  <div class="col-sm-12">
+                    <ul class="mega-menu-submenu">
+                      <li>
+                        <h3>ORDEN DE PEDIDO</h3>
+                      </li>
+                      <li>
+                        <a href="{% url 'orden_pedido_listado' %}"><i class="icon-notebook"></i>Orden de Pedido</a>
+                      </li>
+                                      
+                    </ul>
+                  </div>   
+                </div>
+                {% endif %}
+                {% if 'trab_trabajos' in permisos_grupo %}
+                <div class="row">
+                  <div class="col-sm-12">
+                    <ul class="mega-menu-submenu">
+                      <li>
+                        <h3>ORDEN DE TRABAJO</h3>
+                      </li>
+                      <li>
+                        <a href="{% url 'orden_trabajo_listado' %}"><i class="icon-notebook"></i>Orden de Trabajo</a>
+                      </li>   
+                    
+                    </ul>
+                  </div>                  
+                </div>
+               {% endif %}
+               {% if 'trab_colocacion' in permisos_grupo %} 
+               <div class="row">
+                  <div class="col-sm-12">
+                    <ul class="mega-menu-submenu">
+                      <li>
+                        <h3>ORDEN COLOCACION</h3>
+                      </li>
+                      <li>
+                        <a href="{% url 'orden_colocacion_listado' %}"><i class="icon-notebook"></i>Orden de Colocación</a>
+                      </li>
+                                      
+                    </ul>
+                  </div>                  
+                  
+                </div> 
+                {% endif %}
+              </div>
+            </li>
+          </ul>
+        </li>
+        {% endif %}
+        {% if permisos_entidades or permisos_productos %}
+        <li class="mega-menu-dropdown">
+          <a data-toggle="dropdown" href="javascript:;" class="dropdown-toggle hover-initialized"  data-hover="dropdown" data-close-others="true">
+            ENTIDADES/PRODUCTOS<i class="fa fa-angle-down"></i>
+          </a>
+          <ul class="dropdown-menu" style="min-width: 450px;">
+            <li>
+              <!-- Content container to add padding -->
+              <div class="mega-menu-content">
+                <div class="row">
+                  {% if permisos_entidades%}
+                  <div class="col-sm-6">
+                    <ul class="mega-menu-submenu">
+                      <li>
+                        <h3>ENTIDADES</h3>
+                      </li>
+                      {% if 'ent_clientes' in permisos_grupo %}
+                      <li>
+                         <a href="{% url 'clientes_listado' %}"><i class="icon-user"></i>Clientes</a>
+                         
+                      </li>
+                      {% endif %}
+                      {% if 'ent_proveedores' in permisos_grupo %}     
+                      <li>
+                        <a href="{% url 'proveedores_listado' %}"><i class="icon-users"></i>Proveedores</a>
+                        
+                      </li>
+                      {% endif %}
+                      {% if 'ent_vendedores' in permisos_grupo %}     
+                      <li>
+                        <a href="{% url 'vendedores_listado' %}"><i class="fa fa-users"></i>Empleados/Vendedores</a>
+                        
+                      </li>                     
+                      {% endif %}
+                    </ul>
+                  </div>
+                  {% endif %} 
+                  {% if permisos_productos%}
+                  <div class="col-sm-6">
+                    <ul class="mega-menu-submenu">
+                      <li>
+                        <h3>PRODUCTOS/SERVICIOS</h3>
+                      </li>                      
+                      {% if 'prod_productos' in permisos_grupo %} 
+                      <li>
+                        <a href="{% url 'productos_listado' %}"><i class="fa fa-tags"></i>Productos/Servicios</a>
+                        <a class="acceso_menu" href="{% url 'producto_nuevo' %}">+</a>
+                      </li>
+                      {% endif %}
+                      {% if 'prod_precios' in permisos_grupo %} 
+                      <li>
+                        <a href="{% url 'prod_precios_listado' %}"><i class="fa fa-list-alt"></i>Actualización Precios</a>
+                      </li> 
+                      {% endif %}
+                      {% if 'prod_stock' in permisos_grupo %}                       
+                      <li>
+                        <a href="{% url 'prod_stock_listado' %}"><i class="fa fa-cubes"></i>Mantenimiento Stock</a>
+                      </li>             
+                      {% endif %}                      
+                                   
+                    </ul>
+                  </div>  
+                  {% endif %}                                                               
+                </div>
+              </div>
+            </li>
+          </ul>
+        </li> 
+        {% endif %} 
+        {% if permisos_rep_ingr_egr or permisos_rep_contables %} 
+       <li class="mega-menu-dropdown">
+          <a data-toggle="dropdown" href="javascript:;" class="dropdown-toggle hover-initialized"  data-hover="dropdown" data-close-others="true">
+          REPORTES<i class="fa fa-angle-down"></i>
+          </a>
+          <ul class="dropdown-menu" style="min-width: 500px;">
+            <li>              
+              <div class="mega-menu-content">
+                <div class="row">
+                 {% if permisos_rep_ingr_egr %}
+                  <div class="col-sm-6">
+                    <ul class="mega-menu-submenu">
+                     {% if permisos_rep_ingr_egr %} 
+                      <li>
+                        <h3>REPORTES CUENTAS CORRIENTES</h3>
+                      </li>
+                       {% if 'rep_cta_cte_clientes' in permisos_grupo %}
+                      <li>
+                        <a href="{% url 'cta_cte_clientes' %}"><i class="icon-bar-chart"></i>Cta.Cte.Clientes</a>
+                      </li>
+                      {% endif %}
+                      {% if 'rep_saldos_clientes' in permisos_grupo %}
+                      <li>
+                        <a href="{% url 'saldos_clientes' %}"><i class="icon-bar-chart"></i>Saldos Clientes</a>
+                      </li>
+                      {% endif %}                                  
+                      {% if 'rep_cta_cte_prov' in permisos_grupo %}
+                      <li>
+                        <a href="{% url 'cta_cte_proveedores' %}"><i class="icon-bar-chart"></i>Cta.Cte.Proveedores</a>
+                      </li>
+                      {% endif %}
+                      {% if 'rep_saldos_prov' in permisos_grupo %}   
+                      <li>
+                        <a href="{% url 'saldos_proveedores' %}"><i class="icon-bar-chart"></i>Saldos Proveedores</a>
+                      </li>
+                      {% endif %}                                                              
+                      {% if permisos_rep_contables %}
+                      <li>
+                        <h3>REPORTES CONTABLES</h3>
+                      </li>                      
+                      
+                      {% if 'rep_libro_iva' in permisos_grupo %}
+                      <li>
+                        <a href="{% url 'libro_iva_ventas' %}"><i class="icon-bar-chart"></i>Libro IVA Ventas</a>
+                      </li>
+                      {% endif %}
+                      {% if 'rep_libro_iva' in permisos_grupo %}                      
+                      <li>
+                        <a href="{% url 'libro_iva_compras' %}"><i class="icon-bar-chart"></i>Libro IVA Compras</a>
+                      </li> 
+                      {% endif %}
+                      {% if 'rep_retenciones_imp' in permisos_grupo %}                      
+                      <li>
+                        <a href="{% url 'reporte_retenciones_imp' %}"><i class="icon-bar-chart"></i>Reporte Retenc./Percepc./Impuestos</a>
+                      </li> 
+                      {% endif %}
+                     {% endif %}
+
+                      
+
+
+                    {% endif %} 
+                    </ul>
+                  </div>
+                {% endif %}                
+                  <div class="col-sm-6">
+                    <ul class="mega-menu-submenu">
+                      {% if 'rep_varios' in permisos_grupo %} 
+                      <li>
+                        <h3>REPORTES VARIOS</h3>
+                      </li>                      
+                      <li>
+                        <a href="{% url 'vencimientos_cpbs' %}"><i class="icon-bar-chart"></i>Consulta Comprobantes</a>
+                      </li>
+                      <li>
+                        <a href="{% url 'movimientos_stock' %}"><i class="icon-bar-chart"></i>Movimientos Productos/Stock</a>
+                      </li>
+                      <li>
+                        <a href="{% url 'rankings' %}"><i class="icon-bar-chart"></i>Estadísticas Ventas/Compras</a>
+                      </li>
+                      <li>
+                        <a href="{% url 'costo_producto_vendido' %}"><i class="icon-bar-chart"></i>Reporte Costos x Ventas</a>
+                      </li>
+                      <li>
+                        <a href="{% url 'comisiones_vendedores' %}"><i class="icon-bar-chart"></i>Comisiones x Ventas</a>
+                      </li>
+                      {% endif %} 
+
+                      {% if permisos_rep_finanzas %}
+                      <li>
+                        <h3>REPORTES FINANZAS</h3>
+                      </li>                      
+                       {% if 'rep_saldos_cuentas' in permisos_grupo %}
+                      <li>
+                        <a href="{% url 'saldos_cuentas' %}"><i class="icon-bar-chart"></i>Saldos Cuentas</a>
+                      </li>   
+                      {% endif %} 
+                      {% if 'rep_caja_diaria' in permisos_grupo %}
+                      <li>
+                        <a href="{% url 'caja_diaria' %}"><i class="icon-bar-chart"></i>Detalle Ingresos/Egresos</a>
+                      </li>   
+                      {% endif %}
+                      {% if 'rep_seguim_cheques' in permisos_grupo %} 
+                      <li>
+                        <a href="{% url 'seguimiento_cheques' %}"><i class="icon-bar-chart"></i>Seguimiento Cheques</a>
+                      </li>
+                      {% endif %}                 
+
+                     
+                      {% endif %}
+                    </ul>
+                  </div> 
+                
+                </div>   
+              </div>
+            </li>
+          </ul>
+        </li>
+        {% endif %}
+       {% if 'gral_configuracion' in permisos_grupo %} 
+        <li class="mega-menu-dropdown">
+          <a data-toggle="dropdown" href="javascript:;" class="dropdown-toggle hover-initialized"  data-hover="dropdown" data-close-others="true">
+            CONFIGURACIÓN <i class="fa fa-angle-down"></i>
+          </a>
+          <ul class="dropdown-menu" style="min-width: 200px;">
+            <li>
+              <!-- Content container to add padding -->
+              <div class="mega-menu-content">
+                <div class="row">
+                  
+                  <div class="col-sm-12">
+                    <ul class="mega-menu-submenu">
+                      <li>
+                        <h3>COMPROBANTES</h3>
+                      </li>
+                      
+                      <li>
+                        <a href="{% url 'pto_vta_listado' %}"><i class="fa fa-asterisk"></i>Puntos de Venta</a>
+                      </li>
+                      {% if  tipo_usr == 0 %}
+                      <li>
+                        <a href="{% url 'percimp_listado' %}"><i class="fa fa-navicon"></i>Percep./Impuestos</a>
+                      </li> 
+                      <li>
+                        <a href="{% url 'retenc_listado' %}"><i class="fa fa-navicon"></i>Retenciones</a>
+                      </li> 
+                      {% endif %}
+                      <li>
+                        <a href="{% url 'formapago_listado' %}"><i class="fa fa-money"></i>Formas de Pago/Cobro</a>
+                      </li>
+                      <li>
+                        <a href="{% url 'bancos_listado' %}"><i class="fa fa-bank"></i>Bancos</a>
+                      </li>  
+                      <li>
+                        <a href="{% url 'disponibilidades_listado' %}"><i class="fa fa-list-alt"></i>Cuentas/Disponibilidades</a>
+                      </li>
+                      <li>
+                        <h3>PRODUCTOS/SERVICIOS</h3>
+                      </li>
+                      <li>
+                        <a href="{% url 'lista_precios_listado' %}"><i class="fa fa-list-alt"></i>Listas de Precios</a>
+                      </li> 
+                      <li>
+                        <a href="{% url 'categorias_listado' %}"><i class="fa fa-sitemap"></i>Categorías</a>
+                      </li>
+                                           
+                      <li>
+                        <a href="{% url 'depositos_listado' %}"><i class="fa fa-cubes"></i>Depósitos/Ubicación</a>
+                      </li>         
+                    </ul>
+                  </div>                 
+              </div>
+            </li>
+          </ul>
+        </li>
+        {% endif %}  
+
+        
+      </ul>
+</div>

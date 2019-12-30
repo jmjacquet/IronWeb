@@ -88,7 +88,7 @@
 								</div>
 							</div>
 							
-				    
+				    		<br>
 						     <div class="row">
 						         <div class="col-sm-12">                          						                
 						                <table id="id_forms_table" width="100%" class="table tabla table-condensed tabla_listado">
@@ -101,7 +101,7 @@
 									                    		title="Recargar listados de Productos"><i class="fa fa-refresh"></i></a>
 									                    	{% endif %}
 									                  </th>						                          												
-						                              <th style="width: 20%;">Detalle</th>
+						                              {% if not empresa.usa_impuestos %}<th style="width: 20%;">Detalle</th>{% endif %}
 						                              <th style="width: 20px;">Cant.</th>
 						                              <th style="width: 20px;"></th>
 						                              <th style="width: 70px;">Precio <i id="tit_precio" class="fa fa-question-circle recargarDatos" data-toggle="tooltip" data-placement="top" title="Precio"/></th>
@@ -120,7 +120,7 @@
 							                      	{{ form2.non_field_errors }}					                      								                      	
 							                      	<tr class="{{ ventas_detalle.prefix }}">           			
 							                      		<td>{% bootstrap_field form2.producto show_label=False%}</td>
-								                      	<td>{% bootstrap_field form2.detalle show_label=False%}</td>
+								                      	{% if not empresa.usa_impuestos %}<td>{% bootstrap_field form2.detalle show_label=False%}</td>{% endif %}
 								                      	<td>{% bootstrap_field form2.cantidad show_label=False%}</td>
 								                      	<td>{% bootstrap_field form2.unidad show_label=False%}</td>
 								                      	<td>{% bootstrap_field form2.importe_unitario show_label=False%}</td>
@@ -223,7 +223,19 @@
 						         <div class="col-xs-12"> 
 						         							     
 							         <div class="col-sm-7 col-xs-12"> 
+							             <div class="row">
+							             	<div class="col-xs-12">		
 							             		{% bootstrap_field form.observacion show_label=True%}					         					         								
+							            	</div>
+							         	 </div>
+							         	 {% if empresa.usa_impuestos %}
+							         	 <div class="row">
+							             	<div class="col-sm-3 col-xs-7"><span class="totales_comprobante">Total ITC</span></div> 
+							             	<div class="col-sm-3 col-xs-5">{% bootstrap_field form.importe_tasa1 show_label=False%}</div> 
+							             	<div class="col-sm-3 col-xs-7"><span class="totales_comprobante">Total TH</span></div> 
+							             	<div class="col-sm-3 col-xs-5">{% bootstrap_field form.importe_tasa2 show_label=False%}</div> 
+							         	 </div>
+							         	 {% endif %}
 							         </div>
 							        <div class="col-sm-5 col-xs-12">						    
 
@@ -235,12 +247,13 @@
 							         	</div>
 							         	<div class="col-xs-12">
 							         		<div class="col-sm-8 col-xs-7"><span class="totales_comprobante">Total Perc./Imp.</span></div> <div class="col-sm-4 col-xs-5">{% bootstrap_field form.importe_perc_imp show_label=False%}</div> 
+							         	</div>							         	
+							         	<div class="col-xs-12"> 
+							         		<div class="col-sm-8 col-xs-7"><span class="totales_comprobante">Total NG</span></div> <div class="col-sm-4 col-xs-5">{% bootstrap_field form.importe_no_gravado show_label=False%}</div> 
 							         	</div>
+							         	<br>
 							         	<div class="col-xs-12"> 
 							         		<div class="col-sm-8 col-xs-7"><span class="totales_comprobante">Total Comprobante</span></div> <div class="col-sm-4 col-xs-5">{% bootstrap_field form.importe_total show_label=False%}</div> 
-							         	</div>
-							         	<div class="col-xs-12"> 
-							         		<div class="col-sm-8 col-xs-7"><span class="totales_comprobante">Total Cobros</span></div> <div class="col-sm-4 col-xs-5">{% bootstrap_field form.importe_cobrado show_label=False%}</div> 
 							         	</div>
 							         	 
 							        </div>

@@ -44,7 +44,7 @@ $('.formPrecios').formset({
             $("[name='formPrecios-"+i+"-precio_costo']").val(0);           
             $("[name='formPrecios-"+i+"-precio_cimp']").val(0);           
             $("[name='formPrecios-"+i+"-precio_venta']").val(0);           
-            $("[name='formPrecios-"+i+"-coef_ganancia']").val(1);           
+            $("[name='formPrecios-"+i+"-coef_ganancia']").val(0);           
             recalcular();
           },
           removed: function (row) {
@@ -84,56 +84,57 @@ $('.formPrecios').formset({
         $( "#form-alta" ).submit();         
       });
 
-  function calcularProd(i){
-  var $precio_costo = parseFloat($("input[name='formPrecios-"+i+"-precio_costo']").val())|| 0;  
-  var $coef_ganancia = parseFloat($("input[name='formPrecios-"+i+"-coef_ganancia']").val())|| 0;
-  
-  var $precio_venta = 0;
-  var $precio_cimp = 0;
-  var coef=0.00;
-               
-  if ($coef_ganancia == '') {$coef_ganancia=1;}; 
-  
-  var id = $("#id_tasa_iva").val()|| 0;
-  $.ajax({
+function recalcular(){
+  $('.form-detallesPrecios tr').each(function(j) {
+        $("input[name='formPrecios-"+j+"-precio_costo']").change(function(){
+             var $precio_costo = parseFloat($("input[name='formPrecios-"+j+"-precio_costo']").val())|| 0;  
+             var $coef_ganancia = parseFloat($("input[name='formPrecios-"+j+"-coef_ganancia']").val())|| 0;
+             var coef = parseFloat($("#id_coef_iva").val())|| 0;  
+             var $precio_cimp = $precio_costo * (coef+1);  
+             var $precio_venta = $precio_cimp * ($coef_ganancia+1);   
+             $("input[name='formPrecios-"+j+"-precio_cimp']").val($precio_cimp.toFixed(2));  
+             $("input[name='formPrecios-"+j+"-precio_venta']").val($precio_venta.toFixed(2));
+           });
+        $("input[name='formPrecios-"+j+"-precio_cimp']").change(function(){            
+            var $precio_costo = parseFloat($("input[name='formPrecios-"+j+"-precio_costo']").val())|| 0;  
+            var $coef_ganancia = parseFloat($("input[name='formPrecios-"+j+"-coef_ganancia']").val())|| 0;
+            var coef = parseFloat($("#id_coef_iva").val())|| 0;  
+            var $precio_venta = $precio_cimp * ($coef_ganancia+1); 
+            $("input[name='formPrecios-"+j+"-precio_venta']").val($precio_venta.toFixed(2));
+           });
+        $("input[name='formPrecios-"+j+"-coef_ganancia']").change(function(){
+            var $precio_costo = parseFloat($("input[name='formPrecios-"+j+"-precio_costo']").val())|| 0;  
+            var $coef_ganancia = parseFloat($("input[name='formPrecios-"+j+"-coef_ganancia']").val())|| 0;
+            var coef = parseFloat($("#id_coef_iva").val())|| 0;  
+            var $precio_venta = $precio_cimp * ($coef_ganancia+1); 
+            $("input[name='formPrecios-"+j+"-precio_venta']").val($precio_venta.toFixed(2));
+           });        
+        
+   });
+};
+
+$("#id_tasa_iva").change(function(){
+    var id = $("#id_tasa_iva").val();
+           $.ajax({
             data: {'id': id},
             url: '/productos/coeficiente_iva/',
-            type: 'get',
-            async: false,
+            type: 'get',            
             cache: true,          
             success : function(data) {                 
                 if (data!='')
-                    {coef=parseFloat(data['tiva']);}
+                    {
+                      $("#id_coef_iva").val(parseFloat(data['tiva']))                                           
+                    }
             },
             error : function(message) {                
                  console.log(message);
               }
-          });      
-  
-  $precio_cimp = $precio_costo * (coef+1);
-  console.log(coef+1);
-  $precio_venta = $precio_cimp * ($coef_ganancia+1);  
-   
-  $("input[name='formPrecios-"+i+"-precio_costo']").val($precio_costo.toFixed(2));  
-  $("input[name='formPrecios-"+i+"-precio_cimp']").val($precio_cimp.toFixed(2)); 
-  $("input[name='formPrecios-"+i+"-coef_ganancia']").val($coef_ganancia.toFixed(2));
-  $("input[name='formPrecios-"+i+"-precio_venta']").val($precio_venta.toFixed(2));
-};
+          });
+  });
+      
 
-function recalcular(){
-  $('.form-detallesPrecios tr').each(function(j) {
-          $("input[name='formPrecios-"+j+"-precio_costo']").change(function(){
-              calcularProd(j);
-           });
-          $("input[name='formPrecios-"+j+"-precio_cimp']").change(function(){
-              calcularProd(j);
-           });
-          $("input[name='formPrecios-"+j+"-coef_ganancia']").change(function(){
-              calcularProd(j);
-           });
-   });
-};
+
 recalcular(); 
-
+$("#id_tasa_iva").trigger("change");
 
 });

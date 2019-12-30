@@ -28,7 +28,6 @@ class ConsultaProds(forms.Form):
 	nombre = forms.CharField(label='Nombre',max_length=100,widget=forms.TextInput(attrs={'class':'form-control','text-transform': 'uppercase'}),required=False)    
    	estado = forms.ChoiceField(label='Estado',choices=ESTADO_,required=False,initial=0)	    
 				
-
 class ProductosForm(forms.ModelForm):
 	descripcion = forms.CharField(label='Observaciones / Datos adicionales',widget=forms.Textarea(attrs={'class':'form-control2', 'rows': 3}),required = False)			
 	tasa_iva = forms.ModelChoiceField(queryset=gral_tipo_iva.objects.all(),required = True,initial=5)	
@@ -37,7 +36,9 @@ class ProductosForm(forms.ModelForm):
 	cta_ingreso = chosenforms.ChosenModelChoiceField(label='Cuenta Ingreso',queryset=gral_plan_cuentas.objects.filter(baja=False),empty_label='---',required = False)
 	cta_egreso = chosenforms.ChosenModelChoiceField(label='Cuenta Egreso',queryset=gral_plan_cuentas.objects.filter(baja=False),empty_label='---',required = False)
 	ubicacion = forms.ModelChoiceField(queryset=prod_ubicacion.objects.filter(baja=False),required = False)	
-	stock = forms.DecimalField(initial=1,decimal_places=2,required = False)	
+	stock = forms.DecimalField(label='Stock Inicial',initial=1,decimal_places=2,required = False)	
+	ppedido = forms.DecimalField(label='Punto Pedido',initial=0,decimal_places=2,required = False)	
+	coef_iva = forms.DecimalField(widget = forms.HiddenInput(), required = False,decimal_places=2)	
 	class Meta:
 			model = prod_productos
 			exclude = ['id','baja','fecha_creacion','fecha_modif','empresa']
@@ -62,16 +63,15 @@ class ProductosForm(forms.ModelForm):
 			self._errors['ubicacion'] = [u'Debe seleccionar una Ubicación!']
 
 
-
 class Producto_ListaPreciosForm(forms.ModelForm):
 	producto = forms.IntegerField(widget = forms.HiddenInput(), required = False)	
 	lista_precios = forms.ModelChoiceField(queryset=prod_lista_precios.objects.filter(baja=False),required = False)	
 	precio_costo = forms.DecimalField(label='Precio Costo',widget=PrependWidget(attrs={'class':'form-control','step':0.00},base_widget=NumberInput, data='$'),initial=0.00,decimal_places=2)
 	precio_cimp = forms.DecimalField(label='Precio c/Imp.',widget=PrependWidget(attrs={'class':'form-control','step':0.00},base_widget=NumberInput, data='$'),initial=0.00,decimal_places=2)
 	precio_venta = forms.DecimalField(label='Precio Venta',widget=PrependWidget(attrs={'class':'form-control','step':0.00},base_widget=NumberInput, data='$'),initial=0.00,decimal_places=2)	
-	#precio_itc = forms.DecimalField(label='Valor ITC',widget=PrependWidget(attrs={'class':'form-control','step':0.00},base_widget=NumberInput, data='$'),initial=vitc,decimal_places=3)
-	#precio_tasa = forms.DecimalField(label='Valor Tasa',widget=PrependWidget(attrs={'class':'form-control','step':0.00},base_widget=NumberInput, data='$'),initial=vtasa,decimal_places=3)	
-	coef_ganancia = forms.DecimalField(initial=1,decimal_places=3)		
+	precio_itc = forms.DecimalField(label='Valor ITC',widget=PrependWidget(attrs={'class':'form-control','step':0.00},base_widget=NumberInput, data='$'),initial=vitc,decimal_places=3)
+	precio_tasa = forms.DecimalField(label='Valor TH',widget=PrependWidget(attrs={'class':'form-control','step':0.00},base_widget=NumberInput, data='$'),initial=vtasa,decimal_places=3)	
+	coef_ganancia = forms.DecimalField(initial=0,decimal_places=3)		
 
 	class Meta:
 			model = prod_producto_lprecios
@@ -83,6 +83,9 @@ class Producto_ListaPreciosForm(forms.ModelForm):
 		try:
 			empresa = empresa_actual(request)			
 			self.fields['lista_precios'].queryset = prod_lista_precios.objects.filter(baja=False,empresa__id__in=empresas_habilitadas(request))			
+			if not empresa.usa_impuestos:
+				self.fields['precio_itc'].initial = 0
+				self.fields['precio_tasa'].initial = 0
 		except gral_empresa.DoesNotExist:
 			empresa = None  
 
@@ -91,8 +94,6 @@ class Producto_ListaPreciosForm(forms.ModelForm):
 		lista_precios = self.cleaned_data.get('lista_precios')
 		if not lista_precios:
 			self._errors['lista_precios'] = [u'Debe seleccionar una Lista de Precios!']
-		
-		
 		
 
 class Producto_StockForm(forms.ModelForm):
@@ -153,8 +154,8 @@ class Producto_EditarPrecioForm(forms.ModelForm):
 	precio_costo = forms.DecimalField(label='Precio Costo',widget=PrependWidget(attrs={'class':'form-control','step':0.00},base_widget=NumberInput, data='$'),initial=0.00,decimal_places=2)
 	precio_cimp = forms.DecimalField(label='Precio c/Imp.',widget=PrependWidget(attrs={'class':'form-control','step':0.00},base_widget=NumberInput, data='$'),initial=0.00,decimal_places=2)
 	precio_venta = forms.DecimalField(label='Precio Venta',widget=PrependWidget(attrs={'class':'form-control','step':0.00},base_widget=NumberInput, data='$'),initial=0.00,decimal_places=2)	
-	#precio_itc = forms.DecimalField(label='Valor ITC',widget=PrependWidget(attrs={'class':'form-control','step':0.00},base_widget=NumberInput, data='$'),initial=vitc,decimal_places=2,required = False)	
-	#precio_tasa = forms.DecimalField(label='Valor Tasa',widget=PrependWidget(attrs={'class':'form-control','step':0.00},base_widget=NumberInput, data='$'),initial=vtasa,decimal_places=2,required = False)		
+	precio_itc = forms.DecimalField(label='Valor ITC',widget=PrependWidget(attrs={'class':'form-control','step':0.00},base_widget=NumberInput, data='$'),initial=vitc,decimal_places=2,required = False)	
+	precio_tasa = forms.DecimalField(label='Valor Tasa',widget=PrependWidget(attrs={'class':'form-control','step':0.00},base_widget=NumberInput, data='$'),initial=vtasa,decimal_places=2,required = False)		
 	coef_ganancia = forms.DecimalField(initial=1,decimal_places=3)		
 	class Meta:
 			model = prod_producto_lprecios
@@ -193,6 +194,7 @@ class ConsultaStockProd(forms.Form):
 	categoria = forms.ModelChoiceField(queryset=prod_categoria.objects.filter(baja=False),required = False)
 	tipo_prod = forms.ChoiceField(label=u'Tipo',choices=TIPO_PRODUCTO_,initial=0)	
 	lleva_stock = forms.ChoiceField(label=u'Lleva Stock',required = True,choices=SINO,initial=1)
+	stock_pp = forms.ChoiceField(label=u'Stock Bajo PPedido',required = False,choices=SINO)
 
 	def __init__(self, *args, **kwargs):
 		request = kwargs.pop('request', None)
@@ -203,17 +205,18 @@ class ConsultaStockProd(forms.Form):
 OPERACION2_ = (
  (21,'Movimiento Ingreso Stock'),	
  (22,'Movimiento Egreso Stock'), 
+ (0,'Actualizar Punto Pedido'), 
 )
 
 class ActualizarStockForm(forms.Form):	
-	tipo_operacion = forms.ChoiceField(label=u'Operación',choices=OPERACION2_,required=True,initial=0)		
+	tipo_operacion = forms.ChoiceField(label=u'Operación',choices=OPERACION2_,required=True,initial=21)		
 	valor = forms.DecimalField(label='Cantidad',initial=0.00,decimal_places=2)	
 
 class CrearStockForm(forms.Form):		
 	ubicacion = forms.ModelChoiceField(label=u'Ubicación',queryset=prod_ubicacion.objects.filter(baja=False),initial=0,required = True)	
 	producto = forms.ModelChoiceField(queryset=prod_productos.objects.filter(baja=False,mostrar_en__in=(1,3)),initial=0,required = True)	
 	valor = forms.DecimalField(label='Cantidad',initial=0.00,decimal_places=2,required = True)	
-	
+	ppedido = forms.DecimalField(label='P.Pedido',initial=0.00,decimal_places=2,required = False)
 	def __init__(self, *args, **kwargs):
 		request = kwargs.pop('request', None)
 		super(CrearStockForm, self).__init__(*args, **kwargs)				

@@ -59,19 +59,22 @@ MEDIA_ROOT = os.path.join(SITE_ROOT, 'media')
 MEDIA_URL = '/media/'
 STATIC_ROOT = os.path.join(SITE_ROOT, 'static')
 # STATIC_ROOT = '/home/grupogua/webapps/ironweb/ggcontable/staticfiles'
-STATIC_URL = '/staticfiles/'
-STATICFILES_DIRS = (
-    os.path.join(SITE_ROOT, 'staticfiles'),   
-)
+STATIC_URL = '/static/'
+
 TEMPLATE_DIRS = (
     os.path.join(SITE_ROOT, 'templates'),
 )
+
+STATICFILES_DIRS = (
+    os.path.join(SITE_ROOT, "staticfiles"),   
+)
+
+
 ADMIN_MEDIA_PREFIX = os.path.join(SITE_ROOT, '/static/admin/')
 STATICFILES_FINDERS = (
     'django.contrib.staticfiles.finders.FileSystemFinder',
     'django.contrib.staticfiles.finders.AppDirectoriesFinder',
 #    'django.contrib.staticfiles.finders.DefaultStorageFinder',    
-    'compressor.finders.CompressorFinder',
 )
 TEMPLATE_CONTEXT_PROCESSORS =   (
     'django.contrib.auth.context_processors.auth',
@@ -134,7 +137,6 @@ INSTALLED_APPS = (
     'reportes',
     'felectronica',
     'djangosecure',
-    'compressor'   ,
 )
 
 
@@ -228,69 +230,9 @@ CERTIFICADOS_PATH = os.path.join(MEDIA_ROOT,'certificados',)
 #Traigo si la empresa figura en Modo homologacion(Prueba)
 
 
-# BOOTSTRAP3 = {
-
-#     # The Bootstrap base URL
-#     'base_url': os.path.join(SITE_ROOT, 'staticfiles/css/'),
-
-#     # The complete URL to the Bootstrap CSS file (None means derive it from base_url)
-#     'css_url': None,
-
-#     # The complete URL to the Bootstrap CSS file (None means no theme)
-#     'theme_url': None,
-
-#     # The complete URL to the Bootstrap JavaScript file (None means derive it from base_url)
-#     'javascript_url': None,
-
-#     # Put JavaScript in the HEAD section of the HTML document (only relevant if you use bootstrap3.html)
-#     'javascript_in_head': False,
-
-#     # Include jQuery with Bootstrap JavaScript (affects django-bootstrap3 template tags)
-#     'include_jquery': False,
-
-#     # Label class to use in horizontal forms
-#     'horizontal_label_class': 'col-md-2',
-
-#     # Field class to use in horizontal forms
-#     'horizontal_field_class': 'col-md-5',
-
-#     # Set HTML required attribute on required fields
-#     'set_required': True,
-
-#     # Set HTML disabled attribute on disabled fields
-#     'set_disabled': False,
-
-#     # Set placeholder attributes to label if no placeholder is provided
-#     'set_placeholder': True,
-
-#     # Class to indicate required (better to set this in your Django form)
-#     'required_css_class': '',
-
-#     # Class to indicate error (better to set this in your Django form)
-#     'error_css_class': 'has-error',
-
-#     # Class to indicate success, meaning the field has valid input (better to set this in your Django form)
-#     'success_css_class': 'has-success',
-
-
-# }
-
 from django.contrib.messages import constants as message_constants
 MESSAGE_TAGS = {message_constants.DEBUG: 'debug',
                 message_constants.INFO: 'info',
                 message_constants.SUCCESS: 'success',
                 message_constants.WARNING: 'warning',
                 message_constants.ERROR: 'error',} 
-
-
-COMPRESS_ENABLED = False
-
-COMPRESS_OUTPUT_DIR = '/'
-COMPRESS_CSS_FILTERS = [
-    'compressor.filters.cssmin.CSSMinFilter',
-    'compressor.filters.css_default.CssAbsoluteFilter',
-    'compressor.filters.datauri.CssDataUriFilter',
-]
-COMPRESS_JS_FILTERS = [
-    'compressor.filters.jsmin.JSMinFilter'
-]

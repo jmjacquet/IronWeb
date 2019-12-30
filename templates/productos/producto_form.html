@@ -33,12 +33,12 @@
 					     {% csrf_token %}                 
 					       	<div class="row">
    								<div class="col-xs-12">
-	   								  <div class="row ">
+	   								  <div class="row cerca">
 											<div class="col-sm-2">{% bootstrap_field form.codigo %}</div>									
 											<div class="col-sm-6">{% bootstrap_field form.nombre %}</div>
 											<div class="col-sm-4">{% bootstrap_field form.codigo_barras %}</div>																		  
 									  </div>
-									  <div class="row ">
+									  <div class="row cerca">
 								       	<div class="col-sm-3">{% bootstrap_field form.categoria %}</div>
 								       	<div class="col-sm-3">{% bootstrap_field form.tipo_producto %}</div>										     
 								       	<div class="col-sm-2">{% bootstrap_field form.mostrar_en %}</div>
@@ -56,10 +56,11 @@
 												       	{% bootstrap_field form.stock_negativo show_label=False %}
 												       </div>
 												       <div class="col-sm-9 col-xs-12">
-										                <div class="row ">
+										                <div class="row">
 													       	{% if form.tipo_form.value == 'ALTA' %}
-										                	<div class="col-sm-10">{% bootstrap_field form.ubicacion %}</div>
-													       	<div class="col-sm-2">{% bootstrap_field form.stock %}</div>
+										                	<div class="col-sm-6 cerca">{% bootstrap_field form.ubicacion %}</div>
+										                	<div class="col-sm-3 cerca">{% bootstrap_field form.stock %}</div>
+													       	<div class="col-sm-3 cerca">{% bootstrap_field form.ppedido %}</div>
 											                {% else %}
 											                <div class="col-sm-12"><h4 class="text-center">EL STOCK YA FUÉ INICIALIZADO</h4></div>
 											                {% endif %}		
@@ -91,6 +92,8 @@
 										                              <th style="width: 15%;" title="Precio de Costo con Impuestos" >P.Costo c/Imp.</th>						
 										                              <th style="width: 5%;" title="Coeficiente de Ganancia (1=100%)" >Coef.Gan.</th>						
 										                              <th style="width: 15%;" title="Precio de Venta (Costo c/Imp * Coef.Gan.)">P.Venta</th>
+										                              <th style="width: 10%;" title="Coeficiente de Ganancia (1=100%)" >Coef.ITC</th>						
+										                              <th style="width: 10%;" title="Precio de Venta (Costo c/Imp * Coef.Gan.)">Coef.TH</th>
 										                              
 										                              <th class="remove-sorting"></th>
 										                          </tr>
@@ -106,6 +109,8 @@
 												                      	<td>{% bootstrap_field l.precio_cimp show_label=False%}</td>
 												                      	<td>{% bootstrap_field l.coef_ganancia show_label=False%}</td>	
 												                      	<td>{% bootstrap_field l.precio_venta show_label=False%}</td>
+												                      	<td>{% bootstrap_field l.precio_itc show_label=False%}</td>	
+												                      	<td>{% bootstrap_field l.precio_tasa show_label=False%}</td>
 												                      	
 												                      	<td>{{l.DELETE}}
 												                      	 <a class="btn btn-danger delete-row2" title="Eliminar">

@@ -347,9 +347,9 @@ var tabla2 = $('#dataTables-cartera').DataTable({
                                             if (typeof i === "number") {
                                                 return i;
                                             } else if (typeof i === "string") {
-                                                i = i.replace("$", "")
-                                                i = i.replace(",", "")
-                                                i = i.replace(".", "")
+                                                i = i.replace(/\$/g, "");
+                    i = i.replace(/\,/g ,"");                    
+                    i = i.replace(/\./g, "");
                                                 var result = parseFloat(i)/100;
                                                 // console.log(result);
                                                 if (isNaN(result)) {
@@ -399,9 +399,9 @@ var tabla2 = $('#dataTables-cartera').DataTable({
                 if (typeof i === "number") {
                     return i;
                 } else if (typeof i === "string") {
-                    i = i.replace("$", "")
-                    i = i.replace(",", "")
-                    i = i.replace(".", "")
+                    i = i.replace(/\$/g, "");
+                    i = i.replace(/\,/g ,"");                    
+                    i = i.replace(/\./g, "");
                     var result = parseFloat(i)/100;
                     // console.log(result);
                     if (isNaN(result)) {
@@ -423,7 +423,7 @@ var tabla2 = $('#dataTables-cartera').DataTable({
             };
             
             pageTotal = api.column(5, { page: 'current'} ).data().reduce( function (a, b) {return floatVal(a) + floatVal(b);}, 0 );
-            $( api.column(5).footer() ).html('$'+pageTotal.toFixed(2));      
+            $( api.column(5).footer() ).html('$'+pageTotal.toLocaleString(undefined,{minimumFractionDigits:2}));      
          
         }
         });
@@ -502,9 +502,9 @@ var tabla3 = $('#dataTables-cobrados').DataTable({
                                             if (typeof i === "number") {
                                                 return i;
                                             } else if (typeof i === "string") {
-                                                i = i.replace("$", "")
-                                                i = i.replace(",", "")
-                                                i = i.replace(".", "")
+                                                i = i.replace(/\$/g, "");
+                    i = i.replace(/\,/g ,"");                    
+                    i = i.replace(/\./g, "");
                                                 var result = parseFloat(i)/100;
                                                 // console.log(result);
                                                 if (isNaN(result)) {
@@ -553,9 +553,9 @@ var tabla3 = $('#dataTables-cobrados').DataTable({
                 if (typeof i === "number") {
                     return i;
                 } else if (typeof i === "string") {
-                    i = i.replace("$", "")
-                    i = i.replace(",", "")
-                    i = i.replace(".", "")
+                    i = i.replace(/\$/g, "");
+                    i = i.replace(/\,/g ,"");                    
+                    i = i.replace(/\./g, "");
                     var result = parseFloat(i)/100;
                     // console.log(result);
                     if (isNaN(result)) {
@@ -577,7 +577,7 @@ var tabla3 = $('#dataTables-cobrados').DataTable({
             };
             
             pageTotal = api.column(5, { page: 'current'} ).data().reduce( function (a, b) {return floatVal(a) + floatVal(b);}, 0 );
-            $( api.column(5).footer() ).html('$'+pageTotal.toFixed(2));      
+            $( api.column(5).footer() ).html('$'+pageTotal.toLocaleString(undefined,{minimumFractionDigits:2}));      
          
         }
         });
@@ -655,9 +655,9 @@ var tabla4 = $('#dataTables-pagados').DataTable({
                                             if (typeof i === "number") {
                                                 return i;
                                             } else if (typeof i === "string") {
-                                                i = i.replace("$", "")
-                                                i = i.replace(",", "")
-                                                i = i.replace(".", "")
+                                                i = i.replace(/\$/g, "");
+                    i = i.replace(/\,/g ,"");                    
+                    i = i.replace(/\./g, "");
                                                 var result = parseFloat(i)/100;
                                                 // console.log(result);
                                                 if (isNaN(result)) {
@@ -707,9 +707,9 @@ var tabla4 = $('#dataTables-pagados').DataTable({
                 if (typeof i === "number") {
                     return i;
                 } else if (typeof i === "string") {
-                    i = i.replace("$", "")
-                    i = i.replace(",", "")
-                    i = i.replace(".", "")
+                    i = i.replace(/\$/g, "");
+                    i = i.replace(/\,/g ,"");                    
+                    i = i.replace(/\./g, "");
                     var result = parseFloat(i)/100;
                     // console.log(result);
                     if (isNaN(result)) {
@@ -731,7 +731,7 @@ var tabla4 = $('#dataTables-pagados').DataTable({
             };
             
             pageTotal = api.column(4, { page: 'current'} ).data().reduce( function (a, b) {return floatVal(a) + floatVal(b);}, 0 );
-            $( api.column(4).footer() ).html('$'+pageTotal.toFixed(2));      
+            $( api.column(4).footer() ).html('$'+pageTotal.toLocaleString(undefined,{minimumFractionDigits:2}));      
          
         }
         });
@@ -808,9 +808,9 @@ var tabla = $('#dataTables-cheques').DataTable({
                                             if (typeof i === "number") {
                                                 return i;
                                             } else if (typeof i === "string") {
-                                                i = i.replace("$", "")
-                                                i = i.replace(",", "")
-                                                i = i.replace(".", "")
+                                                i = i.replace(/\$/g, "");
+                    i = i.replace(/\,/g ,"");                    
+                    i = i.replace(/\./g, "");
                                                 var result = parseFloat(i)/100;
                                                 // console.log(result);
                                                 if (isNaN(result)) {
@@ -906,7 +906,7 @@ var tabla = $('#dataTables-cheques').DataTable({
               };
               
               pageTotal = api.column(5, { page: 'current'} ).data().reduce( function (a, b) {return floatVal(a) + floatVal(b);}, 0 );
-              $( api.column(5).footer() ).html('$'+pageTotal.toFixed(2));      
+              $( api.column(5).footer() ).html('$'+pageTotal.toLocaleString(undefined,{minimumFractionDigits:2}));      
          
             }
         });

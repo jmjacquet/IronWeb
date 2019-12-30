@@ -123,7 +123,6 @@ class ProductosCreateView(VariablesMixin,CreateView):
         else:
             return self.form_invalid(form, prod_precios)        
 
-
     def form_valid(self, form, prod_precios):
         self.object = form.save(commit=False)        
         self.object.empresa = empresa_actual(self.request)        
@@ -135,10 +134,13 @@ class ProductosCreateView(VariablesMixin,CreateView):
             prod_precios.save()
 
         stock = form.cleaned_data.get('stock')
+        ppedido = form.cleaned_data.get('ppedido')
         ubicacion = form.cleaned_data.get('ubicacion')
         if not stock:            
             stock=1
-        ubi_prod = prod_producto_ubicac(producto=self.object,ubicacion=ubicacion)
+        if not ppedido:
+            ppedido=0
+        ubi_prod = prod_producto_ubicac(producto=self.object,ubicacion=ubicacion,punto_pedido=ppedido)
         ubi_prod.save()
         actualizar_stock(self.request,self.object,ubicacion,21,stock)
         messages.success(self.request, u'Los datos se guardaron con éxito!')
@@ -656,6 +658,7 @@ class ProdStockView(VariablesMixin,ListView):
             categoria = form.cleaned_data['categoria']   
             tipo_prod = int(form.cleaned_data['tipo_prod'])             
             lleva_stock = form.cleaned_data['lleva_stock']                         
+            stock_pp = int(form.cleaned_data['stock_pp'])                         
             productos = prod_producto_ubicac.objects.filter(producto__empresa__id__in=empresas_habilitadas(self.request)).select_related('producto','producto__categoria')            
         
             if producto:
@@ -669,6 +672,12 @@ class ProdStockView(VariablesMixin,ListView):
                 productos= productos.filter(producto__categoria=categoria)                     
             if ubicacion:
                 productos = productos.filter(ubicacion=ubicacion)                       
+            if stock_pp>0:
+                if stock_pp==1:
+                    ids = [p.id for p in productos if p.get_reposicion()]
+                else:
+                    ids = [p.id for p in productos if not p.get_reposicion()]
+                productos = productos.filter(id__in=ids)
                        
         context['form'] = form
         context['productos'] = productos
@@ -736,7 +745,10 @@ def prod_stock_actualizar(request):
         if form.is_valid():                                   
             tipo_operacion = int(form.cleaned_data['tipo_operacion'])                                                              
             valor = form.cleaned_data['valor']
-            actualizar_stock_multiple(request,prods,tipo_operacion,valor) 
+            if tipo_operacion>0:
+                actualizar_stock_multiple(request,prods,tipo_operacion,valor) 
+            else:
+                prods.update(punto_pedido=valor) 
             cant=len(prods)
 
             response = {'cant': cant, 'message': "Se actualizaron exitosamente."} # for ok        
@@ -761,11 +773,12 @@ def prod_stock_nuevo(request):
             producto = form.cleaned_data['producto']
             ubicacion = form.cleaned_data['ubicacion']
             valor = form.cleaned_data['valor']
+            ppedido = form.cleaned_data['ppedido']
             existe_prod_stock = prod_producto_ubicac.objects.filter(producto=producto,ubicacion=ubicacion).exists()
             if existe_prod_stock:
                 response = {'cant': 0, 'message': "¡El producto ya tiene asignado Stock!"} 
             else:
-                ubi_prod = prod_producto_ubicac(producto=producto,ubicacion=ubicacion)
+                ubi_prod = prod_producto_ubicac(producto=producto,ubicacion=ubicacion,punto_pedido=ppedido)
                 ubi_prod.save()            
                 actualizar_stock(request,producto,ubicacion,21,valor)            
                 response = {'cant': 1, 'message': "Se actualizaron exitosamente."} # for ok        
@@ -787,7 +800,7 @@ def prod_stock_generar(request):
         dep = prod_ubicacion.objects.get(pk=1) 
         up = prod_producto_ubicac.objects.filter(producto=p,ubicacion=dep)
         if not up:
-            ubi_prod = prod_producto_ubicac(producto=p,ubicacion=dep)
+            ubi_prod = prod_producto_ubicac(producto=p,ubicacion=dep,punto_pedido=0)
             ubi_prod.save()
     return HttpResponseRedirect(reverse('principal'))
     

@@ -39,6 +39,10 @@
                                 <a href="#tab_15_2" data-toggle="tab">
                                 RETENCIONES</a>
                             </li>                        
+                            <li>
+                                <a href="#tab_15_3" data-toggle="tab">
+                                IMPUESTOS COMBUSTIBLES</a>
+                            </li>  
                         </ul>
                         <div class="tab-content">
                             <div class="tab-pane active" id="tab_15_1">
@@ -128,6 +132,51 @@
                                                         <th class="importe"></th>                                 
                                                         <th></th>                                
                                                         <th class="importe"></th>                                 
+                                                    </tr>
+                                                </tfoot>
+                                            </table>               
+                                </div>
+                            </div>
+                            <div class="tab-pane" id="tab_15_3">
+                                <div class="col-xs-12">
+                                            <table id="dataTables-impuestos" class="table table-striped compact table-hover table-no-bordered tabla_nueva nowrap">         
+                                                <thead>
+                                                    <tr>
+                                                        <th class="text-center">F.Imputación</th>                                                          
+                                                        <th>CPB Tipo</th> 
+                                                        <th>Comprobante</th>
+                                                        <th>Entidad</th>                                                                                                                
+                                                        <th class="text-right">ITC</th>
+                                                        <th class="text-right">TH</th>
+                                                        <th class="text-right">Total</th>
+                                                        <th>Detalle</th>       
+                                                    </tr>
+                                                </thead>
+                                                <tbody>
+                                                    {% for i in impuestos %}
+                                                    <tr>                                
+                                                        <td title="{{i.id|safe}}" class="text-center">{{ i.fecha_imputacion|date:'d/m/Y' }}</td>
+                                                        <td title="{{ i.cpb_tipo}}">{{ i.cpb_tipo.codigo|default_if_none:'' }}</td>
+                                                        <td >{{ i.get_cpb }}</td>
+                                                        <td  title="{{ i.entidad}}" ><strong>{{ i.entidad|truncatechars:60 }}</strong></td>
+                                                        <td class="importe">${{i.importe_tasa1|default_if_none:0|floatformat:2}}</td>
+                                                        <td class="importe">${{i.importe_tasa2|default_if_none:0|floatformat:2}}</td>
+                                                        <td class="importe">${{i.tot_imp|default_if_none:0|floatformat:2}}</td>
+                                                        <td  title="{{ i.detalle}}" ><strong>{{ i.detalle|truncatechars:60 }}</strong></td>                                
+                                                        
+                                                    </tr>
+                                                    {% endfor %}
+                                                </tbody>
+                                                <tfoot>
+                                                    <tr>
+                                                        <th></th>
+                                                        <th></th> 
+                                                        <th></th> 
+                                                        <th></th>                                                                                         
+                                                        <th class="importe"></th>                                                                                         
+                                                        <th class="importe"></th>                                 
+                                                        <th class="importe"></th>                
+                                                        <th></th>                                
                                                     </tr>
                                                 </tfoot>
                                             </table>               
@@ -237,9 +286,9 @@ var tabla = $('#dataTables-percep').DataTable({
                                             if (typeof i === "number") {
                                                 return i;
                                             } else if (typeof i === "string") {
-                                                i = i.replace("$", "")
-                                                i = i.replace(",", "")
-                                                i = i.replace(".", "")
+                                                i = i.replace(/\$/g, "");
+                    i = i.replace(/\,/g ,"");                    
+                    i = i.replace(/\./g, "");
                                                 var result = parseFloat(i)/100;
                                                 // console.log(result);
                                                 if (isNaN(result)) {
@@ -310,9 +359,9 @@ var tabla = $('#dataTables-percep').DataTable({
                 if (typeof i === "number") {
                     return i;
                 } else if (typeof i === "string") {
-                    i = i.replace("$", "")
-                    i = i.replace(",", "")
-                    i = i.replace(".", "")
+                    i = i.replace(/\$/g, "");
+                    i = i.replace(/\,/g ,"");                    
+                    i = i.replace(/\./g, "");
                     var result = parseFloat(i)/100;
                     // console.log(result);
                     if (isNaN(result)) {
@@ -333,12 +382,11 @@ var tabla = $('#dataTables-percep').DataTable({
                 }
             };
             pageTotal = api.column(6, { page: 'current'} ).data().reduce( function (a, b) {return floatVal(a) + floatVal(b);}, 0 );
-            $( api.column(6).footer() ).html('$'+pageTotal.toFixed(2));      
+            $( api.column(6).footer() ).html('$'+pageTotal.toLocaleString(undefined,{minimumFractionDigits:2}));      
         }
         });
 
 
-$.fn.dataTable.moment('DD/MM/YYYY'); 
 var tabla = $('#dataTables-retenc').DataTable({
             "language": {
                 "decimal": ",",
@@ -412,9 +460,9 @@ var tabla = $('#dataTables-retenc').DataTable({
                                             if (typeof i === "number") {
                                                 return i;
                                             } else if (typeof i === "string") {
-                                                i = i.replace("$", "")
-                                                i = i.replace(",", "")
-                                                i = i.replace(".", "")
+                                                i = i.replace(/\$/g, "");
+                    i = i.replace(/\,/g ,"");                    
+                    i = i.replace(/\./g, "");
                                                 var result = parseFloat(i)/100;
                                                 // console.log(result);
                                                 if (isNaN(result)) {
@@ -485,9 +533,9 @@ var tabla = $('#dataTables-retenc').DataTable({
                 if (typeof i === "number") {
                     return i;
                 } else if (typeof i === "string") {
-                    i = i.replace("$", "")
-                    i = i.replace(",", "")
-                    i = i.replace(".", "")
+                    i = i.replace(/\$/g, "");
+                    i = i.replace(/\,/g ,"");                    
+                    i = i.replace(/\./g, "");
                     var result = parseFloat(i)/100;
                     // console.log(result);
                     if (isNaN(result)) {
@@ -508,9 +556,186 @@ var tabla = $('#dataTables-retenc').DataTable({
                 }
             };
             pageTotal = api.column(7, { page: 'current'} ).data().reduce( function (a, b) {return floatVal(a) + floatVal(b);}, 0 );
-            $( api.column(7).footer() ).html('$'+pageTotal.toFixed(2));      
+            $( api.column(7).footer() ).html('$'+pageTotal.toLocaleString(undefined,{minimumFractionDigits:2}));      
             pageTotal = api.column(9, { page: 'current'} ).data().reduce( function (a, b) {return floatVal(a) + floatVal(b);}, 0 );
-            $( api.column(9).footer() ).html('$'+pageTotal.toFixed(2));      
+            $( api.column(9).footer() ).html('$'+pageTotal.toLocaleString(undefined,{minimumFractionDigits:2}));      
+        }
+        });
+
+var tabla = $('#dataTables-impuestos').DataTable({
+            "language": {
+                "decimal": ",",
+                "thousands": ".",                
+                "sProcessing": "Procesando...",
+                "sLengthMenu": "Mostrar _MENU_ registros",
+                "sZeroRecords": "No se encontraron resultados",
+                "sEmptyTable": "No hay registros en esta tabla",
+                "sInfo": "Mostrando registros del _START_ al _END_ de un total de _TOTAL_ registros",
+                "sInfoEmpty": "Mostrando registros del 0 al 0 de un total de 0 registros",
+                "sInfoFiltered": "(filtrado de un total de _MAX_ registros)",
+                "sInfoPostFix": "",
+                "sSearch": "Buscar:",
+                "sUrl": "",
+                "sInfoThousands": ".",
+                "sLoadingRecords": "Cargando...",
+                "oPaginate": {
+                    "sFirst": "Primero",
+                    "sLast": "Último",
+                    "sNext": "Siguiente",
+                    "sPrevious": "Anterior"
+                },
+                "oAria": {
+                    "sSortAscending": ": Activar para ordenar la columna de manera ascendente",
+                    "sSortDescending": ": Activar para ordenar la columna de manera descendente"
+                },
+                      
+            },                      
+            "columnDefs": [ {
+                  "targets"  : 'no-sort',
+                  "orderable": false,
+                }],                    
+           "paging":   false,
+           "autoWidth": true,
+           "order": [],
+           "colReorder": true,
+           "searching": true,
+            fixedHeader: {
+              header: false,
+              footer: false
+              },
+            responsive: false,
+            dom: 'Bfrtlip',
+            buttons: [
+                {
+                    extend:    'colvis',
+                    text:      '<i class="fa fa-list"></i>',
+                    titleAttr: 'Ver/Ocultar',
+                    className: 'btnToolbar',                    
+                },
+                {
+                    extend:    'copyHtml5',
+                    text:      '<i class="fa fa-files-o"></i>',
+                    titleAttr: 'Copiar',
+                    exportOptions: { columns: ':visible' },
+                    className: 'btnToolbar',     
+
+                },
+                {
+                    extend:    'excel',
+                    text:      '<i class="fa fa-file-excel-o"></i>',
+                    titleAttr: 'Excel',
+                    filename: 'IMPUESTOS_COMBS',                    
+                    exportOptions: {  modifier: {
+                                        page: 'current'
+                                    }, 
+                                      columns: ':visible',
+                                      format: {
+                                      body: function(data, row, column, node) {
+                                        var floatVal = function (i) {
+                                            if (typeof i === "number") {
+                                                return i;
+                                            } else if (typeof i === "string") {
+                                                i = i.replace(/\$/g, "");
+                    i = i.replace(/\,/g ,"");                    
+                    i = i.replace(/\./g, "");
+                                                var result = parseFloat(i)/100;
+                                                // console.log(result);
+                                                if (isNaN(result)) {
+                                                    try {
+                                                        var result = $jq(i).text();
+                                                        result = parseFloat(result);
+                                                        if (isNaN(result)) { result = 0 };
+                                                        return result * 1;
+                                                    } catch (error) {
+                                                        return 0;
+                                                    }
+                                                } else {
+                                                    return result * 1;
+                                                }
+                                            } else {
+                                                alert("Unhandled type for totals [" + (typeof i) + "]");
+                                                return 0
+                                            }
+                                        };
+                                          data = $('<p>' + data + '</p>').text();
+                                          return (node.className=='importe') ? floatVal(data)  : data;
+                                      }
+                                    }},
+                    className: 'btnToolbar',     
+                },
+                        
+                {
+                    extend:    'pdfHtml5',
+                    text:      '<i class="fa fa-file-pdf-o"></i>',
+                    titleAttr: 'PDF',footer: true,
+                    exportOptions: { columns: ':visible'},
+                    orientation: 'landscape',
+                    className: 'btnToolbar',                    
+                },
+                {
+                    extend: 'print',
+                    text:      '<i class="fa fa-print"></i>',
+                    titleAttr: 'Imprimir',
+                    exportOptions: { columns: ':visible' },
+                    className: 'btnToolbar',                    
+                },
+            ],
+            initComplete: function () {               
+                this.api().columns([1]).every( function () {
+                    var column = this;
+                    var select = $('<select class="form-control"><option value="">Todos</option></select>')
+                        .appendTo( $(column.footer()).empty() )
+                        .on( 'change', function () {
+                            var val = $.fn.dataTable.util.escapeRegex(
+                                $(this).val()
+                            );
+     
+                            column
+                                .search( val ? '^'+val+'$' : '', true, false )
+                                .draw();
+                        } );
+     
+                     column.data().unique().sort().each( function ( d, j ) {
+                    //column.cells('', column[0]).render('display').sort().unique().each( function ( d, j ){
+                        select.append( '<option value="'+d+'">'+d+'</option>' )
+                    } );
+                } );
+
+            },
+            footerCallback: function ( row, data, start, end, display ) {
+            var api = this.api(), data;
+            var floatVal = function (i) {
+                if (typeof i === "number") {
+                    return i;
+                } else if (typeof i === "string") {
+                    i = i.replace(/\$/g, "");
+                    i = i.replace(/\,/g ,"");                    
+                    i = i.replace(/\./g, "");
+                    var result = parseFloat(i)/100;
+                    // console.log(result);
+                    if (isNaN(result)) {
+                        try {
+                            var result = $jq(i).text();
+                            result = parseFloat(result);
+                            if (isNaN(result)) { result = 0 };
+                            return result * 1;
+                        } catch (error) {
+                            return 0;
+                        }
+                    } else {
+                        return result * 1;
+                    }
+                } else {
+                    alert("Unhandled type for totals [" + (typeof i) + "]");
+                    return 0
+                }
+            };
+            pageTotal = api.column(4, { page: 'current'} ).data().reduce( function (a, b) {return floatVal(a) + floatVal(b);}, 0 );
+            $( api.column(4).footer() ).html('$'+pageTotal.toLocaleString(undefined,{minimumFractionDigits:2}));      
+            pageTotal = api.column(5, { page: 'current'} ).data().reduce( function (a, b) {return floatVal(a) + floatVal(b);}, 0 );
+            $( api.column(5).footer() ).html('$'+pageTotal.toLocaleString(undefined,{minimumFractionDigits:2}));      
+            pageTotal = api.column(6, { page: 'current'} ).data().reduce( function (a, b) {return floatVal(a) + floatVal(b);}, 0 );
+            $( api.column(6).footer() ).html('$'+pageTotal.toLocaleString(undefined,{minimumFractionDigits:2}));      
         }
         });
 });

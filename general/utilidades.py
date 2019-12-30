@@ -111,6 +111,9 @@ TIPO_COMPROBANTE = (
     (12,u'Orden Colocación'),
     (13,u'Movimientos Stock'),
     (14,u'Liquido Producto'),
+    (21,u'Factura Crédito Electrónica'),    
+    (22,u'Nota Débito Electrónica'),
+    (23,u'Nota Crédito Electrónica'),
 )
 
 COMPROB_FISCAL = (
@@ -140,7 +143,7 @@ CONDICION_PAGO = (
 TIPO_LOGOTIPO = (    
     (1, 'Sin LOGOTIPO'),
     (2, 'Con LOGOTIPO total'),
-    (3, 'Con LOGOTIPO y detalles'),
+    (3, 'Con LOGOTIPO y detalles'),    
 )
 
 SIGNO = (
@@ -544,6 +547,7 @@ def validar_cuit(cuit):
         aux = 9
 
     return aux == int(cuit[10])
+
 
 import os
 def get_image_name(instance, filename):

@@ -70,7 +70,7 @@ class UsuarioForm(forms.ModelForm):
     usuario = forms.CharField(label=u'Usuario',required = True)        
     email = forms.EmailField(max_length=50,label='E-Mail',required = False)     
     permisos = forms.ModelMultipleChoiceField(queryset=UsuPermiso.objects.all(), required=False, widget=CHKMultiplePermisos())
-    cpb_tipo = forms.ModelChoiceField(label='Tipo Comprobante',queryset=cpb_tipo.objects.filter(compra_venta='V',baja=False,tipo__in=[1,2,3,9]),required = False)
+    cpb_tipo = forms.ModelChoiceField(label='Tipo Comprobante',queryset=cpb_tipo.objects.filter(compra_venta='V',baja=False,tipo__in=[1,2,3,9,21,22,23]),required = False)
     condic_pago = forms.ChoiceField(label=u'Tipo Cobro',choices=CONDICION_PAGO,required=False,initial=1)
     class Meta:
     	model = usu_usuario	

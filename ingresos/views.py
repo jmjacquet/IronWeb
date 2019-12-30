@@ -49,7 +49,7 @@ class CPBSVentasList(VariablesMixin,ListView):
         except gral_empresa.DoesNotExist:
             empresa = None 
         form = ConsultaCpbs(self.request.POST or None,empresa=empresa,request=self.request)   
-        comprobantes = cpb_comprobante.objects.filter(cpb_tipo__tipo__in=[1,2,3,9,14],cpb_tipo__compra_venta='V',estado__in=[1,2],empresa=empresa).filter(Q(pto_vta__in=pto_vta_habilitados_list(self.request)) | Q(cpb_tipo__tipo=14))
+        comprobantes = cpb_comprobante.objects.filter(cpb_tipo__tipo__in=[1,2,3,9,14,21,22,23],cpb_tipo__compra_venta='V',estado__in=[1,2],empresa=empresa).filter(Q(pto_vta__in=pto_vta_habilitados_list(self.request)) | Q(cpb_tipo__tipo=14))
         comprobantes = comprobantes.annotate(cobranzas=Count('cpb_cobranza_factura')).order_by('-fecha_cpb','-fecha_creacion','-id')
         if form.is_valid():                                
             entidad = form.cleaned_data['entidad']                                                              
@@ -361,7 +361,10 @@ class CPBVentaNCCreateView(VariablesMixin,CreateView):
             for c in detalles:            
                 det.append({'producto': c.producto,'cantidad':c.cantidad,'detalle':c.detalle,'porc_dcto':c.porc_dcto,'tasa_iva':c.tasa_iva,
                     'coef_iva':c.coef_iva,'lista_precios':c.lista_precios,'importe_costo':c.importe_costo,'importe_unitario':c.importe_unitario,
-                    'importe_subtotal':c.importe_subtotal,'importe_iva':c.importe_iva,'importe_total':c.importe_total,'origen_destino':c.origen_destino})                        
+                    'importe_subtotal':c.importe_subtotal,'importe_iva':c.importe_iva,'importe_total':c.importe_total,'origen_destino':c.origen_destino,
+                    'importe_tasa1':c.importe_tasa1,'importe_tasa2':c.importe_tasa2
+
+                    })                        
             CPBDetalleFormSet = inlineformset_factory(cpb_comprobante, cpb_comprobante_detalle,form=CPBVentaDetalleForm,fk_name='cpb_comprobante',formset=CPBVentaDetalleFormSet, can_delete=True,extra=0,min_num=len(det))
         else:
             detalles = None       
@@ -593,7 +596,8 @@ class CPBVentaUnificarView(VariablesMixin,CreateView):
                 for c in detalles:            
                     det.append({'producto': c.producto,'cantidad':c.cantidad,'detalle':c.detalle,'porc_dcto':c.porc_dcto,'tasa_iva':c.tasa_iva,
                         'coef_iva':c.coef_iva,'lista_precios':c.lista_precios,'importe_costo':c.importe_costo,'importe_unitario':c.importe_unitario,
-                        'importe_subtotal':c.importe_subtotal,'importe_iva':c.importe_iva,'importe_total':c.importe_total,'origen_destino':c.origen_destino,'comprobante_original':int(c.cpb_comprobante.id)})                        
+                        'importe_subtotal':c.importe_subtotal,'importe_iva':c.importe_iva,'importe_total':c.importe_total,'origen_destino':c.origen_destino,'comprobante_original':int(c.cpb_comprobante.id),
+                        'importe_tasa1':c.importe_tasa1,'importe_tasa2':c.importe_tasa2})                        
             CPBDetalleFormSet = inlineformset_factory(cpb_comprobante, cpb_comprobante_detalle,form=CPBVentaDetalleForm,fk_name='cpb_comprobante',formset=CPBVentaDetalleFormSet, can_delete=True,extra=0,min_num=len(det))
         else:
             return redirect(reverse('cpb_venta_listado')) 
@@ -805,7 +809,8 @@ class CPBVentaClonarCreateView(VariablesMixin,CreateView):
             for c in detalles:            
                 det.append({'producto': c.producto,'cantidad':c.cantidad,'detalle':c.detalle,'porc_dcto':c.porc_dcto,'tasa_iva':c.tasa_iva,
                     'coef_iva':c.coef_iva,'lista_precios':c.lista_precios,'importe_costo':c.importe_costo,'importe_unitario':c.importe_unitario,
-                    'importe_subtotal':c.importe_subtotal,'importe_iva':c.importe_iva,'importe_total':c.importe_total,'origen_destino':c.origen_destino})                        
+                    'importe_subtotal':c.importe_subtotal,'importe_iva':c.importe_iva,'importe_total':c.importe_total,'origen_destino':c.origen_destino,
+                    'importe_tasa1':c.importe_tasa1,'importe_tasa2':c.importe_tasa2})                        
             CPBDetalleFormSet = inlineformset_factory(cpb_comprobante, cpb_comprobante_detalle,form=CPBVentaDetalleForm,fk_name='cpb_comprobante',formset=CPBVentaDetalleFormSet, can_delete=True,extra=0,min_num=len(det))
         else:
             detalles = None       
@@ -1036,6 +1041,75 @@ class CPBRemitoCreateView(VariablesMixin,CreateView):
 
     def form_invalid(self, form,remito_detalle,cpb):
         return self.render_to_response(self.get_context_data(form=form,remito_detalle = remito_detalle,cpb=cpb))
+        
+    def get_success_url(self):        
+        return reverse('cpb_remito_listado')
+
+
+class CPBRemitoCreateViewNew(VariablesMixin,CreateView):
+    form_class = CPBRemitoForm
+    template_name = 'ingresos/remitos/cpb_remito_form.html' 
+    model = cpb_comprobante
+    pk_url_kwarg = 'id'
+    
+    @method_decorator(login_required)
+    def dispatch(self, *args, **kwargs):            
+        if not tiene_permiso(self.request,'cpb_remitos_abm'):
+            return redirect(reverse('principal'))    
+        return super(CPBRemitoCreateViewNew, self).dispatch(*args, **kwargs)
+    
+    def get_initial(self):    
+        initial = super(CPBRemitoCreateViewNew, self).get_initial()        
+        initial['tipo_form'] = 'ALTA'
+        initial['request'] = self.request        
+        return initial   
+
+    def get_form_kwargs(self):
+        kwargs = super(CPBRemitoCreateViewNew, self).get_form_kwargs()
+        kwargs['request'] = self.request
+        return kwargs
+
+    def get(self, request, *args, **kwargs):
+        self.object = None
+        form_class = self.get_form_class()
+        form = self.get_form(form_class)                                        
+        CPBRemitoDetalleFS.form = staticmethod(curry(CPBRemitoDetalleForm,request=request))
+        remito_detalle = CPBRemitoDetalleFS(prefix='formDetalle')
+                
+        return self.render_to_response(self.get_context_data(form=form,remito_detalle = remito_detalle))
+
+    def post(self, request, *args, **kwargs):
+        self.object = None
+        form_class = self.get_form_class()
+        form = self.get_form(form_class)          
+        CPBRemitoDetalleFS.form = staticmethod(curry(CPBRemitoDetalleForm,request=request))
+        remito_detalle = CPBRemitoDetalleFS(self.request.POST,prefix='formDetalle')
+        if form.is_valid() and remito_detalle.is_valid():
+            return self.form_valid(form, remito_detalle)
+        else:
+            return self.form_invalid(form, remito_detalle)
+
+
+    def form_valid(self, form, remito_detalle):
+        self.object = form.save(commit=False)        
+        estado=cpb_estado.objects.get(pk=1)
+        self.object.estado=estado   
+        tipo=cpb_tipo.objects.get(pk=8)
+        self.object.empresa = empresa_actual(self.request)
+        self.object.usuario = usuario_actual(self.request)
+        self.object.letra = 'X'
+        self.object.cpb_tipo=tipo
+        self.object.fecha_imputacion=self.object.fecha_cpb
+        self.object.save()
+        remito_detalle.instance = self.object
+        remito_detalle.cpb_comprobante = self.object.id        
+        remito_detalle.save()        
+        recalcular_saldo_cpb(self.object.pk)
+        messages.success(self.request, u'Los datos se guardaron con éxito!')
+        return HttpResponseRedirect(reverse('cpb_remito_listado'))
+
+    def form_invalid(self, form,remito_detalle):
+        return self.render_to_response(self.get_context_data(form=form,remito_detalle = remito_detalle))
         
     def get_success_url(self):        
         return reverse('cpb_remito_listado')

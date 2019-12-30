@@ -50,6 +50,7 @@
                       {% if 'cpb_remitos' in permisos_grupo %}
                       <li>
                         <a href="{% url 'cpb_remito_listado' %}"><i class="fa  fa-truck"></i>Remitos de Venta</a>
+                        <a class="acceso_menu" href="{% url 'cpb_remito_nuevo_vacio' %}">+</a>
                       </li>
                       {% endif %}
                       {% if 'cpb_presupuestos' in permisos_grupo %}
@@ -109,66 +110,6 @@
                   {% endif %} 
                 </div>
                
-              </div>
-            </li>
-          </ul>
-        </li>
-        {% endif %}
-        {% if permisos_trabajos %} 
-        <li class="mega-menu-dropdown">
-          <a data-toggle="dropdown" href="javascript:;" class="dropdown-toggle hover-initialized"  data-hover="dropdown" data-close-others="true">
-          PEDIDOS/TRABAJOS <i class="fa fa-angle-down"></i>
-          </a>
-          <ul class="dropdown-menu" style="min-width: 200px;">
-            <li>
-              <!-- Content container to add padding -->
-              <div class="mega-menu-content">
-                {% if 'trab_pedidos' in permisos_grupo %}
-                <div class="row">
-                  <div class="col-sm-12">
-                    <ul class="mega-menu-submenu">
-                      <li>
-                        <h3>ORDEN DE PEDIDO</h3>
-                      </li>
-                      <li>
-                        <a href="{% url 'orden_pedido_listado' %}"><i class="icon-notebook"></i>Orden de Pedido</a>
-                      </li>
-                                      
-                    </ul>
-                  </div>   
-                </div>
-                {% endif %}
-                {% if 'trab_trabajos' in permisos_grupo %}
-                <div class="row">
-                  <div class="col-sm-12">
-                    <ul class="mega-menu-submenu">
-                      <li>
-                        <h3>ORDEN DE TRABAJO</h3>
-                      </li>
-                      <li>
-                        <a href="{% url 'orden_trabajo_listado' %}"><i class="icon-notebook"></i>Orden de Trabajo</a>
-                      </li>   
-                    
-                    </ul>
-                  </div>                  
-                </div>
-               {% endif %}
-               {% if 'trab_colocacion' in permisos_grupo %} 
-               <div class="row">
-                  <div class="col-sm-12">
-                    <ul class="mega-menu-submenu">
-                      <li>
-                        <h3>ORDEN COLOCACION</h3>
-                      </li>
-                      <li>
-                        <a href="{% url 'orden_colocacion_listado' %}"><i class="icon-notebook"></i>Orden de Colocación</a>
-                      </li>
-                                      
-                    </ul>
-                  </div>                  
-                  
-                </div> 
-                {% endif %}
               </div>
             </li>
           </ul>
@@ -296,7 +237,7 @@
                       {% endif %}
                       {% if 'rep_retenciones_imp' in permisos_grupo %}                      
                       <li>
-                        <a href="{% url 'reporte_retenciones_imp' %}"><i class="icon-bar-chart"></i>Reporte Retenciones/Percepciones</a>
+                        <a href="{% url 'reporte_retenciones_imp' %}"><i class="icon-bar-chart"></i>Reporte Retenc./Percepc./Impuestos</a>
                       </li> 
                       {% endif %}
                      {% endif %}

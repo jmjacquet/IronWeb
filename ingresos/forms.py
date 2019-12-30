@@ -48,25 +48,22 @@ class CPBVentaForm(forms.ModelForm):
 	importe_subtotal = forms.DecimalField(label='',widget=PrependWidget(attrs={'class':'form-control','readonly':'readonly'},base_widget=NumberInput, data='$'),initial=0.00,decimal_places=2)
 	importe_total = forms.DecimalField(label='',widget=PrependWidget(attrs={'class':'form-control','readonly':'readonly'},base_widget=NumberInput, data='$'),initial=0.00,decimal_places=2)
 	importe_iva = forms.DecimalField(label='',widget=PrependWidget(attrs={'class':'form-control','readonly':'readonly'},base_widget=NumberInput, data='$'),initial=0.00,decimal_places=2)
-	importe_cobrado = forms.DecimalField(label='',widget=PrependWidget(attrs={'class':'form-control','readonly':'readonly'},base_widget=NumberInput, data='$'),initial=0.00,decimal_places=2,required = False)
+	importe_no_gravado = forms.DecimalField(label='',widget=PrependWidget(attrs={'class':'form-control','readonly':'readonly'},base_widget=NumberInput, data='$'),initial=0.00,decimal_places=2)
+	importe_cobrado = forms.DecimalField(initial=0.00,decimal_places=2,widget = forms.HiddenInput(), required = False)
 	letra = forms.ChoiceField(label='Letra',choices=COMPROB_FISCAL,required=False,initial=1)	
-	cpb_tipo = forms.ModelChoiceField(label='Tipo CPB',queryset=cpb_tipo.objects.filter(compra_venta='V',baja=False,tipo__in=[1,2,3,9]),required = True,empty_label=None)
+	cpb_tipo = forms.ModelChoiceField(label='Tipo CPB',queryset=cpb_tipo.objects.filter(compra_venta='V',baja=False,tipo__in=[1,2,3,9,21,22,23]),required = True,empty_label=None)
 	condic_pago = forms.ChoiceField(label=u'Condición Pago',choices=CONDICION_PAGO,required=False,initial=1)
 	tipo_form = forms.CharField(widget = forms.HiddenInput(), required = False)	
-	cliente_categ_fiscal = forms.IntegerField(widget = forms.HiddenInput(), required = False,initial=5)	
+	cliente_categ_fiscal = forms.IntegerField(widget = forms.HiddenInput(), required = False,initial=5)		
 	cliente_descuento = forms.DecimalField(initial=0.00,decimal_places=2,widget = forms.HiddenInput(), required = False)	
-	lista_precios = forms.ModelChoiceField(label='Lista de Precios',queryset=prod_lista_precios.objects.filter(baja=False).order_by('default'),required = True,empty_label=None,initial=1)
-	origen_destino = forms.ModelChoiceField(label=u'Ubicación',queryset=prod_ubicacion.objects.filter(baja=False).order_by('default'),required = True,empty_label=None,initial=1)
-	
+	lista_precios = forms.ModelChoiceField(label='Lista de Precios',queryset=prod_lista_precios.objects.filter(baja=False),required = True,empty_label=None,initial=1)
+	origen_destino = forms.ModelChoiceField(label=u'Ubicación',queryset=prod_ubicacion.objects.filter(baja=False),required = True,empty_label=None,initial=1)
+	importe_tasa1 = forms.DecimalField(label='',widget=PrependWidget(attrs={'class':'form-control','readonly':'readonly'},base_widget=NumberInput, data='$'),initial=0.00,decimal_places=2,required = False)
+	importe_tasa2 = forms.DecimalField(label='',widget=PrependWidget(attrs={'class':'form-control','readonly':'readonly'},base_widget=NumberInput, data='$'),initial=0.00,decimal_places=2,required = False)	
 	class Meta:
 			model = cpb_comprobante
 			exclude = ['id','fecha_creacion','fecha_imputacion','cae','cae_vto','estado','anulacion_motivo','anulacion_fecha','empresa','usuario','presup_tiempo_entrega','presup_forma_pago','presup_aprobacion']
-
-	def clean_entidad(self):		
-		entidad = self.cleaned_data['entidad']
-		if not entidad:			
-				raise forms.ValidationError(u"Debe seleccionar un Cliente.")				
-		return entidad
+	
 
 	def __init__(self, *args, **kwargs):
 		request = kwargs.pop('request', None)		
@@ -79,8 +76,8 @@ class CPBVentaForm(forms.ModelForm):
 			self.fields['pto_vta'].choices = [(pto.numero, pto.__unicode__()) for pto in pto_vta]						
 			self.fields['pto_vta'].initial = get_pv_defecto(request)
 			#self.fields['pto_vta'].queryset = pto_vta
-			self.fields['lista_precios'].queryset = prod_lista_precios.objects.filter(baja=False,empresa__id__in=empresas_habilitadas(request)).order_by('default')
-			self.fields['origen_destino'].queryset = prod_ubicacion.objects.filter(baja=False,empresa__id__in=empresas_habilitadas(request)).order_by('default')
+			self.fields['lista_precios'].queryset = prod_lista_precios.objects.filter(baja=False,empresa__id__in=empresas_habilitadas(request))
+			self.fields['origen_destino'].queryset = prod_ubicacion.objects.filter(baja=False,empresa__id__in=empresas_habilitadas(request))
 			self.fields['numero'].initial= ultimoNro(1,pto_vta[0],letras[0][1])
 			self.fields['entidad'].queryset = egr_entidad.objects.filter(tipo_entidad=1,baja=False,empresa__id__in=empresas_habilitadas(request)).order_by('apellido_y_nombre')
 			self.fields['vendedor'].queryset = egr_entidad.objects.filter(tipo_entidad=3,baja=False,empresa__id__in=empresas_habilitadas(request)).order_by('apellido_y_nombre')
@@ -92,6 +89,9 @@ class CPBVentaForm(forms.ModelForm):
 				self.fields['cpb_tipo'].initial = usr.cpb_tipo.id
 			if usr.condic_pago:
 				self.fields['condic_pago'].initial = usr.condic_pago
+			if not empresa.usa_impuestos:
+				self.fields['importe_tasa1'].widget=forms.HiddenInput()
+				self.fields['importe_tasa2'].widget=forms.HiddenInput()
 			
 
 		except gral_empresa.DoesNotExist:
@@ -99,8 +99,11 @@ class CPBVentaForm(forms.ModelForm):
 		
 	def clean(self):						
 		super(forms.ModelForm,self).clean()	
+		
 		tipo_form = self.cleaned_data.get('tipo_form')
 		entidad = self.cleaned_data.get('entidad')
+		if not entidad:			
+				raise forms.ValidationError(u"Debe seleccionar un Cliente.")	
 		importe_cobrado = self.cleaned_data.get('importe_cobrado')
 		importe_total = self.cleaned_data.get('importe_total')
 		if tipo_form == 'EDICION':							
@@ -141,7 +144,6 @@ class CPBVentaForm(forms.ModelForm):
 
 		return self.cleaned_data
 	
-
 class CPBVentaDetalleForm(forms.ModelForm):
 	producto = forms.ModelChoiceField(queryset=prod_productos.objects.filter(baja=False,mostrar_en__in=(1,3)),required = True)	
 	porc_dcto = forms.DecimalField(initial=0,decimal_places=2)	
@@ -150,15 +152,20 @@ class CPBVentaDetalleForm(forms.ModelForm):
 	importe_unitario = forms.DecimalField(widget=PrependWidget(attrs={'class':'form-control','step':0.00},base_widget=NumberInput, data='$'),initial=0.00,decimal_places=2)
 	cpb_comprobante = forms.IntegerField(widget = forms.HiddenInput(), required = False)	
 	importe_costo = forms.DecimalField(widget = forms.HiddenInput(), required = False)
-	importe_subtotal = forms.DecimalField(widget=PrependWidget(attrs={'class':'form-control','readonly':'readonly','step':0},base_widget=NumberInput, data='$'),initial=0.00,decimal_places=2)	
+	importe_subtotal = forms.DecimalField(widget=PrependWidget(attrs={'class':'form-control','step':0},base_widget=NumberInput, data='$'),initial=0.00,decimal_places=2)	
 	pventa = forms.DecimalField(widget = forms.HiddenInput(), required = False)
 	coef_iva = forms.DecimalField(widget = forms.HiddenInput(), required = False)
 	tasa_iva = forms.ModelChoiceField(queryset=gral_tipo_iva.objects.all(),widget = forms.HiddenInput(),required = False)
-	importe_iva = forms.DecimalField(widget=PrependWidget(attrs={'class':'form-control','readonly':'readonly','step':0},base_widget=NumberInput, data='$'),initial=0.00,decimal_places=2)	
-	importe_total = forms.DecimalField(widget=PrependWidget(attrs={'class':'form-control','readonly':'readonly','step':0},base_widget=NumberInput, data='$'),initial=0.00,decimal_places=2)		
+	importe_iva = forms.DecimalField(widget=PrependWidget(attrs={'class':'form-control','step':0},base_widget=NumberInput, data='$'),initial=0.00,decimal_places=2)	
+	importe_total = forms.DecimalField(widget=PrependWidget(attrs={'class':'form-control','step':0},base_widget=NumberInput, data='$'),initial=0.00,decimal_places=2)		
 	lista_precios = forms.ModelChoiceField(queryset=prod_lista_precios.objects.all(),widget = forms.HiddenInput(),required = False)
 	origen_destino = forms.ModelChoiceField(queryset=prod_ubicacion.objects.all(),widget = forms.HiddenInput(),required = False)
 	comprobante_original = forms.IntegerField(widget = forms.HiddenInput(), required = False)	
+	coef_tasa1 = forms.DecimalField(initial=0.000,decimal_places=3,widget = forms.HiddenInput(), required = False)	
+	coef_tasa2 = forms.DecimalField(initial=0.000,decimal_places=3,widget = forms.HiddenInput(), required = False)
+	importe_tasa1 = forms.DecimalField(initial=0.00,decimal_places=2,widget = forms.HiddenInput(), required = False)	
+	importe_tasa2 = forms.DecimalField(initial=0.00,decimal_places=2,widget = forms.HiddenInput(), required = False)	
+	importe_no_gravado = forms.DecimalField(initial=0.00,decimal_places=2,widget = forms.HiddenInput(), required = False)	
 	class Meta:
 			model = cpb_comprobante_detalle
 			exclude = ['id','fecha_creacion']
@@ -223,7 +230,6 @@ class CPBVentaPercImpForm(forms.ModelForm):
 
 		return self.cleaned_data
 
-
 class CPBFPForm(forms.ModelForm):
 	tipo_forma_pago = forms.ModelChoiceField(label='FP',queryset=cpb_tipo_forma_pago.objects.filter(baja=False),empty_label=None,required = False)
 	mdcp_fecha = forms.DateField(widget=forms.DateInput(attrs={'class': 'form-control datepicker'}),initial=datetime.now(),required = False)
@@ -262,7 +268,6 @@ class CPBFPForm(forms.ModelForm):
 
 		return self.cleaned_data
 
-	
 
 #*************************************************************************
 
@@ -272,9 +277,10 @@ class CPBRemitoForm(forms.ModelForm):
 	observacion = forms.CharField(label='Detalle',widget=forms.Textarea(attrs={ 'class':'form-control2','rows': 5}),required = False)						
 	letra = forms.ChoiceField(label='Letra',choices=COMPROB_FISCAL_X,required=False,initial=1)	
 	tipo_form = forms.CharField(widget = forms.HiddenInput(), required = False)	
+	pto_vta = forms.ChoiceField(label='Pto. Vta.',choices=[(pto.numero, pto.__unicode__()) for pto in cpb_pto_vta.objects.filter(baja=False)],required = False)
 	class Meta:
 			model = cpb_comprobante
-			exclude = ['id','fecha_creacion','cpb_tipo','numero','fecha_imputacion','cae','cae_vto','estado','anulacion_motivo','anulacion_fecha','empresa','usuario','presup_tiempo_entrega','presup_forma_pago','presup_aprobacion','cpb_nro_afip','cpb_tipo']
+			exclude = ['id','fecha_creacion','cpb_tipo','fecha_imputacion','cae','cae_vto','estado','anulacion_motivo','anulacion_fecha','empresa','usuario','presup_tiempo_entrega','presup_forma_pago','presup_aprobacion','cpb_nro_afip','cpb_tipo']
 
 	def __init__(self, *args, **kwargs):
 		request = kwargs.pop('request', None)		
@@ -283,6 +289,10 @@ class CPBRemitoForm(forms.ModelForm):
 		try:
 			empresa = empresa_actual(request)			
 			self.fields['entidad'].queryset = egr_entidad.objects.filter(tipo_entidad=1,baja=False,empresa__id__in=empresas_habilitadas(request)).order_by('apellido_y_nombre')
+			pto_vta = pto_vta_habilitados(request)
+			self.fields['pto_vta'].choices = [(pto.numero, pto.__unicode__()) for pto in pto_vta]
+			self.fields['pto_vta'].initial = get_pv_defecto(request)
+			self.fields['numero'].initial= ultimoNro(8,pto_vta[0],'X')
 
 		except gral_empresa.DoesNotExist:
 			empresa = None
@@ -338,8 +348,8 @@ class CPBPresupForm(forms.ModelForm):
 	letra = forms.ChoiceField(label='Letra',choices=COMPROB_FISCAL_X,required=False,initial=1)
 	cliente_categ_fiscal = forms.IntegerField(widget = forms.HiddenInput(), required = False,initial=5)	
 	cliente_descuento = forms.DecimalField(initial=0.00,decimal_places=2,widget = forms.HiddenInput(), required = False)	
-	lista_precios = forms.ModelChoiceField(label='Lista de Precios',queryset=prod_lista_precios.objects.filter(baja=False).order_by('default'),required = True,empty_label=None,initial=1)
-	origen_destino = forms.ModelChoiceField(label=u'Ubicación',queryset=prod_ubicacion.objects.filter(baja=False).order_by('default'),required = True,empty_label=None,initial=1)
+	lista_precios = forms.ModelChoiceField(label='Lista de Precios',queryset=prod_lista_precios.objects.filter(baja=False),required = True,empty_label=None,initial=1)
+	origen_destino = forms.ModelChoiceField(label=u'Ubicación',queryset=prod_ubicacion.objects.filter(baja=False),required = True,empty_label=None,initial=1)
 	tipo_form = forms.CharField(widget = forms.HiddenInput(), required = False)		
 	class Meta:
 			model = cpb_comprobante			
@@ -357,8 +367,8 @@ class CPBPresupForm(forms.ModelForm):
 			pto_vta = pto_vta_habilitados(request)
 			self.fields['pto_vta'].choices = [(pto.numero, pto.__unicode__()) for pto in pto_vta]
 			self.fields['pto_vta'].initial = get_pv_defecto(request)
-			self.fields['lista_precios'].queryset = prod_lista_precios.objects.filter(baja=False,empresa__id__in=empresas_habilitadas(request)).order_by('default')
-			self.fields['origen_destino'].queryset = prod_ubicacion.objects.filter(baja=False,empresa__id__in=empresas_habilitadas(request)).order_by('default')			
+			self.fields['lista_precios'].queryset = prod_lista_precios.objects.filter(baja=False,empresa__id__in=empresas_habilitadas(request))
+			self.fields['origen_destino'].queryset = prod_ubicacion.objects.filter(baja=False,empresa__id__in=empresas_habilitadas(request))			
 			self.fields['entidad'].queryset = egr_entidad.objects.filter(tipo_entidad=1,baja=False,empresa__id__in=empresas_habilitadas(request)).order_by('apellido_y_nombre')
 			self.fields['fecha_vto'].initial = datetime.now()+timedelta(days=empresa.get_dias_venc())
 			usr = usuario_actual(request)
@@ -444,8 +454,8 @@ class CPBPresupLiteForm(forms.ModelForm):
 	letra = forms.ChoiceField(label='Letra',choices=COMPROB_FISCAL_X,required=False,initial=1)
 	cliente_categ_fiscal = forms.IntegerField(widget = forms.HiddenInput(), required = False,initial=5)	
 	cliente_descuento = forms.DecimalField(initial=0.00,decimal_places=2,widget = forms.HiddenInput(), required = False)	
-	lista_precios = forms.ModelChoiceField(label='Lista de Precios',queryset=prod_lista_precios.objects.filter(baja=False).order_by('default'),required = True,empty_label=None,initial=1)
-	origen_destino = forms.ModelChoiceField(label=u'Ubicación',queryset=prod_ubicacion.objects.filter(baja=False).order_by('default'),required = True,empty_label=None,initial=1)
+	lista_precios = forms.ModelChoiceField(label='Lista de Precios',queryset=prod_lista_precios.objects.filter(baja=False),required = True,empty_label=None,initial=1)
+	origen_destino = forms.ModelChoiceField(label=u'Ubicación',queryset=prod_ubicacion.objects.filter(baja=False),required = True,empty_label=None,initial=1)
 	tipo_form = forms.CharField(widget = forms.HiddenInput(), required = False)		
 	class Meta:
 			model = cpb_comprobante			
@@ -463,8 +473,8 @@ class CPBPresupLiteForm(forms.ModelForm):
 			pto_vta = pto_vta_habilitados(request)
 			self.fields['pto_vta'].choices = [(pto.numero, pto.__unicode__()) for pto in pto_vta]
 			self.fields['pto_vta'].initial = get_pv_defecto(request)
-			self.fields['lista_precios'].queryset = prod_lista_precios.objects.filter(baja=False,empresa__id__in=empresas_habilitadas(request)).order_by('default')
-			self.fields['origen_destino'].queryset = prod_ubicacion.objects.filter(baja=False,empresa__id__in=empresas_habilitadas(request)).order_by('default')
+			self.fields['lista_precios'].queryset = prod_lista_precios.objects.filter(baja=False,empresa__id__in=empresas_habilitadas(request))
+			self.fields['origen_destino'].queryset = prod_ubicacion.objects.filter(baja=False,empresa__id__in=empresas_habilitadas(request))
 			self.fields['entidad'].queryset = egr_entidad.objects.filter(tipo_entidad=1,baja=False,empresa__id__in=empresas_habilitadas(request)).order_by('apellido_y_nombre')
 			self.fields['fecha_vto'].initial = datetime.now()+timedelta(days=empresa.get_dias_venc())
 			usr = usuario_actual(request)
@@ -572,7 +582,6 @@ class CPBRecCobranzaForm(forms.ModelForm):
 			
 		except gral_empresa.DoesNotExist:
 			empresa = None
-		
 
 class CPBRecCPBForm(forms.ModelForm):	
 	detalle_cpb = forms.CharField(widget=forms.TextInput(attrs={'class':'form-control','disabled':'disabled'}),required = False)	
@@ -701,8 +710,8 @@ class CPBLiqProdForm(forms.ModelForm):
 	tipo_form = forms.CharField(widget = forms.HiddenInput(), required = False)	
 	cliente_categ_fiscal = forms.IntegerField(widget = forms.HiddenInput(), required = False,initial=5)	
 	cliente_descuento = forms.DecimalField(initial=0.00,decimal_places=2,widget = forms.HiddenInput(), required = False)
-	lista_precios = forms.ModelChoiceField(label='Lista de Precios',queryset=prod_lista_precios.objects.filter(baja=False).order_by('default'),required = True,empty_label=None,initial=1)
-	origen_destino = forms.ModelChoiceField(label=u'Ubicación',queryset=prod_ubicacion.objects.filter(baja=False).order_by('default'),required = True,empty_label=None,initial=1)
+	lista_precios = forms.ModelChoiceField(label='Lista de Precios',queryset=prod_lista_precios.objects.filter(baja=False),required = True,empty_label=None,initial=1)
+	origen_destino = forms.ModelChoiceField(label=u'Ubicación',queryset=prod_ubicacion.objects.filter(baja=False),required = True,empty_label=None,initial=1)
 	class Meta:
 			model = cpb_comprobante
 			exclude = ['id','vendedor','condic_pago','fecha_creacion','cae','cae_vto','estado','anulacion_motivo','anulacion_fecha','empresa','usuario','presup_tiempo_entrega','presup_forma_pago','presup_aprobacion','cpb_nro_afip']
@@ -722,8 +731,8 @@ class CPBLiqProdForm(forms.ModelForm):
 			empresa = empresa_actual(request)
 			letras = tipo_comprob_fiscal(empresa.categ_fiscal)
 			self.fields['letra'].choices = letras						
-			self.fields['lista_precios'].queryset = prod_lista_precios.objects.filter(baja=False,empresa__id__in=empresas_habilitadas(request)).order_by('default')
-			self.fields['origen_destino'].queryset = prod_ubicacion.objects.filter(baja=False,empresa__id__in=empresas_habilitadas(request)).order_by('default')			
+			self.fields['lista_precios'].queryset = prod_lista_precios.objects.filter(baja=False,empresa__id__in=empresas_habilitadas(request))
+			self.fields['origen_destino'].queryset = prod_ubicacion.objects.filter(baja=False,empresa__id__in=empresas_habilitadas(request))			
 			self.fields['numero'].initial= 1
 			self.fields['pto_vta'].initial= 1
 			self.fields['entidad'].queryset = egr_entidad.objects.filter(tipo_entidad=2,baja=False,empresa__id__in=empresas_habilitadas(request)).order_by('apellido_y_nombre')

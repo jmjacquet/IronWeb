@@ -7,7 +7,7 @@ from dateutil.relativedelta import *
 from django.conf import settings
 import os 
 from general.utilidades import *
-from productos.models import prod_productos,gral_tipo_iva,prod_ubicacion,prod_lista_precios
+from productos.models import prod_productos,gral_tipo_iva,prod_ubicacion,prod_lista_precios,prod_producto_lprecios
 from django.db.models import Sum
 from decimal import Decimal
 from django.utils import timezone
@@ -141,6 +141,10 @@ class cpb_comprobante(models.Model):
     importe_perc_imp = models.DecimalField(max_digits=15, decimal_places=2, blank=True, null=True,default=0)#Suma de Percepciones e Impuestos
     importe_ret = models.DecimalField(max_digits=15, decimal_places=2, blank=True, null=True,default=0)#Suma de Retenciones
     importe_total = models.DecimalField(max_digits=15, decimal_places=2, blank=True, null=True,default=0)#Suma de todo
+    
+    importe_tasa1 = models.DecimalField(max_digits=15, decimal_places=2, blank=True, null=True,default=0)#Suma ITC (parte del Gravado)
+    importe_tasa2 = models.DecimalField(max_digits=15, decimal_places=2, blank=True, null=True,default=0)#Suma TH (parte del Gravado)
+
     estado = models.ForeignKey('comprobantes.cpb_estado',related_name='estado',blank=True, null=True,on_delete=models.SET_NULL)
     anulacion_motivo = models.CharField(u'Motivo Anulación',max_length=200,blank=True, null=True)
     anulacion_fecha = models.DateField(blank=True, null=True)
@@ -272,6 +276,8 @@ class cpb_comprobante(models.Model):
 
     def get_importe_subtotal(self):
         signo = self.cpb_tipo.signo_ctacte
+        if not self.importe_subtotal:
+            return 0
         if signo:
             return self.importe_subtotal * signo
         else:
@@ -279,6 +285,8 @@ class cpb_comprobante(models.Model):
 
     def get_importe_iva(self):
         signo = self.cpb_tipo.signo_ctacte
+        if not self.importe_iva:
+            return 0
         if signo:
             return self.importe_iva * signo
         else:
@@ -286,6 +294,10 @@ class cpb_comprobante(models.Model):
 
     def get_saldo(self):
         signo = self.cpb_tipo.signo_ctacte
+        if not self.saldo:
+            return 0
+        if not self.saldo:
+            return 0
         if signo:
             return self.saldo * signo
         else:
@@ -293,6 +305,8 @@ class cpb_comprobante(models.Model):
 
     def get_importe_gravado(self):
         signo = self.cpb_tipo.signo_ctacte
+        if not self.importe_gravado:
+            return 0
         if signo:
             return self.importe_gravado * signo
         else:
@@ -300,6 +314,8 @@ class cpb_comprobante(models.Model):
 
     def get_importe_no_gravado(self):
         signo = self.cpb_tipo.signo_ctacte
+        if not self.importe_no_gravado:
+            return 0
         if signo:
             return self.importe_no_gravado * signo
         else:
@@ -307,6 +323,8 @@ class cpb_comprobante(models.Model):
 
     def get_importe_exento(self):
         signo = self.cpb_tipo.signo_ctacte
+        if not self.importe_exento:
+            return 0
         if signo:
             return self.importe_exento * signo
         else:
@@ -314,6 +332,8 @@ class cpb_comprobante(models.Model):
 
     def get_importe_perc_imp(self):
         signo = self.cpb_tipo.signo_ctacte
+        if not self.importe_perc_imp:
+            return 0
         if signo:
             return self.importe_perc_imp * signo
         else:
@@ -333,6 +353,10 @@ class cpb_comprobante_detalle(models.Model):
     importe_subtotal = models.DecimalField(max_digits=15, decimal_places=2, blank=True, null=True,default=0)
     importe_iva = models.DecimalField(max_digits=15, decimal_places=2, blank=True, null=True,default=0)
     importe_total = models.DecimalField(max_digits=15, decimal_places=2, blank=True, null=True,default=0)
+    
+    importe_tasa1 = models.DecimalField(max_digits=15, decimal_places=2, blank=True, null=True,default=0)
+    importe_tasa2 = models.DecimalField(max_digits=15, decimal_places=2, blank=True, null=True,default=0)#Tasa Hidrica
+    
     origen_destino = models.ForeignKey('productos.prod_ubicacion',verbose_name='Origen/Destino', db_column='origen_destino',blank=True, null=True,on_delete=models.SET_NULL)
     fecha_creacion = models.DateTimeField(auto_now_add = True)
     detalle = models.TextField(max_length=500,blank=True, null=True) # Field name made lowercase.   
@@ -357,6 +381,23 @@ class cpb_comprobante_detalle(models.Model):
     @property
     def get_utilidad_total(self):                        
         return (self.importe_subtotal-(self.cantidad*self.importe_costo))
+
+    @property
+    def get_itc(self):                        
+        lpl = prod_producto_lprecios.objects.get(producto=self.producto,lista_precios=self.lista_precios)
+        try:
+            lpl = prod_producto_lprecios.objects.get(producto=self.producto,lista_precios=self.lista_precios)
+        except:
+            return None        
+        return lpl.precio_itc
+    
+    @property
+    def get_th(self):                        
+        try:
+            lpl = prod_producto_lprecios.objects.get(producto=self.producto,lista_precios=self.lista_precios)
+        except:
+            return None        
+        return lpl.precio_tasa        
 
 class cpb_perc_imp(models.Model):
     id = models.AutoField(primary_key=True,db_index=True)
@@ -560,7 +601,8 @@ def recalcular_saldo_cpb(idCpb):# pragma: no cover
     importe_subtotal = 0
     importe_total = 0
     tot_perc_imp = 0    
-    
+    importe_tasa1 = 0
+    importe_tasa2 = 0
     # Cobros y Pagos sólos no recalculan IVA ni detalles, etc
     if cpb.cpb_tipo.tipo in [4,7,8]:
         cpb.importe_gravado = importe_gravado    
@@ -574,7 +616,7 @@ def recalcular_saldo_cpb(idCpb):# pragma: no cover
             cpb.importe_total = importe_subtotal  + tot_perc_imp + importe_iva 
         cpb.save()
 
-    elif cpb.cpb_tipo.tipo in [1,2,3,6,9,14]:
+    elif cpb.cpb_tipo.tipo in [1,2,3,9,14,21,22,23]:
         cpb_detalles = cpb_comprobante_detalle.objects.filter(cpb_comprobante=cpb)
         for c in cpb_detalles:
             if c.tasa_iva:
@@ -587,15 +629,27 @@ def recalcular_saldo_cpb(idCpb):# pragma: no cover
             else:
                 importe_gravado = importe_gravado + c.importe_subtotal
 
-            importe_iva = importe_iva + c.importe_iva
-            
-        
+            importe_iva += c.importe_iva
+            if cpb.empresa.usa_impuestos:
+                if c.importe_tasa1:
+                    importe_tasa1 += c.importe_tasa1
+                if c.importe_tasa2:
+                    importe_tasa2 += c.importe_tasa2
+                    
         try:
             tot_perc_imp = cpb_comprobante_perc_imp.objects.filter(cpb_comprobante=cpb).aggregate(sum=Sum('importe_total'))['sum']        
         except:
             tot_perc_imp = 0
         if not tot_perc_imp:
             tot_perc_imp = 0
+
+        if (cpb.cpb_tipo.compra_venta == 'V') and cpb.empresa.usa_impuestos:
+            cpb.importe_tasa1 = importe_tasa1
+            cpb.importe_tasa2 = importe_tasa2
+                    
+        if cpb.empresa.usa_impuestos:
+            #Impuestos no gravados suman al No gravado
+            importe_no_gravado = importe_no_gravado + cpb.importe_tasa1 + cpb.importe_tasa2
 
         importe_subtotal = importe_gravado + importe_no_gravado + importe_exento
 
@@ -609,7 +663,8 @@ def recalcular_saldo_cpb(idCpb):# pragma: no cover
         cpb.importe_exento = importe_exento        
         cpb.importe_perc_imp = tot_perc_imp    
         cpb.importe_total = importe_total    
-
+        #Si es de compra dejo lo que se cargó oportunamente en el comprobante
+        
 
         #Las cobranzas/pagos activos del Comprobante de Venta/Compra
         cobranzas = cpb_cobranza.objects.filter(cpb_factura=cpb,cpb_comprobante__estado__pk__lt=3).aggregate(sum=Sum('importe_total'))
@@ -696,7 +751,6 @@ def recalcular_saldos_cobranzas(idCpb):# pragma: no cover
                             
     cpb.estado=estado
     cpb.save()
-
 
 def ultimoNro(tipoCpb,ptoVenta,letra,entidad=None):    
     try:    

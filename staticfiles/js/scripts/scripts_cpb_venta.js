@@ -93,37 +93,148 @@ $("#id_entidad").change(function(){
 
 
 
+
+
 function calcularProd(i){  
+  
   var cant = parseFloat($("input[name='formDetalle-"+i+"-cantidad']").val())|| 0;
   var porcDcto = parseFloat($("input[name='formDetalle-"+i+"-porc_dcto']").val())|| 0;
   var importe_subtotal = 0;
-  var importe_iva = parseFloat($("input[name='formDetalle-"+i+"-importe_total']").val())
+  var importe_iva = 0;
   var importe_total = 0;
   var coef_iva = parseFloat($("input[name='formDetalle-"+i+"-coef_iva']").val())|| 0;            
   var importe_unitario = parseFloat($("input[name='formDetalle-"+i+"-importe_unitario']").val())|| 0;    
-  var pventa = parseFloat($("input[name='formDetalle-"+i+"-pventa']").val())|| 0;  
-  
-  importe_subtotal = (importe_unitario * cant)*(1-porcDcto/100);
+  var coef_tasa1 = parseFloat($("input[name='formDetalle-"+i+"-coef_tasa1']").val())|| 0;  
+  var coef_tasa2 = parseFloat($("input[name='formDetalle-"+i+"-coef_tasa2']").val())|| 0;  
+
+  var importe_parcial = (importe_unitario * cant)*(1-porcDcto/100)
   
   letra = $("#id_letra").val();                      
   if (letra=='A'){ 
-    importe_iva = importe_subtotal*coef_iva;
+    importe_iva = importe_parcial * coef_iva;
+    importe_subtotal = importe_parcial;
     importe_total = importe_subtotal + importe_iva;    
-  }else
+   }else
   {if  (letra=='X') {    
-    importe_iva = 0    
-    importe_total = importe_subtotal;
+    importe_iva = 0
+    importe_total = importe_parcial; 
+    importe_subtotal = importe_total - importe_iva;
   }  
   else{    
-    importe_total = importe_subtotal;
-    importe_subtotal = importe_total/(1+coef_iva)
-    importe_iva =importe_total - importe_subtotal;
+    importe_iva = importe_parcial-(importe_parcial/(1+coef_iva))
+    importe_total = importe_parcial; 
+    importe_subtotal = importe_total - importe_iva;
   }}  
+
+
   $("input[name='formDetalle-"+i+"-importe_subtotal']").val(importe_subtotal.toFixed(2));  
   $("input[name='formDetalle-"+i+"-importe_total']").val(importe_total.toFixed(2)); 
   $("input[name='formDetalle-"+i+"-importe_iva']").val(importe_iva.toFixed(2));
+  var importe_tasa1 = coef_tasa1 * cant;  
+  var importe_tasa2 = coef_tasa2 * cant;
+  $("input[name='formDetalle-"+i+"-importe_tasa1']").val(importe_tasa1.toFixed(2));  
+  $("input[name='formDetalle-"+i+"-importe_tasa2']").val(importe_tasa2.toFixed(2)); 
+
 };
 
+function calcularSubtotal(i){  
+  
+  var importe_subtotal = parseFloat($("input[name='formDetalle-"+i+"-importe_subtotal']").val())|| 0;
+  var coef_iva = parseFloat($("input[name='formDetalle-"+i+"-coef_iva']").val())|| 0;             
+  letra = $("#id_letra").val();                      
+  if (letra=='A'){ 
+    importe_iva = importe_subtotal * coef_iva;    
+    importe_total = importe_subtotal + importe_iva;    
+   }else
+  {if  (letra=='X') {    
+    importe_iva = 0
+    importe_total = importe_subtotal;    
+  }  
+  else{    
+    importe_iva = importe_subtotal-(importe_subtotal/(1+coef_iva))
+    importe_total = importe_subtotal; 
+    importe_subtotal = importe_total - importe_iva;
+  }}  
+
+  $("input[name='formDetalle-"+i+"-importe_subtotal']").val(importe_subtotal.toFixed(2));  
+  $("input[name='formDetalle-"+i+"-importe_total']").val(importe_total.toFixed(2)); 
+  $("input[name='formDetalle-"+i+"-importe_iva']").val(importe_iva.toFixed(2)); 
+  var importe_unitario = parseFloat($("input[name='formDetalle-"+i+"-importe_unitario']").val())|| 0;
+  var cant = parseFloat($("input[name='formDetalle-"+i+"-cantidad']").val())|| 0; 
+  if ((importe_unitario>0)&&(cant==0))
+    {
+      cant = importe_subtotal / importe_unitario;
+
+    };  
+  var coef_tasa1 = parseFloat($("input[name='formDetalle-"+i+"-coef_tasa1']").val())|| 0;  
+  var coef_tasa2 = parseFloat($("input[name='formDetalle-"+i+"-coef_tasa2']").val())|| 0;  
+   
+  $("input[name='formDetalle-"+i+"-importe_subtotal']").val(importe_subtotal.toFixed(2));      
+  $("input[name='formDetalle-"+i+"-cantidad']").val(cant.toFixed(2));
+  $("input[name='formDetalle-"+i+"-importe_iva']").val(importe_iva.toFixed(2));
+  
+  var importe_tasa1 = coef_tasa1 * cant;
+  var importe_tasa2 = coef_tasa2 * cant;
+  $("input[name='formDetalle-"+i+"-importe_tasa1']").val(importe_tasa1.toFixed(2));  
+  $("input[name='formDetalle-"+i+"-importe_tasa2']").val(importe_tasa2.toFixed(2));  
+
+};
+
+function calcularIVA(i){  
+  
+  var importe_subtotal = parseFloat($("input[name='formDetalle-"+i+"-importe_subtotal']").val())|| 0;
+  var importe_iva = parseFloat($("input[name='formDetalle-"+i+"-importe_iva']").val())|| 0;             
+  letra = $("#id_letra").val();                      
+  if (letra=='A'){ 
+    importe_total = importe_subtotal + importe_iva;    
+   }else
+  {if  (letra=='X') {    
+    importe_iva = 0
+    importe_total = importe_subtotal;   
+    $("input[name='formDetalle-"+i+"-importe_iva']").val(importe_iva.toFixed(2));  
+  }  
+  else{    
+    importe_total = importe_subtotal + importe_iva;    
+  }}  
+
+  $("input[name='formDetalle-"+i+"-importe_total']").val(importe_total.toFixed(2));  
+
+};
+function adivinarProd(i){    
+  var importe_total = parseFloat($("input[name='formDetalle-"+i+"-importe_total']").val())|| 0;
+  var coef_iva = parseFloat($("input[name='formDetalle-"+i+"-coef_iva']").val())|| 0;  
+  letra = $("#id_letra").val();                      
+  if (letra=='A'){     
+    importe_subtotal = importe_total/(1+coef_iva);   
+    importe_iva =importe_total - importe_subtotal;
+  }else
+  {if  (letra=='X') {    
+    importe_iva = 0    
+    importe_subtotal = importe_total/(1+coef_iva);
+  }  
+  else{    
+    importe_subtotal = importe_total/(1+coef_iva);
+    importe_iva =importe_total - importe_subtotal;
+  }}; 
+  var importe_unitario = parseFloat($("input[name='formDetalle-"+i+"-importe_unitario']").val())|| 0;
+  var cant = parseFloat($("input[name='formDetalle-"+i+"-cantidad']").val())|| 0; 
+  if ((importe_unitario>0)&&(cant==0))
+    {
+      cant = importe_subtotal / importe_unitario;
+
+    };  
+  var coef_tasa1 = parseFloat($("input[name='formDetalle-"+i+"-coef_tasa1']").val())|| 0;  
+  var coef_tasa2 = parseFloat($("input[name='formDetalle-"+i+"-coef_tasa2']").val())|| 0;  
+   
+  $("input[name='formDetalle-"+i+"-importe_subtotal']").val(importe_subtotal.toFixed(2));      
+  $("input[name='formDetalle-"+i+"-cantidad']").val(cant.toFixed(2));
+  $("input[name='formDetalle-"+i+"-importe_iva']").val(importe_iva.toFixed(2));
+  
+  var importe_tasa1 = coef_tasa1 * cant;
+  var importe_tasa2 = coef_tasa2 * cant;
+  $("input[name='formDetalle-"+i+"-importe_tasa1']").val(importe_tasa1.toFixed(2));  
+  $("input[name='formDetalle-"+i+"-importe_tasa2']").val(importe_tasa2.toFixed(2));   
+};
 
 function recargarProd(i){
     //Traigo todos los datos del producto
@@ -146,6 +257,8 @@ function recargarProd(i){
                       $("[name='formDetalle-"+i+"-tasa_iva']").val(data['tasa_iva__id']); 
                       $("[name='formDetalle-"+i+"-unidad']").val(data['unidad']);
                       $("[name='formDetalle-"+i+"-pventa']").val(data['precio_tot']);                                           
+                      $("[name='formDetalle-"+i+"-coef_tasa1']").val(data['pitc']); 
+                      $("[name='formDetalle-"+i+"-coef_tasa2']").val(data['ptasa']); 
                     }
             },
             error : function(message) {
@@ -159,16 +272,23 @@ function calcularTotales(){
       var totParcial=0;
       var tot_prod = 0;
       var totIVA=0;
+      var totImp1=0;
+      var totImp2=0;
       $('.form-detalles tr').each(function(j) {
              if ($(this).is(':visible'))
           {
             var $importe_tot_prod = parseFloat($("input[name='formDetalle-"+j+"-importe_total']").val())|| 0;               
             var $iva_parcial = parseFloat($("input[name='formDetalle-"+j+"-importe_iva']").val())|| 0; 
             var $importe_parcial = parseFloat($("input[name='formDetalle-"+j+"-importe_subtotal']").val())|| 0;               
-            if ($importe_parcial == '') $importe_parcial=0;       
+            
             totParcial = totParcial + $importe_parcial;
             tot_prod = tot_prod + $importe_tot_prod;
             totIVA = totIVA + $iva_parcial; 
+
+            var importe_tasa1 = parseFloat($("input[name='formDetalle-"+j+"-importe_tasa1']").val())|| 0;               
+            var importe_tasa2 = parseFloat($("input[name='formDetalle-"+j+"-importe_tasa2']").val())|| 0;               
+            totImp1 = totImp1 + importe_tasa1;
+            totImp2 = totImp2 + importe_tasa2;
           }
        });
       $("#id_importe_subtotal").val((totParcial).toFixed(2));
@@ -203,8 +323,16 @@ function calcularTotales(){
 
       var $importe_total = 0;        
       var $importe_subtot = parseFloat($("#id_importe_subtotal").val())|| 0;      
-      $importe_total = $importe_perc_imp + $importe_subtot + totIVA;
+
+      $("#id_importe_tasa1").val(totImp1.toFixed(2));
+      $("#id_importe_tasa2").val(totImp2.toFixed(2));
+      $importe_no_gravado = totImp1 + totImp2;
+      $("#id_importe_no_gravado").val($importe_no_gravado.toFixed(2));
+
+      $importe_total = $importe_perc_imp + $importe_subtot + totIVA + $importe_no_gravado;
       $("#id_importe_total").val($importe_total.toFixed(2));
+
+
   };
 
 function cargarProd(i){
@@ -230,6 +358,8 @@ function cargarProd(i){
                             $("[name='formDetalle-"+i+"-unidad']").val(data['unidad']);                     
                             $("[name='formDetalle-"+i+"-porc_dcto']").val(dcto); 
                             $("[name='formDetalle-"+i+"-cantidad']").val('1');                  
+                            $("[name='formDetalle-"+i+"-coef_tasa1']").val(data['pitc']); 
+                            $("[name='formDetalle-"+i+"-coef_tasa2']").val(data['ptasa']); 
                             var $porcDcto = dcto;
                             var $importe_unitario = data['precio_venta'];
                             var $importe_iva = data['total_iva'];
@@ -261,6 +391,8 @@ function cargarProd(i){
                             $("[name='formDetalle-"+i+"-importe_total']").val('0');
                             $("[name='formDetalle-"+i+"-importe_subtotal']").val('0');
                             $("[name='formDetalle-"+i+"-importe_iva']").val('0');
+                            $("[name='formDetalle-"+i+"-coef_tasa1']").val('0'); 
+                            $("[name='formDetalle-"+i+"-coef_tasa2']").val('0'); 
                           };
                           $("[name='formDetalle-"+i+"-lista_precios']").val(idlista); 
                           $("[name='formDetalle-"+i+"-origen_destino']").val(idubi);
@@ -284,6 +416,8 @@ function cargarProd(i){
             $("[name='formDetalle-"+i+"-importe_total']").val('0');
             $("[name='formDetalle-"+i+"-importe_subtotal']").val('0');
             $("[name='formDetalle-"+i+"-importe_iva']").val('0');
+            $("[name='formDetalle-"+i+"-coef_tasa1']").val('0'); 
+            $("[name='formDetalle-"+i+"-coef_tasa2']").val('0'); 
                 }
     };
 
@@ -369,14 +503,17 @@ function recalcular(){
             cargarProd(j);
          });
 
-         $("input[name='formDetalle-"+j+"-importe_iva']").change(function(){            
-            calcularTotales();      
+         $("input[name='formDetalle-"+j+"-importe_iva']").change(function(){                        
+            calcularIVA(j);      
+            calcularTotales();
          });
-        $("input[name='formDetalle-"+j+"-importe_subtotal']").change(function(){            
-            calcularTotales();      
+        $("input[name='formDetalle-"+j+"-importe_subtotal']").change(function(){                             
+            calcularSubtotal(j);
+            calcularTotales(); 
          });
         $("input[name='formDetalle-"+j+"-importe_total']").change(function(){            
-            calcularTotales();      
+            adivinarProd(j);      
+            calcularTotales();
          }); 
 
       });
@@ -449,7 +586,7 @@ $('.formFP').formset({
           formCssClass: 'dynamic-form3',
           keepFieldValues:'',
           added: function (row) {
-            var i = $(row).index(); 
+            var i = $("#id_formFP-TOTAL_FORMS").val()-1;
             var tot = parseFloat($("#id_importe_total").val()) - parseFloat($("#id_importe_cobrado").val());
             tot =  parseFloat(tot).toFixed(2);             
             $("[name='formFP-"+i+"-importe']").val(tot);
@@ -557,7 +694,15 @@ $("#id_condic_pago").change(function(){
            if ( $('#id_condic_pago').val() == 1){
             $('#id_pagos').hide(); }
            else{
-             $('#id_pagos').show();}           
+             $('#id_pagos').show();
+             var i = $("#id_formFP-TOTAL_FORMS").val();
+             if (i<2)
+             {
+               var tot = parseFloat($("#id_importe_total").val()) - parseFloat($("#id_importe_cobrado").val());
+               tot =  parseFloat(tot).toFixed(2);             
+               $("[name='formFP-0-importe']").val(tot);
+            }
+           }           
          });   
 
 function ultimoNumCPB(cpb_tipo,letra,pto_vta){

@@ -31,6 +31,11 @@
                                                      <a href="{% url 'cpb_venta_listado' %}"><i class="icon-note"></i>Comprobantes de Venta</a>
                                                   </li>
                                                   {% endif %}
+                                                {% if 'cpb_liqprod_abm' in permisos_grupo %}
+                                                <li>                         
+                                                  <a href="{% url 'cpb_liqprod_nuevo' %}"><i class="icon-note"></i>Nuevo CPB Liq.Prod.</a>                        
+                                                </li>
+                                                {% endif %}
                                                 {% if 'cpb_cobranzas' in permisos_grupo %}
                                                   <li>
                                                     <a href="{% url 'cpb_rec_cobranza_listado' %}"><i class="icon-wallet"></i>Recibos Cobranzas</a>
@@ -64,6 +69,11 @@
                                                      <a href="{% url 'cpb_pago_listado' %}"><i class="icon-wallet"></i>Órdenes de Pago</a>
                                                   </li>
                                                   {% endif %}
+                                                  {% if 'cpb_remitosc' in permisos_grupo %}
+                                                    <li>
+                                                      <a href="{% url 'cpb_remitoc_listado' %}"><i class="fa fa-truck"></i>Remitos de Compra</a>
+                                                    </li>
+                                                  {% endif %}
                                             </ul>
                                         </li>
                                         {% endif %}
@@ -71,56 +81,15 @@
                                         <li>
                                             <a href="javascript:;">FINANZAS <span class="arrow"></span></a>                                                
                                             <ul class="sub-menu">
-                                                <li>
-                                                    <a href="{% url 'movimientos_listado' %}"><i class="icon-note"></i>>Movimientos entre Cuentas</a>
-                                                </li>                                                    
+                                                <li>{% if 'cpb_mov_abm' in permisos_grupo %}
+                                                    <a href="{% url 'movimientos_listado' %}"><i class="icon-shuffle"></i>Movimientos entre Cuentas</a>
+                                                </li> {% endif %}                                                      
                                             </ul>
                                         </li>
                                         {% endif %}  
                                     </ul>
                                 </li>
-                                {% endif %}  
-                                {% if permisos_trabajos %} 
-
-                                <li>
-                                    <a href="javascript:;">
-                                    PEDIDOS/TRABAJOS <span class="arrow">
-                                    </span>
-                                    </a>
-                                    <ul class="sub-menu">
-                                        {% if 'trab_pedidos' in permisos_grupo %}
-                                        <li>
-                                            <a href="javascript:;">ORDEN DE PEDIDO<span class="arrow"></span></a>
-                                            <ul class="sub-menu">
-                                                <li>
-                                                    <a href="{% url 'orden_pedido_listado' %}"><i class="icon-notebook"></i>Orden de Pedido</a>
-                                                </li>
-                                            </ul>
-                                        </li>
-                                        {% endif %}
-                                        {% if 'trab_trabajos' in permisos_grupo %}
-                                        <li>
-                                            <a href="javascript:;">ORDEN DE TRABAJO<span class="arrow"></span></a>                                                
-                                            <ul class="sub-menu">
-                                                <li>
-                                                <a href="{% url 'orden_trabajo_listado' %}"><i class="icon-notebook"></i>Orden de Trabajo</a>
-                                              </li> 
-                                            </ul>
-                                        </li>
-                                        {% endif %}
-                                        {% if 'trab_colocacion' in permisos_grupo %}
-                                        <li>
-                                            <a href="javascript:;">ORDEN COLOCACION<span class="arrow"></span></a>                                                
-                                            <ul class="sub-menu">
-                                                <li>
-                                                <a href="{% url 'orden_colocacion_listado' %}"><i class="icon-notebook"></i>Orden de Colocación</a>
-                                              </li> 
-                                            </ul>
-                                        </li>
-                                        {% endif %}
-                                    </ul>
-                                </li>
-                                {% endif %}  
+                                {% endif %}                                 
                                 {% if permisos_rep_ingr_egr or permisos_rep_contables %} 
                                 <li>
                                     <a href="javascript:;">
@@ -255,10 +224,12 @@
                                                     <a href="{% url 'productos_listado' %}">Productos/Servicios</a>
                                                   </li>
                                             {% endif %}
-                                            {% if 'prod_productos_abm' in permisos_grupo %} 
+                                            {% if 'prod_precios' in permisos_grupo %}  
                                                    <li>
                                                     <a href="{% url 'prod_precios_listado' %}">Actualización Precios</a>
-                                                  </li>                       
+                                                  </li>
+                                            {% endif %}
+                                            {% if 'prod_stock' in permisos_grupo %}                          
                                                   <li>
                                                     <a href="{% url 'prod_stock_listado' %}">Mantenimiento Stock</a>
                                                   </li>             
@@ -279,7 +250,8 @@
                                                   <li>
                                                     <a href="{% url 'depositos_listado' %}">Depósitos/Ubicación</a>
                                                   </li>         
-                                                 <li>
+                                                  {% if  tipo_usr == 0 %}
+                                                  <li>
                                                     <a href="{% url 'pto_vta_listado' %}">Puntos de Venta</a>
                                                   </li>
                                                   <li>
@@ -288,6 +260,7 @@
                                                   <li>
                                                     <a href="{% url 'formapago_listado' %}">Formas de Pago/Cobro</a>
                                                   </li>
+                                                  {% endif %}
                                                   <li>
                                                     <a href="{% url 'bancos_listado' %}">Bancos</a>
                                                   </li>  

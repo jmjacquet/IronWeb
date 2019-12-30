@@ -83,7 +83,7 @@
 
 								</div>
 							</div>
-							<hr>				    
+							<br>				    
 						     <div class="row">
 						         <div class="col-sm-12">                          
 						                
@@ -96,14 +96,14 @@
 									                    	title="Recargar listados de Productos"><i class="fa fa-refresh"></i></a>
 									                    
 						                              	</th>						                          						
-						                              <th style="width: 20%;">Detalle</th>
+						                              {% if not empresa.usa_impuestos %}<th style="width: 20%;">Detalle</th>{% endif %}
 						                              <th style="width: 15px;">Cantidad</th>
 						                              <th style="width: 5%;"></th>
-						                              <th style="width: 80px;">Precio</th>
+						                              <th style="width: 80px;">Precio <i id="tit_precio" class="fa fa-question-circle recargarDatos" data-toggle="tooltip" data-placement="top" title="Precio"/></th>
 						                              <th style="width: 35px;">% Dcto.</th>
-						                              <th class="segunLetra" style="width: 60px;">Importe</th>
-						                              <th class="segunLetra" style="width: 60px;">IVA</th>
-						                              <th style="width: 60px;">Total</th>
+						                              <th class="segunLetra" style="width: 60px;">Importe <i class="fa fa-question-circle recargarDatos" data-toggle="tooltip" data-placement="top" title="Importe Subtotal"/></th>
+						                              <th class="segunLetra" style="width: 60px;">IVA <i class="fa fa-question-circle recargarDatos" data-toggle="tooltip" data-placement="top" title="Cálculo del IVA sobre el Importe (según producto)"/></th>
+						                              <th style="width: 60px;">Total <i id="tit_total" class="fa fa-question-circle recargarDatos" data-toggle="tooltip" data-placement="top" title="Suma del Importe + IVA"/></th>
 						                              <th style="width: 10px;" class="remove-sorting"></th>
 						                          </tr>
 						                    </thead>					                    
@@ -115,7 +115,7 @@
 							                      	
 							                      	<tr class="{{ compras_detalle.prefix }}">           					                      	
 								                      	<td>{% bootstrap_field form2.producto show_label=False%}</td>
-								                      	<td>{% bootstrap_field form2.detalle show_label=False%}</td>
+								                      	{% if not empresa.usa_impuestos %}<td>{% bootstrap_field form2.detalle show_label=False%}</td>{% endif %}
 								                      	<td>{% bootstrap_field form2.cantidad show_label=False%}</td>
 								                      	<td class="unidades">{% bootstrap_field form2.unidad show_label=False%}</td>
 								                      	<td>{% bootstrap_field form2.importe_unitario show_label=False%}</td>
@@ -217,8 +217,20 @@
 					     <div class="row">
 						         <div class="col-xs-12"> 
 						         							     
-							         <div class="col-sm-7 col-xs-12"> 
+							        <div class="col-sm-7 col-xs-12"> 
+							             <div class="row">
+							             	<div class="col-xs-12">		
 							             		{% bootstrap_field form.observacion show_label=True%}					         					         								
+							            	</div>
+							         	 </div>
+							         	 {% if empresa.usa_impuestos %}
+							         	 <div class="row">
+							             	<div class="col-sm-3 col-xs-7"><span class="totales_comprobante">Total ITC</span></div> 
+							             	<div class="col-sm-3 col-xs-5">{% bootstrap_field form.importe_tasa1 show_label=False%}</div> 
+							             	<div class="col-sm-3 col-xs-7"><span class="totales_comprobante">Total TH</span></div> 
+							             	<div class="col-sm-3 col-xs-5">{% bootstrap_field form.importe_tasa2 show_label=False%}</div> 
+							         	 </div>
+							         	 {% endif %}
 							         </div>
 							        <div class="col-sm-5 col-xs-12">						    
 
@@ -232,11 +244,12 @@
 							         		<div class="col-sm-8 col-xs-7"><span class="totales_comprobante">Total Perc./Imp.</span></div> <div class="col-sm-4 col-xs-5">{% bootstrap_field form.importe_perc_imp show_label=False%}</div> 
 							         	</div>
 							         	<div class="col-xs-12"> 
-							         		<div class="col-sm-8 col-xs-7"><span class="totales_comprobante">Total Comprobante</span></div> <div class="col-sm-4 col-xs-5">{% bootstrap_field form.importe_total show_label=False%}</div> 
+							         		<div class="col-sm-8 col-xs-7"><span class="totales_comprobante">Total NG</span></div> <div class="col-sm-4 col-xs-5">{% bootstrap_field form.importe_no_gravado show_label=False%}</div> 
 							         	</div>
+							         	<br>
 							         	<div class="col-xs-12"> 
-							         		<div class="col-sm-8 col-xs-7"><span class="totales_comprobante">Total Pagos</span></div> <div class="col-sm-4 col-xs-5">{% bootstrap_field form.importe_cobrado show_label=False%}</div> 
-							         	</div>
+							         		<div class="col-sm-8 col-xs-7"><span class="totales_comprobante">Total Comprobante</span></div> <div class="col-sm-4 col-xs-5">{% bootstrap_field form.importe_total show_label=False%}</div> 
+							         	</div>							         	
 							         	 
 							        </div>
 						    
