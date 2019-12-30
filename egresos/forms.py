@@ -33,7 +33,7 @@ class CPBCompraForm(forms.ModelForm):
 	importe_no_gravado = forms.DecimalField(label='',widget=PrependWidget(attrs={'class':'form-control','readonly':'readonly'},base_widget=NumberInput, data='$'),initial=0.00,decimal_places=2)
 	importe_cobrado = forms.DecimalField(initial=0.00,decimal_places=2,widget = forms.HiddenInput(), required = False)
 	letra = forms.ChoiceField(label='Letra',choices=COMPROB_FISCAL,required=False,initial=1)	
-	cpb_tipo = forms.ModelChoiceField(label='Tipo CPB',queryset=cpb_tipo.objects.filter(baja=False,tipo__in=[1,2,3,9,14]).filter(Q(compra_venta='C')or Q(tipo=14)),required = True,empty_label=None)
+	cpb_tipo = forms.ModelChoiceField(label='Tipo CPB',queryset=cpb_tipo.objects.filter(baja=False,tipo__in=[1,2,3,9,14,21,22,23]).filter(Q(compra_venta='C')or Q(tipo=14)),required = True,empty_label=None)
 	condic_pago = forms.ChoiceField(label=u'Condición Pago',choices=CONDICION_PAGO,required=False,initial=1)
 	tipo_form = forms.CharField(widget = forms.HiddenInput(), required = False)	
 	cliente_categ_fiscal = forms.IntegerField(widget = forms.HiddenInput(), required = False,initial=5)	

@@ -33,7 +33,7 @@ from django.forms.models import model_to_dict
 
 @login_required 
 def recalcular_precios(request):
-    detalles = cpb_comprobante_detalle.objects.filter(cpb_comprobante__cpb_tipo__tipo__in=[1,2,3,9,14],cpb_comprobante__cpb_tipo__usa_stock=True)
+    detalles = cpb_comprobante_detalle.objects.filter(cpb_comprobante__cpb_tipo__tipo__in=[1,2,3,9,14,21,22,23],cpb_comprobante__cpb_tipo__usa_stock=True)
     for c in detalles:
         lp = prod_producto_lprecios.objects.get(producto=c.producto,lista_precios=c.lista_precios)
         c.importe_costo = lp.precio_costo
