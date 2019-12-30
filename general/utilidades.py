@@ -111,6 +111,9 @@ TIPO_COMPROBANTE = (
     (12,u'Orden Colocación'),
     (13,u'Movimientos Stock'),
     (14,u'Liquido Producto'),
+    (21,u'Factura Crédito Electrónica'),    
+    (22,u'Nota Débito Electrónica'),
+    (23,u'Nota Crédito Electrónica'),
 )
 
 COMPROB_FISCAL = (

@@ -86,7 +86,7 @@ def recalcular_compras(request):
         empresa = usr.userprofile.id_usuario.empresa
     except gral_empresa.DoesNotExist:
         empresa = None           
-    comprobantes = cpb_comprobante.objects.filter(cpb_tipo__tipo__in=[1,2,3,9],cpb_tipo__compra_venta='C',empresa=empresa).order_by('-fecha_cpb','-id','-fecha_creacion')
+    comprobantes = cpb_comprobante.objects.filter(cpb_tipo__tipo__in=[1,2,3,9,21,22,23],cpb_tipo__compra_venta='C',empresa=empresa).order_by('-fecha_cpb','-id','-fecha_creacion')
     for c in comprobantes:
         recalcular_saldo_cpb(c.id)
 
@@ -372,7 +372,7 @@ def verifUnificacion(request):
     cant = 0
     data= {}
     if cpbs: 
-        comprobantes = cpb_comprobante.objects.filter(id__in=cpbs,cae=None,estado__id__lte=2,cpb_tipo__tipo__in=[1,2,3,9])                                       
+        comprobantes = cpb_comprobante.objects.filter(id__in=cpbs,cae=None,estado__id__lte=2,cpb_tipo__tipo__in=[1,2,3,9,21,22,23])                                       
         cant_cpbs = len(set(list(comprobantes.values_list('id',flat=True))))        
         cant_entidades = len(set(list(comprobantes.values_list('entidad',flat=True))))
         cant_cpb_tipo = len(set(list(comprobantes.values_list('cpb_tipo',flat=True))))                    

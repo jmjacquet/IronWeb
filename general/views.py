@@ -202,7 +202,7 @@ class PrincipalView(VariablesMixin,TemplateView):
         
         comprobantes = cpb_comprobante.objects.filter(estado__in=[1,2]).filter(fecha_cpb__range=[fecha_desde, fecha_hoy],empresa=empresa_actual(self.request))
         
-        ventas = comprobantes.filter(cpb_tipo__compra_venta='V',pto_vta__in=pvs,cpb_tipo__tipo__in=[1,2,3,9])
+        ventas = comprobantes.filter(cpb_tipo__compra_venta='V',pto_vta__in=pvs,cpb_tipo__tipo__in=[1,2,3,9,21,22,23])
         total_ventas_mensual = ventas.filter(fecha_cpb__range=[inicioMes(), fecha_hoy])
         total_ventas_mensual = total_ventas_mensual.aggregate(sum=Sum(F('importe_total')*F('cpb_tipo__signo_ctacte'), output_field=DecimalField()))['sum'] or 0 
         total_ventas = ventas.aggregate(sum=Sum(F('importe_total')*F('cpb_tipo__signo_ctacte'), output_field=DecimalField()))['sum'] or 0 
@@ -224,7 +224,7 @@ class PrincipalView(VariablesMixin,TemplateView):
         context['porc_cobrar_mensual'] = porc_cobrar_mensual
         context['porc_cobrar_total'] = porc_cobrar_total
         
-        compras = comprobantes.filter(cpb_tipo__compra_venta='C',cpb_tipo__tipo__in=[1,2,3,9])
+        compras = comprobantes.filter(cpb_tipo__compra_venta='C',cpb_tipo__tipo__in=[1,2,3,9,21,22,23])
         total_compras = compras.aggregate(sum=Sum(F('importe_total')*F('cpb_tipo__signo_ctacte'), output_field=DecimalField()))['sum'] or 0 
         context['total_compras'] = total_compras
         total_compras_mensual = compras.filter(fecha_cpb__range=[inicioMes(), fecha_hoy]).aggregate(sum=Sum(F('importe_total')*F('cpb_tipo__signo_ctacte'), output_field=DecimalField()))['sum'] or 0 
@@ -254,7 +254,7 @@ class PrincipalView(VariablesMixin,TemplateView):
             context['tareas'] = gral_tareas.objects.filter(empresa__id__in=empresas).filter(Q(usuario_asignado=usr)|Q(usuario_asignado__isnull=True)).select_related('usuario_creador','usuario_asignado').order_by('-fecha','-fecha_creacion','-id')        
         
         
-        comprobantes = comprobantes.filter(cpb_tipo__tipo__in=[1,2,3,9]).distinct().annotate(m=Month('fecha_cpb'),anio=Year('fecha_cpb')).order_by(F('anio'),F('m')).values('m','anio')        
+        comprobantes = comprobantes.filter(cpb_tipo__tipo__in=[1,2,3,9,21,22,23]).distinct().annotate(m=Month('fecha_cpb'),anio=Year('fecha_cpb')).order_by(F('anio'),F('m')).values('m','anio')        
 
         meses_cpbs = comprobantes.values_list('m','anio')
                 
@@ -290,7 +290,7 @@ class PrincipalView(VariablesMixin,TemplateView):
         context['hoy'] = fecha_hoy
         context['fecha_desde'] = fecha_desde
 
-        productos_vendidos = cpb_comprobante_detalle.objects.filter(cpb_comprobante__pto_vta__in=pvs,cpb_comprobante__cpb_tipo__compra_venta='V',cpb_comprobante__cpb_tipo__tipo__in=[1,2,3,9],cpb_comprobante__estado__in=[1,2],cpb_comprobante__fecha_cpb__range=[fecha_desde, fecha_hoy])
+        productos_vendidos = cpb_comprobante_detalle.objects.filter(cpb_comprobante__pto_vta__in=pvs,cpb_comprobante__cpb_tipo__compra_venta='V',cpb_comprobante__cpb_tipo__tipo__in=[1,2,3,9,21,22,23],cpb_comprobante__estado__in=[1,2],cpb_comprobante__fecha_cpb__range=[fecha_desde, fecha_hoy])
         productos_vendidos_total = productos_vendidos.aggregate(sum=Sum(F('importe_total')*F('cpb_comprobante__cpb_tipo__signo_ctacte'), output_field=DecimalField()))['sum'] or 0 
         productos_vendidos = productos_vendidos.values('producto__nombre').annotate(tot=Sum(F('importe_total')*F('cpb_comprobante__cpb_tipo__signo_ctacte'),output_field=DecimalField())).order_by('-tot')[:10]
         context['productos_vendidos']= productos_vendidos 
