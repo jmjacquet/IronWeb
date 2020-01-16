@@ -562,3 +562,14 @@ MESSAGE_TAGS = {message_constants.DEBUG: 'debug',
                 message_constants.SUCCESS: 'success',
                 message_constants.WARNING: 'warning',
                 message_constants.ERROR: 'danger',}
+
+
+def popover_html(label, content):
+    return label + ' &nbsp;<i class="fa fa-question-circle" data-toggle="tooltip" data-placement="top" title="'+ content +'"></i>'
+
+
+def agregar_nuevo_html(label,id,title,url,callback,hint,icon):
+    return label + '<a id="%s" href="%s" data-modal-head="%s" '\
+    'class="agregarDatos modal-create" type="button" data-toggle="tooltip" data-modal-callback="%s" '\
+    'data-placement="top" title="%s"><i class="%s"></i></a>'%(id,url,title,callback,hint,icon)
+                    
