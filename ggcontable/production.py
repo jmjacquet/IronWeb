@@ -5,5 +5,5 @@ from .settings import *
 DEBUG = False
 # DEBUG = False
 
-TEMPLATE_DEBUG = DEBUG
+
 

@@ -4,16 +4,16 @@ import os
 from views import *
 from django.views.generic import RedirectView,TemplateView
 
-urlpatterns = patterns('comprobantes.views',
+urlpatterns = [
 	
-    url(r'^buscarDatosEntidad/$', 'buscarDatosEntidad', name='buscarDatosEntidad'),
-    url(r'^buscarDatosProd/$', 'buscarDatosProd', name='buscarDatosProd'),
-    url(r'^buscarDatosCPB/$', 'buscarDatosCPB', name='buscarDatosCPB'),
+    url(r'^buscarDatosEntidad/$', buscarDatosEntidad, name='buscarDatosEntidad'),
+    url(r'^buscarDatosProd/$', buscarDatosProd, name='buscarDatosProd'),
+    url(r'^buscarDatosCPB/$', buscarDatosCPB, name='buscarDatosCPB'),
     url(r'^verifCobranza/$', verifCobranza,name="verifCobranza"),
     url(r'^verifUnificacion/$', verifUnificacion,name="verifUnificacion"),
-    url(r'^setearLetraCPB/$', 'setearLetraCPB', name='setearLetraCPB'),        
-    url(r'^ultimp_nro_cpb_ajax/$', 'ultimp_nro_cpb_ajax', name='ultimp_nro_cpb_ajax'),        
-    url(r'^setearCta_FP/$', 'setearCta_FP', name='setearCta_FP'),        
+    url(r'^setearLetraCPB/$', setearLetraCPB, name='setearLetraCPB'),        
+    url(r'^ultimp_nro_cpb_ajax/$', ultimp_nro_cpb_ajax, name='ultimp_nro_cpb_ajax'),        
+    url(r'^setearCta_FP/$', setearCta_FP, name='setearCta_FP'),        
 
     url(r'^bancos/$', BancosView.as_view(),name="bancos_listado"),
     url(r'^bancos/bancos_nuevo/$', BancosCreateView.as_view(), name="bancos_nuevo"),
@@ -92,4 +92,4 @@ urlpatterns = patterns('comprobantes.views',
 
     url(r'^imprimirFacturaHTML/(?P<id>\d+)/$',imprimirFacturaHTML,name="imprimirFacturaHTML"),
     
-    )
+    ]

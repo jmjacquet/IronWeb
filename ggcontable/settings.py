@@ -5,13 +5,6 @@ PROJECT_ROOT = os.path.join(os.path.dirname(__file__), '..') #every dot represen
 
 SITE_ROOT = PROJECT_ROOT
 
-
-ADMINS = (
-    ('JuanMa', 'errores_web@grupoguadalupe.com.ar'),
-)
-
-MANAGERS = ADMINS
-
 #Traigo los datos de configuracion del Apache
 ENTIDAD_ID = os.environ.get('ENTIDAD_ID')
 ENTIDAD_DB = os.environ.get('ENTIDAD_DB')
@@ -22,35 +15,27 @@ DB_PASS = "battlehome"
 DB_HOST = "web594.webfaction.com"
 
 
-if 'test' in sys.argv or 'test_coverage' in sys.argv: #Covers regular testing and django-coverage
-    DATABASES = {
-        'default': {
-            'ENGINE': 'django.db.backends.sqlite3', #
-            'NAME': 'test_sqlitedb', # Ruta al archivo de la base de datos
-        }
-    }
-else:
-    DATABASES = {
-        'default': {
-            'ENGINE': 'django.db.backends.mysql', # Add 'postgresql_psycopg2', 'postgresql', 'mysql', 'sqlite3' or 'oracle'.
-            'NAME': ENTIDAD_DB,           # Or path to database file if using sqlite3.
-            'USER':  DB_USER,    
-            'PASSWORD':  DB_PASS,            # Not used with sqlite3.
-            'HOST':  DB_HOST,                      # Set to empty string for localhost. Not used with sqlite3.
-            'PORT': '',      
-        },
-    }
+DATABASES = {
+    'default': {
+        'ENGINE': 'django.db.backends.mysql', # Add 'postgresql_psycopg2', 'postgresql', 'mysql', 'sqlite3' or 'oracle'.
+        'NAME': ENTIDAD_DB,           # Or path to database file if using sqlite3.
+        'USER':  DB_USER,    
+        'PASSWORD':  DB_PASS,            # Not used with sqlite3.
+        'HOST':  DB_HOST,                      # Set to empty string for localhost. Not used with sqlite3.
+        'PORT': '',      
+    },
+}
 
     
 
-ALLOWED_HOSTS = '*'
+ALLOWED_HOSTS = ['*']
 TIME_ZONE = 'America/Argentina/Buenos_Aires'
 LANGUAGE_CODE = 'es-AR'
 SITE_ID = 1
 USE_I18N = True
 USE_THOUSAND_SEPARATOR = True
 USE_L10N = True
-USE_TZ = True
+USE_TZ = False
 DEFAULT_CHARSET = 'utf-8'
 FILE_CHARSET = 'utf-8'
 TIME_INPUT_FORMATS = ('%H:%M',)
@@ -61,49 +46,54 @@ STATIC_ROOT = os.path.join(SITE_ROOT, 'static')
 # STATIC_ROOT = '/home/grupogua/webapps/ironweb/ggcontable/staticfiles'
 STATIC_URL = '/static/'
 
-TEMPLATE_DIRS = (
-    os.path.join(SITE_ROOT, 'templates'),
-)
+TEMPLATES = [
+    {
+        'BACKEND': 'django.template.backends.django.DjangoTemplates',
+        'DIRS': [
+                    os.path.join(SITE_ROOT, 'templates'),
+                ],
+        'APP_DIRS': True,
+        'OPTIONS': {
+            'context_processors': [
+                'django.template.context_processors.debug',
+                'django.template.context_processors.request',
+                'django.contrib.auth.context_processors.auth',
+                'django.template.context_processors.i18n',
+                'django.template.context_processors.media',
+                'django.template.context_processors.static',                
+                'django.contrib.messages.context_processors.messages',
+            ],
+        },
+    },
+]
 
-STATICFILES_DIRS = (
+STATICFILES_DIRS = [
     os.path.join(SITE_ROOT, "staticfiles"),   
-)
+]
+
+STATICFILES_FINDERS = [
+'django.contrib.staticfiles.finders.FileSystemFinder',
+'django.contrib.staticfiles.finders.AppDirectoriesFinder',
+]
 
 
 ADMIN_MEDIA_PREFIX = os.path.join(SITE_ROOT, '/static/admin/')
-STATICFILES_FINDERS = (
-    'django.contrib.staticfiles.finders.FileSystemFinder',
-    'django.contrib.staticfiles.finders.AppDirectoriesFinder',
-#    'django.contrib.staticfiles.finders.DefaultStorageFinder',    
-)
-TEMPLATE_CONTEXT_PROCESSORS =   (
-    'django.contrib.auth.context_processors.auth',
-    'django.core.context_processors.debug',
-    'django.core.context_processors.i18n',
-    'django.core.context_processors.media',
-    'django.core.context_processors.static',
-    'django.core.context_processors.request',
-    'django.contrib.messages.context_processors.messages',
-)
+
+
 
 SECRET_KEY = '7i@#mz$&m(!02ij#^-z)wd1+g4yay9*s%5vw7ix$@#m)k=unrx'
 
-TEMPLATE_LOADERS = (
-    'django.template.loaders.filesystem.Loader',
-    'django.template.loaders.app_directories.Loader',
-#     'django.template.loaders.eggs.Loader',
-)
-MIDDLEWARE_CLASSES = (
-    'django.middleware.common.CommonMiddleware',
+
+MIDDLEWARE = [
+    'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
-    'django.middleware.locale.LocaleMiddleware',
+    'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
-    'djangosecure.middleware.SecurityMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
-    # Uncomment the next line for simple clickjacking protection:
-    'django.middleware.clickjacking.XFrameOptionsMiddleware',    
-)
+    'django.middleware.clickjacking.XFrameOptionsMiddleware',
+]
+
 
 ROOT_URLCONF = 'ggcontable.urls'
 
@@ -111,7 +101,7 @@ ROOT_URLCONF = 'ggcontable.urls'
 WSGI_APPLICATION = 'ggcontable.wsgi.application'
 
 
-INSTALLED_APPS = (
+INSTALLED_APPS = [
     'django.contrib.auth',
     'django.contrib.contenttypes',
     'django.contrib.sessions',
@@ -136,8 +126,7 @@ INSTALLED_APPS = (
     'trabajos',
     'reportes',
     'felectronica',
-    'djangosecure',
-)
+    ]
 
 
 SESSION_SERIALIZER = 'django.contrib.sessions.serializers.JSONSerializer'
@@ -236,3 +225,18 @@ MESSAGE_TAGS = {message_constants.DEBUG: 'debug',
                 message_constants.SUCCESS: 'success',
                 message_constants.WARNING: 'warning',
                 message_constants.ERROR: 'error',} 
+
+AUTH_PASSWORD_VALIDATORS = [
+    {
+        'NAME': 'django.contrib.auth.password_validation.UserAttributeSimilarityValidator',
+    },
+    {
+        'NAME': 'django.contrib.auth.password_validation.MinimumLengthValidator',
+    },
+    {
+        'NAME': 'django.contrib.auth.password_validation.CommonPasswordValidator',
+    },
+    {
+        'NAME': 'django.contrib.auth.password_validation.NumericPasswordValidator',
+    },
+]

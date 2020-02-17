@@ -8,7 +8,7 @@ from django.views.generic import RedirectView,TemplateView
 # Uncomment the next two lines to enable the admin:
 
 
-urlpatterns = patterns('trabajos.views',	
+urlpatterns = [
 	url(r'^orden_pedido/$', OPView.as_view(), name="orden_pedido_listado"),
     url(r'^orden_pedido/nueva/$', OPCreateView.as_view(), name="orden_pedido_nuevo"),
     url(r'^orden_pedido/editar/(?P<id>\d+)/$', OPEditView.as_view(), name="orden_pedido_editar"),
@@ -36,5 +36,5 @@ urlpatterns = patterns('trabajos.views',
     url(r'^imprimirOrdenColocacion/(?P<id>\d+)/$',imprimirOrdenColocacion,name="imprimirOrdenColocacion"),
 
 
-    )
+    ]
 

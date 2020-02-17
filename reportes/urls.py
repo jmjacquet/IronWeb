@@ -6,7 +6,7 @@ from django.conf import settings
 import os
 from views import *
 
-urlpatterns = patterns('reportes.views',
+urlpatterns = [
 	 
  url(r'^cta_cte_clientes/(?P<id>\d+)/$', cta_cte_clientes, name="cta_cte_clientes"),    
  url(r'^cta_cte_clientes/$', cta_cte_clientes, name="cta_cte_clientes"),  
@@ -37,4 +37,4 @@ urlpatterns = patterns('reportes.views',
 
  url(r'^comisiones_vendedores/$', comisiones_vendedoresView.as_view(),name="comisiones_vendedores"),
 
-)
+]

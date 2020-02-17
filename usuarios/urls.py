@@ -7,7 +7,7 @@ from django.views.generic import RedirectView,TemplateView
 # Uncomment the next two lines to enable the admin:
 
 
-urlpatterns = patterns('usuarios.views',
+urlpatterns = [
 	
   url(r'^password/$', password,name="password"),
   url(r'^cambiar_password/$', cambiar_password, name='cambiar_password'),
@@ -20,4 +20,4 @@ urlpatterns = patterns('usuarios.views',
 
   url(r'^usuarios/baja_reactivar/(?P<id>\d+)/$', usuarios_baja_reactivar, name='usuarios_baja_reactivar'),
     
-)
+]

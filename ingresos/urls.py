@@ -4,9 +4,9 @@ import os
 from views import *
 from django.views.generic import RedirectView,TemplateView
 
-urlpatterns = patterns('ingresos.views',
+urlpatterns =[
 	
-    url(r'^buscarDatosProd/$', 'buscarDatosProd', name='buscarDatosProd'),
+    url(r'^buscarDatosProd/$', buscarDatosProd, name='buscarDatosProd'),
 
     # url(r'^estudios/$', EstudiosView.as_view(),name="padrones_estudio"),
     url(r'^ventas/$',  CPBSVentasList.as_view(),name="cpb_venta_listado"),
@@ -44,4 +44,4 @@ urlpatterns = patterns('ingresos.views',
     url(r'^liqprod/editar/(?P<id>\d+)/$', CPBLiqProdEditView.as_view(), name="cpb_liqprod_editar"),
     url(r'^liqprod/eliminar/(?P<id>\d+)/$', CPBLiqProdDeleteView, name="cpb_liqprod_eliminar"),
      
-    )
+    ]

@@ -4060,3 +4060,363 @@ Traceback (most recent call last):
   File "C:\Python27\lib\site-packages\django\views\generic\detail.py", line 49, in get_object
     % self.__class__.__name__)
 AttributeError: Generic detail view CPBRemitoCreateViewNew must be called with either an object pk or a slug.
+[17/Feb/2020 19:35:28] ERROR [django.request:135] Internal Server Error: /login/
+Traceback (most recent call last):
+  File "C:\Users\juanma\Envs\ironweb\lib\site-packages\django\core\handlers\exception.py", line 41, in inner
+    response = get_response(request)
+  File "C:\Users\juanma\Envs\ironweb\lib\site-packages\django\core\handlers\base.py", line 187, in _get_response
+    response = self.process_exception_by_middleware(e, request)
+  File "C:\Users\juanma\Envs\ironweb\lib\site-packages\django\core\handlers\base.py", line 185, in _get_response
+    response = wrapped_callback(request, *callback_args, **callback_kwargs)
+  File "D:\Repo\ironStable\ggcontable\views.py", line 56, in login
+    return render_to_response(template, {'msj':messages,'empresa':empresa},context_instance=RequestContext(request))
+NameError: global name 'RequestContext' is not defined
+[17/Feb/2020 19:35:33] ERROR [django.server:124] "GET /login/?next=/ HTTP/1.1" 500 73857
+[17/Feb/2020 19:38:19] ERROR [django.request:135] Internal Server Error: /login/
+Traceback (most recent call last):
+  File "C:\Users\juanma\Envs\ironweb\lib\site-packages\django\core\handlers\exception.py", line 41, in inner
+    response = get_response(request)
+  File "C:\Users\juanma\Envs\ironweb\lib\site-packages\django\core\handlers\base.py", line 187, in _get_response
+    response = self.process_exception_by_middleware(e, request)
+  File "C:\Users\juanma\Envs\ironweb\lib\site-packages\django\core\handlers\base.py", line 185, in _get_response
+    response = wrapped_callback(request, *callback_args, **callback_kwargs)
+  File "D:\Repo\ironStable\ggcontable\views.py", line 56, in login
+    return render(request,template,{'msj':messages,'empresa':empresa})
+  File "C:\Users\juanma\Envs\ironweb\lib\site-packages\django\shortcuts.py", line 30, in render
+    content = loader.render_to_string(template_name, context, request, using=using)
+  File "C:\Users\juanma\Envs\ironweb\lib\site-packages\django\template\loader.py", line 67, in render_to_string
+    template = get_template(template_name, using=using)
+  File "C:\Users\juanma\Envs\ironweb\lib\site-packages\django\template\loader.py", line 18, in get_template
+    engines = _engine_list(using)
+  File "C:\Users\juanma\Envs\ironweb\lib\site-packages\django\template\loader.py", line 72, in _engine_list
+    return engines.all() if using is None else [engines[using]]
+  File "C:\Users\juanma\Envs\ironweb\lib\site-packages\django\template\utils.py", line 89, in all
+    return [self[alias] for alias in self]
+  File "C:\Users\juanma\Envs\ironweb\lib\site-packages\django\template\utils.py", line 80, in __getitem__
+    engine = engine_cls(params)
+  File "C:\Users\juanma\Envs\ironweb\lib\site-packages\django\template\backends\django.py", line 30, in __init__
+    options['libraries'] = self.get_templatetag_libraries(libraries)
+  File "C:\Users\juanma\Envs\ironweb\lib\site-packages\django\template\backends\django.py", line 48, in get_templatetag_libraries
+    libraries = get_installed_libraries()
+  File "C:\Users\juanma\Envs\ironweb\lib\site-packages\django\template\backends\django.py", line 113, in get_installed_libraries
+    for name in get_package_libraries(pkg):
+  File "C:\Users\juanma\Envs\ironweb\lib\site-packages\django\template\backends\django.py", line 130, in get_package_libraries
+    "trying to load '%s': %s" % (entry[1], e)
+InvalidTemplateLibrary: Invalid template library specified. ImportError raised when trying to load 'bootstrap3.templatetags.bootstrap3': cannot import name flatatt
+[17/Feb/2020 19:38:19] ERROR [django.server:124] "GET /login/?next=/ HTTP/1.1" 500 116931
+[17/Feb/2020 19:47:52] ERROR [django.request:135] Internal Server Error: /login/
+Traceback (most recent call last):
+  File "C:\Users\juanma\Envs\laboralsalud\lib\site-packages\django\core\handlers\exception.py", line 41, in inner
+    response = get_response(request)
+  File "C:\Users\juanma\Envs\laboralsalud\lib\site-packages\django\core\handlers\base.py", line 187, in _get_response
+    response = self.process_exception_by_middleware(e, request)
+  File "C:\Users\juanma\Envs\laboralsalud\lib\site-packages\django\core\handlers\base.py", line 185, in _get_response
+    response = wrapped_callback(request, *callback_args, **callback_kwargs)
+  File "D:\Repo\ironStable\ggcontable\views.py", line 37, in login
+    user =  authenticate(usuario=usuario, clave=clave)
+  File "C:\Users\juanma\Envs\laboralsalud\lib\site-packages\django\contrib\auth\__init__.py", line 68, in authenticate
+    for backend, backend_path in _get_backends(return_tuples=True):
+  File "C:\Users\juanma\Envs\laboralsalud\lib\site-packages\django\contrib\auth\__init__.py", line 29, in _get_backends
+    backend = load_backend(backend_path)
+  File "C:\Users\juanma\Envs\laboralsalud\lib\site-packages\django\contrib\auth\__init__.py", line 23, in load_backend
+    return import_string(path)()
+  File "C:\Users\juanma\Envs\laboralsalud\lib\site-packages\django\utils\module_loading.py", line 20, in import_string
+    module = import_module(module_path)
+  File "C:\Python27\Lib\importlib\__init__.py", line 37, in import_module
+    __import__(name)
+  File "D:\Repo\ironStable\usuarios\authentication.py", line 3, in <module>
+    from django.contrib.auth.models import User, check_password
+ImportError: cannot import name check_password
+[17/Feb/2020 19:47:53] ERROR [django.server:124] "POST /login/ HTTP/1.1" 500 104921
+[17/Feb/2020 19:52:45] ERROR [django.request:135] Internal Server Error: /
+Traceback (most recent call last):
+  File "C:\Users\juanma\Envs\laboralsalud\lib\site-packages\django\core\handlers\exception.py", line 41, in inner
+    response = get_response(request)
+  File "C:\Users\juanma\Envs\laboralsalud\lib\site-packages\django\core\handlers\base.py", line 187, in _get_response
+    response = self.process_exception_by_middleware(e, request)
+  File "C:\Users\juanma\Envs\laboralsalud\lib\site-packages\django\core\handlers\base.py", line 185, in _get_response
+    response = wrapped_callback(request, *callback_args, **callback_kwargs)
+  File "C:\Users\juanma\Envs\laboralsalud\lib\site-packages\django\views\generic\base.py", line 68, in view
+    return self.dispatch(request, *args, **kwargs)
+  File "C:\Users\juanma\Envs\laboralsalud\lib\site-packages\django\utils\decorators.py", line 67, in _wrapper
+    return bound_func(*args, **kwargs)
+  File "C:\Users\juanma\Envs\laboralsalud\lib\site-packages\django\contrib\auth\decorators.py", line 23, in _wrapped_view
+    return view_func(request, *args, **kwargs)
+  File "C:\Users\juanma\Envs\laboralsalud\lib\site-packages\django\utils\decorators.py", line 63, in bound_func
+    return func.__get__(self, type(self))(*args2, **kwargs2)
+  File "D:\Repo\ironStable\general\views.py", line 192, in dispatch
+    return super(PrincipalView, self).dispatch(*args, **kwargs)
+  File "C:\Users\juanma\Envs\laboralsalud\lib\site-packages\django\views\generic\base.py", line 88, in dispatch
+    return handler(request, *args, **kwargs)
+  File "C:\Users\juanma\Envs\laboralsalud\lib\site-packages\django\views\generic\base.py", line 155, in get
+    context = self.get_context_data(**kwargs)
+  File "D:\Repo\ironStable\general\views.py", line 195, in get_context_data
+    context = super(PrincipalView, self).get_context_data(**kwargs)
+  File "D:\Repo\ironStable\general\views.py", line 146, in get_context_data
+    empresa = empresa_actual(self.request)
+  File "D:\Repo\ironStable\general\utilidades.py", line 300, in empresa_actual
+    return request.user.userprofile.id_usuario.empresa
+  File "C:\Users\juanma\Envs\laboralsalud\lib\site-packages\django\db\models\fields\related_descriptors.py", line 184, in __get__
+    rel_obj = self.get_object(instance)
+  File "C:\Users\juanma\Envs\laboralsalud\lib\site-packages\django\db\models\fields\related_descriptors.py", line 159, in get_object
+    return qs.get(self.field.get_reverse_related_filter(instance))
+  File "C:\Users\juanma\Envs\laboralsalud\lib\site-packages\django\db\models\query.py", line 373, in get
+    num = len(clone)
+  File "C:\Users\juanma\Envs\laboralsalud\lib\site-packages\django\db\models\query.py", line 232, in __len__
+    self._fetch_all()
+  File "C:\Users\juanma\Envs\laboralsalud\lib\site-packages\django\db\models\query.py", line 1102, in _fetch_all
+    self._result_cache = list(self._iterable_class(self))
+  File "C:\Users\juanma\Envs\laboralsalud\lib\site-packages\django\db\models\query.py", line 62, in __iter__
+    for row in compiler.results_iter(results):
+  File "C:\Users\juanma\Envs\laboralsalud\lib\site-packages\django\db\models\sql\compiler.py", line 834, in results_iter
+    row = self.apply_converters(row, converters)
+  File "C:\Users\juanma\Envs\laboralsalud\lib\site-packages\django\db\models\sql\compiler.py", line 819, in apply_converters
+    value = converter(value, expression, self.connection, self.query.context)
+  File "C:\Users\juanma\Envs\laboralsalud\lib\site-packages\django\db\backends\mysql\operations.py", line 239, in convert_datetimefield_value
+    value = timezone.make_aware(value, self.connection.timezone)
+  File "C:\Users\juanma\Envs\laboralsalud\lib\site-packages\django\utils\timezone.py", line 285, in make_aware
+    return timezone.localize(value, is_dst=is_dst)
+  File "C:\Users\juanma\Envs\laboralsalud\lib\site-packages\pytz\__init__.py", line 237, in localize
+    if dt.tzinfo is not None:
+AttributeError: 'datetime.date' object has no attribute 'tzinfo'
+[17/Feb/2020 19:52:47] ERROR [django.server:124] "GET / HTTP/1.1" 500 172231
+[17/Feb/2020 19:59:16] ERROR [django.request:135] Internal Server Error: /
+Traceback (most recent call last):
+  File "C:\Users\juanma\Envs\laboralsalud\lib\site-packages\django\core\handlers\exception.py", line 41, in inner
+    response = get_response(request)
+  File "C:\Users\juanma\Envs\laboralsalud\lib\site-packages\django\core\handlers\base.py", line 187, in _get_response
+    response = self.process_exception_by_middleware(e, request)
+  File "C:\Users\juanma\Envs\laboralsalud\lib\site-packages\django\core\handlers\base.py", line 185, in _get_response
+    response = wrapped_callback(request, *callback_args, **callback_kwargs)
+  File "C:\Users\juanma\Envs\laboralsalud\lib\site-packages\django\views\generic\base.py", line 68, in view
+    return self.dispatch(request, *args, **kwargs)
+  File "C:\Users\juanma\Envs\laboralsalud\lib\site-packages\django\utils\decorators.py", line 67, in _wrapper
+    return bound_func(*args, **kwargs)
+  File "C:\Users\juanma\Envs\laboralsalud\lib\site-packages\django\contrib\auth\decorators.py", line 23, in _wrapped_view
+    return view_func(request, *args, **kwargs)
+  File "C:\Users\juanma\Envs\laboralsalud\lib\site-packages\django\utils\decorators.py", line 63, in bound_func
+    return func.__get__(self, type(self))(*args2, **kwargs2)
+  File "D:\Repo\ironStable\general\views.py", line 192, in dispatch
+    return super(PrincipalView, self).dispatch(*args, **kwargs)
+  File "C:\Users\juanma\Envs\laboralsalud\lib\site-packages\django\views\generic\base.py", line 88, in dispatch
+    return handler(request, *args, **kwargs)
+  File "C:\Users\juanma\Envs\laboralsalud\lib\site-packages\django\views\generic\base.py", line 155, in get
+    context = self.get_context_data(**kwargs)
+  File "D:\Repo\ironStable\general\views.py", line 195, in get_context_data
+    context = super(PrincipalView, self).get_context_data(**kwargs)
+  File "D:\Repo\ironStable\general\views.py", line 146, in get_context_data
+    empresa = empresa_actual(self.request)
+  File "D:\Repo\ironStable\general\utilidades.py", line 300, in empresa_actual
+    return request.user.userprofile.id_usuario.empresa
+  File "C:\Users\juanma\Envs\laboralsalud\lib\site-packages\django\db\models\fields\related_descriptors.py", line 184, in __get__
+    rel_obj = self.get_object(instance)
+  File "C:\Users\juanma\Envs\laboralsalud\lib\site-packages\django\db\models\fields\related_descriptors.py", line 159, in get_object
+    return qs.get(self.field.get_reverse_related_filter(instance))
+  File "C:\Users\juanma\Envs\laboralsalud\lib\site-packages\django\db\models\query.py", line 373, in get
+    num = len(clone)
+  File "C:\Users\juanma\Envs\laboralsalud\lib\site-packages\django\db\models\query.py", line 232, in __len__
+    self._fetch_all()
+  File "C:\Users\juanma\Envs\laboralsalud\lib\site-packages\django\db\models\query.py", line 1102, in _fetch_all
+    self._result_cache = list(self._iterable_class(self))
+  File "C:\Users\juanma\Envs\laboralsalud\lib\site-packages\django\db\models\query.py", line 62, in __iter__
+    for row in compiler.results_iter(results):
+  File "C:\Users\juanma\Envs\laboralsalud\lib\site-packages\django\db\models\sql\compiler.py", line 834, in results_iter
+    row = self.apply_converters(row, converters)
+  File "C:\Users\juanma\Envs\laboralsalud\lib\site-packages\django\db\models\sql\compiler.py", line 819, in apply_converters
+    value = converter(value, expression, self.connection, self.query.context)
+  File "C:\Users\juanma\Envs\laboralsalud\lib\site-packages\django\db\backends\mysql\operations.py", line 239, in convert_datetimefield_value
+    value = timezone.make_aware(value, self.connection.timezone)
+  File "C:\Users\juanma\Envs\laboralsalud\lib\site-packages\django\utils\timezone.py", line 285, in make_aware
+    return timezone.localize(value, is_dst=is_dst)
+  File "C:\Users\juanma\Envs\laboralsalud\lib\site-packages\pytz\__init__.py", line 237, in localize
+    if dt.tzinfo is not None:
+AttributeError: 'datetime.date' object has no attribute 'tzinfo'
+[17/Feb/2020 19:59:18] ERROR [django.server:124] "GET / HTTP/1.1" 500 172231
+[17/Feb/2020 20:00:17] ERROR [django.request:135] Internal Server Error: /
+Traceback (most recent call last):
+  File "C:\Users\juanma\Envs\laboralsalud\lib\site-packages\django\core\handlers\exception.py", line 41, in inner
+    response = get_response(request)
+  File "C:\Users\juanma\Envs\laboralsalud\lib\site-packages\django\core\handlers\base.py", line 187, in _get_response
+    response = self.process_exception_by_middleware(e, request)
+  File "C:\Users\juanma\Envs\laboralsalud\lib\site-packages\django\core\handlers\base.py", line 185, in _get_response
+    response = wrapped_callback(request, *callback_args, **callback_kwargs)
+  File "C:\Users\juanma\Envs\laboralsalud\lib\site-packages\django\views\generic\base.py", line 68, in view
+    return self.dispatch(request, *args, **kwargs)
+  File "C:\Users\juanma\Envs\laboralsalud\lib\site-packages\django\utils\decorators.py", line 67, in _wrapper
+    return bound_func(*args, **kwargs)
+  File "C:\Users\juanma\Envs\laboralsalud\lib\site-packages\django\contrib\auth\decorators.py", line 23, in _wrapped_view
+    return view_func(request, *args, **kwargs)
+  File "C:\Users\juanma\Envs\laboralsalud\lib\site-packages\django\utils\decorators.py", line 63, in bound_func
+    return func.__get__(self, type(self))(*args2, **kwargs2)
+  File "D:\Repo\ironStable\general\views.py", line 192, in dispatch
+    return super(PrincipalView, self).dispatch(*args, **kwargs)
+  File "C:\Users\juanma\Envs\laboralsalud\lib\site-packages\django\views\generic\base.py", line 88, in dispatch
+    return handler(request, *args, **kwargs)
+  File "C:\Users\juanma\Envs\laboralsalud\lib\site-packages\django\views\generic\base.py", line 155, in get
+    context = self.get_context_data(**kwargs)
+  File "D:\Repo\ironStable\general\views.py", line 195, in get_context_data
+    context = super(PrincipalView, self).get_context_data(**kwargs)
+  File "D:\Repo\ironStable\general\views.py", line 146, in get_context_data
+    empresa = empresa_actual(self.request)
+  File "D:\Repo\ironStable\general\utilidades.py", line 300, in empresa_actual
+    return request.user.userprofile.id_usuario.empresa
+  File "C:\Users\juanma\Envs\laboralsalud\lib\site-packages\django\db\models\fields\related_descriptors.py", line 184, in __get__
+    rel_obj = self.get_object(instance)
+  File "C:\Users\juanma\Envs\laboralsalud\lib\site-packages\django\db\models\fields\related_descriptors.py", line 159, in get_object
+    return qs.get(self.field.get_reverse_related_filter(instance))
+  File "C:\Users\juanma\Envs\laboralsalud\lib\site-packages\django\db\models\query.py", line 373, in get
+    num = len(clone)
+  File "C:\Users\juanma\Envs\laboralsalud\lib\site-packages\django\db\models\query.py", line 232, in __len__
+    self._fetch_all()
+  File "C:\Users\juanma\Envs\laboralsalud\lib\site-packages\django\db\models\query.py", line 1102, in _fetch_all
+    self._result_cache = list(self._iterable_class(self))
+  File "C:\Users\juanma\Envs\laboralsalud\lib\site-packages\django\db\models\query.py", line 62, in __iter__
+    for row in compiler.results_iter(results):
+  File "C:\Users\juanma\Envs\laboralsalud\lib\site-packages\django\db\models\sql\compiler.py", line 834, in results_iter
+    row = self.apply_converters(row, converters)
+  File "C:\Users\juanma\Envs\laboralsalud\lib\site-packages\django\db\models\sql\compiler.py", line 819, in apply_converters
+    value = converter(value, expression, self.connection, self.query.context)
+  File "C:\Users\juanma\Envs\laboralsalud\lib\site-packages\django\db\backends\mysql\operations.py", line 239, in convert_datetimefield_value
+    value = timezone.make_aware(value, self.connection.timezone)
+  File "C:\Users\juanma\Envs\laboralsalud\lib\site-packages\django\utils\timezone.py", line 285, in make_aware
+    return timezone.localize(value, is_dst=is_dst)
+  File "C:\Users\juanma\Envs\laboralsalud\lib\site-packages\pytz\__init__.py", line 237, in localize
+    if dt.tzinfo is not None:
+AttributeError: 'datetime.date' object has no attribute 'tzinfo'
+[17/Feb/2020 20:00:18] ERROR [django.server:124] "GET / HTTP/1.1" 500 172231
+[17/Feb/2020 20:01:40] ERROR [django.request:135] Internal Server Error: /
+Traceback (most recent call last):
+  File "C:\Users\juanma\Envs\laboralsalud\lib\site-packages\django\core\handlers\exception.py", line 41, in inner
+    response = get_response(request)
+  File "C:\Users\juanma\Envs\laboralsalud\lib\site-packages\django\core\handlers\base.py", line 187, in _get_response
+    response = self.process_exception_by_middleware(e, request)
+  File "C:\Users\juanma\Envs\laboralsalud\lib\site-packages\django\core\handlers\base.py", line 185, in _get_response
+    response = wrapped_callback(request, *callback_args, **callback_kwargs)
+  File "C:\Users\juanma\Envs\laboralsalud\lib\site-packages\django\views\generic\base.py", line 68, in view
+    return self.dispatch(request, *args, **kwargs)
+  File "C:\Users\juanma\Envs\laboralsalud\lib\site-packages\django\utils\decorators.py", line 67, in _wrapper
+    return bound_func(*args, **kwargs)
+  File "C:\Users\juanma\Envs\laboralsalud\lib\site-packages\django\contrib\auth\decorators.py", line 23, in _wrapped_view
+    return view_func(request, *args, **kwargs)
+  File "C:\Users\juanma\Envs\laboralsalud\lib\site-packages\django\utils\decorators.py", line 63, in bound_func
+    return func.__get__(self, type(self))(*args2, **kwargs2)
+  File "D:\Repo\ironStable\general\views.py", line 192, in dispatch
+    return super(PrincipalView, self).dispatch(*args, **kwargs)
+  File "C:\Users\juanma\Envs\laboralsalud\lib\site-packages\django\views\generic\base.py", line 88, in dispatch
+    return handler(request, *args, **kwargs)
+  File "C:\Users\juanma\Envs\laboralsalud\lib\site-packages\django\views\generic\base.py", line 155, in get
+    context = self.get_context_data(**kwargs)
+  File "D:\Repo\ironStable\general\views.py", line 195, in get_context_data
+    context = super(PrincipalView, self).get_context_data(**kwargs)
+  File "D:\Repo\ironStable\general\views.py", line 146, in get_context_data
+    empresa = empresa_actual(self.request)
+  File "D:\Repo\ironStable\general\utilidades.py", line 300, in empresa_actual
+    return request.user.userprofile.id_usuario.empresa
+  File "C:\Users\juanma\Envs\laboralsalud\lib\site-packages\django\db\models\fields\related_descriptors.py", line 184, in __get__
+    rel_obj = self.get_object(instance)
+  File "C:\Users\juanma\Envs\laboralsalud\lib\site-packages\django\db\models\fields\related_descriptors.py", line 159, in get_object
+    return qs.get(self.field.get_reverse_related_filter(instance))
+  File "C:\Users\juanma\Envs\laboralsalud\lib\site-packages\django\db\models\query.py", line 373, in get
+    num = len(clone)
+  File "C:\Users\juanma\Envs\laboralsalud\lib\site-packages\django\db\models\query.py", line 232, in __len__
+    self._fetch_all()
+  File "C:\Users\juanma\Envs\laboralsalud\lib\site-packages\django\db\models\query.py", line 1102, in _fetch_all
+    self._result_cache = list(self._iterable_class(self))
+  File "C:\Users\juanma\Envs\laboralsalud\lib\site-packages\django\db\models\query.py", line 62, in __iter__
+    for row in compiler.results_iter(results):
+  File "C:\Users\juanma\Envs\laboralsalud\lib\site-packages\django\db\models\sql\compiler.py", line 834, in results_iter
+    row = self.apply_converters(row, converters)
+  File "C:\Users\juanma\Envs\laboralsalud\lib\site-packages\django\db\models\sql\compiler.py", line 819, in apply_converters
+    value = converter(value, expression, self.connection, self.query.context)
+  File "C:\Users\juanma\Envs\laboralsalud\lib\site-packages\django\db\backends\mysql\operations.py", line 239, in convert_datetimefield_value
+    value = timezone.make_aware(value, self.connection.timezone)
+  File "C:\Users\juanma\Envs\laboralsalud\lib\site-packages\django\utils\timezone.py", line 285, in make_aware
+    return timezone.localize(value, is_dst=is_dst)
+  File "C:\Users\juanma\Envs\laboralsalud\lib\site-packages\pytz\__init__.py", line 237, in localize
+    if dt.tzinfo is not None:
+AttributeError: 'datetime.date' object has no attribute 'tzinfo'
+[17/Feb/2020 20:01:43] ERROR [django.server:124] "GET / HTTP/1.1" 500 172231
+[17/Feb/2020 20:03:33] ERROR [django.request:135] Internal Server Error: /
+Traceback (most recent call last):
+  File "C:\Users\juanma\Envs\laboralsalud\lib\site-packages\django\core\handlers\exception.py", line 41, in inner
+    response = get_response(request)
+  File "C:\Users\juanma\Envs\laboralsalud\lib\site-packages\django\core\handlers\base.py", line 187, in _get_response
+    response = self.process_exception_by_middleware(e, request)
+  File "C:\Users\juanma\Envs\laboralsalud\lib\site-packages\django\core\handlers\base.py", line 185, in _get_response
+    response = wrapped_callback(request, *callback_args, **callback_kwargs)
+  File "C:\Users\juanma\Envs\laboralsalud\lib\site-packages\django\views\generic\base.py", line 68, in view
+    return self.dispatch(request, *args, **kwargs)
+  File "C:\Users\juanma\Envs\laboralsalud\lib\site-packages\django\utils\decorators.py", line 67, in _wrapper
+    return bound_func(*args, **kwargs)
+  File "C:\Users\juanma\Envs\laboralsalud\lib\site-packages\django\contrib\auth\decorators.py", line 23, in _wrapped_view
+    return view_func(request, *args, **kwargs)
+  File "C:\Users\juanma\Envs\laboralsalud\lib\site-packages\django\utils\decorators.py", line 63, in bound_func
+    return func.__get__(self, type(self))(*args2, **kwargs2)
+  File "D:\Repo\ironStable\general\views.py", line 192, in dispatch
+    return super(PrincipalView, self).dispatch(*args, **kwargs)
+  File "C:\Users\juanma\Envs\laboralsalud\lib\site-packages\django\views\generic\base.py", line 88, in dispatch
+    return handler(request, *args, **kwargs)
+  File "C:\Users\juanma\Envs\laboralsalud\lib\site-packages\django\views\generic\base.py", line 155, in get
+    context = self.get_context_data(**kwargs)
+  File "D:\Repo\ironStable\general\views.py", line 195, in get_context_data
+    context = super(PrincipalView, self).get_context_data(**kwargs)
+  File "D:\Repo\ironStable\general\views.py", line 146, in get_context_data
+    empresa = empresa_actual(self.request)
+  File "D:\Repo\ironStable\general\utilidades.py", line 300, in empresa_actual
+    return request.user.userprofile.id_usuario.empresa
+  File "C:\Users\juanma\Envs\laboralsalud\lib\site-packages\django\db\models\fields\related_descriptors.py", line 184, in __get__
+    rel_obj = self.get_object(instance)
+  File "C:\Users\juanma\Envs\laboralsalud\lib\site-packages\django\db\models\fields\related_descriptors.py", line 159, in get_object
+    return qs.get(self.field.get_reverse_related_filter(instance))
+  File "C:\Users\juanma\Envs\laboralsalud\lib\site-packages\django\db\models\query.py", line 373, in get
+    num = len(clone)
+  File "C:\Users\juanma\Envs\laboralsalud\lib\site-packages\django\db\models\query.py", line 232, in __len__
+    self._fetch_all()
+  File "C:\Users\juanma\Envs\laboralsalud\lib\site-packages\django\db\models\query.py", line 1102, in _fetch_all
+    self._result_cache = list(self._iterable_class(self))
+  File "C:\Users\juanma\Envs\laboralsalud\lib\site-packages\django\db\models\query.py", line 62, in __iter__
+    for row in compiler.results_iter(results):
+  File "C:\Users\juanma\Envs\laboralsalud\lib\site-packages\django\db\models\sql\compiler.py", line 834, in results_iter
+    row = self.apply_converters(row, converters)
+  File "C:\Users\juanma\Envs\laboralsalud\lib\site-packages\django\db\models\sql\compiler.py", line 819, in apply_converters
+    value = converter(value, expression, self.connection, self.query.context)
+  File "C:\Users\juanma\Envs\laboralsalud\lib\site-packages\django\db\backends\mysql\operations.py", line 239, in convert_datetimefield_value
+    value = timezone.make_aware(value, self.connection.timezone)
+  File "C:\Users\juanma\Envs\laboralsalud\lib\site-packages\django\utils\timezone.py", line 285, in make_aware
+    return timezone.localize(value, is_dst=is_dst)
+  File "C:\Users\juanma\Envs\laboralsalud\lib\site-packages\pytz\__init__.py", line 237, in localize
+    if dt.tzinfo is not None:
+AttributeError: 'datetime.date' object has no attribute 'tzinfo'
+[17/Feb/2020 20:03:35] ERROR [django.server:124] "GET / HTTP/1.1" 500 172099
+[17/feb./2020 20:05:30] ERROR [django.request:135] Internal Server Error: /ingresos/ventas/
+Traceback (most recent call last):
+  File "C:\Users\juanma\Envs\laboralsalud\lib\site-packages\django\core\handlers\exception.py", line 41, in inner
+    response = get_response(request)
+  File "C:\Users\juanma\Envs\laboralsalud\lib\site-packages\django\core\handlers\base.py", line 217, in _get_response
+    response = self.process_exception_by_middleware(e, request)
+  File "C:\Users\juanma\Envs\laboralsalud\lib\site-packages\django\core\handlers\base.py", line 215, in _get_response
+    response = response.render()
+  File "C:\Users\juanma\Envs\laboralsalud\lib\site-packages\django\template\response.py", line 107, in render
+    self.content = self.rendered_content
+  File "C:\Users\juanma\Envs\laboralsalud\lib\site-packages\django\template\response.py", line 82, in rendered_content
+    template = self.resolve_template(self.template_name)
+  File "C:\Users\juanma\Envs\laboralsalud\lib\site-packages\django\template\response.py", line 64, in resolve_template
+    return select_template(template, using=self.using)
+  File "C:\Users\juanma\Envs\laboralsalud\lib\site-packages\django\template\loader.py", line 48, in select_template
+    return engine.get_template(template_name)
+  File "C:\Users\juanma\Envs\laboralsalud\lib\site-packages\django\template\backends\django.py", line 39, in get_template
+    return Template(self.engine.get_template(template_name), self)
+  File "C:\Users\juanma\Envs\laboralsalud\lib\site-packages\django\template\engine.py", line 162, in get_template
+    template, origin = self.find_template(template_name)
+  File "C:\Users\juanma\Envs\laboralsalud\lib\site-packages\django\template\engine.py", line 136, in find_template
+    name, template_dirs=dirs, skip=skip,
+  File "C:\Users\juanma\Envs\laboralsalud\lib\site-packages\django\template\loaders\base.py", line 44, in get_template
+    contents, origin, origin.template_name, self.engine,
+  File "C:\Users\juanma\Envs\laboralsalud\lib\site-packages\django\template\base.py", line 191, in __init__
+    self.nodelist = self.compile_nodelist()
+  File "C:\Users\juanma\Envs\laboralsalud\lib\site-packages\django\template\base.py", line 230, in compile_nodelist
+    return parser.parse()
+  File "C:\Users\juanma\Envs\laboralsalud\lib\site-packages\django\template\base.py", line 515, in parse
+    raise self.error(token, e)
+TemplateSyntaxError: Could not parse the remainder: '=' from '='
+[17/feb./2020 20:05:30] ERROR [django.server:124] "GET /ingresos/ventas/ HTTP/1.1" 500 137831
