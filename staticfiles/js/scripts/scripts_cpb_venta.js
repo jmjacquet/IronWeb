@@ -35,8 +35,7 @@ $("#id_entidad").change(function(){
                 url: '/comprobantes/buscarDatosEntidad/',
                 type: 'get',
                 cache: true,          
-                success : function(data) {
-                     
+                success : function(data) {                     
                      if (data!='')
                         {
                           $("#id_cliente_categ_fiscal").val(data['fact_categFiscal']); 

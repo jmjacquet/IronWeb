@@ -58,19 +58,19 @@
     <td width="22%" class="texto_cpb borde_der">Fecha: {{cpb.fecha_cpb|date:'d/m/Y'}}</td>
   </tr>
   <tr>
-    <td class="borde_der" >&nbsp;</td>
-    <td class="borde_izq" >&nbsp;</td>
-    <td class="texto_cpb"><span class="texto_cpb ">CUIT: {{cuit}}</span></td>
-    <td class="texto_cpb borde_der">IIBB: {{iibb}}</td>
+    <td width="5%" class="borde_der" >&nbsp;</td>
+    <td width="5%" class="borde_izq" >&nbsp;</td>
+    <td width="22%" class="texto_cpb"><span class="texto_cpb ">CUIT: {{cuit}}</span></td>
+    <td width="22%" class="texto_cpb borde_der">IIBB: {{iibb}}</td>
   </tr>
   <tr>
-    <td class="borde_der">&nbsp;</td>
-    <td class="borde_izq">&nbsp;</td>
+    <td width="5%" class="borde_der">&nbsp;</td>
+    <td width="5%" class="borde_izq">&nbsp;</td>
     <td colspan="2" class="texto_cpb borde_der">{{get_categ_fiscal_display|upper}}</td>
   </tr>
   <tr>
-    <td class="borde_der borde_abajo"></td>
-    <td class="borde_abajo"></td>
+    <td width="5%" class="borde_der borde_abajo"></td>
+    <td width="5%" class="borde_abajo"></td>
     <td colspan="2" class="borde_abajo texto_cpb borde_der">Inicio de Actividades: {{fecha_inicio_activ|date:'d/m/Y'}}</td>
   </tr>
 </table>
@@ -94,11 +94,11 @@
     <td class="texto_izq borde_der borde_abajo">{{cpb.entidad.fact_cuit|default_if_none:''}}</td>
   </tr> 
   <tr>
-    <td class="texto_der">Observaciones:</span></td>
-    <td colspan="3" rowspan="2" valign="top" class="texto_izq">{{cpb.observacion|default_if_none:''}}</td>
+    <td class="texto_der borde_izq">Observaciones:</span></td>
+    <td colspan="3" rowspan="2" valign="top" class="texto_izq borde_der borde_abajo">{{cpb.observacion|default_if_none:''}}</td>
   </tr>
   <tr>
-    <td class="texto_der ">&nbsp;</td>
+    <td class="texto_der borde_abajo borde_izq">&nbsp;</td>
   </tr> 
 </table>
 
@@ -115,13 +115,13 @@
   </thead>
   {% for item in pagos %}
     <tr>
-      <td class="listado_izq borde_izq">{{item.tipo_forma_pago|default_if_none:''}}</td>
-      <td class="listado_izq borde_izq">{{item.cta_ingreso|default_if_none:''}}</td>
-      <td class="listado_izq borde_izq">{{item.detalle|default_if_none:''|truncatechars:40 }}</td>
-      <td class=" borde_izq">{{item.mdcp_fecha|date:'d/m/Y'}}</td>
-      <td class="listado_izq borde_izq">{{item.mdcp_banco|default_if_none:''}}</td>
-      <td class="listado_der borde_izq">{{item.mdcp_cheque|default_if_none:''}}</td>
-      <td class="listado_der borde_der borde_izq">${{item.importe|default_if_none:0|floatformat:2|intcomma}}</td>
+      <td class="listado_izq borde_izq" width="15%">{{item.tipo_forma_pago|default_if_none:''}}</td>
+      <td class="listado_izq borde_izq" width="20%">{{item.cta_ingreso|default_if_none:''}}</td>
+      <td class="listado_izq borde_izq" width="20%">{{item.detalle|default_if_none:''|truncatechars:60 }}</td>
+      <td class=" borde_izq" width="10%">{{item.mdcp_fecha|date:'d/m/Y'}}</td>
+      <td class="listado_izq borde_izq" width="20%">{{item.mdcp_banco|default_if_none:''}}</td>
+      <td class="listado_der borde_izq" width="10%">{{item.mdcp_cheque|default_if_none:''}}</td>
+      <td class="listado_der borde_der borde_izq" width="10%">${{item.importe|default_if_none:0|floatformat:2|intcomma}}</td>
     </tr>       
   {% endfor pagos %}  
   {% for r in retenciones %}

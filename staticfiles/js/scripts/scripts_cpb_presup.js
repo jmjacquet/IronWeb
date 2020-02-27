@@ -58,28 +58,6 @@ $("#id_entidad").change(function(){
                      console.log(message);
                   }
               });        
-    if ($('#id_tipo_form').val()=='ALTA')
-    {
-      $.ajax({
-                data: {'id': id},
-                url: '/comprobantes/setearLetraCPB/',
-                type: 'get',
-                cache: true,          
-                success : function(data) {
-                    
-                     if (data!='')
-                        {
-                          $("#id_letra").val(data[0]); 
-                          $("#id_letra").trigger("change");
-                        }
-                       
-                },
-                error : function(message) {
-                     /*alertify.alert('Búsqueda por CUIT','No se encontró el Proveedor.');*/
-                     console.log(message);
-                  }
-              });
-    };
 
   }); 
 

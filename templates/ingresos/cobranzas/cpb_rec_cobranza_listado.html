@@ -37,7 +37,8 @@
                                 <th class="imprimir text-right">Total</th>
                                 <th class="imprimir text-right">Importe</th>
                                 <th class="imprimir text-right">Retenc</th>
-                                <th>Comprobantes</th>            
+                                <th>Comprobantes</th> 
+                                <th>Cobrador</th>            
                                 <th>Descripción</th>                    
                                 
                             </tr>
@@ -86,6 +87,7 @@
                                     {% include "general/varios/cpb_span_ver.html" %}&nbsp;                                    
                                     {% endfor %}
                                 </td>
+                                <td>{{ cpb.vendedor|default_if_none:''|truncatechars:60 }}</td>
                                 <td  title="{{ cpb.descripcion}}">{{ cpb.descripcion|default_if_none:''|truncatechars:60 }}</td>                                
 
                             </tr>
@@ -101,7 +103,8 @@
                                 <th class="importe"></th>
                                 <th class="importe"></th>
                                 <th></th>
-                                <th></th>                                
+                                <th></th>  
+                                <th></th>                              
                             </tr>
                         </tfoot>
                     </table>                             

@@ -202,10 +202,10 @@ LOGGING = {
             'level': 'ERROR',
             'propagate': False,
         },
-        # 'xhtml2pdf': {
-        #     'handlers': ['console'],
-        #     'level': 'DEBUG',
-        # },
+        'xhtml2pdf': {
+            'handlers': ['console'],
+            'level': 'DEBUG',
+        },
         
         'general': {
             'handlers': ['logfile'],

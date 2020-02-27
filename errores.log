@@ -4060,3 +4060,88 @@ Traceback (most recent call last):
   File "C:\Python27\lib\site-packages\django\views\generic\detail.py", line 49, in get_object
     % self.__class__.__name__)
 AttributeError: Generic detail view CPBRemitoCreateViewNew must be called with either an object pk or a slug.
+[27/Feb/2020 17:16:14] ERROR [django.request:256] Internal Server Error: /ingresos/ventas/nuevo/
+Traceback (most recent call last):
+  File "C:\Users\juanma\Envs\ironstable\lib\site-packages\django\core\handlers\base.py", line 132, in get_response
+    response = wrapped_callback(request, *callback_args, **callback_kwargs)
+  File "C:\Users\juanma\Envs\ironstable\lib\site-packages\django\views\generic\base.py", line 71, in view
+    return self.dispatch(request, *args, **kwargs)
+  File "C:\Users\juanma\Envs\ironstable\lib\site-packages\django\utils\decorators.py", line 34, in _wrapper
+    return bound_func(*args, **kwargs)
+  File "C:\Users\juanma\Envs\ironstable\lib\site-packages\django\contrib\auth\decorators.py", line 22, in _wrapped_view
+    return view_func(request, *args, **kwargs)
+  File "C:\Users\juanma\Envs\ironstable\lib\site-packages\django\utils\decorators.py", line 30, in bound_func
+    return func.__get__(self, type(self))(*args2, **kwargs2)
+  File "D:\Repo\ironStable\ingresos\views.py", line 119, in dispatch
+    return super(CPBVentaCreateView, self).dispatch(*args, **kwargs)
+  File "C:\Users\juanma\Envs\ironstable\lib\site-packages\django\views\generic\base.py", line 89, in dispatch
+    return handler(request, *args, **kwargs)
+  File "D:\Repo\ironStable\ingresos\views.py", line 160, in post
+    if form.is_valid() and ventas_detalle.is_valid() and ventas_pi.is_valid() and (cpb_fp.is_valid()or(condic_pago==1)):
+  File "C:\Users\juanma\Envs\ironstable\lib\site-packages\django\forms\forms.py", line 184, in is_valid
+    return self.is_bound and not self.errors
+  File "C:\Users\juanma\Envs\ironstable\lib\site-packages\django\forms\forms.py", line 176, in errors
+    self.full_clean()
+  File "C:\Users\juanma\Envs\ironstable\lib\site-packages\django\forms\forms.py", line 393, in full_clean
+    self._clean_form()
+  File "C:\Users\juanma\Envs\ironstable\lib\site-packages\django\forms\forms.py", line 417, in _clean_form
+    cleaned_data = self.clean()
+  File "D:\Repo\ironStable\ingresos\forms.py", line 119, in clean
+    empresa = empresa_actual(request)
+NameError: global name 'request' is not defined
+[27/Feb/2020 17:16:44] ERROR [django.request:256] Internal Server Error: /ingresos/ventas/nuevo/
+Traceback (most recent call last):
+  File "C:\Users\juanma\Envs\ironstable\lib\site-packages\django\core\handlers\base.py", line 132, in get_response
+    response = wrapped_callback(request, *callback_args, **callback_kwargs)
+  File "C:\Users\juanma\Envs\ironstable\lib\site-packages\django\views\generic\base.py", line 71, in view
+    return self.dispatch(request, *args, **kwargs)
+  File "C:\Users\juanma\Envs\ironstable\lib\site-packages\django\utils\decorators.py", line 34, in _wrapper
+    return bound_func(*args, **kwargs)
+  File "C:\Users\juanma\Envs\ironstable\lib\site-packages\django\contrib\auth\decorators.py", line 22, in _wrapped_view
+    return view_func(request, *args, **kwargs)
+  File "C:\Users\juanma\Envs\ironstable\lib\site-packages\django\utils\decorators.py", line 30, in bound_func
+    return func.__get__(self, type(self))(*args2, **kwargs2)
+  File "D:\Repo\ironStable\ingresos\views.py", line 119, in dispatch
+    return super(CPBVentaCreateView, self).dispatch(*args, **kwargs)
+  File "C:\Users\juanma\Envs\ironstable\lib\site-packages\django\views\generic\base.py", line 89, in dispatch
+    return handler(request, *args, **kwargs)
+  File "D:\Repo\ironStable\ingresos\views.py", line 160, in post
+    if form.is_valid() and ventas_detalle.is_valid() and ventas_pi.is_valid() and (cpb_fp.is_valid()or(condic_pago==1)):
+  File "C:\Users\juanma\Envs\ironstable\lib\site-packages\django\forms\forms.py", line 184, in is_valid
+    return self.is_bound and not self.errors
+  File "C:\Users\juanma\Envs\ironstable\lib\site-packages\django\forms\forms.py", line 176, in errors
+    self.full_clean()
+  File "C:\Users\juanma\Envs\ironstable\lib\site-packages\django\forms\forms.py", line 393, in full_clean
+    self._clean_form()
+  File "C:\Users\juanma\Envs\ironstable\lib\site-packages\django\forms\forms.py", line 417, in _clean_form
+    cleaned_data = self.clean()
+  File "D:\Repo\ironStable\ingresos\forms.py", line 119, in clean
+    empresa = empresa_actual(self.request)
+AttributeError: 'CPBVentaForm' object has no attribute 'request'
+[27/Feb/2020 17:47:03] ERROR [django.request:256] Internal Server Error: /comprobantes/imprimirCobranzaCtaCte/132/
+Traceback (most recent call last):
+  File "C:\Users\juanma\Envs\ironstable\lib\site-packages\django\core\handlers\base.py", line 132, in get_response
+    response = wrapped_callback(request, *callback_args, **callback_kwargs)
+  File "C:\Users\juanma\Envs\ironstable\lib\site-packages\django\contrib\auth\decorators.py", line 22, in _wrapped_view
+    return view_func(request, *args, **kwargs)
+  File "D:\Repo\ironStable\comprobantes\views.py", line 901, in imprimirCobranzaCtaCte
+    c = empresa
+NameError: global name 'empresa' is not defined
+[27/Feb/2020 17:48:21] ERROR [django.request:256] Internal Server Error: /comprobantes/imprimirCobranzaCtaCte/132/
+Traceback (most recent call last):
+  File "C:\Users\juanma\Envs\ironstable\lib\site-packages\django\core\handlers\base.py", line 132, in get_response
+    response = wrapped_callback(request, *callback_args, **callback_kwargs)
+  File "C:\Users\juanma\Envs\ironstable\lib\site-packages\django\contrib\auth\decorators.py", line 22, in _wrapped_view
+    return view_func(request, *args, **kwargs)
+  File "D:\Repo\ironStable\comprobantes\views.py", line 923, in imprimirCobranzaCtaCte
+    ,empresa=empresa,estado__in=[1,2],fecha_cpb__lte=cpb.fecha_cpb).aggregate(sum=Sum(F('importe_total')*F('cpb_tipo__signo_ctacte'), output_field=DecimalField()))['sum'] or 0
+NameError: global name 'empresa' is not defined
+[27/Feb/2020 17:49:26] ERROR [django.request:256] Internal Server Error: /comprobantes/imprimirCobranza/132/
+Traceback (most recent call last):
+  File "C:\Users\juanma\Envs\ironstable\lib\site-packages\django\core\handlers\base.py", line 132, in get_response
+    response = wrapped_callback(request, *callback_args, **callback_kwargs)
+  File "C:\Users\juanma\Envs\ironstable\lib\site-packages\django\contrib\auth\decorators.py", line 22, in _wrapped_view
+    return view_func(request, *args, **kwargs)
+  File "D:\Repo\ironStable\comprobantes\views.py", line 862, in imprimirCobranza
+    c = empresa
+NameError: global name 'empresa' is not defined
