@@ -1,0 +1,173 @@
+{% load static from staticfiles %}
+{% load humanize %} 
+{% load comprobantes_filters %}
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<title>{{cpb|upper}}</title>
+<link rel="stylesheet" href="{% static 'css/reportes_factura.css' %}" type="text/css" />
+<style type="text/css">
+
+
+ @page {
+         size: A4;
+         margin: 0.5cm 0.5cm 0.5cm 0.5cm;
+         padding: 0;         
+         @frame footer {
+                        -pdf-frame-content: page-footer;
+                        top: 14cm;
+                        height: 1cm;
+                        margin-right: 0.5cm;                        
+                        margin-left: 0.5cm;                                                
+                    }
+        @frame footer {
+                        -pdf-frame-content: page-footer2;                       
+                        
+                        margin-right: 0.5cm;                        
+                        margin-left: 0.5cm; 
+                        height: 0.5cm;
+                        bottom:0.2cm;                        
+                        top:14.5cm;     
+                    }
+         }
+</style>
+</head>
+
+<body>  
+<table width="100%" align="center" >
+  <tr>
+    
+    <td align="center" rowspan="5" width="46%" valign="middle" class="borde_izq borde_arriba borde_abajo">     
+        <h1 class="empresa">{{nombre_fantasia}}</h1>          
+        <h3>{{domicilio}}</h3>
+        <h3>{{email}}</h3>
+        <h3>{{telefono}} {{celular}}</h3>     
+    </td>
+
+    <td colspan="2" align="center" valign="middle" class="borde letra_cpb">
+      <span class="letra_cpb">{{cpb.letra|upper}}</span><p class="letra_cod">{% if tipo %}{{tipo}}{% else %}COD.{{codigo_letra}}{% endif %}</p>
+    </td>
+    <td colspan="2" class="nombre_cpb borde_arriba borde_der">RECIBO CTA CTE<p class="letra_cod">{{leyenda}}</p>
+  </tr>
+  <tr>
+    <td width="5%" align="center" class="">&nbsp;</td>
+    <td width="5%" align="center " class="borde_izq">&nbsp;</td>
+    <td width="22%" class="texto_cpb">Nº: {{cpb.get_numero}}</td>
+    <td width="22%" class="texto_cpb borde_der">Fecha: {{cpb.fecha_cpb|date:'d/m/Y'}}</td>
+  </tr>
+  <tr>
+    <td width="5%" class="borde_der" >&nbsp;</td>
+    <td width="5%" class="borde_izq" >&nbsp;</td>
+    <td width="22%" class="texto_cpb"><span class="texto_cpb ">CUIT: {{cuit}}</span></td>
+    <td width="22%" class="texto_cpb borde_der">IIBB: {{iibb}}</td>
+  </tr>
+  <tr>
+    <td width="5%" class="borde_der">&nbsp;</td>
+    <td width="5%" class="borde_izq">&nbsp;</td>
+    <td colspan="2" class="texto_cpb borde_der">{{get_categ_fiscal_display|upper}}</td>
+  </tr>
+  <tr>
+    <td width="5%" class="borde_der borde_abajo"></td>
+    <td width="5%" class="borde_abajo"></td>
+    <td colspan="2" class="borde_abajo texto_cpb borde_der">Inicio de Actividades: {{fecha_inicio_activ|date:'d/m/Y'}}</td>
+  </tr>
+</table>
+ <table width="100%" >
+      <tr>
+        <td width="10%" class=" borde_izq texto_der">Señor/es:</td>
+        <td class="texto_izq" width="63%">{% if cpb.entidad.fact_razon_social %}{{cpb.entidad.fact_razon_social|upper}}{% else %}{{cpb.entidad.apellido_y_nombre|upper}}{% endif %}</td>
+        <td width="9%" class="texto_der">Localidad:</td>
+        <td width="18%" class="texto_izq borde_der">{{cpb.entidad.localidad|default_if_none:''|upper}}</td>
+      </tr>
+      <tr>
+        <td class="texto_der borde_izq">Dirección:</td>
+        <td class="texto_izq">{% if cpb.entidad.fact_direccion %}{{cpb.entidad.fact_direccion|default_if_none:''|upper}}{% else %}{{cpb.entidad.domicilio|default_if_none:''|upper}}{% endif %}</td>
+        <td class="texto_der" width="9%">Provincia:</td>
+        <td width="18%" class="texto_izq borde_der">{{cpb.entidad.get_provincia_display|upper}}</td>
+      </tr>
+      <tr>
+        <td class="texto_der borde_izq borde_abajo">I.V.A.:</td>
+        <td class="texto_izq borde_abajo">{{cpb.entidad.get_fact_categFiscal_display|default_if_none:''|upper}}</td>
+        <td class="texto_der borde_abajo" width="9%">CUIT:</td>
+        <td width="18%" class="texto_izq borde_der borde_abajo">{{cpb.entidad.fact_cuit|default_if_none:''}}</td>
+      </tr> 
+      <tr>
+        <td class="texto_der borde_izq">Observaciones:</span></td>
+        <td colspan="3" rowspan="2" valign="top" class="texto_izq borde_der borde_abajo">{{cpb.observacion|default_if_none:''}}</td>
+      </tr>
+      <tr>
+        <td class="texto_der borde_abajo borde_izq">&nbsp;</td>
+      </tr> 
+    </table>
+
+<h3>Valores Entregados:</h3>
+<table width="100%" class="tabla">
+  <thead>      
+    <th class="borde_izq borde_arriba borde_abajo tabla_header" width="15%">Tipo</th>
+    <th class="borde_arriba borde_abajo tabla_header" width="20%">Cuenta</th>
+    <th class="borde_arriba borde_abajo tabla_header" width="20%">Detalle</th>
+    <th class="borde_arriba borde_abajo tabla_header" width="10%">Fecha</th>
+    <th class="borde_arriba borde_abajo tabla_header" width="20%">Banco</th>
+    <th class="borde_arriba borde_abajo tabla_header" width="10%">Nº Cheque</th>
+    <th class="borde_der  borde_arriba borde_abajo tabla_header" width="10%">Importe</th>
+  </thead>
+  {% for item in pagos %}
+    <tr>
+      <td class="listado_izq borde_izq" width="15%">{{item.tipo_forma_pago|default_if_none:''}}</td>
+      <td class="listado_izq borde_izq" width="20%">{{item.cta_egreso|default_if_none:''}}</td>
+      <td class="listado_izq borde_izq" width="20%">{{item.detalle|default_if_none:''|truncatechars:60 }}</td>
+      <td class=" borde_izq" width="10%">{{item.mdcp_fecha|date:'d/m/Y'}}</td>
+      <td class="listado_izq borde_izq" width="20%">{{item.mdcp_banco|default_if_none:''}}</td>
+      <td class="listado_der borde_izq" width="10%">{{item.mdcp_cheque|default_if_none:''}}</td>
+      <td class="listado_der borde_der borde_izq" width="10%">${{item.importe|default_if_none:0|floatformat:2|intcomma}}</td>
+    </tr>       
+  {% endfor pagos %}   
+  <tr class="borde_izq borde_der borde_arriba borde_abajo ">
+    <td colspan="7" class="tabla_footer">Total: ${{cpb.importe_total|default_if_none:0|floatformat:2|intcomma}}</td>
+  </tr>
+</table>
+{% if cobranzas %}
+      <br>
+      <h3>En concepto de cancelación de documentos y adelantos </h3>
+      <table width="100%" class="tabla">
+        <thead>
+          <th class="borde_izq borde_arriba borde_abajo tabla_header" width="60%">Tipo</th>
+          <th class="borde_arriba borde_abajo tabla_header" width="10%">Fecha</th>
+          <th class="borde_arriba borde_abajo tabla_header" width="20%">Número</th>
+          <th class="borde_der borde_arriba borde_abajo tabla_header" width="20%">Importe</th>
+        </thead>
+        {% for c in cobranzas %}
+          <tr>
+            <td class="listado_izq borde_izq">{{c.cpb_factura.get_cpb_tipo|default_if_none:''}}</td>
+            <td class="listado_izq borde_izq">{{c.cpb_factura.fecha_cpb|date:'d/m/Y'}}</td>
+            <td class="listado_izq borde_izq">{{c.cpb_factura.get_numero|default_if_none:''}}</td>
+            <td class="listado_der borde_der borde_izq">${{c.importe_total|default_if_none:0|floatformat:2|intcomma}}</td>
+          </tr>
+        {% endfor detalle_comprobante %}
+        <tr class="borde_izq borde_der borde_arriba borde_abajo ">
+          <td colspan="4" class="tabla_footer">Subtotal: ${{cpb.importe_total|default_if_none:0|floatformat:2|intcomma}}</td>
+        </tr>
+      </table>
+    {% endif %}
+<h2 class="listado_subtot_imp">Saldo Restante de Cta.Cte al {{cpb.fecha_cpb|date:'d/m/Y'}}: ${{total_ctacte|default_if_none:0|floatformat:2|intcomma}}</h2>
+<div id="page-footer">
+  <table width="100%" align="center" >    
+    <tr>
+      <td width="10%"></td>
+      <td width="30%" class="texto_firma">Recibí Conforme</td>    
+      <td width="20%" class=" "></td>
+      <td width="30%" class="texto_firma">Firma y Aclaración</td>
+      <td width="10%"></td>  
+    </tr>
+  </table>
+</div>
+<div id="page-footer2" class="pie_sistema">
+  <img alt="" class="pie_logo" src="{% static 'images/logo_iron.png' %}"/>&nbsp;&nbsp;IRONweb Gestión & Facturación
+</div>
+<div>
+   <pdf:nextpage/>
+</div>
+</body>
+</html>
