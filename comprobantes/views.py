@@ -259,7 +259,7 @@ def buscarDatosEntidad(request):
       entidad = egr_entidad.objects.get(id=id)   
       dcto=entidad.dcto_general or 0    
       tope_cta_cte = entidad.tope_cta_cte
-
+      print dcto
       lista_precios = 1
       if entidad.lista_precios_defecto:
           lista_precios = entidad.lista_precios_defecto.id   
@@ -323,6 +323,14 @@ def ultimp_nro_cpb_ajax(request):
     letra = request.GET.get('letra','X')
     pto_vta = request.GET.get('pto_vta',0)
     entidad = request.GET.get('entidad',None)
+    if ttipo=='':
+      ttipo=0
+    if letra=='':
+      letra='X'
+    if pto_vta=='':
+      pto_vta=0
+    if entidad=='':
+      entidad=None
 
     try:
         tipo=cpb_tipo.objects.get(id=ttipo)        
@@ -341,9 +349,9 @@ def ultimp_nro_cpb_ajax(request):
             else:
               tipo=cpb_tipo.objects.get(id=ttipo)
               nro = tipo.ultimo_nro + 1  
-    except:                
-        tipo=cpb_tipo.objects.get(id=ttipo)
-        nro = tipo.ultimo_nro + 1  
+    except:                        
+        nro = 1  
+
     nro=list({nro})     
     
     return HttpResponse( json.dumps(nro, cls=DjangoJSONEncoder), content_type='application/json' )   
@@ -649,8 +657,13 @@ def imprimirFactura(request,id,pdf=None):
     except gral_empresa.DoesNotExist:
         config = None 
     
+    sujeto_retencion = None
+    
+
     if cpb.cpb_tipo.usa_pto_vta == True:
-        c = cpb.get_pto_vta()        
+        c = cpb.get_pto_vta()  
+        if c.leyenda and discrimina_iva:
+          sujeto_retencion = u"OPERACIÓN SUJETA A RETENCIÓN"      
     else:
         c = config
     
@@ -665,9 +678,7 @@ def imprimirFactura(request,id,pdf=None):
     iibb = c.iibb
     categ_fiscal = c.categ_fiscal
     fecha_inicio_activ = c.fecha_inicio_activ
-    sujeto_retencion = None
-    if c.leyenda and discrimina_iva:
-        sujeto_retencion = u"OPERACIÓN SUJETA A RETENCIÓN"
+    
          
     if facturado:                
         cod = ""
