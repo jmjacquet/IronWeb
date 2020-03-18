@@ -259,7 +259,6 @@ def buscarDatosEntidad(request):
       entidad = egr_entidad.objects.get(id=id)   
       dcto=entidad.dcto_general or 0    
       tope_cta_cte = entidad.tope_cta_cte
-
       lista_precios = 1
       if entidad.lista_precios_defecto:
           lista_precios = entidad.lista_precios_defecto.id   
