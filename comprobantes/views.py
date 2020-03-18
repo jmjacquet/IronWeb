@@ -622,9 +622,10 @@ def imprimirFactura(request,id,pdf=None):
     cantidad = detalle_comprobante.count() + cantidad
     total_exng = cpb.importe_exento + cpb.importe_no_gravado + cpb.importe_perc_imp
     if discrimina_iva:
-        total_bruto = cpb.importe_subtotal
+        total_bruto = cpb.importe_subtotal        
     else:
-        total_bruto = cpb.importe_total
+        total_bruto = cpb.importe_total        
+    
     renglones = 20 - cantidad
     if renglones < 0:
         renglones = 0
@@ -661,8 +662,10 @@ def imprimirFactura(request,id,pdf=None):
     iibb = c.iibb
     categ_fiscal = c.categ_fiscal
     fecha_inicio_activ = c.fecha_inicio_activ
+    sujeto_retencion = None
+    if c.leyenda and discrimina_iva:
+        sujeto_retencion = u"OPERACIÓN SUJETA A RETENCIÓN"
          
-
     if facturado:                
         cod = ""
         cod += str(cuit).rjust(11, "0") #CUIT
@@ -670,8 +673,7 @@ def imprimirFactura(request,id,pdf=None):
         cod += str(cpb.pto_vta).rjust(4, "0") #PTO_VTA 
         cod += str(cpb.cae).rjust(14, "0") #CAE
         cod += str(cpb.cae_vto.strftime("%Y%m%d")).rjust(8, "0") #VTO_CAE
-        cod += str(digVerificador(cod))       
-                
+        cod += str(digVerificador(cod))                       
         codbar = armarCodBar(cod)
         codigo = cod
   
