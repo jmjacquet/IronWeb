@@ -253,7 +253,7 @@ def buscarPrecioProd(prod,letra,cant,precio):
   
 @login_required 
 def buscarDatosEntidad(request):                     
-   lista= {}
+   lista= {}  
    try:
       id = request.GET['id']
       entidad = egr_entidad.objects.get(id=id)   
@@ -270,8 +270,7 @@ def buscarDatosEntidad(request):
       if not tope_cta_cte:
         saldo_sobrepaso = 0
       else:
-        saldo_sobrepaso = saldo - tope_cta_cte
-
+        saldo_sobrepaso = saldo - tope_cta_cte     
       lista = {'fact_categFiscal':entidad.fact_categFiscal,'dcto_general':dcto,'saldo_sobrepaso':saldo_sobrepaso,'lista_precios':lista_precios}
    except:
     lista= {}
@@ -282,7 +281,7 @@ def setearLetraCPB(request):
    try:                          
     id = request.GET['id']   
     entidad = egr_entidad.objects.get(id=id)
-    empr=empresa_actual(request)
+    empr=empresa_actual(request)        
     letra = get_letra(entidad.fact_categFiscal,empr.categ_fiscal)    
     letra=list({letra})  
    except:
@@ -860,7 +859,7 @@ def imprimirCobranza(request,id,pdf=None):
     except gral_empresa.DoesNotExist:
         config = None  
     
-    c = empresa
+    c = config
     
     tipo_logo_factura = c.tipo_logo_factura
     cuit = c.cuit
@@ -897,9 +896,9 @@ def imprimirCobranzaCtaCte(request,id,pdf=None):
     try:
         config = empresa_actual(request)
     except gral_empresa.DoesNotExist:
-        config = None 
+        raise Http404   
     
-    c = empresa
+    c = config
     
     tipo_logo_factura = c.tipo_logo_factura
     cuit = c.cuit
@@ -921,11 +920,54 @@ def imprimirCobranzaCtaCte(request,id,pdf=None):
     fecha = hoy()    
     
     total_ctacte = cpb_comprobante.objects.filter(entidad=cpb.entidad,pto_vta__in=pto_vta_habilitados_list(request),cpb_tipo__usa_ctacte=True,cpb_tipo__compra_venta='V'\
-        ,empresa=empresa,estado__in=[1,2],fecha_cpb__lte=cpb.fecha_cpb).aggregate(sum=Sum(F('importe_total')*F('cpb_tipo__signo_ctacte'), output_field=DecimalField()))['sum'] or 0    
+        ,empresa=config,estado__in=[1,2],fecha_cpb__lte=cpb.fecha_cpb).aggregate(sum=Sum(F('importe_total')*F('cpb_tipo__signo_ctacte'), output_field=DecimalField()))['sum'] or 0    
     if total_ctacte<0:
         total_ctacte=0
     
     template = 'general/facturas/cobranza_ctacte.html'                        
+    if pdf:
+        return render_to_pdf(template,locals())
+    return render_to_pdf_response(request, template, locals())
+
+@login_required 
+def imprimirPagoCtaCte(request,id,pdf=None):   
+    cpb = cpb_comprobante.objects.get(id=id)        
+    if not cpb:
+      raise Http404   
+    #puedeVerPadron(request,c.id_unidad.pk)    
+    try:
+        config = empresa_actual(request)
+    except gral_empresa.DoesNotExist:
+        raise Http404   
+    
+    c = config
+    
+    tipo_logo_factura = c.tipo_logo_factura
+    cuit = c.cuit
+    ruta_logo = c.ruta_logo
+    nombre_fantasia = c.nombre_fantasia
+    domicilio = c.domicilio
+    email = c.email
+    telefono = c.telefono
+    celular = c.celular
+    iibb = c.iibb
+    categ_fiscal = c.categ_fiscal
+    fecha_inicio_activ = c.fecha_inicio_activ   
+    
+    cobranzas = cpb_cobranza.objects.filter(cpb_comprobante=cpb,cpb_comprobante__estado__pk__lt=3)    
+    leyenda = u'DOCUMENTO NO VÁLIDO COMO FACTURA'
+    pagos = cpb_comprobante_fp.objects.filter(cpb_comprobante=cpb,cpb_comprobante__estado__pk__lt=3)    
+    codigo_letra = '000'
+    
+    context = Context()    
+    fecha = datetime.now()    
+    
+    total_ctacte = cpb_comprobante.objects.filter(entidad=cpb.entidad,pto_vta__in=pto_vta_habilitados_list(request),cpb_tipo__usa_ctacte=True,cpb_tipo__compra_venta='C'\
+        ,empresa=config,estado__in=[1,2],fecha_cpb__lte=cpb.fecha_cpb).aggregate(sum=Sum(F('importe_total')*F('cpb_tipo__signo_ctacte'), output_field=DecimalField()))['sum'] or 0    
+    if total_ctacte<0:
+        total_ctacte=0
+    
+    template = 'general/facturas/orden_pago_ctacte.html'                        
     if pdf:
         return render_to_pdf(template,locals())
     return render_to_pdf_response(request, template, locals())

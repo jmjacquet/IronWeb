@@ -116,7 +116,7 @@ class CPBVentaForm(forms.ModelForm):
 		cliente_categ_fiscal = self.cleaned_data.get('cliente_categ_fiscal')
 		numero = self.cleaned_data.get('numero')
 		try:
-			empresa = self.initial['request'].user.userprofile.id_usuario.empresa						
+			empresa = empresa_actual(self.initial['request'])					
 			if (not facturacion_cliente_letra(letra,cliente_categ_fiscal,empresa.categ_fiscal))and(cpb_tipo.facturable):
 				raise forms.ValidationError(u'Letra no válida para el Cliente/CPB seleccionado!')	
 
@@ -360,8 +360,8 @@ class CPBPresupForm(forms.ModelForm):
 		super(CPBPresupForm, self).__init__(*args, **kwargs)		
 		try:
 			empresa = empresa_actual(request)
-			letras = tipo_comprob_fiscal(empresa.categ_fiscal)			
-			self.fields['letra'].choices = letras			
+			# letras = tipo_comprob_fiscal(empresa.categ_fiscal)			
+			self.fields['letra'].choices = COMPROB_FISCAL_X			
 			self.fields['letra'].initial = 'X'
 
 			pto_vta = pto_vta_habilitados(request)
@@ -560,6 +560,7 @@ class CPBRecCobranzaForm(forms.ModelForm):
 	importe_total = forms.DecimalField(label='',widget=PrependWidget(attrs={'class':'form-control','readonly':'readonly',},base_widget=NumberInput, data='$'),initial=0.00,decimal_places=2,required = False)	
 	importe_cpbs = forms.DecimalField(label='',widget=PrependWidget(attrs={'class':'form-control','readonly':'readonly','step':0},base_widget=NumberInput, data='$'),initial=0.00,decimal_places=2,required = False)
 	tipo_form = forms.CharField(widget = forms.HiddenInput(), required = False)		
+	vendedor = EntidadModelChoiceField(label='Vendedor',queryset=egr_entidad.objects.filter(tipo_entidad=3,baja=False),empty_label='---',required = False)		
 	class Meta:
 			model = cpb_comprobante			
 			exclude = ['id','fecha_creacion','numero','fecha_imputacion','cae','cae_vto','estado','anulacion_motivo','anulacion_fecha','empresa','usuario','presup_tiempo_entrega','presup_forma_pago','presup_aprobacion','cpb_tipo','letra']
@@ -579,7 +580,9 @@ class CPBRecCobranzaForm(forms.ModelForm):
 			self.fields['pto_vta'].choices = [(pto.numero, pto.__unicode__()) for pto in pventa]			
 			self.fields['pto_vta'].initial = get_pv_defecto(request)			
 			self.fields['entidad'].queryset = egr_entidad.objects.filter(tipo_entidad=1,baja=False,empresa__id__in=empresas_habilitadas(request)).order_by('apellido_y_nombre')
-			
+			usr = usuario_actual(request)
+			if usr.vendedor_defecto:
+				self.fields['vendedor'].initial = usr.vendedor_defecto.id
 		except gral_empresa.DoesNotExist:
 			empresa = None
 

@@ -80,19 +80,19 @@
   </thead>
   {% for item in detalle_comprobante %}
     <tr>
-      <td class="listado_der borde_izq">{{item.cantidad|default_if_none:0|floatformat:2|intcomma}} {{item.producto.get_unidad_display}}</td>
-      <td class="listado_izq borde_izq"  {% if not discrimina_iva %}colspan="2"{% endif %}>{{item.producto}} 
+      <td class="listado_der borde_izq" width="15%">{{item.cantidad|default_if_none:0|floatformat:2|intcomma}} {{item.producto.get_unidad_display}}</td>
+      <td class="listado_izq borde_izq" {% if not discrimina_iva %}colspan="2"{% endif %}>{{item.producto}} 
         {% if item.importe_tasa1 > 0 %} ITC: {{item.get_itc|default_if_none:0|floatformat:2|intcomma}}[$/lts.] {% endif %}
         {% if item.importe_tasa2 > 0 %} TH: {{item.get_th|default_if_none:0|floatformat:2|intcomma}}[$/lts.] {% endif %}
         {% if item.detalle %} - {{item.detalle}} {% endif %}
       </td>
       {%if discrimina_iva %}
-        <td class="listado_der borde_izq">${{item.importe_unitario|default_if_none:0|floatformat:2|intcomma}}</td>      
-        <td class="listado_der borde_izq">{{item.tasa_iva|default_if_none:''}}</td>
-        <td class="listado_der borde_der borde_izq">${{item.importe_subtotal|default_if_none:0|floatformat:2|intcomma}}</td>
+        <td class="listado_der borde_izq" width="20%">${{item.importe_unitario|default_if_none:0|floatformat:2|intcomma}}</td>      
+        <td class="listado_der borde_izq" width="15%">{{item.tasa_iva|default_if_none:''}}</td>
+        <td class="listado_der borde_der borde_izq" width="20%">${{item.importe_subtotal|default_if_none:0|floatformat:2|intcomma}}</td>
       {% else %}
-        <td class="listado_der borde_izq">${{item.get_precio_unit_iva|default_if_none:0|floatformat:2|intcomma}}</td>      
-        <td class="listado_der borde_der borde_izq">${{item.importe_total|default_if_none:0|floatformat:2|intcomma}}</td>
+        <td class="listado_der borde_izq" width="15%">${{item.get_precio_unit_iva|default_if_none:0|floatformat:2|intcomma}}</td>      
+        <td class="listado_der borde_der borde_izq" width="20%">${{item.importe_total|default_if_none:0|floatformat:2|intcomma}}</td>
       {% endif %}
       
     </tr>       
@@ -111,17 +111,17 @@
       <tr>
         <td class="listado_der borde_izq">&nbsp;</td>
         <td {% if not discrimina_iva %}colspan="2"{% endif %} class="listado_izq borde_izq">Forma de Pago:</td>
-        <td class="listado_der borde_izq"></td>
-        {%if discrimina_iva %}<td class="listado_der borde_izq"></td> {% endif %}
-        <td class="listado_der borde_der borde_izq"></td>
+        <td class="listado_der borde_izq" width="20%"></td>
+        {%if discrimina_iva %}<td class="listado_der borde_izq" width="16%"></td> {% endif %}
+        <td class="listado_der borde_der borde_izq" width="20%"></td>
       </tr>  
     {% if not cobranzas %}
       <tr>
         <td class="listado_der borde_izq">&nbsp;</td>
-        <td  {% if not discrimina_iva %}colspan="2"{% endif %}class="listado_izq borde_izq">CUENTA CORRIENTE</td>
-        <td class="listado_der borde_izq"></td>
-        {%if discrimina_iva %}<td class="listado_der borde_izq"></td> {% endif %}
-        <td class="listado_der borde_der borde_izq"></td>
+        <td  {% if not discrimina_iva %}colspan="2" {% endif %}class="listado_izq borde_izq">CUENTA CORRIENTE</td>
+        <td class="listado_der borde_izq"width="20%" ></td>
+        {%if discrimina_iva %}<td class="listado_der borde_izq" width="16%"></td> {% endif %}
+        <td class="listado_der borde_der borde_izq"  width="20%"></td>
       </tr>             
     {% endif %}
   {% endif %}
@@ -129,9 +129,9 @@
     <tr>
       <td class="listado_der borde_izq">&nbsp;</td>
       <td  {% if not discrimina_iva %}colspan="2"{% endif %} class="listado_izq borde_izq">{{p}}</td>      
-      <td class="listado_der borde_izq"></td>
-      {%if discrimina_iva %}<td class="listado_der borde_izq"></td> {% endif %}
-      <td class="listado_der borde_der borde_izq"></td>
+      <td class="listado_der borde_izq" width="20%"></td>
+      {%if discrimina_iva %}<td class="listado_der borde_izq" width="16%"></td> {% endif %}
+      <td class="listado_der borde_der borde_izq"  width="20%"></td>
     </tr>       
   {% endfor cobranzas %}
   {% if total_imp %}

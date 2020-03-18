@@ -3,11 +3,11 @@
 {% load i18n %}
 {% load humanize %}
 
-{% block principal %}
 
-                                       
+
+{% block principal %}                                    
 <body class="page-header-fixed page-full-width">
-     
+    
     {% include "header.html" %}
     <div class="clearfix"></div>
 
@@ -21,7 +21,8 @@
 			<div class="page-content-wrapper">
 				<div class="page-content ">
         
-					{% block main %}      
+					{% block main %}   
+          
 						                      <div class="col-sm-10">                                                                              
                                    {% if 'gral_barra_totales' in permisos_grupo and not sitio_mobile %}  
                                       {% include "barra_totales.html" %}                                  

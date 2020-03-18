@@ -13,6 +13,10 @@ $("input[type=number]").click(function(){
 function recalcular(){
       $('.form-detalles tr').each(function(j) {
 
+        $("[name='formDetalle-"+j+"-producto']").change(function(){           
+            cargarProd(j);
+         });
+
         $("[name='formDetalle-"+j+"-producto']").chosen({
                 no_results_text: "Producto inexistente...",
                 placeholder_text_single:"Seleccione una Opcion",
@@ -82,7 +86,7 @@ $('.formDetalle').formset({
 
 
             $("[name='formDetalle-"+i1+"-producto']").change(function(){
-              cargarProd(i);
+              cargarProd(i1);
              });
              $("[name='formDetalle-"+i1+"-producto']").trigger("change"); 
            },
@@ -138,6 +142,42 @@ $("#recargarProductos").click(function () {
           });           
         });
   });
+
+$("#id_numero").keyup(function(){
+    h = ("00000000" + $(this).val()).slice(-8);    
+    $(this).val(h);
+ });
+
+function ultimoNumCPB(cpb_tipo,letra,pto_vta){
+   if ($('#id_tipo_form').val()=='ALTA')
+    {
+   $.ajax({
+          data: {'cpb_tipo': 8,'letra':letra,'pto_vta':pto_vta},
+          url: '/comprobantes/ultimp_nro_cpb_ajax/',
+          type: 'get',
+          cache: true,          
+          success : function(data) {
+               
+               if (data!='')
+                  {
+                    $("#id_numero").val(("00000000" + data[0]).slice(-8));                    
+                  }
+          },
+          error : function(message) {
+               /*alertify.alert('Búsqueda por CUIT','No se encontró el Proveedor.');*/
+               console.log(message);
+            }
+        });     
+ }
+}
+ 
+$("#id_pto_vta").change(function(){
+     letra = $("#id_letra").val();
+     pto_vta = $("#id_pto_vta").val();
+     ultimoNumCPB(8,letra,pto_vta);
+ });  
+
+$("#id_pto_vta").trigger("change"); 
 
 recalcular();
 
