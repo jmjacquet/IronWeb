@@ -331,7 +331,7 @@ def ultimp_nro_cpb_ajax(request):
       pto_vta=0
     if entidad=='':
       entidad=None
-      
+
     try:
         tipo=cpb_tipo.objects.get(id=ttipo)        
         nro = 1    
@@ -349,9 +349,8 @@ def ultimp_nro_cpb_ajax(request):
             else:
               tipo=cpb_tipo.objects.get(id=ttipo)
               nro = tipo.ultimo_nro + 1  
-    except:                
-        tipo=cpb_tipo.objects.get(id=ttipo)
-        nro = tipo.ultimo_nro + 1  
+    except:                        
+        nro = 1  
     nro=list({nro})     
     
     return HttpResponse( json.dumps(nro, cls=DjangoJSONEncoder), content_type='application/json' )   
