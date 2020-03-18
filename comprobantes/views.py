@@ -319,28 +319,31 @@ def setearCta_FP(request):
 
 @login_required 
 def ultimp_nro_cpb_ajax(request):
-    tipo = request.GET.get('cpb_tipo',0)
+    ttipo = request.GET.get('cpb_tipo',0)
     letra = request.GET.get('letra','X')
     pto_vta = request.GET.get('pto_vta',0)
     entidad = request.GET.get('entidad',None)
 
     try:
-        tipo=cpb_tipo.objects.get(id=tipo)        
+        tipo=cpb_tipo.objects.get(id=ttipo)        
         nro = 1    
         if tipo.usa_pto_vta == True:            
             pv = cpb_pto_vta.objects.get(numero=int(pto_vta),empresa=empresa_actual(request))                        
             ult_nro = cpb_pto_vta_numero.objects.get(cpb_tipo=tipo,letra=letra,cpb_pto_vta=pv,empresa=empresa_actual(request)).ultimo_nro
             nro = ult_nro+1                
         else:
-            nro = 1        
+            nro = 1                
             if entidad:
                 entidad = egr_entidad.objects.get(id=entidad)
                 ult_cpb = cpb_comprobante.objects.filter(entidad=entidad,cpb_tipo=tipo,letra=letra,pto_vta=int(pto_vta),empresa=empresa_actual(request)).order_by('numero').last()        
                 if ult_cpb:
                         nro = ult_cpb.numero + 1        
-    except:
-        nro=1
-        #print 'error ultimo nro'
+            else:
+              tipo=cpb_tipo.objects.get(id=ttipo)
+              nro = tipo.ultimo_nro + 1  
+    except:                
+        tipo=cpb_tipo.objects.get(id=ttipo)
+        nro = tipo.ultimo_nro + 1  
     nro=list({nro})     
     
     return HttpResponse( json.dumps(nro, cls=DjangoJSONEncoder), content_type='application/json' )   
