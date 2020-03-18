@@ -323,7 +323,15 @@ def ultimp_nro_cpb_ajax(request):
     letra = request.GET.get('letra','X')
     pto_vta = request.GET.get('pto_vta',0)
     entidad = request.GET.get('entidad',None)
-
+    if ttipo=='':
+      ttipo=0
+    if letra=='':
+      letra='X'
+    if pto_vta=='':
+      pto_vta=0
+    if entidad=='':
+      entidad=None
+      
     try:
         tipo=cpb_tipo.objects.get(id=ttipo)        
         nro = 1    
