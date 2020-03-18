@@ -9,13 +9,13 @@ from django.contrib import admin
 # Uncomment the next two lines to enable the admin:
 
 
-urlpatterns =[
+urlpatterns = patterns('general.views',
 	
     # url(r'^estudios/$', EstudiosView.as_view(),name="padrones_estudio"),
     url(r'^admin/', include(admin.site.urls)),
     url(r'^$', PrincipalView.as_view(),name="principal"),
-    url(r'^buscarDatosAPICUIT/$', buscarDatosAPICUIT, name='buscarDatosAPICUIT'),
-    url(r'^buscarDatosEmpresa/$', buscarDatosEmpresa, name='buscarDatosEmpresa'),
+    url(r'^buscarDatosAPICUIT/$', 'buscarDatosAPICUIT', name='buscarDatosAPICUIT'),
+    url(r'^buscarDatosEmpresa/$', 'buscarDatosEmpresa', name='buscarDatosEmpresa'),
     url(r'^recargar_clientes/$', recargar_clientes, name='recargar_clientes'),
     url(r'^recargar_vendedores/$', recargar_vendedores, name='recargar_vendedores'),
     url(r'^recargar_proveedores/$', recargar_proveedores, name='recargar_proveedores'),
@@ -35,4 +35,4 @@ urlpatterns =[
     url(r'^productos_listas_precios/$', productos_listas_precios, name="productos_listas_precios"),    
 
     url(r'^chequear_email/(?P<id>\d+)/$', chequear_email, name="chequear_email"),
-    ]
+    )

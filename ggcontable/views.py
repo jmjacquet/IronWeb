@@ -53,7 +53,7 @@ def login(request):
    
     template = 'login.html'      
             
-    return render(request,template,{'msj':messages,'empresa':empresa})
+    return render_to_response(template, {'msj':messages,'empresa':empresa},context_instance=RequestContext(request))
 
 def logout(request):
     request.session.clear()

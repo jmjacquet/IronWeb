@@ -1,8 +1,7 @@
-# -*- coding: utf-8 -*-
 from django.conf import settings
 from .models import *
-from django.contrib.auth.models import User
-from django.contrib.auth.hashers import make_password,check_password
+from django.contrib.auth.models import User, check_password
+from django.contrib.auth.hashers import make_password
 
 class UsuarioBackend(object):
     def authenticate(self, usuario=None, clave=None):    
@@ -40,7 +39,7 @@ class UsuarioBackend(object):
                 user = User(username=ID, password=clave,first_name=nombre,last_name=ID)                
                 user.is_staff = False
                 user.is_superuser = False
-                user.password = make_password(password=clave,salt=None)
+                user.password = make_password(password=clave,salt=None,hasher='unsalted_md5')
                 user.save()
                 usprfl = UserProfile(user=user,id_usuario=usr)                
                 usprfl.save()

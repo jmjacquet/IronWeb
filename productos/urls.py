@@ -4,7 +4,7 @@ import os
 from views import *
 from django.views.generic import RedirectView,TemplateView
 
-urlpatterns = [
+urlpatterns = patterns('productos.views',
 	
     url(r'^coeficiente_iva/$', coeficiente_iva,name="coeficiente_iva"),
 
@@ -46,4 +46,4 @@ urlpatterns = [
 
     url(r'^prod_stock_generar/$', prod_stock_generar,name="prod_stock_generar"),
 
-    ]
+    )

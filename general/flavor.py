@@ -7,11 +7,11 @@ from django.forms import ValidationError
 from django.forms.fields import CharField, RegexField, Select
 from django.utils.translation import ugettext_lazy as _
 
+from localflavor.compat import EmptyValueCompatMixin
 
 
 
-
-class ARPostalCodeField(RegexField):
+class ARPostalCodeField(EmptyValueCompatMixin, RegexField):
     """
     A field that accepts a 'classic' NNNN Postal Code or a CPA.
 
@@ -40,7 +40,7 @@ class ARPostalCodeField(RegexField):
         return value
 
 
-class ARDNIField(CharField):
+class ARDNIField(EmptyValueCompatMixin, CharField):
     """A field that validates 'Documento Nacional de Identidad' (DNI) numbers."""
 
     default_error_messages = {
@@ -67,7 +67,7 @@ class ARDNIField(CharField):
         return value
 
 
-class ARCUITField(RegexField):
+class ARCUITField(EmptyValueCompatMixin, RegexField):
 
     default_error_messages = {
         'invalid': _('Ingrese un CUIT valido (ej.XXXXXXXXXXXX ).'),
@@ -114,7 +114,7 @@ class ARCUITField(RegexField):
         return '%s%s%s' % (cuit[:2], cuit[2:], check_digit)
 
 
-class ARCBUField(CharField):
+class ARCBUField(EmptyValueCompatMixin, CharField):
 
     default_error_messages = {
         'invalid': _('Ingrese un CBU en formato XXXXXXXXXXXXXXXXX.'),
