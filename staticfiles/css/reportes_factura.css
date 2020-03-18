@@ -86,10 +86,15 @@ td {
   text-align: center;
   vertical-align: bottom;
   font-weight: bold;
-  
-
 }
 
+.leyenda {
+  font-size: 5px;
+  text-align: center;
+  vertical-align: bottom;
+  font-weight: bold;
+  line-height: 5px;
+}
 
 .borde{
   border-color:#000000;

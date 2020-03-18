@@ -37,7 +37,9 @@
 
     {% endif %}
     <td colspan="2" align="center" valign="middle" class="borde letra_cpb">
-      <span class="letra_cpb">{{cpb.letra|upper}}</span><p class="letra_cod">{% if tipo %}{{tipo}}{% else %}COD.{{codigo_letra}}{% endif %}</p>
+      <span class="letra_cpb">{{cpb.letra|upper}}</span>
+      <p class="letra_cod">{% if tipo %}{{tipo}}{% else %}COD.{{codigo_letra}}{% endif %}</p>
+      {% if sujeto_retencion %}<p class="leyenda">{{sujeto_retencion}}</p>{% endif %}
     </td>
     <td colspan="2" class="nombre_cpb borde_arriba borde_der">{% if tipo_cpb %}{{tipo_cpb|upper}}{% else %}{{cpb.cpb_tipo.nombre|upper}}{% endif %}<p class="letra_cod">{{leyenda}}</p>
   </tr>
