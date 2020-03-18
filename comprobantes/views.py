@@ -259,6 +259,7 @@ def buscarDatosEntidad(request):
       entidad = egr_entidad.objects.get(id=id)   
       dcto=entidad.dcto_general or 0    
       tope_cta_cte = entidad.tope_cta_cte
+      print dcto
       lista_precios = 1
       if entidad.lista_precios_defecto:
           lista_precios = entidad.lista_precios_defecto.id   
@@ -648,8 +649,13 @@ def imprimirFactura(request,id,pdf=None):
     except gral_empresa.DoesNotExist:
         config = None 
     
+    sujeto_retencion = None
+    
+
     if cpb.cpb_tipo.usa_pto_vta == True:
-        c = cpb.get_pto_vta()        
+        c = cpb.get_pto_vta()  
+        if c.leyenda and discrimina_iva:
+          sujeto_retencion = u"OPERACIÓN SUJETA A RETENCIÓN"      
     else:
         c = config
     
@@ -664,9 +670,7 @@ def imprimirFactura(request,id,pdf=None):
     iibb = c.iibb
     categ_fiscal = c.categ_fiscal
     fecha_inicio_activ = c.fecha_inicio_activ
-    sujeto_retencion = None
-    if c.leyenda and discrimina_iva:
-        sujeto_retencion = u"OPERACIÓN SUJETA A RETENCIÓN"
+    
          
     if facturado:                
         cod = ""
