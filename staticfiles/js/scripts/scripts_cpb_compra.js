@@ -83,7 +83,7 @@ function calcularProd(i){
     importe_subtotal = importe_parcial;
     importe_total = importe_subtotal + importe_iva;    
    }else
-  {if  (letra=='X') {    
+  {if  ((letra=='X')||(letra=='C')) {    
     importe_iva = 0
     importe_total = importe_parcial; 
     importe_subtotal = importe_total - importe_iva;
@@ -114,7 +114,7 @@ function calcularSubtotal(i){
     importe_iva = importe_subtotal * coef_iva;    
     importe_total = importe_subtotal + importe_iva;    
    }else
-  {if  (letra=='X') {    
+  {if  ((letra=='X')||(letra=='C')) {    
     importe_iva = 0
     importe_total = importe_subtotal;    
   }  
@@ -152,7 +152,7 @@ function calcularIVA(i){
   if (letra=='A'){ 
     importe_total = importe_subtotal + importe_iva;    
    }else
-  {if  (letra=='X') {    
+  {if ((letra=='X')||(letra=='C')) {    
     importe_iva = 0
     importe_total = importe_subtotal;   
     $("input[name='formDetalle-"+i+"-importe_iva']").val(importe_iva.toFixed(2));  
@@ -172,7 +172,7 @@ function calcularTotal(i){
     importe_subtotal = importe_total/(1+coef_iva);   
     importe_iva =importe_total - importe_subtotal;
   }else
-  {if  (letra=='X') {    
+  {if  ((letra=='X')||(letra=='C')) {    
     importe_iva = 0    
     importe_subtotal = importe_total/(1+coef_iva);
   }  

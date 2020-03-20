@@ -52,7 +52,7 @@ class CPBCompraForm(forms.ModelForm):
 		super(CPBCompraForm, self).__init__(*args, **kwargs)		
 		try:
 			empresa = empresa_actual(request)
-			letras = tipo_comprob_fiscal(empresa.categ_fiscal)
+			letras = tipo_comprob_fiscal(None)
 			self.fields['letra'].choices = letras						
 			self.fields['lista_precios'].queryset = prod_lista_precios.objects.filter(baja=False,empresa__id__in=empresas_habilitadas(request))
 			self.fields['origen_destino'].queryset = prod_ubicacion.objects.filter(baja=False,empresa__id__in=empresas_habilitadas(request))			
