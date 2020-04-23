@@ -37,7 +37,9 @@
 
     {% endif %}
     <td colspan="2" align="center" valign="middle" class="borde letra_cpb">
-      <span class="letra_cpb">{{cpb.letra|upper}}</span><p class="letra_cod">{% if tipo %}{{tipo}}{% else %}COD.{{codigo_letra}}{% endif %}</p>
+      <span class="letra_cpb">{{cpb.letra|upper}}</span>
+      <p class="letra_cod">{% if tipo %}{{tipo}}{% else %}COD.{{codigo_letra}}{% endif %}</p>
+      {% if sujeto_retencion %}<p class="leyenda">{{sujeto_retencion}}</p>{% endif %}
     </td>
     <td colspan="2" class="nombre_cpb borde_arriba borde_der">{% if tipo_cpb %}{{tipo_cpb|upper}}{% else %}{{cpb.cpb_tipo.nombre|upper}}{% endif %}<p class="letra_cod">{{leyenda}}</p>
   </tr>
@@ -48,19 +50,19 @@
     <td width="22%" class="texto_cpb borde_der">Fecha: {{cpb.fecha_cpb|date:'d/m/Y'}}</td>
   </tr>
   <tr>
-    <td class="borde_der" >&nbsp;</td>
-    <td class="borde_izq" >&nbsp;</td>
-    <td class="texto_cpb"><span class="texto_cpb ">CUIT: {{cuit}}</span></td>
-    <td class="texto_cpb borde_der">IIBB: {{iibb}}</td>
+    <td width="5%" class="borde_der" >&nbsp;</td>
+    <td width="5%" class="borde_izq" >&nbsp;</td>
+    <td width="22%" class="texto_cpb"><span class="texto_cpb ">CUIT: {{cuit}}</span></td>
+    <td width="22%" class="texto_cpb borde_der">IIBB: {{iibb}}</td>
   </tr>
   <tr>
-    <td class="borde_der">&nbsp;</td>
-    <td class="borde_izq">&nbsp;</td>
+    <td width="5%" class="borde_der">&nbsp;</td>
+    <td width="5%" class="borde_izq">&nbsp;</td>
     <td colspan="2" class="texto_cpb borde_der">{{get_categ_fiscal_display|upper}}</td>
   </tr>
   <tr>
-    <td class="borde_der borde_abajo"></td>
-    <td class="borde_abajo"></td>
+    <td width="5%" class="borde_der borde_abajo"></td>
+    <td width="5%" class="borde_abajo"></td>
     <td colspan="2" class="borde_abajo texto_cpb borde_der">Inicio de Actividades: {{fecha_inicio_activ|date:'d/m/Y'}}</td>
   </tr>
 </table>

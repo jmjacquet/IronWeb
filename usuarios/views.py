@@ -170,7 +170,7 @@ def usuarios_baja_reactivar(request,id):
     usr = usu_usuario.objects.get(pk=id) 
     usr.baja = not usr.baja
     usr.save()  
-    messages.success(self.request, u'Los datos se eliminaron con éxito!')
+    messages.success(request, u'Los datos se guardaron con éxito!')
     return HttpResponseRedirect(reverse('usuarios'))                
 
 
@@ -196,3 +196,13 @@ def get_usuarios_conectados(request):
 
     return HttpResponse( json.dumps(conectados), content_type='application/json' ) 
 
+@login_required
+def usuarios_resetear_passwd(request,id):    
+    if not tiene_permiso(request,'gral_configuracion'):
+            return redirect(reverse('usuarios'))    
+    usuario = usu_usuario.objects.get(pk=id) 
+    clave = make_password(password=usuario.usuario,salt=None,hasher='unsalted_md5')
+    usuario.password = clave
+    usuario.save()
+    messages.success(request, u'Los datos se guardaron con éxito!')
+    return HttpResponseRedirect(reverse('usuarios'))  

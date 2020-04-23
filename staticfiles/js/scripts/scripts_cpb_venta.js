@@ -35,8 +35,7 @@ $("#id_entidad").change(function(){
                 url: '/comprobantes/buscarDatosEntidad/',
                 type: 'get',
                 cache: true,          
-                success : function(data) {
-                     
+                success : function(data) {                     
                      if (data!='')
                         {
                           $("#id_cliente_categ_fiscal").val(data['fact_categFiscal']); 
@@ -92,9 +91,6 @@ $("#id_entidad").change(function(){
   }); 
 
 
-
-
-
 function calcularProd(i){  
   
   var cant = parseFloat($("input[name='formDetalle-"+i+"-cantidad']").val())|| 0;
@@ -110,6 +106,7 @@ function calcularProd(i){
   var importe_parcial = (importe_unitario * cant)*(1-porcDcto/100)
   
   letra = $("#id_letra").val();                      
+  
   if (letra=='A'){ 
     importe_iva = importe_parcial * coef_iva;
     importe_subtotal = importe_parcial;
@@ -748,11 +745,18 @@ $("#id_letra").change(function(){
           $(this).show();
           $("#tit_precio").attr('data-original-title', "Precio Venta sin impuestos");
           $("#tit_total").attr('data-original-title', "Importe Subtotal + IVA");
-        };
-       });
+        };        
+     });     
      
      ultimoNumCPB(cpb_tipo,letra,pto_vta);    
- });  
+     
+     $('.form-detalles tr').each(function(j) {        
+        calcularProd(j);      
+     });     
+
+     calcularTotales();  
+});  
+
 $("#id_pto_vta").change(function(){
      letra = $("#id_letra").val();
      pto_vta = $("#id_pto_vta").val();
@@ -789,15 +793,16 @@ if ($('#id_tipo_form').val()=='EDICION'){
      
    $('#nuevoClientes').hide();
 
-     $('.form-detalles tr').each(function(j) {        
-        recargarProd(j);              
-      });  
+     
 }else{
   if  ($("#id_entidad").val()!='') {
     $('#nuevoClientes').hide();
     $('#recargarProductos').hide();
   }; 
 }
+
+
+
 
 $("#id_entidad").chosen({
         no_results_text: "Cliente inexistente...",

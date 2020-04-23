@@ -41,8 +41,10 @@
                                         <li><a href="{% url 'usuarios_editar' id=usu.pk %}"  title="Editar" ><i class="icon-note"></i> Editar</a></li>
                                         <li><a href="#" 
                                             onClick="alerta= alertify.dialog('confirm').set({'labels':{ok:'Aceptar', cancel:'Cancelar'},'message': '¿DESEA DAR DE BAJA/REACTIVAR EL REGISTRO ACTUAL?',transition:'fade','onok': function(){ window.location.href = '{% url 'usuarios_baja_reactivar' id=usu.pk  %}'; },'oncancel': function(){ return true;} }); alerta.setting('modal', true); alerta.setHeader('BAJA/REACTIVAR'); alerta.show(); return true;" ><i class="icon-dislike"></i><i class="icon-like"></i>Baja/Reactivar</a>
-                                        </li>  
-                                                                        
+                                        </li>
+                                        <li><a href="#" 
+                                                onClick="alerta= alertify.dialog('confirm').set({'labels':{ok:'Aceptar', cancel:'Cancelar'},'message': '¿DESEA RESETEAR LA CONTRASEÑA DEL USUARIO SELECCIONADO? (será la misma que el nombre de usuario)',transition:'fade','onok': function(){ window.location.href = '{% url 'usuarios_resetear_passwd' id=usu.pk  %}'; },'oncancel': function(){ return true;} }); alerta.setting('modal', true); alerta.setHeader('RESETEAR CONTRASEÑA'); alerta.show(); return true;" ><i class="icon-action-undo"></i>Resetear Contraseña</a>
+                                        </li>    
                                        </ul>      
                                     </div>
                                 </td>

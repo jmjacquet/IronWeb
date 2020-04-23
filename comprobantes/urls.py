@@ -41,6 +41,7 @@ urlpatterns = patterns('comprobantes.views',
     url(r'^imprimirCobranza/(?P<id>\d+)/$',imprimirCobranza,name="imprimirCobranza"),
     url(r'^imprimirCobranzaCtaCte/(?P<id>\d+)/$',imprimirCobranzaCtaCte,name="imprimirCobranzaCtaCte"),
     url(r'^imprimirPago/(?P<id>\d+)/$',imprimirPago,name="imprimirPago"),
+    url(r'^imprimirPagoCtaCte/(?P<id>\d+)/$',imprimirPagoCtaCte,name="imprimirPagoCtaCte"),
 
     url(r'^mandarEmail/(?P<id>\d+)/$',mandarEmail,name="mandarEmail"),
 

@@ -19,5 +19,7 @@ urlpatterns = patterns('usuarios.views',
   # url(r'^usuarios/eliminar/(?P<id>[\w-]+)/$', UsuarioDeleteView.as_view(), name="usuarios_eliminar"),
 
   url(r'^usuarios/baja_reactivar/(?P<id>\d+)/$', usuarios_baja_reactivar, name='usuarios_baja_reactivar'),
+
+  url(r'^usuarios/resetear_passwd/(?P<id>\d+)/$', usuarios_resetear_passwd, name='usuarios_resetear_passwd'),
     
 )

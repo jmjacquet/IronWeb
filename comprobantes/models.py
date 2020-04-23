@@ -82,6 +82,7 @@ class cpb_pto_vta(models.Model):
     fecha_modif = models.DateTimeField(auto_now = True)
     #DATOS FISCALES
     fe_electronica = models.BooleanField(u'Factura Electrónica',default=False)
+    leyenda = models.BooleanField(u'Agente de Retención',default=False)
     categ_fiscal = models.IntegerField(u'Categoría Fiscal',choices=CATEG_FISCAL, blank=True, null=True)  
     cuit = models.CharField('CUIT',max_length=50)   
     iibb = models.CharField(u'Nº IIBB',max_length=50,blank=True, null=True)   
@@ -730,8 +731,7 @@ def recalcular_saldos_cobranzas(idCpb):# pragma: no cover
 
 
     #Las cobranzas/pagos activos del Comprobante de Venta/Compra
-    cobranzas = cpb_cobranza.objects.filter(cpb_comprobante=cpb,cpb_comprobante__estado__pk__lt=3).aggregate(sum=Sum('importe_total'))
-    print cobranzas       
+    cobranzas = cpb_cobranza.objects.filter(cpb_comprobante=cpb,cpb_comprobante__estado__pk__lt=3).aggregate(sum=Sum('importe_total'))    
     importes = cobranzas['sum']    
 
     if not importes:

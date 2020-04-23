@@ -14,12 +14,27 @@
  @page {
          margin: 0.5cm 0.5cm 0.5cm 0.5cm;
          padding: 0;         
-         @frame footer {
-                        -pdf-frame-content: page-footer;
-                        bottom: 0.5cm;
-                        height: 3cm;
+          @frame footer {
+                        -pdf-frame-content: page-footer;                       
+                        
                         margin-right: 0.5cm;                        
-                        margin-left: 0.5cm;                                                
+                        margin-left: 0.5cm; 
+                                              
+                        {%if facturado %}
+                          height: 3cm;
+                          bottom:0.5cm;
+                        {% else %}
+                          height: 2.5cm;
+                          bottom:0.4cm;
+                        {% endif %}                       
+                    }
+         @frame footer {
+                        -pdf-frame-content: page-footer2;                       
+                        
+                        margin-right: 0.5cm;                        
+                        margin-left: 0.5cm; 
+                        height: 0.5cm;
+                        bottom:0.2cm;                        
                     }
          @frame header {
                         -pdf-frame-content: page-header;
@@ -76,13 +91,13 @@
   </thead>
   {% for item in pagos %}
     <tr>
-      <td class="listado_izq borde_izq">{{item.tipo_forma_pago|default_if_none:''}}</td>
-      <td class="listado_izq borde_izq">{{item.cta_ingreso|default_if_none:''}}</td>
-      <td class="listado_izq borde_izq">{{item.detalle|default_if_none:''|truncatechars:60 }}</td>
-      <td class=" borde_izq">{{item.mdcp_fecha|date:'d/m/Y'}}</td>
-      <td class="listado_izq borde_izq">{{item.mdcp_banco|default_if_none:''}}</td>
-      <td class="listado_der borde_izq">{{item.mdcp_cheque|default_if_none:''}}</td>
-      <td class="listado_der borde_der borde_izq">${{item.importe|default_if_none:0|floatformat:2|intcomma}}</td>
+      <td class="listado_izq borde_izq" width="15%">{{item.tipo_forma_pago|default_if_none:''}}</td>
+      <td class="listado_izq borde_izq" width="20%">{{item.cta_ingreso|default_if_none:''}}</td>
+      <td class="listado_izq borde_izq" width="20%">{{item.detalle|default_if_none:''|truncatechars:60 }}</td>
+      <td class=" borde_izq" width="10%">{{item.mdcp_fecha|date:'d/m/Y'}}</td>
+      <td class="listado_izq borde_izq" width="20%">{{item.mdcp_banco|default_if_none:''}}</td>
+      <td class="listado_der borde_izq" width="10%">{{item.mdcp_cheque|default_if_none:''}}</td>
+      <td class="listado_der borde_der borde_izq" width="10%">${{item.importe|default_if_none:0|floatformat:2|intcomma}}</td>
     </tr>       
   {% endfor detalle_comprobante %}  
   <tr class="borde_izq borde_der borde_arriba borde_abajo ">
@@ -141,6 +156,9 @@
     </tr>
       
   </table>
+</div>
+<div id="page-footer2" class="pie_sistema">
+  <img alt="" class="pie_logo" src="{% static 'images/logo_iron.png' %}"/>&nbsp;&nbsp;IRONweb Gestión & Facturación
 </div>
 
 </body>

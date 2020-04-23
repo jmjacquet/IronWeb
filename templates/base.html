@@ -107,12 +107,10 @@
       </script> 
       {% block extra_js_final %}
       {% endblock extra_js_final %} 
-      
-       {% if empresa.afip_categoria %}
+      {% if empresa.afip_categoria %}
         <script type="text/javascript">
-           alertify.warningAlert("<b>Su abono Mensual se encuentra Vencido.<br>Por favor comunicarse a los teléfonos de la Empresa.<br>¡Muchas Gracias!</b>");
-           {% endif %}  
+           alertify.warningAlert("<b>Su abono Mensual se encuentra Vencido.<br>Por favor comunicarse a los teléfonos de la Empresa.<br>¡Muchas Gracias!</b>");            
            </script>   
-           {{empresa.afip_categoria}}    
+      {% endif %} 
 
 </html>
