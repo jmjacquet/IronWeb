@@ -3,7 +3,8 @@ from .settings import *
 
 
 DEBUG = False
-# DEBUG = False
+
+STATIC_URL = '/staticfiles/'
 
 TEMPLATE_DEBUG = DEBUG
 

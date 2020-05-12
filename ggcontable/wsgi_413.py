@@ -8,8 +8,8 @@ sys.path.append(PROJECT_DIR)
 
 os.environ['DJANGO_SETTINGS_MODULE'] = "ggcontable.production"
 os.environ['ENTIDAD_ID'] = '1'
-os.environ['ENTIDAD_DB'] = 'ironweb_415'
-os.environ['ENTIDAD_DIR'] = 'digra'
+os.environ['ENTIDAD_DB'] = 'ironweb_413'
+os.environ['ENTIDAD_DIR'] = 'litoralpor'
 from django.core.wsgi import get_wsgi_application
 application = get_wsgi_application()
 
