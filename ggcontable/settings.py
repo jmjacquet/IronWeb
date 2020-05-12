@@ -22,15 +22,7 @@ DB_PASS = "battlehome"
 DB_HOST = "web594.webfaction.com"
 
 
-if 'test' in sys.argv or 'test_coverage' in sys.argv: #Covers regular testing and django-coverage
-    DATABASES = {
-        'default': {
-            'ENGINE': 'django.db.backends.sqlite3', #
-            'NAME': 'test_sqlitedb', # Ruta al archivo de la base de datos
-        }
-    }
-else:
-    DATABASES = {
+DATABASES = {
         'default': {
             'ENGINE': 'django.db.backends.mysql', # Add 'postgresql_psycopg2', 'postgresql', 'mysql', 'sqlite3' or 'oracle'.
             'NAME': ENTIDAD_DB,           # Or path to database file if using sqlite3.
@@ -58,7 +50,7 @@ DATE_INPUT_FORMATS = ('%d/%m/%Y',)
 MEDIA_ROOT = os.path.join(SITE_ROOT, 'media')
 MEDIA_URL = '/media/'
 STATIC_ROOT = os.path.join(SITE_ROOT, 'static')
-# STATIC_ROOT = '/home/grupogua/webapps/ironweb/ggcontable/staticfiles'
+# STATIC_ = '/home/grupogua1/webapps/ironweb/ggcontable/static'
 STATIC_URL = '/static/'
 
 TEMPLATE_DIRS = (
