@@ -617,7 +617,7 @@ def recalcular_saldo_cpb(idCpb):# pragma: no cover
             cpb.importe_total = importe_subtotal  + tot_perc_imp + importe_iva 
         cpb.save()
 
-    elif cpb.cpb_tipo.tipo in [1,2,3,9,14,21,22,23]:
+    elif cpb.cpb_tipo.tipo in [1,2,3,6,9,14,21,22,23]:
         cpb_detalles = cpb_comprobante_detalle.objects.filter(cpb_comprobante=cpb)
         for c in cpb_detalles:
             if c.tasa_iva:
@@ -698,6 +698,7 @@ def recalcular_saldo_cpb(idCpb):# pragma: no cover
             tasa = gral_tipo_iva.objects.get(pk=cc['tasa_iva'])       
             cpb_ti = cpb_comprobante_tot_iva(cpb_comprobante=cpb,tasa_iva=tasa,importe_total=cc['importe_total'],importe_base=cc['importe_base'])
             cpb_ti.save()
+
 
 def recalcular_saldos_cobranzas(idCpb):# pragma: no cover
     cpb=cpb_comprobante.objects.get(pk=idCpb)           
