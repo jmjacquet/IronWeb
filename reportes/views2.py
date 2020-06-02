@@ -1127,8 +1127,6 @@ class RankingsView(VariablesMixin,TemplateView):
             context['ranking_vendedores'] =  None
             context['ranking_clientes'] =  None
             context['ranking_proveedores'] =  None
-            context['productos_vendidos_categ'] = None
-
 
         context['form'] = form
         context['fecha'] = fecha        
@@ -1171,11 +1169,6 @@ class RankingsView(VariablesMixin,TemplateView):
 
             ranking_proveedores = comprobantes.filter(cpb_tipo__compra_venta='C').values('entidad__apellido_y_nombre').annotate(tot=Sum(F('importe_total')*F('cpb_tipo__signo_ctacte'),output_field=DecimalField())).order_by('-tot')[:10]
             context['ranking_proveedores'] = ranking_proveedores
-
-            productos_vendidos_categ = cpb_detalles.filter(cpb_comprobante__cpb_tipo__compra_venta='V')
-            productos_vendidos_categ_total = productos_vendidos_categ.aggregate(sum=Sum(F('importe_total')*F('cpb_comprobante__cpb_tipo__signo_ctacte'), output_field=DecimalField()))['sum'] or 0 
-            productos_vendidos_categ = productos_vendidos_categ.values('producto__categoria__nombre').annotate(tot=Sum(F('importe_total')*F('cpb_comprobante__cpb_tipo__signo_ctacte'),output_field=DecimalField())).order_by('-tot')[:10]
-            context['productos_vendidos_categ'] = productos_vendidos_categ
 
         context['meses']= json.dumps(meses,cls=DecimalEncoder)       
         context['ventas_deuda']=  json.dumps(ventas_deuda,cls=DecimalEncoder)
