@@ -26,8 +26,9 @@ from productos.models import prod_productos
 from django.contrib.messages.views import SuccessMessageMixin
 from django.core.serializers.json import DjangoJSONEncoder
 from comprobantes.views import ultimoNro,buscarDatosProd,presup_aprobacion,cobros_cpb
-from django.db.models import DateTimeField, ExpressionWrapper, F,DecimalField
+from django.db.models import DateTimeField, ExpressionWrapper, F, DecimalField, Max, Subquery
 from easy_pdf.rendering import render_to_pdf_response
+from django.db.models.expressions import RawSQL
 
 ################################################################
 def cuenta_corriente(request,compra_venta,entidad,fdesde,fhasta,estado,empresa):
@@ -183,9 +184,12 @@ class saldos_clientes(VariablesMixin,ListView):
             cpbs = cpb_comprobante.objects.filter(pto_vta__in=pto_vta_habilitados_list(self.request),cpb_tipo__usa_ctacte=True,cpb_tipo__compra_venta='V',empresa=empresa,estado__in=[1,2]).select_related('entidad')
             entidad = form.cleaned_data['entidad']                                                                           
             if entidad:
-               cpbs= cpbs.filter(entidad=entidad)            
-            totales = cpbs.values('entidad','entidad__apellido_y_nombre','entidad__codigo','entidad__fact_cuit').annotate(saldo=Sum(F('importe_total')*F('cpb_tipo__signo_ctacte'), output_field=DecimalField())).order_by('-saldo','entidad__apellido_y_nombre')
-
+               cpbs= cpbs.filter(entidad=entidad)                                    
+            totales = cpbs.values('entidad','entidad__apellido_y_nombre','entidad__codigo','entidad__fact_cuit')\
+            .annotate(saldo=Sum(F('importe_total')*F('cpb_tipo__signo_ctacte'), output_field=DecimalField()))\
+            .annotate(ultimo_pago=RawSQL("select col from sometable where othercol = %s", (someparam,)))\
+            .order_by('-saldo','entidad__apellido_y_nombre')
+            print totales.query
 
         context['form'] = form        
         context['fecha'] = fecha
