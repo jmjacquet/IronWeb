@@ -26,7 +26,7 @@ from productos.models import prod_productos
 from django.contrib.messages.views import SuccessMessageMixin
 from django.core.serializers.json import DjangoJSONEncoder
 from comprobantes.views import ultimoNro,buscarDatosProd,presup_aprobacion,cobros_cpb
-from django.db.models import DateTimeField, ExpressionWrapper, F, DecimalField, Max, Subquery
+from django.db.models import DateTimeField, ExpressionWrapper, F, DecimalField, Max
 from easy_pdf.rendering import render_to_pdf_response
 from django.db.models.expressions import RawSQL
 
@@ -179,18 +179,14 @@ class saldos_clientes(VariablesMixin,ListView):
         fecha = date.today()
         totales = None
         
-        if form.is_valid():                                
-            
+        if form.is_valid():                                            
             cpbs = cpb_comprobante.objects.filter(pto_vta__in=pto_vta_habilitados_list(self.request),cpb_tipo__usa_ctacte=True,cpb_tipo__compra_venta='V',empresa=empresa,estado__in=[1,2]).select_related('entidad')
             entidad = form.cleaned_data['entidad']                                                                           
             if entidad:
                cpbs= cpbs.filter(entidad=entidad)                                    
-            totales = cpbs.values('entidad','entidad__apellido_y_nombre','entidad__codigo','entidad__fact_cuit')\
-            .annotate(saldo=Sum(F('importe_total')*F('cpb_tipo__signo_ctacte'), output_field=DecimalField()))\
-            .annotate(ultimo_pago=RawSQL("select col from sometable where othercol = %s", (someparam,)))\
-            .order_by('-saldo','entidad__apellido_y_nombre')
-            print totales.query
-
+            totales = cpbs.extra(select={'ultimo_pago':"SELECT MAX(cpb.fecha_imputacion) FROM cpb_comprobante cpb WHERE ((cpb.empresa=cpb_comprobante.empresa)AND(cpb.estado_id IN (1,2))AND(cpb.entidad=cpb_comprobante.entidad)AND(cpb.cpb_tipo=7))"})
+            totales = totales.values('entidad','entidad__apellido_y_nombre','entidad__codigo','entidad__fact_cuit','ultimo_pago')\
+            .annotate(saldo=Sum(F('importe_total')*F('cpb_tipo__signo_ctacte'), output_field=DecimalField())).order_by('-saldo','entidad__apellido_y_nombre')                        
         context['form'] = form        
         context['fecha'] = fecha
         context['totales'] = totales
@@ -342,7 +338,8 @@ class saldos_proveedores(VariablesMixin,ListView):
             entidad = form.cleaned_data['entidad']                                                                           
             if entidad:
                cpbs= cpbs.filter(entidad=entidad)            
-            totales = cpbs.values('entidad','entidad__apellido_y_nombre','entidad__codigo','entidad__fact_cuit').annotate(saldo=Sum(F('importe_total')*F('cpb_tipo__signo_ctacte'), output_field=DecimalField())).order_by('-saldo','entidad__apellido_y_nombre')
+            totales = cpbs.extra(select={'ultimo_pago':"SELECT MAX(cpb.fecha_imputacion) FROM cpb_comprobante cpb WHERE ((cpb.empresa=cpb_comprobante.empresa)AND(cpb.estado_id IN (1,2))AND(cpb.entidad=cpb_comprobante.entidad)AND(cpb.cpb_tipo=12))"})
+            totales = totales.values('entidad','entidad__apellido_y_nombre','entidad__codigo','entidad__fact_cuit','ultimo_pago').annotate(saldo=Sum(F('importe_total')*F('cpb_tipo__signo_ctacte'), output_field=DecimalField())).order_by('-saldo','entidad__apellido_y_nombre')
 
 
         context['form'] = form        
