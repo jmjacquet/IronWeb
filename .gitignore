@@ -5,5 +5,5 @@
 errores.log
 static/*
 *.conf
-
-
+*.ini
+*.bat
