@@ -14,7 +14,7 @@ DATABASES = {
             'USER':  DB_USER,    
             'PASSWORD':  DB_PASS,            # Not used with sqlite3.
             'HOST':  "localhost",                      # Set to empty string for localhost. Not used with sqlite3.
-            'PORT': '3308',      
+            'PORT': '3306',      
         },
     }
 
