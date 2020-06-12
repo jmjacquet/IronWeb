@@ -44,10 +44,15 @@ class cpb_tipo(models.Model):
     signo_libro_iva = models.IntegerField(u'Signo Libro IVA',default=1,blank=True, null=True)
     facturable = models.BooleanField(u'Facturable',default=True)
     baja = models.BooleanField(default=False)
-    fecha_creacion = models.DateTimeField(auto_now_add = True)
-    fecha_modif = models.DateTimeField(auto_now = True)
+    # fecha_creacion = models.DateTimeField(blank=True, null=True)
+    fecha_modif = models.DateTimeField(blank=True, null=True)
     class Meta:
         db_table = 'cpb_tipo'
+
+    def save(self, *args, **kwargs):
+        ''' On save, update timestamps '''                
+        self.fecha_modif = timezone.now()
+        return super(cpb_tipo, self).save(*args, **kwargs)
     
     def __unicode__(self):
         return u'%s' % (self.nombre)   
