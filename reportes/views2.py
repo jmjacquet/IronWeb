@@ -26,9 +26,8 @@ from productos.models import prod_productos
 from django.contrib.messages.views import SuccessMessageMixin
 from django.core.serializers.json import DjangoJSONEncoder
 from comprobantes.views import ultimoNro,buscarDatosProd,presup_aprobacion,cobros_cpb
-from django.db.models import DateTimeField, ExpressionWrapper, F, DecimalField, Max
+from django.db.models import DateTimeField, ExpressionWrapper, F,DecimalField
 from easy_pdf.rendering import render_to_pdf_response
-from django.db.models.expressions import RawSQL
 
 ################################################################
 def cuenta_corriente(request,compra_venta,entidad,fdesde,fhasta,estado,empresa):
@@ -179,14 +178,15 @@ class saldos_clientes(VariablesMixin,ListView):
         fecha = date.today()
         totales = None
         
-        if form.is_valid():                                            
+        if form.is_valid():                                
+            
             cpbs = cpb_comprobante.objects.filter(pto_vta__in=pto_vta_habilitados_list(self.request),cpb_tipo__usa_ctacte=True,cpb_tipo__compra_venta='V',empresa=empresa,estado__in=[1,2]).select_related('entidad')
             entidad = form.cleaned_data['entidad']                                                                           
             if entidad:
-               cpbs= cpbs.filter(entidad=entidad)                                    
-            totales = cpbs.extra(select={'ultimo_pago':"SELECT MAX(cpb.fecha_imputacion) FROM cpb_comprobante cpb WHERE ((cpb.empresa=cpb_comprobante.empresa)AND(cpb.estado_id IN (1,2))AND(cpb.entidad=cpb_comprobante.entidad)AND(cpb.cpb_tipo=7))"})
-            totales = totales.values('entidad','entidad__apellido_y_nombre','entidad__codigo','entidad__fact_cuit','ultimo_pago')\
-            .annotate(saldo=Sum(F('importe_total')*F('cpb_tipo__signo_ctacte'), output_field=DecimalField())).order_by('-saldo','entidad__apellido_y_nombre')                        
+               cpbs= cpbs.filter(entidad=entidad)            
+            totales = cpbs.values('entidad','entidad__apellido_y_nombre','entidad__codigo','entidad__fact_cuit').annotate(saldo=Sum(F('importe_total')*F('cpb_tipo__signo_ctacte'), output_field=DecimalField())).order_by('-saldo','entidad__apellido_y_nombre')
+
+
         context['form'] = form        
         context['fecha'] = fecha
         context['totales'] = totales
@@ -338,8 +338,7 @@ class saldos_proveedores(VariablesMixin,ListView):
             entidad = form.cleaned_data['entidad']                                                                           
             if entidad:
                cpbs= cpbs.filter(entidad=entidad)            
-            totales = cpbs.extra(select={'ultimo_pago':"SELECT MAX(cpb.fecha_imputacion) FROM cpb_comprobante cpb WHERE ((cpb.empresa=cpb_comprobante.empresa)AND(cpb.estado_id IN (1,2))AND(cpb.entidad=cpb_comprobante.entidad)AND(cpb.cpb_tipo=12))"})
-            totales = totales.values('entidad','entidad__apellido_y_nombre','entidad__codigo','entidad__fact_cuit','ultimo_pago').annotate(saldo=Sum(F('importe_total')*F('cpb_tipo__signo_ctacte'), output_field=DecimalField())).order_by('-saldo','entidad__apellido_y_nombre')
+            totales = cpbs.values('entidad','entidad__apellido_y_nombre','entidad__codigo','entidad__fact_cuit').annotate(saldo=Sum(F('importe_total')*F('cpb_tipo__signo_ctacte'), output_field=DecimalField())).order_by('-saldo','entidad__apellido_y_nombre')
 
 
         context['form'] = form        
@@ -736,10 +735,7 @@ class caja_diaria(VariablesMixin,ListView):
                    ingresos= ingresos.filter(cpb_comprobante__pto_vta=pto_vta)
                    egresos= egresos.filter(cpb_comprobante__pto_vta=pto_vta)            
 
-            if cuenta:
-                   ingresos= ingresos.filter(cta_ingreso=cuenta)
-                   egresos= egresos.filter(cta_egreso=cuenta)
-                   
+            
 
             ingresos_resumen = ingresos.values('tipo_forma_pago__id','tipo_forma_pago__codigo','tipo_forma_pago__nombre')\
                             .annotate( saldo=Sum(ExpressionWrapper(F("importe"), output_field=FloatField())) )
@@ -748,7 +744,9 @@ class caja_diaria(VariablesMixin,ListView):
                             .annotate( saldo=Sum(ExpressionWrapper(F("importe"), output_field=FloatField())) )
             egresos_total = egresos.aggregate(egresos_total=Sum('importe'))
             
-            
+            if cuenta:
+                   ingresos= ingresos.filter(cta_ingreso=cuenta)
+                   egresos= egresos.filter(cta_egreso=cuenta)
                    
             ingresos_cta_resumen = ingresos.values('cta_ingreso__id','cta_ingreso__codigo','cta_ingreso__nombre').annotate( saldo=Sum(ExpressionWrapper(F("importe"), output_field=FloatField())) )
             ingresos_cta_total = ingresos.aggregate(ingresos_cta_total=Sum('importe'))
@@ -1129,8 +1127,6 @@ class RankingsView(VariablesMixin,TemplateView):
             context['ranking_vendedores'] =  None
             context['ranking_clientes'] =  None
             context['ranking_proveedores'] =  None
-            context['productos_vendidos_categ'] = None
-
 
         context['form'] = form
         context['fecha'] = fecha        
@@ -1173,11 +1169,6 @@ class RankingsView(VariablesMixin,TemplateView):
 
             ranking_proveedores = comprobantes.filter(cpb_tipo__compra_venta='C').values('entidad__apellido_y_nombre').annotate(tot=Sum(F('importe_total')*F('cpb_tipo__signo_ctacte'),output_field=DecimalField())).order_by('-tot')[:10]
             context['ranking_proveedores'] = ranking_proveedores
-
-            productos_vendidos_categ = cpb_detalles.filter(cpb_comprobante__cpb_tipo__compra_venta='V')
-            productos_vendidos_categ_total = productos_vendidos_categ.aggregate(sum=Sum(F('importe_total')*F('cpb_comprobante__cpb_tipo__signo_ctacte'), output_field=DecimalField()))['sum'] or 0 
-            productos_vendidos_categ = productos_vendidos_categ.values('producto__categoria__nombre').annotate(tot=Sum(F('importe_total')*F('cpb_comprobante__cpb_tipo__signo_ctacte'),output_field=DecimalField())).order_by('-tot')[:10]
-            context['productos_vendidos_categ'] = productos_vendidos_categ
 
         context['meses']= json.dumps(meses,cls=DecimalEncoder)       
         context['ventas_deuda']=  json.dumps(ventas_deuda,cls=DecimalEncoder)

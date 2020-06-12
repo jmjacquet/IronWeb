@@ -123,13 +123,10 @@ INSTALLED_APPS = (
 
 SESSION_SERIALIZER = 'django.contrib.sessions.serializers.JSONSerializer'
 
-# EMAIL_PORT = 465
+EMAIL_USE_TLS = True
 EMAIL_HOST = config('EMAIL_HOST', default='localhost')
 EMAIL_HOST_PASSWORD = config('EMAIL_HOST_PASSWORD', default='')
 EMAIL_HOST_USER = config('EMAIL_HOST_USER', default='')
-EMAIL_USE_TLS = True
-# EMAIL_HOST_USER = os.environ.get('EMAIL_HOST_USER', 'grupogua_errores')
-# EMAIL_HOST_PASSWORD = os.environ.get('EMAIL_HOST_PASSWORD', None)
 
 
 
@@ -202,8 +199,7 @@ CRISPY_TEMPLATE_PACK = 'bootstrap3'
 AUTH_PROFILE_MODULE = 'usuarios.UserProfile'
 AUTHENTICATION_BACKENDS = ('django.contrib.auth.backends.ModelBackend','usuarios.authentication.UsuarioBackend',)
 SESSION_EXPIRE_AT_BROWSER_CLOSE = True
-SESSION_COOKIE_NAME = "grupogua"
-SECRET_KEY='grupoguadalupe'
+SESSION_COOKIE_NAME = config('SESSION_COOKIE_NAME', default='')
 
 
 #Dir de Cetificados de Facturacion Electronica

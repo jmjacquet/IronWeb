@@ -395,6 +395,16 @@ def presup_aprobacion(request,id,estado):
     cpb.save()
     messages.success(request, u'Los datos se guardaron con éxito!')               
     return HttpResponseRedirect(reverse('cpb_presup_listado'))
+
+@login_required 
+def presup_anular_reactivar(request,id,estado):
+    cpb = cpb_comprobante.objects.get(pk=id) 
+    cpb.estado=cpb_estado.objects.get(id=estado)    
+    if int(estado)==1:
+      cpb.presup_aprobacion=cpb_estado.objects.get(id=estado)
+    cpb.save()
+    messages.success(request, u'Los datos se guardaron con éxito!')               
+    return HttpResponseRedirect(reverse('cpb_presup_listado'))
        
 @login_required 
 def cpb_anular_reactivar(request,id,estado,descr=None):

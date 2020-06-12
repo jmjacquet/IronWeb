@@ -146,7 +146,29 @@
                             </div>
                         </div>
                     </div> 
-                </div>       
+                </div>
+                <div class="col-sm-6">
+                   <div class="portlet box">
+                        <div class="portlet-title encabezado toolbar_blue">
+                            <div class="caption">
+                                <i class="icon-bar-chart "></i>
+                                <span class="caption-subject bold uppercase">DISTRIBUCIÓN VENTA PRODUCTOS x CATEGORÍA</span>
+                                <span class="caption-helper">{{fdesde|date:'d/m/Y'}} - {{fhasta|date:'d/m/Y'}}</span>
+                            </div>                                        
+                        </div>
+                        <div class="portlet-body">
+                           <div class="row">                                 
+                                <div class="col-sm-12">                                
+                                                <div class="portlet-body">
+                                                   <div class="chart" style="padding: 0px; position: relative;"> 
+                                                                <div id="productos_ventas_categ" style="width: 100%; height: 100%; margin: 0 auto"></div>
+                                                    </div>  
+                                                </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div> 
+                </div>                  
                                             
             </div>
                      
@@ -230,6 +252,19 @@ jQuery(document).ready(function($) {
             data: [
                 {% for p in productos_vendidos %}
                     { name: '{{p.producto__nombre|safe|truncatechars:50}}', y: {{p.tot|safe}}
+                    {% if forloop.first%}  ,sliced: true,  selected: true {% endif %} },           
+                {% endfor %}
+            ]
+        }]
+    });
+
+    Highcharts.chart('productos_ventas_categ', {
+        
+        series: [{
+            name: 'Vendido x Categoría',
+            data: [
+                {% for p in productos_vendidos_categ %}
+                    { name: '{{p.producto__categoria__nombre|safe|truncatechars:50}}', y: {{p.tot|safe}}
                     {% if forloop.first%}  ,sliced: true,  selected: true {% endif %} },           
                 {% endfor %}
             ]

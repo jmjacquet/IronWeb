@@ -75,13 +75,21 @@
                                                 onClick="alerta= alertify.dialog('confirm').set({'labels':{ok:'Aceptar', cancel:'Cancelar'},'message': '¿DESEA RECHAZAR EL PRESUPUESTO ACTUAL?',transition:'fade','onok': function(){ window.location.href = '{% url 'presup_aprobacion' id=cpb.pk estado=13  %}'; },'oncancel': function(){ return true;} }); alerta.setting('modal', true); alerta.setHeader('RECHAZAR PRESUPUESTO'); alerta.show(); return true;" ><i class="icon-dislike"></i>Rechazar</a></li>
                                             {% endif %}
                                         {% if cpb.presup_aprobacion.pk = 12 %}
-                                        <li role="separator" class="divider"></li>
+                                            <li role="separator" class="divider"></li>
                                             {% if 'cpb_ventas_abm' in permisos_grupo %}
                                                 <li><a href="{% url 'cpb_venta_presup_nuevo' id=cpb.pk %}"  title="Generar Venta" ><i class="icon-note"></i> Generar/Cargar Venta</a></li>
                                             {% endif %}
                                             {% if 'trab_pedidos' in permisos_grupo %}
                                                 <li><a href="{% url 'orden_pedido_presup_nuevo' id=cpb.pk %}"  title="Generar Nota Pedido" ><i class="icon-notebook"></i> Generar Nota Pedido</a></li>
                                             {% endif %}
+                                        {% endif %}
+                                                <li role="separator" class="divider"></li>
+                                        {% if cpb.estado.pk < 3 %}
+                                                <li><a href="#" 
+                                                onClick="alerta= alertify.dialog('confirm').set({'labels':{ok:'Aceptar', cancel:'Cancelar'},'message': '¿DESEA ANULAR EL PRESUPUESTO ACTUAL?',transition:'fade','onok': function(){ window.location.href = '{% url 'presup_anular_reactivar' id=cpb.pk estado=3  %}'; },'oncancel': function(){ return true;} }); alerta.setting('modal', true); alerta.setHeader('ANULAR/REACTIVAR PRESUPUESTO'); alerta.show(); return true;" ><i class="icon-dislike"></i>Anular</a></li>
+                                        {% else %}
+                                                <li><a href="#" 
+                                                onClick="alerta= alertify.dialog('confirm').set({'labels':{ok:'Aceptar', cancel:'Cancelar'},'message': '¿DESEA REACTIVAR EL PRESUPUESTO ACTUAL?',transition:'fade','onok': function(){ window.location.href = '{% url 'presup_anular_reactivar' id=cpb.pk estado=1 %}'; },'oncancel': function(){ return true;} }); alerta.setting('modal', true); alerta.setHeader('ANULAR/REACTIVAR PRESUPUESTO'); alerta.show(); return true;"><i class="icon-like"></i>Restablecer</a></li>
                                         {% endif %}
                                     {% endif %} 
                                         <li role="separator" class="divider"></li>

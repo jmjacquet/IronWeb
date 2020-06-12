@@ -30,6 +30,7 @@
                         <th class="text-center"></th>
                         <th class="">Cliente</th>                                                             
                         <th class="text-right">Saldo Pendiente</th>                                                                                                                             
+                        <th class="text-right">Último Pago</th>       
                     </tr>
                 </thead>
                 <tbody>
@@ -39,7 +40,8 @@
                         <td  title="{{ cpb.entidad__apellido_y_nombre}}" > <strong>
                             <a href="{% url 'cliente_ver' id=cpb.entidad %}"  title="VER" class="modal-detail" data-modal-head="DETALLE CLIENTE {{cpb.entidad__codigo}}" data-fm-callback="reload">
                             {{ cpb.entidad__codigo }} - {{ cpb.entidad__apellido_y_nombre}} {% if cpb.entidad__fact_cuit %} - {{cpb.entidad__fact_cuit}}{%endif%}</strong></a></td>
-                        <td class="importe_total {% if cpb.saldo > 0 %} text-danger {% elif cpb.saldo < 0 %} text-success{% endif %}">${{cpb.saldo|default_if_none:0|floatformat:2}}</td>                                 
+                        <td class="importe_total {% if cpb.saldo > 0 %} text-danger {% elif cpb.saldo < 0 %} text-success{% endif %}">${{cpb.saldo|default_if_none:0|floatformat:2}}</td>
+                        <td class="importe_total">{{cpb.ultimo_pago|date:'d/m/Y'}}</td>                        
                     </tr>
                     {% endfor %}
                 </tbody>
@@ -48,6 +50,7 @@
                         <th></th>                               
                         <th></th> 
                         <th class="importe"></th>                                 
+                        <th></th> 
                     </tr>
                 </tfoot>
             </table>            
