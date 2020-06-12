@@ -1,6 +1,8 @@
 # -*- coding: utf-8 -*-
 from __future__ import unicode_literals
 import os,sys
+from decouple import config
+
 PROJECT_ROOT = os.path.join(os.path.dirname(__file__), '..') #every dot represent the location of the folder so when you try to delete one dot, the path will be change
 
 SITE_ROOT = PROJECT_ROOT
@@ -17,23 +19,10 @@ ENTIDAD_ID = os.environ.get('ENTIDAD_ID')
 ENTIDAD_DB = os.environ.get('ENTIDAD_DB')
 ENTIDAD_DIR = os.environ.get('ENTIDAD_DIR')
 
-DB_USER = "gg"
-DB_PASS = "battlehome"
-DB_HOST = "web594.webfaction.com"
+DB_USER = config('DB_USER')
+DB_PASS = config('DB_PASS')
+DB_HOST = config('DB_HOST')
 
-
-DATABASES = {
-        'default': {
-            'ENGINE': 'django.db.backends.mysql', # Add 'postgresql_psycopg2', 'postgresql', 'mysql', 'sqlite3' or 'oracle'.
-            'NAME': ENTIDAD_DB,           # Or path to database file if using sqlite3.
-            'USER':  DB_USER,    
-            'PASSWORD':  DB_PASS,            # Not used with sqlite3.
-            'HOST':  DB_HOST,                      # Set to empty string for localhost. Not used with sqlite3.
-            'PORT': '',      
-        },
-    }
-
-    
 
 ALLOWED_HOSTS = '*'
 TIME_ZONE = 'America/Argentina/Buenos_Aires'
@@ -78,7 +67,7 @@ TEMPLATE_CONTEXT_PROCESSORS =   (
     'django.contrib.messages.context_processors.messages',
 )
 
-SECRET_KEY = '7i@#mz$&m(!02ij#^-z)wd1+g4yay9*s%5vw7ix$@#m)k=unrx'
+SECRET_KEY = config('SECRET_KEY')
 
 TEMPLATE_LOADERS = (
     'django.template.loaders.filesystem.Loader',
@@ -135,9 +124,9 @@ INSTALLED_APPS = (
 SESSION_SERIALIZER = 'django.contrib.sessions.serializers.JSONSerializer'
 
 # EMAIL_PORT = 465
-EMAIL_HOST = str("smtp.webfaction.com")
-EMAIL_HOST_USER = str("grupogua_errores")
-EMAIL_HOST_PASSWORD = str("Sarasa1616")
+EMAIL_HOST = config('EMAIL_HOST', default='localhost')
+EMAIL_HOST_PASSWORD = config('EMAIL_HOST_PASSWORD', default='')
+EMAIL_HOST_USER = config('EMAIL_HOST_USER', default='')
 EMAIL_USE_TLS = True
 # EMAIL_HOST_USER = os.environ.get('EMAIL_HOST_USER', 'grupogua_errores')
 # EMAIL_HOST_PASSWORD = os.environ.get('EMAIL_HOST_PASSWORD', None)
