@@ -1,4 +1,0 @@
-{% if prod.pk %}
-<a href="{% url 'producto_ver' id=prod.pk %}"  title="{{ prod.nombre}}" class="modal-detail" data-modal-head="DETALLE PRODUCTO {{prod.codigo}}" data-fm-callback="reload">
-	<strong>{{ prod.prod|truncatechars:60 }}</strong></a>
-{% endif %}	
