@@ -1,32 +1,88 @@
 {% load static from staticfiles %}
 {% load bootstrap3 %}
 {% load humanize %}
-
-{% block main %}    
-<div class="col-xs-12"> 
-  <table class="table table-user-information">
-    <tbody>
-      <tr>
-        <td>Nombre:</td><td><strong>{{producto.nombre|default_if_none:''}}</strong></td><td></td><td></td>
-      </tr>
-      <tr>
-        <td>Código:</td><td><strong>{{producto.codigo|default_if_none:''}}</strong></td><td></td><td></td>
-      </tr>
-      <tr>
-        <td>Categoría:</td><td><strong>{{producto.categoria|default_if_none:'' }}</strong></td><td></td><td></td>
-      </tr>
-      <tr>
-        <td>Tipo Producto:</td><td><strong>{{producto.get_tipo_producto_display|default_if_none:'' }}</strong></td><td></td><td></td>
-      </tr>
-      <tr>
-       <td>Tasa IVA:</td><td><strong>{{ producto.tasa_iva|default_if_none:'' }}</strong></td><td>Unidad:</td><td><strong>{{ producto.get_unidad_display|default_if_none:'' }}</strong></td>
-      </tr>     
-      <tr>
-        <td>Descripción:</td><td colspan="3"><strong>{{producto.descripcion|default_if_none:'' }}</strong></td>
-      </tr>
-    </tbody>
-  </table>
-</div>                
-{% endblock main %}        
-
-                               
+{% block main %}
+  <div class="col-xs-12">
+    <div class="row">
+      <div class="col-xs-12">
+        <table class="table table-user-information table-striped table-hover">
+          <tbody>
+            <tr>
+              <td>Nombre:</td><td><strong>{{producto.nombre|default_if_none:''}}</strong></td><td></td><td></td>
+            </tr>
+            <tr>
+              <td>Código:</td><td><strong>{{producto.codigo|default_if_none:''}}</strong></td><td>Cód.Barras:</td><td>{{producto.codigo_barras|default_if_none:''}}</td>
+            </tr>
+            <tr>
+              <td>Categoría:</td><td><strong>{{producto.categoria|default_if_none:'' }}</strong></td><td></td><td></td>
+            </tr>
+            <tr>
+              <td>Tipo Producto:</td><td><strong>{{producto.get_tipo_producto_display|default_if_none:'' }}</strong></td><td>Mostrar en:</td><td><strong>{{ producto.get_mostrar_en_display|default_if_none:'' }}</strong></td>
+            </tr>
+            <tr>
+              <td>Tasa IVA:</td><td><strong>{{ producto.tasa_iva|default_if_none:'' }}</strong></td><td>Unidad:</td><td><strong>{{ producto.get_unidad_display|default_if_none:'' }}</strong></td>
+            </tr>
+            <tr>
+              <td>Llevar Stock:</td><td><strong><i class="fa {% if producto.llevar_stock %}fa-check text-success{% else %}fa-close text-danger{% endif %}"></i></strong></td>
+              <td>Stock Negativo:</td><td><strong><i class="fa {% if producto.stock_negativo %}fa-check text-success{% else %}fa-close text-danger{% endif %}"></i></strong></td>
+            </tr>
+            <tr>
+              <td>Descripción:</td><td colspan="3"><strong>{{producto.descripcion|default_if_none:'' }}</strong></td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-xs-12 col-sm-5">
+        <div class="titulo_detalle">Detalle Stock Disponible</div>
+        <table id="dataTables-cpb_venta" class="table table-striped  table-hover table-no-bordered tabla_nueva nowrap ">
+          <thead>
+            <tr>
+              <th class="text-center">Ubicación</th>
+              <th class="text-right">P.Pedido</th>              
+              <th class="text-right">Stock</th>     
+              <th class="text-left">Unidad</th>              
+            </tr>
+          </thead>
+          <tbody>
+            {% for ps in prod_stock %}
+              <tr>
+                <td class="text-center texto_detalle">{{ ps.ubicacion}}</td>                
+                <td class="importe texto_detalle">{{ps.punto_pedido|default_if_none:0|floatformat:2}}</td>
+                <td class="importe_total texto_detalle">{{ps.get_stock|default_if_none:0|floatformat:2}}</td>
+                <td class="text-left texto_detalle">[{{ps.producto.get_unidad_display|default_if_none:''}}]</td>
+              </tr>
+            {% endfor %}
+          </tbody>
+        </table>
+      </div>
+    
+    <div class="col-xs-12 col-sm-7">
+        <div class="titulo_detalle">Detalle Precios</div>
+        <table id="dataTables-cpb_venta" class="table table-striped  table-hover table-no-bordered tabla_nueva nowrap ">
+          <thead>
+            <tr>
+              <th class="text-center">Lista de Precio</th>
+              <th class="text-right">P.Costo</th>
+              <th class="text-right">P.CostoImp.</th>
+              <th class="text-right">Coef.Gan.</th>
+              <th class="text-right">P.Venta</th>              
+            </tr>
+          </thead>
+          <tbody>
+            {% for pp in prod_precios %}
+              <tr>
+                <td class="text-center texto_detalle">{{pp.lista_precios}}</td>                                               
+                <td class="importe texto_detalle">${{pp.precio_costo|default_if_none:0|floatformat:2}}</td>
+                <td class="importe texto_detalle">${{pp.precio_cimp|default_if_none:0|floatformat:2}}</td>
+                <td class="importe texto_detalle">{{pp.get_porc_gan|default_if_none:0|floatformat:2}}%</td>
+                <td class="importe_total texto_detalle">${{pp.precio_venta|default_if_none:0|floatformat:2}}</td>
+              </tr>
+            {% endfor %}
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+{% endblock main %}
