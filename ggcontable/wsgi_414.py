@@ -9,10 +9,9 @@ sys.path.append(PROJECT_DIR)
 os.environ['DJANGO_SETTINGS_MODULE'] = "ggcontable.production"
 os.environ['ENTIDAD_ID'] = '1'
 os.environ['ENTIDAD_DB'] = 'ironweb_414'
-os.environ['ENTIDAD_DIR'] = 'patpolirubro'
+os.environ['ENTIDAD_DIR'] = 'labartoladeco'
 from django.core.wsgi import get_wsgi_application
 application = get_wsgi_application()
-
 # try:
 # 	_application = None
 # 	def application(environ, start_response):
