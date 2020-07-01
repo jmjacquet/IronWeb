@@ -4145,3 +4145,31 @@ Traceback (most recent call last):
   File "D:\Repo\ironStable\comprobantes\views.py", line 862, in imprimirCobranza
     c = empresa
 NameError: global name 'empresa' is not defined
+[01/jul./2020 17:59:25] ERROR [django.request:256] Internal Server Error: /entidades/importar_entidades/
+Traceback (most recent call last):
+  File "C:\Users\juanma\Envs\ironstable\lib\site-packages\django\core\handlers\base.py", line 132, in get_response
+    response = wrapped_callback(request, *callback_args, **callback_kwargs)
+  File "C:\Users\juanma\Envs\ironstable\lib\site-packages\django\contrib\auth\decorators.py", line 22, in _wrapped_view
+    return view_func(request, *args, **kwargs)
+  File "D:\Repo\ironStable\entidades\views.py", line 424, in importar_entidades
+    form = ImportarEntidadesForm(None,None)
+  File "D:\Repo\ironStable\entidades\forms.py", line 159, in __init__
+    empresa = empresa_actual(request)
+  File "D:\Repo\ironStable\general\utilidades.py", line 300, in empresa_actual
+    return request.user.userprofile.id_usuario.empresa
+AttributeError: 'NoneType' object has no attribute 'user'
+[01/Jul/2020 18:01:41] ERROR [django.request:256] Internal Server Error: /entidades/importar_entidades/
+Traceback (most recent call last):
+  File "C:\Users\juanma\Envs\ironstable\lib\site-packages\django\core\handlers\base.py", line 132, in get_response
+    response = wrapped_callback(request, *callback_args, **callback_kwargs)
+  File "C:\Users\juanma\Envs\ironstable\lib\site-packages\django\contrib\auth\decorators.py", line 22, in _wrapped_view
+    return view_func(request, *args, **kwargs)
+  File "D:\Repo\ironStable\entidades\views.py", line 426, in importar_entidades
+    return render(request, 'entidades/importar_clientes.html',context)
+  File "C:\Users\juanma\Envs\ironstable\lib\site-packages\django\shortcuts.py", line 67, in render
+    template_name, context, request=request, using=using)
+  File "C:\Users\juanma\Envs\ironstable\lib\site-packages\django\template\loader.py", line 98, in render_to_string
+    template = get_template(template_name, using=using)
+  File "C:\Users\juanma\Envs\ironstable\lib\site-packages\django\template\loader.py", line 46, in get_template
+    raise TemplateDoesNotExist(template_name)
+TemplateDoesNotExist: entidades/importar_clientes.html

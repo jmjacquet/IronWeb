@@ -31,5 +31,5 @@ urlpatterns = patterns('entidades.views',
 
     url(r'^entidad_ver/(?P<id>\d+)/$', EntidadVerView.as_view(), name="entidad_ver"),
 
-    url(r'^importar_clientes/$', importar_clientes,name="importar_clientes"),
+    url(r'^importar_entidades/$', importar_entidades,name="importar_entidades"),
     )

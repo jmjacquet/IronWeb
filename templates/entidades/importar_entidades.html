@@ -7,7 +7,7 @@
 
 {% block breadcrumbs %}              
         <div class="breadcrumbs">
-           IMPORTAR/AGREGAR CLIEENTES
+           IMPORTAR/AGREGAR CLIENTES/PROVEEDORES/VENDEDORES
         </div>
 {% endblock breadcrumbs %}
 {% block extra_css %}
@@ -30,14 +30,16 @@
 		<form method="post" class="form abm" enctype="multipart/form-data" id="importador">
 		{% csrf_token %}
 		<div class="row">	
-			<div class="col-xs-12 ">
-				<div class="col-sm-6">{{ form.archivo|as_crispy_field }}</div>			
+			<div class="col-xs-12">
+				<div class="col-sm-5">{{ form.empresa|as_crispy_field }}</div>						
+				<div class="col-sm-4">{{ form.tipo_entidad|as_crispy_field }}</div>							
+				<div class="col-sm-3">{{ form.sobreescribir|as_crispy_field }}</div>				
 			</div>
-	    </div>
-	    <div class="row">	
+		</div>
+		<div class="row">
 			<div class="col-xs-12 ">
-				<div class="col-sm-3 text-right cerca"><label>¿Sobreescribir existentes?</label></div><div class="col-sm-1 cerca">{{ form.sobreescribir|as_crispy_field }}</div>
-				<div class="col-sm-2"><button class="btn pull-right btn-primary" id="Procesar" type="button"><i class="fa fa-check"></i> Importar</button></div>
+				<div class="col-sm-6">{{ form.archivo|as_crispy_field }}</div>										
+				<div class="col-sm-6"><button class="btn pull-right btn-primary" id="Procesar" type="button"><i class="fa fa-check"></i> Importar</button></div>
 			</div>
 		</div>
 	</fieldset>
