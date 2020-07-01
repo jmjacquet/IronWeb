@@ -228,3 +228,28 @@ class StockProdForm(forms.ModelForm):
 	class Meta:
 			model = prod_producto_ubicac
 			exclude = ['id','producto','ubicacion']		
+
+
+class ImportarProductosForm(forms.Form):	
+	archivo = forms.FileField(label='Seleccione un archivo',required=True)  
+	sobreescribir = forms.ChoiceField(label=u'¿Sobreescribir Existentes?',choices=SINO,required=True,initial='S')
+	empresa = forms.ModelChoiceField(queryset=gral_empresa.objects.all(),empty_label=None,required=True)	
+	def __init__(self, *args, **kwargs):
+		request = kwargs.pop('request', None)
+		super(ImportarProductosForm, self).__init__(*args, **kwargs)		
+		try:
+			empresas = empresas_buscador(request)
+			self.fields['empresa'].queryset = empresas
+			self.fields['empresa'].initial = 1
+		except:
+			empresa = empresa_actual(request)  
+
+	def clean(self):
+		archivo = self.cleaned_data.get('archivo')        
+		if archivo:
+			if not archivo.name.endswith('.csv'):
+				self.add_error("archivo",u'¡El archivo debe tener extensión .CSV!')            
+			#if file is too large, return
+			if archivo.multiple_chunks():
+				self.add_error("archivo",u"El archivo es demasiado grande (%.2f MB)." % (archivo.size/(1000*1000),))
+		return self.cleaned_data

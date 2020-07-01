@@ -820,3 +820,102 @@ def prod_stock_generar(request):
             ubi_prod.save()
     return HttpResponseRedirect(reverse('principal'))
     
+
+
+############# IMPORTADOR CLIENTES / PROV ######################
+import csv, io
+import random
+def unicode_csv_reader(unicode_csv_data, dialect=csv.excel, **kwargs):
+    # csv.py doesn't do Unicode; encode temporarily as UTF-8:
+    csv_reader = csv.reader(utf_8_encoder(unicode_csv_data),
+                            dialect=dialect, **kwargs)
+    for row in csv_reader:
+        # decode UTF-8 back to Unicode, cell by cell:
+        yield [unicode(cell, 'utf-8') for cell in row]
+
+def utf_8_encoder(unicode_csv_data):
+    for line in unicode_csv_data:
+        yield line.encode('utf-8')
+
+@login_required 
+def importar_productos(request):               
+    context = {}
+    context = getVariablesMixin(request) 
+    if request.method == 'POST':
+        form = ImportarProductosForm(request.POST,request.FILES,request=request)
+        if form.is_valid(): 
+            csv_file = form.cleaned_data['archivo']
+            sobreescribir = form.cleaned_data['sobreescribir'] == 'S'
+            empresa = form.cleaned_data['empresa']
+            if not csv_file.name.endswith('.csv'):
+                messages.error(request,'¡El archivo debe tener extensión .CSV!')
+                return HttpResponseRedirect(reverse("importar_empleados"))
+            
+            if csv_file.multiple_chunks():
+                messages.error(request,"El archivo es demasiado grande (%.2f MB)." % (csv_file.size/(1000*1000),))
+                return HttpResponseRedirect(reverse("importar_empleados"))
+
+            decoded_file = csv_file.read().decode("latin1").replace(",", "").replace("'", "")
+            io_string = io.StringIO(decoded_file)
+            reader = unicode_csv_reader(io_string)                
+            #Id;Nombre;Tipo de Producto;Proveedor;C¢digo;Stock;PC;IVA;MARGEN;;Precio de Venta;EFECTIVO
+            cant=0
+            next(reader) #Omito el Encabezado                            
+            for index,line in enumerate(reader):                      
+                campos = line[0].split(";")               
+                
+                codbar = campos[4].strip()
+                if codbar=='':
+                    cod = str(ultimoNroId(prod_productos)+1).zfill(11)
+                    cod += str(digVerificador(cod))                                       
+                    codbar = cod
+                cod = codbar
+                print cod
+
+                nombre = campos[1].strip().upper()
+                                
+                try:
+                    tprod = prod_categoria.objects.get(nombre=campos[2].strip().upper())
+                except:
+                    tprod = None
+
+                
+                try:
+                    stock = int(campos[5].strip())
+                except:                
+                    stock=0
+                
+                pcosto =   Decimal(campos[6].strip())
+                piva
+                domicilio = campos[5].strip().upper()  #DOMICILIO
+                dni = campos[6].strip().upper()  #DOMICILIO
+                cuit = campos[7].strip().upper().replace("-", "").replace(".", "") #ART  
+
+                stock = campos[8].strip()
+                if cond_iva=='Consumidor Final':
+                    cond_iva=5
+                elif cond_iva=='Responsable Inscripto':
+                    cond_iva=1
+                elif cond_iva=='Exento':
+                    cond_iva=4
+                else:
+                    cond_iva=5
+
+                tipo_doc = 99
+                if cuit<>'':
+                    tipo_doc = 80
+
+                fact_razon_social = campos[9].strip().upper()
+                fact_direccion = campos[10].strip().upper()
+                localidad = campos[11].strip().upper()                    
+                cp =   campos[12].strip()  #CP
+                
+                egr_entidad.objects.update_or_create(codigo=cod,tipo_entidad=tipo_entidad,empresa=empresa,defaults={'apellido_y_nombre':nombre,'fact_razon_social':fact_razon_social,'fact_direccion':fact_direccion,
+                    'fact_telefono':telefono2,'tipo_doc':tipo_doc,'fact_cuit':cuit,'domicilio':domicilio,'nro_doc':dni,'telefono':telefono,'email':email,'cod_postal':cp,'localidad':localidad,'fact_categFiscal':cond_iva})                                                                 
+                cant+=1                       
+            messages.success(request, u'Se importó el archivo con éxito!<br>(%s Clientes creados/actualizados)'% cant )
+            
+    else:
+        form = ImportarProductosForm(None,None,request=request)
+    context['form'] = form    
+    return render(request, 'entidades/importar_entidades.html',context)            
