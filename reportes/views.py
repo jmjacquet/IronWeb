@@ -736,7 +736,10 @@ class caja_diaria(VariablesMixin,ListView):
                    ingresos= ingresos.filter(cpb_comprobante__pto_vta=pto_vta)
                    egresos= egresos.filter(cpb_comprobante__pto_vta=pto_vta)            
 
-            
+            if cuenta:
+                   ingresos= ingresos.filter(cta_ingreso=cuenta)
+                   egresos= egresos.filter(cta_egreso=cuenta)
+                   
 
             ingresos_resumen = ingresos.values('tipo_forma_pago__id','tipo_forma_pago__codigo','tipo_forma_pago__nombre')\
                             .annotate( saldo=Sum(ExpressionWrapper(F("importe"), output_field=FloatField())) )
@@ -745,10 +748,7 @@ class caja_diaria(VariablesMixin,ListView):
                             .annotate( saldo=Sum(ExpressionWrapper(F("importe"), output_field=FloatField())) )
             egresos_total = egresos.aggregate(egresos_total=Sum('importe'))
             
-            if cuenta:
-                   ingresos= ingresos.filter(cta_ingreso=cuenta)
-                   egresos= egresos.filter(cta_egreso=cuenta)
-                   
+            
             ingresos_cta_resumen = ingresos.values('cta_ingreso__id','cta_ingreso__codigo','cta_ingreso__nombre').annotate( saldo=Sum(ExpressionWrapper(F("importe"), output_field=FloatField())) )
             ingresos_cta_total = ingresos.aggregate(ingresos_cta_total=Sum('importe'))
             egresos_cta_resumen = egresos.values('cta_egreso__id','cta_egreso__codigo','cta_egreso__nombre').annotate( saldo=Sum(ExpressionWrapper(F("importe"), output_field=FloatField())) )

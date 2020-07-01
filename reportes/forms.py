@@ -21,8 +21,8 @@ from general.forms import pto_vta_buscador
 
 class ConsultaCtaCteCliente(forms.Form):               
     entidad = chosenforms.ChosenModelChoiceField(label='Cliente',queryset=egr_entidad.objects.filter(tipo_entidad=1,baja=False),empty_label=None,required = True)   
-    fdesde =  forms.DateField(label='Fecha Desde',widget=forms.DateInput(attrs={'class': 'form-control datepicker'}),initial=inicioMes(),required = True)
-    fhasta =  forms.DateField(label='Fecha Hasta',widget=forms.DateInput(attrs={'class': 'form-control datepicker'}),initial=hoy(),required = True)
+    fdesde =  forms.DateField(label='Fecha Desde',widget=forms.DateInput(attrs={'class': 'form-control datepicker','autocomplete':'off'}),initial=inicioMes(),required = True)
+    fhasta =  forms.DateField(label='Fecha Hasta',widget=forms.DateInput(attrs={'class': 'form-control datepicker','autocomplete':'off'}),initial=hoy(),required = True)
     estado = forms.ChoiceField(label='Estado',choices=ESTADO_,required=False,initial=0)	
     def __init__(self, *args, **kwargs):
 		empresa = kwargs.pop('empresa', None)  		
@@ -48,8 +48,8 @@ class ConsultaSaldosClientes(forms.Form):
 
 class ConsultaCtaCteProv(forms.Form):               
     entidad = chosenforms.ChosenModelChoiceField(label='Proveedor',queryset=egr_entidad.objects.filter(tipo_entidad=2,baja=False),empty_label=None,required = True)
-    fdesde =  forms.DateField(label='Fecha Desde',widget=forms.DateInput(attrs={'class': 'form-control datepicker'}),initial=inicioMes(),required = True)
-    fhasta =  forms.DateField(label='Fecha Hasta',widget=forms.DateInput(attrs={'class': 'form-control datepicker'}),initial=hoy(),required = True)
+    fdesde =  forms.DateField(label='Fecha Desde',widget=forms.DateInput(attrs={'class': 'form-control datepicker','autocomplete':'off'}),initial=inicioMes(),required = True)
+    fhasta =  forms.DateField(label='Fecha Hasta',widget=forms.DateInput(attrs={'class': 'form-control datepicker','autocomplete':'off'}),initial=hoy(),required = True)
     estado = forms.ChoiceField(label='Estado',choices=ESTADO_,required=False,initial=0)	
     def __init__(self, *args, **kwargs):
 		empresa = kwargs.pop('empresa', None)  
@@ -75,8 +75,8 @@ class ConsultaSaldosProv(forms.Form):
 
 class ConsultaLibroIVAVentas(forms.Form):               
     entidad = forms.CharField(label='Cliente/Proveedor',max_length=100,widget=forms.TextInput(attrs={'class':'form-control','text-transform': 'uppercase'}),required=False)    
-    fdesde =  forms.DateField(label='Fecha Desde',widget=forms.DateInput(attrs={'class': 'form-control datepicker'}),initial=inicioMes(),required = True)
-    fhasta =  forms.DateField(label='Fecha Hasta',widget=forms.DateInput(attrs={'class': 'form-control datepicker'}),initial=finMes(),required = True)
+    fdesde =  forms.DateField(label='Fecha Desde',widget=forms.DateInput(attrs={'class': 'form-control datepicker','autocomplete':'off'}),initial=inicioMes(),required = True)
+    fhasta =  forms.DateField(label='Fecha Hasta',widget=forms.DateInput(attrs={'class': 'form-control datepicker','autocomplete':'off'}),initial=finMes(),required = True)
     estado = forms.ChoiceField(label='Estado',choices=ESTADO_,required=False,initial=0)	
     cae = forms.ChoiceField(label='CAE',choices=SINO,required=False,initial=0)	
     pto_vta = forms.IntegerField(label='Pto. Vta.',required = False)
@@ -88,8 +88,8 @@ class ConsultaLibroIVAVentas(forms.Form):
 
 class ConsultaLibroIVACompras(forms.Form):               
     entidad = forms.CharField(label='Proveedor',max_length=100,widget=forms.TextInput(attrs={'class':'form-control','text-transform': 'uppercase'}),required=False)    
-    fdesde =  forms.DateField(label='Fecha Desde',widget=forms.DateInput(attrs={'class': 'form-control datepicker'}),initial=inicioMes(),required = True)
-    fhasta =  forms.DateField(label='Fecha Hasta',widget=forms.DateInput(attrs={'class': 'form-control datepicker'}),initial=finMes(),required = True)
+    fdesde =  forms.DateField(label='Fecha Desde',widget=forms.DateInput(attrs={'class': 'form-control datepicker','autocomplete':'off'}),initial=inicioMes(),required = True)
+    fhasta =  forms.DateField(label='Fecha Hasta',widget=forms.DateInput(attrs={'class': 'form-control datepicker','autocomplete':'off'}),initial=finMes(),required = True)
     estado = forms.ChoiceField(label='Estado',choices=ESTADO_,required=False,initial=0)	    
     pto_vta = forms.IntegerField(label='Pto. Vta.',required = False)    
     fact_x = forms.ChoiceField(label='Completo',choices=FACTURAS_X,required=True,initial=1)	
@@ -104,8 +104,8 @@ class ConsultaLibroIVACompras(forms.Form):
 class ConsultaCajaDiaria(forms.Form):               
     tipo_forma_pago = forms.ModelChoiceField(label='Forma de Pago/Cobro',queryset=cpb_tipo_forma_pago.objects.filter(baja=False),empty_label=label_todos,required = False)
     cuenta = forms.ModelChoiceField(label='Cuenta Ingreso/Egreso',queryset=cpb_cuenta.objects.all(),empty_label=label_todos,required = False)
-    fdesde =  forms.DateField(label='Fecha Desde',widget=forms.DateInput(attrs={'class': 'form-control datepicker'}),initial=inicioMes(),required = True)
-    fhasta =  forms.DateField(label='Fecha Hasta',widget=forms.DateInput(attrs={'class': 'form-control datepicker'}),initial=finMes(),required = True)    
+    fdesde =  forms.DateField(label='Fecha Desde',widget=forms.DateInput(attrs={'class': 'form-control datepicker','autocomplete':'off'}),initial=inicioMes(),required = True)
+    fhasta =  forms.DateField(label='Fecha Hasta',widget=forms.DateInput(attrs={'class': 'form-control datepicker','autocomplete':'off'}),initial=finMes(),required = True)    
     pto_vta = forms.IntegerField(label='Pto. Vta.',required = False)
     
     def __init__(self, *args, **kwargs):
@@ -118,8 +118,8 @@ class ConsultaCajaDiaria(forms.Form):
 
 class ConsultaSaldosCuentas(forms.Form):                   
     cuenta = forms.ModelChoiceField(label='Cuenta Ingreso/Egreso',queryset=cpb_cuenta.objects.all(),empty_label=label_todos,required = False)
-    fdesde =  forms.DateField(label='Fecha Desde',widget=forms.DateInput(attrs={'class': 'form-control datepicker'}),initial=inicioMes(),required = True)
-    fhasta =  forms.DateField(label='Fecha Hasta',widget=forms.DateInput(attrs={'class': 'form-control datepicker'}),initial=finMes(),required = True)    
+    fdesde =  forms.DateField(label='Fecha Desde',widget=forms.DateInput(attrs={'class': 'form-control datepicker','autocomplete':'off'}),initial=inicioMes(),required = True)
+    fhasta =  forms.DateField(label='Fecha Hasta',widget=forms.DateInput(attrs={'class': 'form-control datepicker','autocomplete':'off'}),initial=finMes(),required = True)    
     pto_vta = forms.IntegerField(label='Pto. Vta.',required = False)    
     def __init__(self, *args, **kwargs):
 		empresa = kwargs.pop('empresa', None)  
@@ -132,8 +132,8 @@ class ConsultaSaldosCuentas(forms.Form):
 
 class ConsultaVencimientos(forms.Form):               
 	entidad = forms.CharField(label='Cliente/Proveedor',max_length=100,widget=forms.TextInput(attrs={'class':'form-control','text-transform': 'uppercase'}),required=False)
-	fdesde =  forms.DateField(label='Fecha Desde',widget=forms.DateInput(attrs={'class': 'form-control datepicker'}),required = False,initial=inicioMes())
-	fhasta =  forms.DateField(label='Fecha Hasta',widget=forms.DateInput(attrs={'class': 'form-control datepicker'}),required = False,initial=finMes())    	
+	fdesde =  forms.DateField(label='Fecha Desde',widget=forms.DateInput(attrs={'class': 'form-control datepicker','autocomplete':'off'}),required = False,initial=inicioMes())
+	fhasta =  forms.DateField(label='Fecha Hasta',widget=forms.DateInput(attrs={'class': 'form-control datepicker','autocomplete':'off'}),required = False,initial=finMes())    	
 	pto_vta = forms.IntegerField(label='Pto. Vta.',required = False)
 	estado = forms.ChoiceField(label='Estado',choices=ESTADO_,required=False,initial=0)	
 	cae = forms.ChoiceField(label='CAE',choices=SINO,required=False,initial=0)	
@@ -149,13 +149,13 @@ class ConsultaVencimientos(forms.Form):
 
 class ConsultaHistStockProd(forms.Form):               	
 	producto = forms.CharField(label='Producto/Servicio',widget=forms.TextInput(attrs={'class':'form-control'}),required = False)
-	fdesde =  forms.DateField(label='Fecha Desde',widget=forms.DateInput(attrs={'class': 'form-control datepicker'}),required = True,initial=inicioMes())
-	fhasta =  forms.DateField(label='Fecha Hasta',widget=forms.DateInput(attrs={'class': 'form-control datepicker'}),required = True,initial=finMes())    
+	fdesde =  forms.DateField(label='Fecha Desde',widget=forms.DateInput(attrs={'class': 'form-control datepicker','autocomplete':'off'}),required = True,initial=inicioMes())
+	fhasta =  forms.DateField(label='Fecha Hasta',widget=forms.DateInput(attrs={'class': 'form-control datepicker','autocomplete':'off'}),required = True,initial=finMes())    
 	
 
 class ConsultaRankings(forms.Form):               	
-	fdesde =  forms.DateField(label='Fecha Desde',widget=forms.DateInput(attrs={'class': 'form-control datepicker'}),required = False,initial=inicioMes())
-	fhasta =  forms.DateField(label='Fecha Hasta',widget=forms.DateInput(attrs={'class': 'form-control datepicker'}),required = False,initial=finMes())    	
+	fdesde =  forms.DateField(label='Fecha Desde',widget=forms.DateInput(attrs={'class': 'form-control datepicker','autocomplete':'off'}),required = False,initial=inicioMes())
+	fhasta =  forms.DateField(label='Fecha Hasta',widget=forms.DateInput(attrs={'class': 'form-control datepicker','autocomplete':'off'}),required = False,initial=finMes())    	
 	pto_vta = forms.IntegerField(label='Pto. Vta.',required = False)
 	estado = forms.ChoiceField(label='Estado',choices=ESTADO_,required=False,initial=0)	
 	cae = forms.ChoiceField(label='CAE',choices=SINO,required=False,initial=0)	
@@ -170,8 +170,8 @@ class ConsultaRankings(forms.Form):
 
 class ConsultaRepRetencImp(forms.Form):               
     entidad = forms.CharField(label='Cliente/Proveedor',max_length=100,widget=forms.TextInput(attrs={'class':'form-control','text-transform': 'uppercase'}),required=False)    
-    fdesde =  forms.DateField(label='Fecha Desde',widget=forms.DateInput(attrs={'class': 'form-control datepicker'}),initial=inicioMes(),required = True)
-    fhasta =  forms.DateField(label='Fecha Hasta',widget=forms.DateInput(attrs={'class': 'form-control datepicker'}),initial=finMes(),required = True)    
+    fdesde =  forms.DateField(label='Fecha Desde',widget=forms.DateInput(attrs={'class': 'form-control datepicker','autocomplete':'off'}),initial=inicioMes(),required = True)
+    fhasta =  forms.DateField(label='Fecha Hasta',widget=forms.DateInput(attrs={'class': 'form-control datepicker','autocomplete':'off'}),initial=finMes(),required = True)    
     pto_vta = forms.IntegerField(label='Pto.Vta.',required = False)    
     nro_cpb = forms.IntegerField(label='CPB',required = False)        
     
@@ -190,8 +190,8 @@ class ConsultaVendedores(forms.Form):
 	vendedor = EntidadModelChoiceField(label='Vendedor',queryset=egr_entidad.objects.filter(tipo_entidad=3,baja=False),empty_label='---',required = True)
 	cliente = forms.CharField(label='Cliente',max_length=100,widget=forms.TextInput(attrs={'class':'form-control','text-transform': 'uppercase'}),required=False)    
 	campo = forms.ChoiceField(label='Calculado sobre',choices=CAMPO,required=True)	
-	fdesde =  forms.DateField(label='Fecha Desde',widget=forms.DateInput(attrs={'class': 'form-control datepicker'}),required = False,initial=inicioMes())
-	fhasta =  forms.DateField(label='Fecha Hasta',widget=forms.DateInput(attrs={'class': 'form-control datepicker'}),required = False,initial=finMes())    	
+	fdesde =  forms.DateField(label='Fecha Desde',widget=forms.DateInput(attrs={'class': 'form-control datepicker','autocomplete':'off'}),required = False,initial=inicioMes())
+	fhasta =  forms.DateField(label='Fecha Hasta',widget=forms.DateInput(attrs={'class': 'form-control datepicker','autocomplete':'off'}),required = False,initial=finMes())    	
 	pto_vta = forms.IntegerField(label='Pto. Vta.',required = False)		
 	comision = forms.DecimalField(label=u'Comisión',required = False,widget=PrependWidget(attrs={'class':'form-control','step':0.01},base_widget=NumberInput, data='%'),initial=5.00,decimal_places=2)
 	def __init__(self, *args, **kwargs):
