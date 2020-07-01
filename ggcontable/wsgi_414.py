@@ -12,7 +12,6 @@ os.environ['ENTIDAD_DB'] = 'ironweb_414'
 os.environ['ENTIDAD_DIR'] = 'labartoladeco'
 from django.core.wsgi import get_wsgi_application
 application = get_wsgi_application()
-
 # try:
 # 	_application = None
 # 	def application(environ, start_response):

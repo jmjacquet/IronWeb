@@ -117,7 +117,6 @@ class prod_productos(models.Model):
         self.nombre = self.nombre.upper()
         super(prod_productos, self).save()
 
-
 class prod_producto_lprecios(models.Model):
     id = models.AutoField(primary_key=True,db_index=True)
     producto = models.ForeignKey('prod_productos',db_column='producto',related_name='producto_lprecios',blank=True, null=True) #Cliente/Pro
@@ -136,7 +135,14 @@ class prod_producto_lprecios(models.Model):
     def __unicode__(self):
         return u'%s - %s - $ %s' % (self.lista_precios,self.producto.nombre,self.precio_venta)        
 
-
+    @property
+    def get_porc_gan(self):
+        try:
+            c = self.coef_ganancia
+            if c:            
+                return c*100
+        except:
+            return 100
 
 from comprobantes.models import cpb_comprobante_detalle
 class prod_producto_ubicac(models.Model):
@@ -152,8 +158,11 @@ class prod_producto_ubicac(models.Model):
         return u'%s (%s) [%s]' % (self.producto.nombre,self.ubicacion,TIPO_UNIDAD[self.producto.unidad])          
 
     def get_stock_(self):             
-        qs = cpb_comprobante_detalle.objects.filter(cpb_comprobante__estado__in=[1,2],cpb_comprobante__cpb_tipo__usa_stock=True,producto__id=self.producto.id,origen_destino__id=self.ubicacion.id)
-        total_stock = qs.aggregate(total=Sum(F('cantidad') *F('cpb_comprobante__cpb_tipo__signo_stock'),output_field=DecimalField()))['total'] or 0        
+        try:
+            qs = cpb_comprobante_detalle.objects.filter(cpb_comprobante__estado__in=[1,2],cpb_comprobante__cpb_tipo__usa_stock=True,producto__id=self.producto.id,origen_destino__id=self.ubicacion.id).distinct()
+            total_stock = qs.aggregate(total=Sum(F('cantidad') *F('cpb_comprobante__cpb_tipo__signo_stock'),output_field=DecimalField()))['total'] or 0        
+        except:
+            total_stock = 0
         return total_stock    
 
     get_stock = property(get_stock_)

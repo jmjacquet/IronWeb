@@ -61,7 +61,7 @@
                                     </div>
                                 </td>
                                 <td>{{ prod.codigo|default_if_none:'' }}</td>
-                                <td>{{ prod.nombre|default_if_none:'' }}</td>
+                                <td><a href="{% url 'producto_ver' id=prod.pk %}"  title="{{ prod.nombre}}" class="modal-detail" data-modal-head="DETALLE PRODUCTO {{prod.codigo}}" data-fm-callback="reload"><strong>{{ prod.nombre|truncatechars:60 }}</strong></a></td>
                                 <td>{{ prod.categoria|default_if_none:'' }}</td>                                
                                 <td>{{ prod.get_tipo_producto_display|default_if_none:'' }}</td>                                
                                 <td>[{{ prod.get_unidad_display|default_if_none:'' }}]</td>  

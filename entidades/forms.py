@@ -136,9 +136,35 @@ class VendedoresForm(forms.ModelForm):
 		
 		try:
 			empresas = empresas_buscador(request)
-			self.fields['empresa'].queryset = empresa
+			self.fields['empresa'].queryset = empresas
 			self.fields['empresa'].initial = 1
 		except:
 			empresa = empresa_actual(request)  
 	
 
+class ImportarEntidadesForm(forms.Form):	
+	archivo = forms.FileField(label='Seleccione un archivo',required=True)  
+	sobreescribir = forms.ChoiceField(label=u'¿Sobreescribir Existentes?',choices=SINO,required=True,initial='S')
+	empresa = forms.ModelChoiceField(queryset=gral_empresa.objects.all(),empty_label=None,required=True)
+	tipo_entidad = forms.ChoiceField(label=u'Tipo Entidad',choices=TIPO_ENTIDAD,required=True,initial=1)	
+	def __init__(self, *args, **kwargs):
+		request = kwargs.pop('request', None)
+		super(ImportarEntidadesForm, self).__init__(*args, **kwargs)
+		
+		try:
+			empresas = empresas_buscador(request)
+			self.fields['empresa'].queryset = empresas
+			self.fields['empresa'].initial = 1
+		except:
+			empresa = empresa_actual(request)  
+
+	def clean(self):
+		archivo = self.cleaned_data.get('archivo')        
+		if archivo:
+			if not archivo.name.endswith('.csv'):
+				self.add_error("archivo",u'¡El archivo debe tener extensión .CSV!')            
+			#if file is too large, return
+			if archivo.multiple_chunks():
+				self.add_error("archivo",u"El archivo es demasiado grande (%.2f MB)." % (archivo.size/(1000*1000),))
+		return self.cleaned_data
+	    

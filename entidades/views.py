@@ -11,12 +11,12 @@ from django.db import connection
 from django.core.urlresolvers import reverse
 from django.shortcuts import render_to_response,redirect
 from django.contrib import messages
-from general.views import VariablesMixin,ultimoNroId
+from general.views import VariablesMixin,ultimoNroId,getVariablesMixin
 from usuarios.views import tiene_permiso
 from general.utilidades import *
 from fm.views import AjaxCreateView,AjaxUpdateView,AjaxDeleteView
 # from modal.views import Detailview
-from .forms import EntidadesForm,EntidadesEditForm,VendedoresForm
+from .forms import EntidadesForm,EntidadesEditForm,VendedoresForm,ImportarEntidadesForm
 from django.http import JsonResponse
 
 import json
@@ -334,3 +334,94 @@ class VendedoresVerView(VariablesMixin,DetailView):
     @method_decorator(login_required)
     def dispatch(self, *args, **kwargs): 
         return super(VendedoresVerView, self).dispatch(*args, **kwargs)
+
+
+############# IMPORTADOR CLIENTES / PROV ######################
+import csv, io
+import random
+def unicode_csv_reader(unicode_csv_data, dialect=csv.excel, **kwargs):
+    # csv.py doesn't do Unicode; encode temporarily as UTF-8:
+    csv_reader = csv.reader(utf_8_encoder(unicode_csv_data),
+                            dialect=dialect, **kwargs)
+    for row in csv_reader:
+        # decode UTF-8 back to Unicode, cell by cell:
+        yield [unicode(cell, 'utf-8') for cell in row]
+
+def utf_8_encoder(unicode_csv_data):
+    for line in unicode_csv_data:
+        yield line.encode('utf-8')
+
+@login_required 
+def importar_entidades(request):               
+    context = {}
+    context = getVariablesMixin(request) 
+    if request.method == 'POST':
+        form = ImportarEntidadesForm(request.POST,request.FILES,request=request)
+        if form.is_valid(): 
+            csv_file = form.cleaned_data['archivo']
+            sobreescribir = form.cleaned_data['sobreescribir'] == 'S'
+            empresa = form.cleaned_data['empresa']
+            tipo_entidad = form.cleaned_data['tipo_entidad']            
+            if not csv_file.name.endswith('.csv'):
+                messages.error(request,'¡El archivo debe tener extensión .CSV!')
+                return HttpResponseRedirect(reverse("importar_empleados"))
+            
+            if csv_file.multiple_chunks():
+                messages.error(request,"El archivo es demasiado grande (%.2f MB)." % (csv_file.size/(1000*1000),))
+                return HttpResponseRedirect(reverse("importar_empleados"))
+
+            decoded_file = csv_file.read().decode("latin1").replace(",", "").replace("'", "")
+            io_string = io.StringIO(decoded_file)
+            reader = unicode_csv_reader(io_string)                
+            #Id;Cliente;Email;Tel;Tel2;Direcci¢n;DNI;CUIT;Condici¢n de IVA;Raz¢n Social;Domicilio Fiscal;Localidad Fiscal;Provincia Fiscal;C¢digo Postal Fiscal;Usuario de Mercado Libre;Observaciones;Creado
+            #Id;Proveedor;Email;Tel;Tel2;Direcci¢n;DNI;CUIT;Condici¢n de IVA;Raz¢n Social;Domicilio Fiscal;Localidad Fiscal;Provincia Fiscal;C¢digo Postal Fiscal;Observaciones;Creado;NombreProv
+            cant=0
+            next(reader) #Omito el Encabezado                            
+            for index,line in enumerate(reader):                      
+                campos = line[0].split(";")               
+                
+                cod = campos[0].strip().zfill(4)
+                print cod
+                if cod=='':
+                    continue #Salta al siguiente                    
+                
+                empl = egr_entidad.objects.filter(codigo=cod,tipo_entidad=tipo_entidad).exists()
+                if empl and not sobreescribir:
+                    continue
+
+                nombre = campos[9].strip().upper()
+                email =   campos[2].strip()  #EMAIL
+                telefono =   campos[3].strip()  #telefono
+                telefono2 =   campos[4].strip()  #telefono2
+                domicilio = campos[5].strip().upper()  #DOMICILIO
+                dni = campos[6].strip().upper()  #DOMICILIO
+                cuit = campos[7].strip().upper().replace("-", "").replace(".", "") #ART  
+
+                cond_iva = campos[8].strip()
+                if cond_iva=='Consumidor Final':
+                    cond_iva=5
+                elif cond_iva=='Responsable Inscripto':
+                    cond_iva=1
+                elif cond_iva=='Exento':
+                    cond_iva=4
+                else:
+                    cond_iva=5
+
+                tipo_doc = 99
+                if cuit<>'':
+                    tipo_doc = 80
+
+                fact_razon_social = campos[9].strip().upper()
+                fact_direccion = campos[10].strip().upper()
+                localidad = campos[11].strip().upper()                    
+                cp =   campos[12].strip()  #CP
+                
+                egr_entidad.objects.update_or_create(codigo=cod,tipo_entidad=tipo_entidad,empresa=empresa,defaults={'apellido_y_nombre':nombre,'fact_razon_social':fact_razon_social,'fact_direccion':fact_direccion,
+                    'fact_telefono':telefono2,'tipo_doc':tipo_doc,'fact_cuit':cuit,'domicilio':domicilio,'nro_doc':dni,'telefono':telefono,'email':email,'cod_postal':cp,'localidad':localidad,'fact_categFiscal':cond_iva})                                                                 
+                cant+=1                       
+            messages.success(request, u'Se importó el archivo con éxito!<br>(%s Clientes creados/actualizados)'% cant )
+            
+    else:
+        form = ImportarEntidadesForm(None,None,request=request)
+    context['form'] = form    
+    return render(request, 'entidades/importar_entidades.html',context)            

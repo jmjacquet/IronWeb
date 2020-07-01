@@ -227,6 +227,22 @@ class ProductosVerView(VariablesMixin,DetailView):
     def dispatch(self, *args, **kwargs):        
         return super(ProductosVerView, self).dispatch(*args, **kwargs)
 
+    def get_context_data(self, **kwargs):
+        context = super(ProductosVerView, self).get_context_data(**kwargs)
+        try:
+            prod_stock = prod_producto_ubicac.objects.filter(producto=self.object)            
+        except prod_stock.DoesNotExist:
+            prod_stock = None         
+
+        try:
+            prod_precios = prod_producto_lprecios.objects.filter(producto=self.object)            
+        except prod_precios.DoesNotExist:
+            prod_precios = None        
+            
+        context['prod_precios'] = prod_precios
+        context['prod_stock'] = prod_stock
+        return context
+
 @login_required
 def producto_baja_reactivar(request,id):
     prod = prod_productos.objects.get(pk=id) 

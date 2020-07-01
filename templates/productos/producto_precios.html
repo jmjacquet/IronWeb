@@ -73,7 +73,7 @@
                                     <td class="text-center">
                                         <input class="hidden" value="{{pp.pk|safe}}" id="chk_{{forloop.counter0}}_id" /><input type="checkbox" class='tildado precios' id="chk_{{forloop.counter0}}"/>
                                     </td> 
-                                    <td title="{{pp.producto}}">{{pp.producto|truncatechars:40}}</td>
+                                    <td title="{{pp.producto}}"><a href="{% url 'producto_ver' id=pp.producto.pk %}" class="modal-detail" data-modal-head="DETALLE PRODUCTO {{pp.producto.codigo}}" data-fm-callback="reload"><strong>{{pp.producto|truncatechars:60}}</strong></a></td>
                                     <td>{{ pp.producto.categoria|default_if_none:''|truncatechars:40 }}</td>                                
                                     <td>{{ pp.producto.get_tipo_producto_display|default_if_none:'' }}</td>                                                                    
                                     <td class="importe">${{pp.precio_costo|default_if_none:0|floatformat:2}}</td>                                                                     

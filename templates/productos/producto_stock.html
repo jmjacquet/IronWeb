@@ -67,7 +67,7 @@
                         <strong>{{pp.producto|truncatechars:60}}</strong></a></td>
                     <td>{{ pp.producto.categoria|default_if_none:'' }}</td>                                
                     <td>{{ pp.producto.get_tipo_producto_display|default_if_none:'' }}</td>
-                     <td class="text-center">{% if pp.producto.llevar_stock %}<i class="fa fa-check text-success"></i>{% endif %}</td>
+                    <td class="text-center"><i class="fa {% if pp.producto.llevar_stock %}fa-check text-success{% else %}fa-close text-danger{% endif %}"</td>
                     <td class="importe_total">{% if pp.producto.llevar_stock %}{{pp.get_stock|default_if_none:0|floatformat:2}}{% else %}-{% endif %}</td>
                     <td class="text-left">[{{pp.producto.get_unidad_display|default_if_none:''}}]</td>
                     <td class="importe_total">{{pp.punto_pedido|default_if_none:0|floatformat:2}}</td>
