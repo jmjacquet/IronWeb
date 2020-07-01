@@ -139,7 +139,7 @@ class egr_entidad(models.Model):
 	    self.cpb_vendedor.clear()
 	    super(egr_entidad, self).delete()
 
-	def save(self):
+	def save(self, *args, **kwargs):
 		self.apellido_y_nombre = self.apellido_y_nombre.upper()
 		super(egr_entidad, self).save()
 

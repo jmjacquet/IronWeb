@@ -142,3 +142,17 @@ class VendedoresForm(forms.ModelForm):
 			empresa = empresa_actual(request)  
 	
 
+class ImportarClientesForm(forms.Form):	
+	archivo = forms.FileField(label='Seleccione un archivo',required=True)  
+	sobreescribir = forms.ChoiceField(label=u'',choices=SINO,required=True,initial='N')
+
+	def clean(self):
+		archivo = self.cleaned_data.get('archivo')        
+		if archivo:
+			if not archivo.name.endswith('.csv'):
+				self.add_error("archivo",u'¡El archivo debe tener extensión .CSV!')            
+			#if file is too large, return
+			if archivo.multiple_chunks():
+				self.add_error("archivo",u"El archivo es demasiado grande (%.2f MB)." % (archivo.size/(1000*1000),))
+		return self.cleaned_data
+	    

@@ -30,4 +30,6 @@ urlpatterns = patterns('entidades.views',
     url(r'^vendedores/vendedor_ver/(?P<id>\d+)/$', VendedoresVerView.as_view(), name="vendedor_ver"),
 
     url(r'^entidad_ver/(?P<id>\d+)/$', EntidadVerView.as_view(), name="entidad_ver"),
+
+    url(r'^importar_clientes/$', importar_clientes,name="importar_clientes"),
     )
