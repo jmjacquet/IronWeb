@@ -106,7 +106,7 @@ function calcularProd(i){
 };
 
 function calcularSubtotal(i){  
-  
+  var importe_unitario = parseFloat($("input[name='formDetalle-"+i+"-importe_unitario']").val())|| 0;   
   var importe_subtotal = parseFloat($("input[name='formDetalle-"+i+"-importe_subtotal']").val())|| 0;
   var coef_iva = parseFloat($("input[name='formDetalle-"+i+"-coef_iva']").val())|| 0;             
   letra = $("#id_letra").val();                      
@@ -165,7 +165,9 @@ function calcularIVA(i){
 
 };
 function calcularTotal(i){    
+  var importe_unitario = parseFloat($("input[name='formDetalle-"+i+"-importe_unitario']").val())|| 0;   
   var importe_total = parseFloat($("input[name='formDetalle-"+i+"-importe_total']").val())|| 0;
+  var coef_iva = parseFloat($("input[name='formDetalle-"+i+"-coef_iva']").val())|| 0;  
   var coef_iva = parseFloat($("input[name='formDetalle-"+i+"-coef_iva']").val())|| 0;  
   letra = $("#id_letra").val();                      
   if (letra=='A'){     
