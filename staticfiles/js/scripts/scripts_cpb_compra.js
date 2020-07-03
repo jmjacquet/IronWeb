@@ -106,7 +106,7 @@ function calcularProd(i){
 };
 
 function calcularSubtotal(i){  
-  
+  var importe_unitario = parseFloat($("input[name='formDetalle-"+i+"-importe_unitario']").val())|| 0;   
   var importe_subtotal = parseFloat($("input[name='formDetalle-"+i+"-importe_subtotal']").val())|| 0;
   var coef_iva = parseFloat($("input[name='formDetalle-"+i+"-coef_iva']").val())|| 0;             
   letra = $("#id_letra").val();                      
@@ -165,7 +165,9 @@ function calcularIVA(i){
 
 };
 function calcularTotal(i){    
+  var importe_unitario = parseFloat($("input[name='formDetalle-"+i+"-importe_unitario']").val())|| 0;   
   var importe_total = parseFloat($("input[name='formDetalle-"+i+"-importe_total']").val())|| 0;
+  var coef_iva = parseFloat($("input[name='formDetalle-"+i+"-coef_iva']").val())|| 0;  
   var coef_iva = parseFloat($("input[name='formDetalle-"+i+"-coef_iva']").val())|| 0;  
   letra = $("#id_letra").val();                      
   if (letra=='A'){     
@@ -503,6 +505,7 @@ $('.formDetalle').formset({
                 no_results_text: "Producto inexistente...",
                 placeholder_text_single:"Seleccione un Producto",
                 allow_single_deselect: true,
+                search_contains: true,
             });
             $("[name='formDetalle-"+i1+"-producto']").focus();
             $("#id_letra").trigger("change");
@@ -723,6 +726,7 @@ $("[name='formDetalle-0-producto']").chosen({
                 no_results_text: "Producto inexistente...",
                 placeholder_text_single:"Seleccione una Opcion",
                 allow_single_deselect: true,
+                search_contains: true,
             });
 
 $("#id_formDetalle-0-producto").focus();
@@ -738,6 +742,7 @@ $("#id_entidad").chosen({
           no_results_text: "Proveedor inexistente...",
           placeholder_text_single:"Seleccione un Proveedor",
           allow_single_deselect: true,
+          search_contains: true,
       });
 
 recalcular(); 

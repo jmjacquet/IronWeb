@@ -38,6 +38,7 @@
                                 <th class="imprimir">IVA</th>
                                 <th class="imprimir text-center">Lleva Stock</th> 
                                 <th class="imprimir">Descripción</th>                                
+                                <th class="imprimir">Cód.Barras</th>                                
                             </tr>
                         </thead>
                         <tbody>
@@ -69,6 +70,7 @@
                                 <td>{{ prod.tasa_iva|default_if_none:'' }}</td>
                                 <td class="text-center">{% if prod.llevar_stock %}<i class="fa fa-check text-success"></i>{% endif %}</td>
                                 <td>{{ prod.descripcion|default_if_none:'' }}</td>
+                                <td>{{ prod.codigo_barras|default_if_none:'' }}</td>
                             </tr>
                             {% endfor %}
                         </tbody>
@@ -76,6 +78,7 @@
                             <tr>
                                 <th></th> 
                                 <th></th> 
+                                <th></th>
                                 <th></th>
                                 <th></th>
                                 <th></th>

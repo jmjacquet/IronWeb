@@ -24,6 +24,7 @@ $.fm({
           no_results_text: "Proveedor inexistente...",
           placeholder_text_single:"Seleccione un Proveedor",
           allow_single_deselect: true,
+          search_contains: true,
       }); 
 
 
@@ -34,6 +35,7 @@ function recalcular(){
                 no_results_text: "Producto inexistente...",
                 placeholder_text_single:"Seleccione una Opcion",
                 allow_single_deselect: true,
+                search_contains: true,
             });
 
       });
@@ -57,6 +59,7 @@ $('.formDetalle').formset({
                 no_results_text: "Producto inexistente...",
                 placeholder_text_single:"Seleccione un Producto",
                 allow_single_deselect: true,
+                search_contains: true,
             });
             $("[name='formDetalle-"+i1+"-producto']").focus();
 

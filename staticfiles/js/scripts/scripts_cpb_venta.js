@@ -18,6 +18,7 @@ $("#id_vendedor").chosen({
           no_results_text: "Vendedor inexistente...",
           placeholder_text_single:"Seleccione un Vendedor",
           allow_single_deselect: true,
+          search_contains: true,
       });
 
 
@@ -562,6 +563,7 @@ $('.formDetalle').formset({
                 no_results_text: "Producto inexistente...",
                 placeholder_text_single:"Seleccione un Producto",
                 allow_single_deselect: true,
+                search_contains: true,
             });
             $("[name='formDetalle-"+i1+"-producto']").focus();
              $("#id_letra").trigger("change");
@@ -650,7 +652,7 @@ $("#recargarProductos").click(function () {
           $('.form-detalles tr').each(function(j) {
             $("[name='formDetalle-"+j+"-producto']").empty().append('<option value="">---</option>');            
             $.each(c["productos"], function (idx, item) {
-                $("[name='formDetalle-"+j+"-producto']").append('<option value="' + item['id'] + '">' + item['codigo']+' - '+item['nombre'] + '</option>');                
+                $("[name='formDetalle-"+j+"-producto']").append('<option value="' + item['id'] + '">' + item['detalle'] + '</option>');                
             }); 
             $("[name='formDetalle-"+j+"-producto']").trigger("chosen:updated");                       
           });           
@@ -781,6 +783,7 @@ $('.form-detalles tr').each(function(j) {
                 no_results_text: "Producto inexistente...",
                 placeholder_text_single:"Seleccione una Opcion",
                 allow_single_deselect: true,
+                search_contains: true,
             });
 });
 
@@ -808,6 +811,7 @@ $("#id_entidad").chosen({
         no_results_text: "Cliente inexistente...",
         placeholder_text_single:"Seleccione un Cliente",
         allow_single_deselect: true,
+        search_contains: true,
     });
 recalcular(); 
 $("#id_entidad").trigger("change");

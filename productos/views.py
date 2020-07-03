@@ -11,7 +11,7 @@ from django.db import connection
 from django.core.urlresolvers import reverse
 from django.shortcuts import render_to_response,redirect
 from django.contrib import messages
-from general.views import VariablesMixin,ultimoNroId
+from general.views import VariablesMixin,ultimoNroId,getVariablesMixin
 from fm.views import AjaxCreateView,AjaxUpdateView,AjaxDeleteView
 from .forms import *
 from django.forms.models import inlineformset_factory,BaseInlineFormSet,formset_factory
@@ -65,7 +65,7 @@ class ProductosView(VariablesMixin,ListView):
                 productos= productos.filter(Q(nombre__icontains=nombre))
             
         context['form'] = form
-        context['productos'] = productos
+        context['productos'] = productos.order_by('nombre','codigo','empresa')
         return context
     
     def post(self, *args, **kwargs):
@@ -820,3 +820,134 @@ def prod_stock_generar(request):
             ubi_prod.save()
     return HttpResponseRedirect(reverse('principal'))
     
+
+
+############# IMPORTADOR CLIENTES / PROV ######################
+import csv, io
+import random
+def unicode_csv_reader(unicode_csv_data, dialect=csv.excel, **kwargs):
+    # csv.py doesn't do Unicode; encode temporarily as UTF-8:
+    csv_reader = csv.reader(utf_8_encoder(unicode_csv_data),
+                            dialect=dialect, **kwargs)
+    for row in csv_reader:
+        # decode UTF-8 back to Unicode, cell by cell:
+        yield [unicode(cell, 'utf-8') for cell in row]
+
+def utf_8_encoder(unicode_csv_data):
+    for line in unicode_csv_data:
+        yield line.encode('utf-8')
+
+@login_required 
+def importar_productos(request):               
+    context = {}
+    context = getVariablesMixin(request) 
+    if request.method == 'POST':
+        form = ImportarProductosForm(request.POST,request.FILES,request=request)
+        if form.is_valid(): 
+            csv_file = form.cleaned_data['archivo']
+            sobreescribir = form.cleaned_data['sobreescribir'] == 'S'
+            empresa = form.cleaned_data['empresa']
+            if not csv_file.name.endswith('.csv'):
+                messages.error(request,'¡El archivo debe tener extensión .CSV!')
+                return HttpResponseRedirect(reverse("importar_empleados"))
+            
+            if csv_file.multiple_chunks():
+                messages.error(request,"El archivo es demasiado grande (%.2f MB)." % (csv_file.size/(1000*1000),))
+                return HttpResponseRedirect(reverse("importar_empleados"))
+
+            decoded_file = csv_file.read().decode("latin1").replace(",", "").replace("'", "")
+            io_string = io.StringIO(decoded_file)
+            reader = unicode_csv_reader(io_string)                
+            #Id;Nombre;Tipo de Producto;Proveedor;C¢digo;Stock;PC;IVA;MARGEN;;Precio de Venta;EFECTIVO
+            cant=0
+            next(reader) #Omito el Encabezado                            
+            for index,line in enumerate(reader):                      
+                campos = line[0].split(";")               
+                
+                nombre = campos[1].strip().upper()
+                if nombre=='':
+                    continue #Salta al siguiente     
+                
+                codbar = campos[4].strip()
+                if codbar=='':
+                    cod = str(ultimoNroId(prod_productos)+1).zfill(12)
+                    cod += str(digVerificador(cod))                                       
+                    codbar = cod
+                cod = codbar
+
+                                  
+                try:
+                    categoria = prod_categoria.objects.get(nombre=campos[2].strip().upper())
+                except:
+                    categoria = None
+                    #import pdb; pdb.set_trace()
+                
+                try:
+                    stock = int(campos[5].strip())
+                except:                
+                    stock=0
+                try:
+                    pcosto = Decimal(campos[6].strip())
+                except:
+                    pcosto = Decimal(0)
+
+                try:
+                    piva = Decimal(campos[7].strip())
+                except:
+                    piva = Decimal(0)
+
+                try:
+                    pventa1 = Decimal(campos[10].strip())
+                except:
+                    pventa1 = Decimal(0)                                        
+                try:
+                    pventa2 = Decimal(campos[11].strip())
+                except:
+                    pventa2 = Decimal(0)    
+                
+                pimp = pcosto + piva
+                
+                
+                try:
+                    tasa_iva = gral_tipo_iva.objects.get(id=5)
+                except:
+                    tasa_iva = None
+
+                prod = prod_productos.objects.create(codigo=cod,categoria=categoria,empresa=empresa,
+                    nombre=nombre,codigo_barras=codbar,tipo_producto=1,mostrar_en=3,unidad=0,llevar_stock=False,
+                    stock_negativo=True,tasa_iva=tasa_iva)
+
+                if prod:
+                    lp1 = prod_lista_precios.objects.filter(pk=1).first()
+                    lp2 = prod_lista_precios.objects.filter(pk=2).first()
+                    prod_producto_lprecios.objects.create(producto=prod,lista_precios=lp1,precio_costo=pcosto,precio_cimp=pimp,
+                        precio_venta=pventa1)
+                    prod_producto_lprecios.objects.create(producto=prod,lista_precios=lp2,precio_costo=pcosto,precio_cimp=pimp,
+                        precio_venta=pventa2)
+
+                    ubi = prod_ubicacion.objects.filter(default=True).first()                    
+                    prod_producto_ubicac.objects.create(producto=prod,ubicacion=ubi,punto_pedido=0.00)
+
+                    actualizar_stock(request,prod,ubi,21,stock) 
+
+
+
+
+                cant+=1                       
+            messages.success(request, u'Se importó el archivo con éxito!<br>(%s Productos creados/actualizados)'% cant )
+            
+    else:
+        form = ImportarProductosForm(None,None,request=request)
+    context['form'] = form    
+    return render(request, 'productos/importar_productos.html',context)            
+
+
+@login_required
+def generarCB(request):
+    codigo = request.GET['codigo']
+    try:
+        codigo = str(codigo).zfill(12)
+        codigo += str(digVerificador(codigo))                                               
+    except:
+        codigo=''    
+    return HttpResponse(codigo)     

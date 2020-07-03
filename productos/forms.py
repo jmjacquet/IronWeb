@@ -13,7 +13,7 @@ from django.utils.safestring import mark_safe
 from crispy_forms.helper import FormHelper
 from crispy_forms.layout import Layout, Submit, Div,Button,HTML
 from .models import *
-from general.models import gral_plan_cuentas
+from general.models import gral_plan_cuentas,gral_empresa
 from comprobantes.models import cpb_cuenta
 from general.flavor import ARCUITField,ARDNIField,ARPostalCodeField
 from chosen import forms as chosenforms
@@ -37,8 +37,11 @@ class ProductosForm(forms.ModelForm):
 	cta_egreso = chosenforms.ChosenModelChoiceField(label='Cuenta Egreso',queryset=gral_plan_cuentas.objects.filter(baja=False),empty_label='---',required = False)
 	ubicacion = forms.ModelChoiceField(queryset=prod_ubicacion.objects.filter(baja=False),required = False)	
 	stock = forms.DecimalField(label='Stock Inicial',initial=1,decimal_places=2,required = False)	
-	ppedido = forms.DecimalField(label='Punto Pedido',initial=0,decimal_places=2,required = False)	
+	ppedido = forms.DecimalField(label=popover_html(u'Punto Pedido', u'Stock de Advertencia'),initial=0,decimal_places=2,required = False)	
 	coef_iva = forms.DecimalField(widget = forms.HiddenInput(), required = False,decimal_places=2)	
+	codigo_barras = forms.CharField(label=u'Código de Barras',
+			widget=PrePendWidgetBoton(attrs={'class':'form-control','type':'number','placeholder':u'Presione para generar un CB a partir del Código',},
+			base_widget=TextInput,data='<i class="fa fa-barcode"></i>',tooltip=u"Presione para generar un CB a partir del Código",id="generarCB"))	
 	class Meta:
 			model = prod_productos
 			exclude = ['id','baja','fecha_creacion','fecha_modif','empresa']
@@ -94,6 +97,11 @@ class Producto_ListaPreciosForm(forms.ModelForm):
 		lista_precios = self.cleaned_data.get('lista_precios')
 		if not lista_precios:
 			self._errors['lista_precios'] = [u'Debe seleccionar una Lista de Precios!']
+		coef_ganancia = self.cleaned_data.get('coef_ganancia')
+		if coef_ganancia:
+			if coef_ganancia>10:
+				self._errors['coef_ganancia'] = [u'Valor de 0 a 10!']
+
 		
 
 class Producto_StockForm(forms.ModelForm):
@@ -228,3 +236,28 @@ class StockProdForm(forms.ModelForm):
 	class Meta:
 			model = prod_producto_ubicac
 			exclude = ['id','producto','ubicacion']		
+
+
+class ImportarProductosForm(forms.Form):	
+	archivo = forms.FileField(label='Seleccione un archivo',required=True)  
+	sobreescribir = forms.ChoiceField(label=u'¿Sobreescribir Existentes?',choices=SINO,required=True,initial='S')
+	empresa = forms.ModelChoiceField(queryset=gral_empresa.objects.all(),empty_label=None,required=True)	
+	def __init__(self, *args, **kwargs):
+		request = kwargs.pop('request', None)
+		super(ImportarProductosForm, self).__init__(*args, **kwargs)		
+		try:
+			empresas = empresas_buscador(request)
+			self.fields['empresa'].queryset = empresas
+			self.fields['empresa'].initial = 1
+		except:
+			empresa = empresa_actual(request)  
+
+	def clean(self):
+		archivo = self.cleaned_data.get('archivo')        
+		if archivo:
+			if not archivo.name.endswith('.csv'):
+				self.add_error("archivo",u'¡El archivo debe tener extensión .CSV!')            
+			#if file is too large, return
+			if archivo.multiple_chunks():
+				self.add_error("archivo",u"El archivo es demasiado grande (%.2f MB)." % (archivo.size/(1000*1000),))
+		return self.cleaned_data

@@ -60,7 +60,7 @@
 													       	{% if form.tipo_form.value == 'ALTA' %}
 										                	<div class="col-sm-6 cerca">{% bootstrap_field form.ubicacion %}</div>
 										                	<div class="col-sm-3 cerca">{% bootstrap_field form.stock %}</div>
-													       	<div class="col-sm-3 cerca">{% bootstrap_field form.ppedido %}</div>
+													       	<div class="col-sm-3 cerca">{{form.ppedido|as_crispy_field}}</div>
 											                {% else %}
 											                <div class="col-sm-12"><h4 class="text-center">EL STOCK YA FUÉ INICIALIZADO</h4></div>
 											                {% endif %}		
@@ -90,7 +90,8 @@
 										                              <th style="width: 20%;">Lista</th>						                          						
 										                              <th style="width: 15%;" title="Precio de Costo" >P.Costo s/IVA</th>											
 										                              <th style="width: 15%;" title="Precio de Costo con Impuestos" >P.Costo c/Imp.</th>						
-										                              <th style="width: 5%;" title="Coeficiente de Ganancia (1=100%)" >Coef.Gan.</th>						
+										                              <th style="width: 5%;" title="" >Gan.&nbsp;
+										                              <i id="tit_precio" class="fa fa-question-circle recargarDatos" data-toggle="tooltip" data-placement="top" title="Coeficiente de Ganancia (1=100%) [0 a 10]"/></th>						
 										                              <th style="width: 15%;" title="Precio de Venta (Costo c/Imp * Coef.Gan.)">P.Venta</th>
 										                              <th style="width: 10%;" title="Coeficiente de Ganancia (1=100%)" >Coef.ITC</th>						
 										                              <th style="width: 10%;" title="Precio de Venta (Costo c/Imp * Coef.Gan.)">Coef.TH</th>

@@ -450,8 +450,9 @@ def recargar_proveedores(request):
 @login_required 
 def recargar_productos(request,tipo):
     context={}
-    productos = prod_productos.objects.filter(baja=False,mostrar_en__in=(tipo,3),empresa__id__in=empresas_habilitadas(request)).order_by('nombre')  
-    context["productos"]=list(productos.values('id','nombre','codigo').distinct())   
+    productos = prod_productos.objects.filter(baja=False,mostrar_en__in=(tipo,3),empresa__id__in=empresas_habilitadas(request)).distinct().order_by('nombre','codigo')          
+    prods = [{'detalle':p.get_prod_busqueda(),'id':p.pk} for p in productos]
+    context["productos"]= prods
     return HttpResponse(json.dumps(context))
 
 @login_required 

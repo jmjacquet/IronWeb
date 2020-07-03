@@ -105,7 +105,6 @@ class prod_productos(models.Model):
 
     class Meta:
         db_table = 'prod_productos'
-        ordering = ['nombre','codigo']
     
     def __unicode__(self):
         prod=u'%s' % (self.nombre)
@@ -113,7 +112,15 @@ class prod_productos(models.Model):
             prod = u'%s - %s' % (self.codigo,prod) 
         return prod    
 
-    def save(self):
+    def get_prod_busqueda(self):
+        prod=u'%s' % (self.nombre.upper())       
+        if self.codigo:
+            prod = u'%s - %s' % (self.codigo,prod) 
+        if self.codigo_barras:
+            prod = u'%s - CB: %s' % (prod,self.codigo_barras)           
+        return prod
+
+    def save(self, *args, **kwargs):
         self.nombre = self.nombre.upper()
         super(prod_productos, self).save()
 
