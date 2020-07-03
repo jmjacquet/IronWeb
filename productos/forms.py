@@ -94,6 +94,11 @@ class Producto_ListaPreciosForm(forms.ModelForm):
 		lista_precios = self.cleaned_data.get('lista_precios')
 		if not lista_precios:
 			self._errors['lista_precios'] = [u'Debe seleccionar una Lista de Precios!']
+		coef_ganancia = self.cleaned_data.get('coef_ganancia')
+		if coef_ganancia:
+			if coef_ganancia>10:
+				self._errors['coef_ganancia'] = [u'Valor de 0 a 10!']
+
 		
 
 class Producto_StockForm(forms.ModelForm):
