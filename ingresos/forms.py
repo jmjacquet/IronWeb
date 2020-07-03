@@ -144,8 +144,17 @@ class CPBVentaForm(forms.ModelForm):
 
 		return self.cleaned_data
 	
+class ProductoModelChoiceField(forms.ModelChoiceField):
+    def label_from_instance(self, obj):
+		prod=u'%s' % (obj.nombre.upper())		
+		if obj.codigo:
+			prod = u'%s - %s' % (obj.codigo,prod) 
+		if obj.codigo_barras:
+			prod = u'%s - CB:%s' % (prod,obj.codigo_barras)            
+		return prod   
+
 class CPBVentaDetalleForm(forms.ModelForm):
-	producto = forms.ModelChoiceField(queryset=prod_productos.objects.filter(baja=False,mostrar_en__in=(1,3)),required = True)	
+	producto = ProductoModelChoiceField(queryset=prod_productos.objects.filter(baja=False,mostrar_en__in=(1,3)),required = True)	
 	porc_dcto = forms.DecimalField(initial=0,decimal_places=2)	
 	cantidad = forms.DecimalField(initial=1,decimal_places=2)	
 	unidad = forms.CharField(required = False,widget=forms.TextInput(attrs={ 'class':'form-control unidades','readonly':'readonly'}),initial='u.')

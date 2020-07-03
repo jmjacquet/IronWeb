@@ -650,7 +650,7 @@ $("#recargarProductos").click(function () {
           $('.form-detalles tr').each(function(j) {
             $("[name='formDetalle-"+j+"-producto']").empty().append('<option value="">---</option>');            
             $.each(c["productos"], function (idx, item) {
-                $("[name='formDetalle-"+j+"-producto']").append('<option value="' + item['id'] + '">' + item['codigo']+' - '+item['nombre'] + '</option>');                
+                $("[name='formDetalle-"+j+"-producto']").append('<option value="' + item['id'] + '">' + item['detalle'] + '</option>');                
             }); 
             $("[name='formDetalle-"+j+"-producto']").trigger("chosen:updated");                       
           });           

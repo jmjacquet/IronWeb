@@ -65,7 +65,7 @@ class ProductosView(VariablesMixin,ListView):
                 productos= productos.filter(Q(nombre__icontains=nombre))
             
         context['form'] = form
-        context['productos'] = productos
+        context['productos'] = productos.order_by('nombre','codigo','empresa')
         return context
     
     def post(self, *args, **kwargs):
