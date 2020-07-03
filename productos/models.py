@@ -113,7 +113,7 @@ class prod_productos(models.Model):
             prod = u'%s - %s' % (self.codigo,prod) 
         return prod    
 
-    def save(self):
+    def save(self, *args, **kwargs):
         self.nombre = self.nombre.upper()
         super(prod_productos, self).save()
 

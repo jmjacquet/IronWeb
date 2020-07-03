@@ -1,0 +1,65 @@
+{% extends "base.html" %}
+{% load static from staticfiles %}
+{% load i18n l10n %}
+{% load humanize %}
+{% load bootstrap3 %}
+{% load crispy_forms_tags %}
+
+{% block breadcrumbs %}              
+        <div class="breadcrumbs">
+           IMPORTAR/AGREGAR PRODUCTOS (STOCK Y PRECIOS) 
+        </div>
+{% endblock breadcrumbs %}
+{% block extra_css %}
+	<link rel="stylesheet" href="{% static 'css/abms.css'%}?{% now "Ymd"%}" type="text/css" >
+{% endblock %}
+
+{% block cargando %}            
+  <div id="cargando" class="cargando" >
+    <span class="cargando-txt">PROCESANDO...</span>
+    <img class="cargando-img" src="{% static 'img/loading-bars.svg' %}">
+  </div>
+{% endblock cargando %}
+{% block principal %}                            
+<br>
+
+<div class="panel panel-body panel-primary panel_centrado">
+<div class="row">	
+ 	<div class="col-xs-12 ">
+	<fieldset>		
+		<form method="post" class="form abm" enctype="multipart/form-data" id="importador">
+		{% csrf_token %}
+		<div class="row">	
+			<div class="col-xs-12">
+				<div class="col-sm-6">{{ form.empresa|as_crispy_field }}</div>						
+				<div class="col-sm-6">{{ form.sobreescribir|as_crispy_field }}</div>				
+			</div>
+		</div>
+		<div class="row">
+			<div class="col-xs-12 ">
+				<div class="col-sm-6">{{ form.archivo|as_crispy_field }}</div>										
+				<div class="col-sm-6"><button class="btn pull-right btn-primary" id="Procesar" type="button"><i class="fa fa-check"></i> Importar</button></div>
+			</div>
+		</div>
+	</fieldset>
+ </div>
+</div> 
+</div> 
+
+<script type="text/javascript">
+	$(document).ready(function() {  
+   $('#cargando').hide();
+   $( "#Procesar" ).click(function() {        
+        $('#cargando').show();
+        $("#Procesar").prop("disabled", true);    
+        $( "#importador" ).submit();         
+      });
+ });
+</script>
+  
+{% endblock principal %}
+
+
+
+
+

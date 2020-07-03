@@ -13,7 +13,7 @@ from django.utils.safestring import mark_safe
 from crispy_forms.helper import FormHelper
 from crispy_forms.layout import Layout, Submit, Div,Button,HTML
 from .models import *
-from general.models import gral_plan_cuentas
+from general.models import gral_plan_cuentas,gral_empresa
 from comprobantes.models import cpb_cuenta
 from general.flavor import ARCUITField,ARDNIField,ARPostalCodeField
 from chosen import forms as chosenforms

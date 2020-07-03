@@ -11,7 +11,7 @@ from django.db import connection
 from django.core.urlresolvers import reverse
 from django.shortcuts import render_to_response,redirect
 from django.contrib import messages
-from general.views import VariablesMixin,ultimoNroId
+from general.views import VariablesMixin,ultimoNroId,getVariablesMixin
 from fm.views import AjaxCreateView,AjaxUpdateView,AjaxDeleteView
 from .forms import *
 from django.forms.models import inlineformset_factory,BaseInlineFormSet,formset_factory
@@ -864,58 +864,80 @@ def importar_productos(request):
             for index,line in enumerate(reader):                      
                 campos = line[0].split(";")               
                 
+                nombre = campos[1].strip().upper()
+                if nombre=='':
+                    continue #Salta al siguiente     
+                
                 codbar = campos[4].strip()
                 if codbar=='':
-                    cod = str(ultimoNroId(prod_productos)+1).zfill(11)
+                    cod = str(ultimoNroId(prod_productos)+1).zfill(12)
                     cod += str(digVerificador(cod))                                       
                     codbar = cod
                 cod = codbar
                 print cod
 
-                nombre = campos[1].strip().upper()
-                                
+                                  
                 try:
-                    tprod = prod_categoria.objects.get(nombre=campos[2].strip().upper())
+                    categoria = prod_categoria.objects.get(nombre=campos[2].strip().upper())
                 except:
-                    tprod = None
-
+                    categoria = None
+                    #import pdb; pdb.set_trace()
                 
                 try:
                     stock = int(campos[5].strip())
                 except:                
                     stock=0
+                try:
+                    pcosto = Decimal(campos[6].strip())
+                except:
+                    pcosto = Decimal(0)
+
+                try:
+                    piva = Decimal(campos[7].strip())
+                except:
+                    piva = Decimal(0)
+
+                try:
+                    pventa1 = Decimal(campos[10].strip())
+                except:
+                    pventa1 = Decimal(0)                                        
+                try:
+                    pventa2 = Decimal(campos[11].strip())
+                except:
+                    pventa2 = Decimal(0)    
                 
-                pcosto =   Decimal(campos[6].strip())
-                piva
-                domicilio = campos[5].strip().upper()  #DOMICILIO
-                dni = campos[6].strip().upper()  #DOMICILIO
-                cuit = campos[7].strip().upper().replace("-", "").replace(".", "") #ART  
-
-                stock = campos[8].strip()
-                if cond_iva=='Consumidor Final':
-                    cond_iva=5
-                elif cond_iva=='Responsable Inscripto':
-                    cond_iva=1
-                elif cond_iva=='Exento':
-                    cond_iva=4
-                else:
-                    cond_iva=5
-
-                tipo_doc = 99
-                if cuit<>'':
-                    tipo_doc = 80
-
-                fact_razon_social = campos[9].strip().upper()
-                fact_direccion = campos[10].strip().upper()
-                localidad = campos[11].strip().upper()                    
-                cp =   campos[12].strip()  #CP
+                pimp = pcosto + piva
                 
-                egr_entidad.objects.update_or_create(codigo=cod,tipo_entidad=tipo_entidad,empresa=empresa,defaults={'apellido_y_nombre':nombre,'fact_razon_social':fact_razon_social,'fact_direccion':fact_direccion,
-                    'fact_telefono':telefono2,'tipo_doc':tipo_doc,'fact_cuit':cuit,'domicilio':domicilio,'nro_doc':dni,'telefono':telefono,'email':email,'cod_postal':cp,'localidad':localidad,'fact_categFiscal':cond_iva})                                                                 
+                
+                try:
+                    tasa_iva = gral_tipo_iva.objects.get(id=5)
+                except:
+                    tasa_iva = None
+
+                prod = prod_productos.objects.create(codigo=cod,categoria=categoria,empresa=empresa,
+                    nombre=nombre,codigo_barras=codbar,tipo_producto=1,mostrar_en=3,unidad=0,llevar_stock=False,
+                    stock_negativo=True,tasa_iva=tasa_iva)
+
+                if prod:
+                    lp1 = prod_lista_precios.objects.filter(pk=1).first()
+                    lp2 = prod_lista_precios.objects.filter(pk=2).first()
+                    prod_producto_lprecios.objects.create(producto=prod,lista_precios=lp1,precio_costo=pcosto,precio_cimp=pimp,
+                        precio_venta=pventa1)
+                    prod_producto_lprecios.objects.create(producto=prod,lista_precios=lp2,precio_costo=pcosto,precio_cimp=pimp,
+                        precio_venta=pventa2)
+
+                    ubi = prod_ubicacion.objects.filter(default=True).first()                    
+                    prod_producto_ubicac.objects.create(producto=prod,ubicacion=ubi,punto_pedido=0.00)
+
+                    actualizar_stock(request,prod,ubi,21,stock) 
+
+
+
+
                 cant+=1                       
-            messages.success(request, u'Se importó el archivo con éxito!<br>(%s Clientes creados/actualizados)'% cant )
+            messages.success(request, u'Se importó el archivo con éxito!<br>(%s Productos creados/actualizados)'% cant )
             
     else:
         form = ImportarProductosForm(None,None,request=request)
     context['form'] = form    
-    return render(request, 'entidades/importar_entidades.html',context)            
+    return render(request, 'productos/importar_productos.html',context)            

@@ -4173,3 +4173,187 @@ Traceback (most recent call last):
   File "C:\Users\juanma\Envs\ironstable\lib\site-packages\django\template\loader.py", line 46, in get_template
     raise TemplateDoesNotExist(template_name)
 TemplateDoesNotExist: entidades/importar_clientes.html
+[02/Jul/2020 20:40:00] ERROR [django.request:256] Internal Server Error: /productos/importar_productos/
+Traceback (most recent call last):
+  File "C:\Users\juanma\Envs\ironstable\lib\site-packages\django\core\handlers\base.py", line 132, in get_response
+    response = wrapped_callback(request, *callback_args, **callback_kwargs)
+  File "C:\Users\juanma\Envs\ironstable\lib\site-packages\django\contrib\auth\decorators.py", line 22, in _wrapped_view
+    return view_func(request, *args, **kwargs)
+  File "D:\Repo\ironStable\productos\views.py", line 843, in importar_productos
+    context = getVariablesMixin(request)
+NameError: global name 'getVariablesMixin' is not defined
+[02/Jul/2020 20:40:34] ERROR [django.request:256] Internal Server Error: /productos/importar_productos/
+Traceback (most recent call last):
+  File "C:\Users\juanma\Envs\ironstable\lib\site-packages\django\core\handlers\base.py", line 132, in get_response
+    response = wrapped_callback(request, *callback_args, **callback_kwargs)
+  File "C:\Users\juanma\Envs\ironstable\lib\site-packages\django\contrib\auth\decorators.py", line 22, in _wrapped_view
+    return view_func(request, *args, **kwargs)
+  File "D:\Repo\ironStable\productos\views.py", line 925, in importar_productos
+    return render(request, 'entidades/importar_entidades.html',context)
+  File "C:\Users\juanma\Envs\ironstable\lib\site-packages\django\shortcuts.py", line 67, in render
+    template_name, context, request=request, using=using)
+  File "C:\Users\juanma\Envs\ironstable\lib\site-packages\django\template\loader.py", line 99, in render_to_string
+    return template.render(context, request)
+  File "C:\Users\juanma\Envs\ironstable\lib\site-packages\django\template\backends\django.py", line 74, in render
+    return self.template.render(context)
+  File "C:\Users\juanma\Envs\ironstable\lib\site-packages\django\template\base.py", line 209, in render
+    return self._render(context)
+  File "C:\Users\juanma\Envs\ironstable\lib\site-packages\django\test\utils.py", line 96, in instrumented_test_render
+    return self.nodelist.render(context)
+  File "C:\Users\juanma\Envs\ironstable\lib\site-packages\django\template\base.py", line 903, in render
+    bit = self.render_node(node, context)
+  File "C:\Users\juanma\Envs\ironstable\lib\site-packages\django\template\debug.py", line 79, in render_node
+    return node.render(context)
+  File "C:\Users\juanma\Envs\ironstable\lib\site-packages\django\template\loader_tags.py", line 135, in render
+    return compiled_parent._render(context)
+  File "C:\Users\juanma\Envs\ironstable\lib\site-packages\django\test\utils.py", line 96, in instrumented_test_render
+    return self.nodelist.render(context)
+  File "C:\Users\juanma\Envs\ironstable\lib\site-packages\django\template\base.py", line 903, in render
+    bit = self.render_node(node, context)
+  File "C:\Users\juanma\Envs\ironstable\lib\site-packages\django\template\debug.py", line 79, in render_node
+    return node.render(context)
+  File "C:\Users\juanma\Envs\ironstable\lib\site-packages\django\template\loader_tags.py", line 65, in render
+    result = block.nodelist.render(context)
+  File "C:\Users\juanma\Envs\ironstable\lib\site-packages\django\template\base.py", line 903, in render
+    bit = self.render_node(node, context)
+  File "C:\Users\juanma\Envs\ironstable\lib\site-packages\django\template\debug.py", line 79, in render_node
+    return node.render(context)
+  File "C:\Users\juanma\Envs\ironstable\lib\site-packages\django\template\debug.py", line 89, in render
+    output = self.filter_expression.resolve(context)
+  File "C:\Users\juanma\Envs\ironstable\lib\site-packages\django\template\base.py", line 674, in resolve
+    new_obj = func(obj, *arg_vals)
+  File "C:\Users\juanma\Envs\ironstable\lib\site-packages\crispy_forms\templatetags\crispy_forms_filters.py", line 103, in as_crispy_field
+    raise CrispyError('|as_crispy_field got passed an invalid or inexistent field')
+CrispyError: |as_crispy_field got passed an invalid or inexistent field
+[02/Jul/2020 20:42:27] ERROR [django.request:256] Internal Server Error: /productos/importar_productos/
+Traceback (most recent call last):
+  File "C:\Users\juanma\Envs\ironstable\lib\site-packages\django\core\handlers\base.py", line 132, in get_response
+    response = wrapped_callback(request, *callback_args, **callback_kwargs)
+  File "C:\Users\juanma\Envs\ironstable\lib\site-packages\django\contrib\auth\decorators.py", line 22, in _wrapped_view
+    return view_func(request, *args, **kwargs)
+  File "D:\Repo\ironStable\productos\views.py", line 925, in importar_productos
+    return render(request, 'entidades/importar_productos.html',context)
+  File "C:\Users\juanma\Envs\ironstable\lib\site-packages\django\shortcuts.py", line 67, in render
+    template_name, context, request=request, using=using)
+  File "C:\Users\juanma\Envs\ironstable\lib\site-packages\django\template\loader.py", line 98, in render_to_string
+    template = get_template(template_name, using=using)
+  File "C:\Users\juanma\Envs\ironstable\lib\site-packages\django\template\loader.py", line 46, in get_template
+    raise TemplateDoesNotExist(template_name)
+TemplateDoesNotExist: entidades/importar_productos.html
+[02/Jul/2020 20:45:06] ERROR [django.request:256] Internal Server Error: /productos/importar_productos/
+Traceback (most recent call last):
+  File "C:\Users\juanma\Envs\ironstable\lib\site-packages\django\core\handlers\base.py", line 132, in get_response
+    response = wrapped_callback(request, *callback_args, **callback_kwargs)
+  File "C:\Users\juanma\Envs\ironstable\lib\site-packages\django\contrib\auth\decorators.py", line 22, in _wrapped_view
+    return view_func(request, *args, **kwargs)
+  File "D:\Repo\ironStable\productos\views.py", line 888, in importar_productos
+    pcosto = Decimal(campos[6].strip())
+  File "C:\Python27\Lib\decimal.py", line 547, in __new__
+    "Invalid literal for Decimal: %r" % value)
+  File "C:\Python27\Lib\decimal.py", line 3873, in _raise_error
+    raise error(explanation)
+InvalidOperation: Invalid literal for Decimal: u''
+[02/Jul/2020 20:49:49] ERROR [django.request:256] Internal Server Error: /productos/importar_productos/
+Traceback (most recent call last):
+  File "C:\Users\juanma\Envs\ironstable\lib\site-packages\django\core\handlers\base.py", line 132, in get_response
+    response = wrapped_callback(request, *callback_args, **callback_kwargs)
+  File "C:\Users\juanma\Envs\ironstable\lib\site-packages\django\contrib\auth\decorators.py", line 22, in _wrapped_view
+    return view_func(request, *args, **kwargs)
+  File "D:\Repo\ironStable\productos\views.py", line 916, in importar_productos
+    'unidad':0,'llevar_stock':False,'stock_negativo':True,'tasa_iva':tasa_iva})
+  File "C:\Users\juanma\Envs\ironstable\lib\site-packages\django\db\models\manager.py", line 127, in manager_method
+    return getattr(self.get_queryset(), name)(*args, **kwargs)
+  File "C:\Users\juanma\Envs\ironstable\lib\site-packages\django\db\models\query.py", line 422, in update_or_create
+    obj, created = self._create_object_from_params(lookup, params)
+  File "C:\Users\juanma\Envs\ironstable\lib\site-packages\django\db\models\query.py", line 439, in _create_object_from_params
+    obj = self.create(**params)
+  File "C:\Users\juanma\Envs\ironstable\lib\site-packages\django\db\models\query.py", line 348, in create
+    obj.save(force_insert=True, using=self.db)
+TypeError: save() got an unexpected keyword argument 'force_insert'
+[02/Jul/2020 20:52:40] ERROR [django.request:256] Internal Server Error: /productos/importar_productos/
+Traceback (most recent call last):
+  File "C:\Users\juanma\Envs\ironstable\lib\site-packages\django\core\handlers\base.py", line 132, in get_response
+    response = wrapped_callback(request, *callback_args, **callback_kwargs)
+  File "C:\Users\juanma\Envs\ironstable\lib\site-packages\django\contrib\auth\decorators.py", line 22, in _wrapped_view
+    return view_func(request, *args, **kwargs)
+  File "D:\Repo\ironStable\productos\views.py", line 921, in importar_productos
+    prod_producto_lprecios.create(producto=prod,lista_precios=lp1,precio_costo=pcosto,precio_cimp=pimp,
+AttributeError: type object 'prod_producto_lprecios' has no attribute 'create'
+[02/Jul/2020 20:55:14] ERROR [django.request:256] Internal Server Error: /productos/importar_productos/
+Traceback (most recent call last):
+  File "C:\Users\juanma\Envs\ironstable\lib\site-packages\django\core\handlers\base.py", line 132, in get_response
+    response = wrapped_callback(request, *callback_args, **callback_kwargs)
+  File "C:\Users\juanma\Envs\ironstable\lib\site-packages\django\contrib\auth\decorators.py", line 22, in _wrapped_view
+    return view_func(request, *args, **kwargs)
+  File "D:\Repo\ironStable\productos\views.py", line 922, in importar_productos
+    precio_venta=pventa1)
+  File "C:\Users\juanma\Envs\ironstable\lib\site-packages\django\db\models\manager.py", line 127, in manager_method
+    return getattr(self.get_queryset(), name)(*args, **kwargs)
+  File "C:\Users\juanma\Envs\ironstable\lib\site-packages\django\db\models\query.py", line 346, in create
+    obj = self.model(**kwargs)
+  File "C:\Users\juanma\Envs\ironstable\lib\site-packages\django\db\models\base.py", line 468, in __init__
+    setattr(self, field.name, rel_obj)
+  File "C:\Users\juanma\Envs\ironstable\lib\site-packages\django\db\models\fields\related.py", line 629, in __set__
+    self.field.rel.to._meta.object_name,
+ValueError: Cannot assign "[<prod_lista_precios: PRECIO LISTA>]": "prod_producto_lprecios.lista_precios" must be a "prod_lista_precios" instance.
+[02/Jul/2020 20:57:29] ERROR [django.request:256] Internal Server Error: /productos/importar_productos/
+Traceback (most recent call last):
+  File "C:\Users\juanma\Envs\ironstable\lib\site-packages\django\core\handlers\base.py", line 132, in get_response
+    response = wrapped_callback(request, *callback_args, **callback_kwargs)
+  File "C:\Users\juanma\Envs\ironstable\lib\site-packages\django\contrib\auth\decorators.py", line 22, in _wrapped_view
+    return view_func(request, *args, **kwargs)
+  File "D:\Repo\ironStable\productos\views.py", line 916, in importar_productos
+    'unidad':0,'llevar_stock':False,'stock_negativo':True,'tasa_iva':tasa_iva})
+  File "C:\Users\juanma\Envs\ironstable\lib\site-packages\django\db\models\manager.py", line 127, in manager_method
+    return getattr(self.get_queryset(), name)(*args, **kwargs)
+  File "C:\Users\juanma\Envs\ironstable\lib\site-packages\django\db\models\query.py", line 420, in update_or_create
+    obj = self.get(**lookup)
+  File "C:\Users\juanma\Envs\ironstable\lib\site-packages\django\db\models\query.py", line 325, in get
+    clone = self.filter(*args, **kwargs)
+  File "C:\Users\juanma\Envs\ironstable\lib\site-packages\django\db\models\query.py", line 679, in filter
+    return self._filter_or_exclude(False, *args, **kwargs)
+  File "C:\Users\juanma\Envs\ironstable\lib\site-packages\django\db\models\query.py", line 697, in _filter_or_exclude
+    clone.query.add_q(Q(*args, **kwargs))
+  File "C:\Users\juanma\Envs\ironstable\lib\site-packages\django\db\models\sql\query.py", line 1310, in add_q
+    clause, require_inner = self._add_q(where_part, self.used_aliases)
+  File "C:\Users\juanma\Envs\ironstable\lib\site-packages\django\db\models\sql\query.py", line 1338, in _add_q
+    allow_joins=allow_joins, split_subq=split_subq,
+  File "C:\Users\juanma\Envs\ironstable\lib\site-packages\django\db\models\sql\query.py", line 1209, in build_filter
+    condition = self.build_lookup(lookups, col, value)
+  File "C:\Users\juanma\Envs\ironstable\lib\site-packages\django\db\models\sql\query.py", line 1102, in build_lookup
+    return final_lookup(lhs, rhs)
+  File "C:\Users\juanma\Envs\ironstable\lib\site-packages\django\db\models\lookups.py", line 101, in __init__
+    self.rhs = self.get_prep_lookup()
+  File "C:\Users\juanma\Envs\ironstable\lib\site-packages\django\db\models\lookups.py", line 139, in get_prep_lookup
+    return self.lhs.output_field.get_prep_lookup(self.lookup_name, self.rhs)
+  File "C:\Users\juanma\Envs\ironstable\lib\site-packages\django\db\models\fields\__init__.py", line 1874, in get_prep_lookup
+    return super(IntegerField, self).get_prep_lookup(lookup_type, value)
+  File "C:\Users\juanma\Envs\ironstable\lib\site-packages\django\db\models\fields\__init__.py", line 727, in get_prep_lookup
+    return self.get_prep_value(value)
+  File "C:\Users\juanma\Envs\ironstable\lib\site-packages\django\db\models\fields\__init__.py", line 1868, in get_prep_value
+    return int(value)
+TypeError: int() argument must be a string or a number, not 'prod_categoria'
+[02/Jul/2020 21:10:58] ERROR [django.request:256] Internal Server Error: /productos/importar_productos/
+Traceback (most recent call last):
+  File "C:\Users\juanma\Envs\ironstable\lib\site-packages\django\core\handlers\base.py", line 132, in get_response
+    response = wrapped_callback(request, *callback_args, **callback_kwargs)
+  File "C:\Users\juanma\Envs\ironstable\lib\site-packages\django\contrib\auth\decorators.py", line 22, in _wrapped_view
+    return view_func(request, *args, **kwargs)
+  File "D:\Repo\ironStable\productos\views.py", line 916, in importar_productos
+    stock_negativo=True,tasa_iva=tasa_iva)
+TypeError: 'prod_productos' object is not iterable
+[02/Jul/2020 21:23:14] ERROR [django.request:256] Internal Server Error: /productos/importar_productos/
+Traceback (most recent call last):
+  File "C:\Users\juanma\Envs\ironstable\lib\site-packages\django\core\handlers\base.py", line 132, in get_response
+    response = wrapped_callback(request, *callback_args, **callback_kwargs)
+  File "C:\Users\juanma\Envs\ironstable\lib\site-packages\django\contrib\auth\decorators.py", line 22, in _wrapped_view
+    return view_func(request, *args, **kwargs)
+  File "D:\Repo\ironStable\productos\views.py", line 918, in importar_productos
+    nombre=nombre,codigo_barras=codbar,tipo_producto=1,mostrar_en=3,unidad=0,llevar_stock=False,
+  File "D:\Repo\ironStable\productos\views.py", line 918, in importar_productos
+    nombre=nombre,codigo_barras=codbar,tipo_producto=1,mostrar_en=3,unidad=0,llevar_stock=False,
+  File "C:\Python27\Lib\bdb.py", line 49, in trace_dispatch
+    return self.dispatch_line(frame)
+  File "C:\Python27\Lib\bdb.py", line 68, in dispatch_line
+    if self.quitting: raise BdbQuit
+BdbQuit
