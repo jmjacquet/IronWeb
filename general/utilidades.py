@@ -352,6 +352,10 @@ def get_letra(cliente_categ,empresa_categ):
     else:
         return 'C'
 
+def popover_html(label, content):
+    return label + ' &nbsp;<i class="fa fa-question-circle" data-toggle="tooltip" data-placement="top" title="'+ content +'"></i>'
+
+
 class PrependWidget(Widget):
     def __init__(self, base_widget, data, *args, **kwargs):
         u"""Initialise widget and get base instance"""
@@ -562,3 +566,4 @@ MESSAGE_TAGS = {message_constants.DEBUG: 'debug',
                 message_constants.SUCCESS: 'success',
                 message_constants.WARNING: 'warning',
                 message_constants.ERROR: 'danger',}
+

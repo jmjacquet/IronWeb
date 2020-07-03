@@ -37,7 +37,7 @@ class ProductosForm(forms.ModelForm):
 	cta_egreso = chosenforms.ChosenModelChoiceField(label='Cuenta Egreso',queryset=gral_plan_cuentas.objects.filter(baja=False),empty_label='---',required = False)
 	ubicacion = forms.ModelChoiceField(queryset=prod_ubicacion.objects.filter(baja=False),required = False)	
 	stock = forms.DecimalField(label='Stock Inicial',initial=1,decimal_places=2,required = False)	
-	ppedido = forms.DecimalField(label='Punto Pedido',initial=0,decimal_places=2,required = False)	
+	ppedido = forms.DecimalField(label=popover_html(u'Punto Pedido', u'Stock de Advertencia'),initial=0,decimal_places=2,required = False)	
 	coef_iva = forms.DecimalField(widget = forms.HiddenInput(), required = False,decimal_places=2)	
 	class Meta:
 			model = prod_productos
