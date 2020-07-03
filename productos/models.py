@@ -117,7 +117,7 @@ class prod_productos(models.Model):
         if self.codigo:
             prod = u'%s - %s' % (self.codigo,prod) 
         if self.codigo_barras:
-            prod = u'%s - CB:%s' % (prod,self.codigo_barras)           
+            prod = u'%s - CB: %s' % (prod,self.codigo_barras)           
         return prod
 
     def save(self, *args, **kwargs):

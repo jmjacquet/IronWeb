@@ -11,6 +11,7 @@ if ($('#id_tipo_form').val()=='EDICION'){
           no_results_text: "Responsable inexistente...",
           placeholder_text_single:"Seleccione un Responsable",
           allow_single_deselect: true,
+          search_contains: true,
       });   
 }
 
@@ -19,6 +20,7 @@ $("#id_responsable").chosen({
           no_results_text: "Responsable inexistente...",
           placeholder_text_single:"Seleccione un Responsable",
           allow_single_deselect: true,
+          search_contains: true,
       });
 
 
@@ -50,6 +52,7 @@ $('.formDetalle').formset({
                 no_results_text: "Producto inexistente...",
                 placeholder_text_single:"Seleccione un Producto",
                 allow_single_deselect: true,
+                search_contains: true,
             });
             $("[name='formDetalle-"+i1+"-producto']").focus();
             $("[name='formDetalle-"+i1+"-producto']").change(function(){              
@@ -133,6 +136,7 @@ $("[name='formDetalle-0-producto']").chosen({
                 no_results_text: "Producto inexistente...",
                 placeholder_text_single:"Seleccione una Opcion",
                 allow_single_deselect: true,
+                search_contains: true,
             });
 $("#id_formDetalle-0-producto").focus();
 

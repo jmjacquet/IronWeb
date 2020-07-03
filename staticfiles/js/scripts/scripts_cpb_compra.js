@@ -505,6 +505,7 @@ $('.formDetalle').formset({
                 no_results_text: "Producto inexistente...",
                 placeholder_text_single:"Seleccione un Producto",
                 allow_single_deselect: true,
+                search_contains: true,
             });
             $("[name='formDetalle-"+i1+"-producto']").focus();
             $("#id_letra").trigger("change");
@@ -725,6 +726,7 @@ $("[name='formDetalle-0-producto']").chosen({
                 no_results_text: "Producto inexistente...",
                 placeholder_text_single:"Seleccione una Opcion",
                 allow_single_deselect: true,
+                search_contains: true,
             });
 
 $("#id_formDetalle-0-producto").focus();
@@ -740,6 +742,7 @@ $("#id_entidad").chosen({
           no_results_text: "Proveedor inexistente...",
           placeholder_text_single:"Seleccione un Proveedor",
           allow_single_deselect: true,
+          search_contains: true,
       });
 
 recalcular(); 
