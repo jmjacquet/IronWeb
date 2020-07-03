@@ -39,6 +39,9 @@ class ProductosForm(forms.ModelForm):
 	stock = forms.DecimalField(label='Stock Inicial',initial=1,decimal_places=2,required = False)	
 	ppedido = forms.DecimalField(label=popover_html(u'Punto Pedido', u'Stock de Advertencia'),initial=0,decimal_places=2,required = False)	
 	coef_iva = forms.DecimalField(widget = forms.HiddenInput(), required = False,decimal_places=2)	
+	codigo_barras = forms.CharField(label=u'Código de Barras',
+			widget=PrePendWidgetBoton(attrs={'class':'form-control','type':'number','placeholder':u'Presione para generar un CB a partir del Código',},
+			base_widget=TextInput,data='<i class="fa fa-barcode"></i>',tooltip=u"Presione para generar un CB a partir del Código",id="generarCB"))	
 	class Meta:
 			model = prod_productos
 			exclude = ['id','baja','fecha_creacion','fecha_modif','empresa']

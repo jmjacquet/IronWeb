@@ -874,7 +874,6 @@ def importar_productos(request):
                     cod += str(digVerificador(cod))                                       
                     codbar = cod
                 cod = codbar
-                print cod
 
                                   
                 try:
@@ -941,3 +940,14 @@ def importar_productos(request):
         form = ImportarProductosForm(None,None,request=request)
     context['form'] = form    
     return render(request, 'productos/importar_productos.html',context)            
+
+
+@login_required
+def generarCB(request):
+    codigo = request.GET['codigo']
+    try:
+        codigo = str(codigo).zfill(12)
+        codigo += str(digVerificador(codigo))                                               
+    except:
+        codigo=''    
+    return HttpResponse(codigo)     

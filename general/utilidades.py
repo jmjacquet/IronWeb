@@ -353,8 +353,7 @@ def get_letra(cliente_categ,empresa_categ):
         return 'C'
 
 def popover_html(label, content):
-    return label + ' &nbsp;<i class="fa fa-question-circle" data-toggle="tooltip" data-placement="top" title="'+ content +'"></i>'
-
+    return label + ' &nbsp;<i class="fa fa-question-circle recargarDatos" data-toggle="tooltip" data-placement="top" title="'+ content +'"></i>'
 
 class PrependWidget(Widget):
     def __init__(self, base_widget, data, *args, **kwargs):
@@ -405,6 +404,22 @@ class PostPendWidgetBuscar(Widget):
             u'</div>'
         ) % {'field': field, 'data': self.data,'tooltip':self.tooltip})     
 
+class PrePendWidgetBoton(Widget):
+    def __init__(self, base_widget, data,tooltip,id, *args, **kwargs):
+        u"""Initialise widget and get base instance"""
+        super(PrePendWidgetBoton, self).__init__(*args, **kwargs)
+        self.base_widget = base_widget(*args, **kwargs)
+        self.data = data
+        self.tooltip = tooltip
+        self.id = id
+
+    def render(self, name, value, attrs=None):
+        field = self.base_widget.render(name, value, attrs)
+        return mark_safe((
+            u'<div class="input-group">'
+            u'    <span class="input-group-addon btnBuscar" type="button" id="%(id)s" title="%(tooltip)s"><strong>%(data)s</strong></span>%(field)s'
+            u'</div>'
+        ) % {'field': field, 'data': self.data,'tooltip':self.tooltip,'id': self.id})     
 
 def digVerificador(num):
     lista = list(num)
