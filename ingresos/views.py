@@ -356,6 +356,7 @@ class CPBVentaNCCreateView(VariablesMixin,CreateView):
             form.fields['pto_vta'].initial = cpb.pto_vta
             form.fields['entidad'].initial = cpb.entidad
             form.fields['cpb_tipo'].queryset = cpb_tipo.objects.filter(compra_venta='V',baja=False,tipo__in=[2,3])
+            form.fields['condic_pago'].initial=1
             detalles = cpb_comprobante_detalle.objects.filter(cpb_comprobante=cpb)
             det=[]        
             for c in detalles:            
@@ -366,15 +367,23 @@ class CPBVentaNCCreateView(VariablesMixin,CreateView):
 
                     })                        
             CPBDetalleFormSet = inlineformset_factory(cpb_comprobante, cpb_comprobante_detalle,form=CPBVentaDetalleForm,fk_name='cpb_comprobante',formset=CPBVentaDetalleFormSet, can_delete=True,extra=0,min_num=len(det))
+
+            perc_imp = cpb_comprobante_perc_imp.objects.filter(cpb_comprobante=cpb)
+            pi=[]        
+            for p in perc_imp:            
+                pi.append({'perc_imp': p.perc_imp,'detalle':p.detalle,'importe_total':p.importe_total}) 
+            CPBPIFormSet = inlineformset_factory(cpb_comprobante, cpb_comprobante_perc_imp,form=CPBVentaPercImpForm,fk_name='cpb_comprobante',formset=CPBVentaPIFormSet, can_delete=True,extra=0,min_num=len(pi))
         else:
             detalles = None       
+            perc_imp = None
+        
         # ventas_detalle = CPBDetalleFormSet(prefix='formDetalle',initial=det)
         # ventas_pi = CPBPIFormSet(prefix='formDetallePI')
         # cpb_fp = CPBFPFormSet(prefix='formFP')
         CPBDetalleFormSet.form = staticmethod(curry(CPBVentaDetalleForm,request=request))
         ventas_detalle = CPBDetalleFormSet(prefix='formDetalle',initial=det)
         CPBPIFormSet.form = staticmethod(curry(CPBVentaPercImpForm,request=request))
-        ventas_pi = CPBPIFormSet(prefix='formDetallePI')
+        ventas_pi = CPBPIFormSet(prefix='formDetallePI',initial=pi)
         CPBFPFormSet.form = staticmethod(curry(CPBFPForm,request=request))
         cpb_fp = CPBFPFormSet(prefix='formFP')
         return self.render_to_response(self.get_context_data(form=form,ventas_detalle = ventas_detalle,ventas_pi=ventas_pi,cpb_fp=cpb_fp))
@@ -804,6 +813,7 @@ class CPBVentaClonarCreateView(VariablesMixin,CreateView):
             form.fields['pto_vta'].initial = cpb.pto_vta
             form.fields['cpb_tipo'].initial = cpb.cpb_tipo
             form.fields['entidad'].initial = cpb.entidad
+            form.fields['condic_pago'].initial=1
             detalles = cpb_comprobante_detalle.objects.filter(cpb_comprobante=cpb)
             det=[]        
             for c in detalles:            
@@ -812,15 +822,22 @@ class CPBVentaClonarCreateView(VariablesMixin,CreateView):
                     'importe_subtotal':c.importe_subtotal,'importe_iva':c.importe_iva,'importe_total':c.importe_total,'origen_destino':c.origen_destino,
                     'importe_tasa1':c.importe_tasa1,'importe_tasa2':c.importe_tasa2})                        
             CPBDetalleFormSet = inlineformset_factory(cpb_comprobante, cpb_comprobante_detalle,form=CPBVentaDetalleForm,fk_name='cpb_comprobante',formset=CPBVentaDetalleFormSet, can_delete=True,extra=0,min_num=len(det))
+
+            perc_imp = cpb_comprobante_perc_imp.objects.filter(cpb_comprobante=cpb)
+            pi=[]        
+            for p in perc_imp:            
+                pi.append({'perc_imp': p.perc_imp,'detalle':p.detalle,'importe_total':p.importe_total}) 
+            CPBPIFormSet = inlineformset_factory(cpb_comprobante, cpb_comprobante_perc_imp,form=CPBVentaPercImpForm,fk_name='cpb_comprobante',formset=CPBVentaPIFormSet, can_delete=True,extra=0,min_num=len(pi))
         else:
             detalles = None       
+            perc_imp = None
         # ventas_detalle = CPBDetalleFormSet(prefix='formDetalle',initial=det)
         # ventas_pi = CPBPIFormSet(prefix='formDetallePI')
         # cpb_fp = CPBFPFormSet(prefix='formFP')
         CPBDetalleFormSet.form = staticmethod(curry(CPBVentaDetalleForm,request=request))
         ventas_detalle = CPBDetalleFormSet(prefix='formDetalle',initial=det)
         CPBPIFormSet.form = staticmethod(curry(CPBVentaPercImpForm,request=request))
-        ventas_pi = CPBPIFormSet(prefix='formDetallePI')
+        ventas_pi = CPBPIFormSet(prefix='formDetallePI',initial=pi)
         CPBFPFormSet.form = staticmethod(curry(CPBFPForm,request=request))
         cpb_fp = CPBFPFormSet(prefix='formFP')
         return self.render_to_response(self.get_context_data(form=form,ventas_detalle = ventas_detalle,ventas_pi=ventas_pi,cpb_fp=cpb_fp))
