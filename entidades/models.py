@@ -30,7 +30,7 @@ class egr_entidad(models.Model):
 	# cta_contable = 
 	
 	tipo_entidad = models.IntegerField(choices=TIPO_ENTIDAD, blank=True, null=True,default=1)
-	dcto_general = models.DecimalField('% Dcto.Gral',max_digits=15, decimal_places=3,default=0,blank=True, null=True) 
+	dcto_general = models.DecimalField('% Dcto.Gral',max_digits=15, decimal_places=2,default=0,blank=True, null=True) 
 	fact_razon_social = models.CharField(u'Razón Social',max_length=200,blank=True, null=True)	
 	fact_cuit = models.CharField('CUIT',max_length=50,blank=True, null=True)   
 	fact_direccion = models.CharField(u'Dirección',max_length=200,blank=True, null=True)   
@@ -46,7 +46,7 @@ class egr_entidad(models.Model):
 	empresa =  models.ForeignKey('general.gral_empresa',db_column='empresa',blank=True, null=True,on_delete=models.SET_NULL)
 	usuario = models.ForeignKey('usuarios.usu_usuario',db_column='usuario',blank=True, null=True,related_name='usu_usuario_entidad',on_delete=models.SET_NULL)
 	
-	tope_cta_cte = models.DecimalField('Tope CtaCte',max_digits=15, decimal_places=3,default=0,blank=True, null=True) 
+	tope_cta_cte = models.DecimalField('Tope CtaCte',max_digits=15, decimal_places=2,default=0,blank=True, null=True) 
 	lista_precios_defecto = models.ForeignKey('productos.prod_lista_precios',db_column='lista_precios_defecto',blank=True, null=True) #Cliente/Pro
 
 	contacto1_nombre=models.CharField('Detalle Contacto 1',max_length=200,blank=True, null=True)   
