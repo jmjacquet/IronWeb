@@ -65,6 +65,52 @@ class ProductosForm(forms.ModelForm):
 		if (not ubicacion) and (tipo_form=='ALTA'):
 			self._errors['ubicacion'] = [u'Debe seleccionar una Ubicación!']
 
+class ProductosFormModal(forms.ModelForm):
+	descripcion = forms.CharField(label='Observaciones / Datos adicionales',widget=forms.Textarea(attrs={'class':'form-control2', 'rows': 3}),required = False)			
+	tasa_iva = forms.ModelChoiceField(queryset=gral_tipo_iva.objects.all(),required = True,initial=5)	
+	categoria = forms.ModelChoiceField(queryset=prod_categoria.objects.all(),required = True)	
+	tipo_form = forms.CharField(widget = forms.HiddenInput(), required = False)	
+	ubicacion = forms.ModelChoiceField(queryset=prod_ubicacion.objects.filter(baja=False),required = False)	
+	stock = forms.DecimalField(label='Stock Inicial',initial=1,decimal_places=2,required = False)	
+	ppedido = forms.DecimalField(label=popover_html(u'Punto Pedido', u'Stock de Advertencia'),initial=0,decimal_places=2,required = False)	
+	coef_iva = forms.DecimalField(widget = forms.HiddenInput(), required = False,decimal_places=2)	
+	codigo_barras = forms.CharField(required = False,label=u'Código de Barras',
+			widget=PrePendWidgetBoton(attrs={'class':'form-control','type':'number','placeholder':u'Presione para generar un CB a partir del Código',},
+			base_widget=TextInput,data='<i class="fa fa-barcode"></i>',tooltip=u"Presione para generar un CB a partir del Código",id="generarCB"))	
+	lista_precios = forms.ModelChoiceField(queryset=prod_lista_precios.objects.filter(baja=False),required = False)	
+	precio_costo = forms.DecimalField(label='Precio Costo',widget=PrependWidget(attrs={'class':'form-control','step':0.00},base_widget=NumberInput, data='$'),initial=0.00,decimal_places=2)
+	precio_cimp = forms.DecimalField(label='Precio c/Imp.',widget=PrependWidget(attrs={'class':'form-control','step':0.00},base_widget=NumberInput, data='$'),initial=0.00,decimal_places=2)
+	precio_venta = forms.DecimalField(label='Precio Venta',widget=PrependWidget(attrs={'class':'form-control','step':0.00},base_widget=NumberInput, data='$'),initial=0.00,decimal_places=2)	
+	coef_ganancia = forms.DecimalField(initial=0,decimal_places=3)		
+	class Meta:
+			model = prod_productos
+			exclude = ['id','baja','fecha_creacion','fecha_modif','empresa']
+
+	def __init__(self, *args,**kwargs):
+		request = kwargs.pop('request', None)
+		super(ProductosFormModal, self).__init__(*args, **kwargs)      
+		try:
+			empresa = empresa_actual(request)			
+			self.fields['ubicacion'].queryset = prod_ubicacion.objects.filter(baja=False,empresa__id__in=empresas_habilitadas(request))			
+			self.fields['categoria'].queryset = prod_categoria.objects.filter(baja=False,empresa__id__in=empresas_habilitadas(request))			
+			self.fields['lista_precios'].queryset = prod_lista_precios.objects.filter(baja=False,empresa__id__in=empresas_habilitadas(request))			
+		except gral_empresa.DoesNotExist:
+			empresa = None  
+
+	def clean(self):		
+		super(forms.ModelForm,self).clean()	
+		ubicacion = self.cleaned_data.get('ubicacion')
+		tipo_form = self.cleaned_data.get('tipo_form')
+		if (not ubicacion) and (tipo_form=='ALTA'):
+			self._errors['ubicacion'] = [u'Debe seleccionar una Ubicación!']
+
+		lista_precios = self.cleaned_data.get('lista_precios')
+		if not lista_precios:
+			self._errors['lista_precios'] = [u'Debe seleccionar una Lista de Precios!']
+		coef_ganancia = self.cleaned_data.get('coef_ganancia')
+		if coef_ganancia:
+			if coef_ganancia>10:
+				self._errors['coef_ganancia'] = [u'Valor de 0 a 10!']
 
 class Producto_ListaPreciosForm(forms.ModelForm):
 	producto = forms.IntegerField(widget = forms.HiddenInput(), required = False)	

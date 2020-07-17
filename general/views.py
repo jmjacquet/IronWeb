@@ -462,34 +462,6 @@ def entidad_baja_reactivar(request,id):
     entidad.save()               
     return HttpResponseRedirect(entidad.get_listado())
 
-@login_required 
-def productos_listas_precios(request):
-    limpiar_sesion(request)
-    ENTIDAD_ID = settings.ENTIDAD_ID
-    ENTIDAD_DIR = settings.ENTIDAD_DIR
-    usr= request.user     
-    try:
-        usuario = usr                        
-    except:
-        usuario = None         
-    try:
-        empresa = usr.userprofile.id_usuario.empresa
-    except gral_empresa.DoesNotExist:
-        empresa = None    
-    prods = prod_producto_lprecios.objects.filter().order_by('lista_precios','producto')            
-    form = ConsultaCtaCteCliente(request.POST or None,empresa=empresa)        
-    fecha = date.today()    
-    if form.is_valid():        
-        entidad = form.cleaned_data['entidad']                                                              
-        if entidad:
-             cpbs= cpbs.filter(entidad=entidad)        
-    try:
-        totales = cpbs.values('entidad','entidad__apellido_y_nombre').annotate(saldo=Sum('saldo'))
-             
-    except:
-        totales = 0       
-    return render_to_response('general/cta_cte/saldos_clientes.html',locals(),context_instance=RequestContext(request) ) 
-
 
 from django.http import HttpResponse
 from PIL import Image

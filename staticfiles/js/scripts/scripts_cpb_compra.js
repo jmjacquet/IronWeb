@@ -7,6 +7,9 @@ $.fm({
             "recargarP": function(data, options) {
                recargarProveedores();
                },
+              "recargarP": function(data, options) {             
+               recargarProds();
+               },
             }
   });
 
@@ -508,6 +511,7 @@ $('.formDetalle').formset({
                 search_contains: true,
             });
             $("[name='formDetalle-"+i1+"-producto']").focus();
+            $("#recargarProductos").trigger("click");
             $("#id_letra").trigger("change");
             $("[name='formDetalle-"+i1+"-producto']").trigger("change"); 
             recalcular(); 
@@ -592,12 +596,15 @@ $("#recargarProductos").click(function () {
       
         $.getJSON('/recargar_productos/2',{},
         function (c) {            
+          
           $('.form-detalles tr').each(function(j) {
+            var idp =  $("[name='formDetalle-"+j+"-producto']").val();            
+            //console.log($("[name='formDetalle-"+j+"-producto']").find("option[value="+idp+"]").attr("selected","selected"));
             $("[name='formDetalle-"+j+"-producto']").empty().append('<option value="">---</option>');            
             $.each(c["productos"], function (idx, item) {
-                $("[name='formDetalle-"+j+"-producto']").append('<option value="' + item['id'] + '">' + item['codigo']+' - '+item['nombre'] + '</option>');                
-            });
-            $("[name='formDetalle-"+j+"-producto']").trigger("chosen:updated");            
+                $("[name='formDetalle-"+j+"-producto']").append('<option value="' + item['id'] + '">' + item['detalle'] + '</option>');                
+            });                         
+            $("[name='formDetalle-"+j+"-producto']").val(idp).trigger("chosen:updated");
           });           
         });
   });
