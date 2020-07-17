@@ -243,6 +243,58 @@ class ProductosVerView(VariablesMixin,DetailView):
         context['prod_stock'] = prod_stock
         return context
 
+class ProductosCreateViewModal(VariablesMixin,AjaxCreateView):
+    form_class = ProductosFormModal
+    template_name = 'fm/productos/form.html'
+
+    @method_decorator(login_required)
+    def dispatch(self, *args, **kwargs): 
+        if not tiene_permiso(self.request,'prod_productos_abm'):
+            return redirect(reverse('principal'))
+        return super(ProductosCreateViewModal, self).dispatch(*args, **kwargs)
+
+    
+    def form_valid(self, form):
+        self.object = form.save(commit=False)        
+        self.object.empresa = empresa_actual(self.request)        
+        self.object.save()
+        
+        precio_costo = form.cleaned_data.get('precio_costo')
+        precio_cimp = form.cleaned_data.get('precio_cimp')
+        coef_ganancia = form.cleaned_data.get('coef_ganancia')
+        lista_precios = form.cleaned_data.get('lista_precios')
+        precio_venta = form.cleaned_data.get('precio_venta')        
+        ubi_prec = prod_producto_lprecios(producto=self.object,lista_precios=lista_precios,precio_costo=precio_costo,precio_cimp=precio_cimp,coef_ganancia=coef_ganancia,precio_venta=precio_venta)
+        ubi_prec.save()
+
+        stock = form.cleaned_data.get('stock')
+        ppedido = form.cleaned_data.get('ppedido')
+        ubicacion = form.cleaned_data.get('ubicacion')
+        if not stock:            
+            stock=1
+        if not ppedido:
+            ppedido=0
+        ubi_prod = prod_producto_ubicac(producto=self.object,ubicacion=ubicacion,punto_pedido=ppedido)
+        ubi_prod.save()
+        actualizar_stock(self.request,self.object,ubicacion,21,stock)
+        return super(ProductosCreateViewModal, self).form_valid(form)
+
+    def form_invalid(self, form):                                                               
+        return super(ProductosCreateViewModal, self).form_invalid(form)        
+   
+    def get_form_kwargs(self):
+        kwargs = super(ProductosCreateViewModal, self).get_form_kwargs()
+        kwargs['request'] = self.request
+        return kwargs  
+
+    def get_initial(self):    
+        initial = super(ProductosCreateViewModal, self).get_initial()               
+        initial['tipo_form'] = 'ALTA'
+        initial['codigo'] = '{0:0{width}}'.format((ultimoNroId(prod_productos)+1),width=4)        
+        initial['request'] = self.request      
+        return initial    
+
+
 @login_required
 def producto_baja_reactivar(request,id):
     prod = prod_productos.objects.get(pk=id) 

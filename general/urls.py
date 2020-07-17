@@ -32,7 +32,6 @@ urlpatterns = patterns('general.views',
     url(r'^tareas/tareas_eliminar/(?P<id>\d+)/$', TareasDeleteView, name="tareas_eliminar"),
     # url(r'^lista_precios/$', ListaPreciosView.as_view(),name="lista_precios"),
 
-    url(r'^productos_listas_precios/$', productos_listas_precios, name="productos_listas_precios"),    
 
     url(r'^chequear_email/(?P<id>\d+)/$', chequear_email, name="chequear_email"),
     )

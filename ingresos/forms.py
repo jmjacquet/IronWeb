@@ -337,8 +337,8 @@ class CPBRemitoDetalleForm(forms.ModelForm):
 #*************************************************************************
 
 class CPBPresupForm(forms.ModelForm):
-	entidad = forms.ModelChoiceField(label='Cliente',queryset=egr_entidad.objects.filter(tipo_entidad=1,baja=False),empty_label='---',required = False)
-	vendedor = forms.ModelChoiceField(label='Vendedor',queryset=egr_entidad.objects.filter(tipo_entidad=3,baja=False),empty_label='---',required = False)		
+	entidad = EntidadModelChoiceField(label='Cliente',queryset=egr_entidad.objects.filter(tipo_entidad=1,baja=False),empty_label='---',required = False)
+	vendedor = EntidadModelChoiceField(label='Vendedor',queryset=egr_entidad.objects.filter(tipo_entidad=3,baja=False),empty_label='---',required = False)		
 	fecha_cpb = forms.DateField(required = True,widget=forms.DateInput(attrs={'class': 'datepicker'}),initial=datetime.now())							
 	fecha_vto = forms.DateField(required = True,widget=forms.DateInput(attrs={'class': 'datepicker'}))							
 	pto_vta = forms.ChoiceField(label='Pto. Vta.',choices=[(pto.numero, pto.__unicode__()) for pto in cpb_pto_vta.objects.filter(baja=False)],required = False)
@@ -412,7 +412,7 @@ class CPBPresupForm(forms.ModelForm):
 		return self.cleaned_data
 
 class CPBPresupDetalleForm(forms.ModelForm):
-	producto = chosenforms.ChosenModelChoiceField(queryset=prod_productos.objects.filter(baja=False,mostrar_en__in=(1,3)),required = True)		
+	producto = ProductoModelChoiceField(queryset=prod_productos.objects.filter(baja=False,mostrar_en__in=(1,3)),required = True)		
 	importe_unitario = forms.DecimalField(widget=PrependWidget(attrs={'class':'form-control','step':0.00},base_widget=NumberInput, data='$'),initial=0.00,decimal_places=2)
 	porc_dcto = forms.DecimalField(initial=0,decimal_places=2)	
 	cantidad = forms.DecimalField(initial=1,decimal_places=2)	
@@ -517,10 +517,6 @@ class CPBPresupLiteForm(forms.ModelForm):
 
 		return self.cleaned_data
 
-class ProductoModelChoiceField(forms.ModelChoiceField):
-    def label_from_instance(self, obj):
-         return obj.nombre
-
 class CPBPresupLiteDetalleForm(forms.ModelForm):
 	producto = ProductoModelChoiceField(label="Producto/Servicio",queryset=prod_productos.objects.filter(baja=False,mostrar_en__in=(1,3)),required = True)		
 	importe_unitario = forms.DecimalField(label="Precio",widget=PrependWidget(attrs={'class':'form-control','step':0.00},base_widget=NumberInput, data='$'),initial=0.00,decimal_places=2)
@@ -555,7 +551,7 @@ class CPBPresupLiteDetalleForm(forms.ModelForm):
 #############################################################################
 
 class CPBRecCobranzaForm(forms.ModelForm):
-	entidad = chosenforms.ChosenModelChoiceField(label='Cliente',queryset=egr_entidad.objects.filter(tipo_entidad=1,baja=False),empty_label='---',required = False)	
+	entidad = EntidadModelChoiceField(label='Cliente',queryset=egr_entidad.objects.filter(tipo_entidad=1,baja=False),empty_label='---',required = False)	
 	pto_vta = forms.ChoiceField(label='Pto. Vta.',choices=[(pto.numero, pto.__unicode__()) for pto in cpb_pto_vta.objects.filter(baja=False)],required = False)
 	fecha_cpb = forms.DateField(required = True,widget=forms.DateInput(attrs={'class': 'form-control datepicker'}),initial=datetime.now())	
 	observacion = forms.CharField(label='Detalle',widget=forms.Textarea(attrs={ 'class':'form-control2','rows': 5}),required = False)	
@@ -701,7 +697,7 @@ class CPBSeleccionados(forms.Form):
 # LIQUIDO PRODUCTO (como un cpb de compra pero va en ventas)
 
 class CPBLiqProdForm(forms.ModelForm):
-	entidad = chosenforms.ChosenModelChoiceField(label='Proveedor',queryset=egr_entidad.objects.filter(tipo_entidad=2,baja=False),empty_label='---',required = False)	
+	entidad = EntidadModelChoiceField(label='Proveedor',queryset=egr_entidad.objects.filter(tipo_entidad=2,baja=False),empty_label='---',required = False)	
 	pto_vta = forms.IntegerField(label='Pto. Vta.',required = False)
 	fecha_cpb = forms.DateField(required = True,widget=forms.DateInput(attrs={'class': 'form-control datepicker'}),initial=hoy())
 	fecha_imputacion = forms.DateField(required = False,widget=forms.DateInput(attrs={'class': 'form-control datepicker'}),initial=hoy())
@@ -772,7 +768,7 @@ class CPBLiqProdForm(forms.ModelForm):
 		return self.cleaned_data
 
 class CPBLiqProdDetalleForm(forms.ModelForm):
-	producto = chosenforms.ChosenModelChoiceField(queryset=prod_productos.objects.filter(baja=False,mostrar_en__in=(2,3)),required = True)	
+	producto = ProductoModelChoiceField(queryset=prod_productos.objects.filter(baja=False,mostrar_en__in=(2,3)),required = True)	
 	porc_dcto = forms.DecimalField(initial=0,decimal_places=2)	
 	cantidad = forms.DecimalField(initial=1,decimal_places=2)	
 	unidad = forms.CharField(required = False,widget=forms.TextInput(attrs={ 'class':'form-control unidades','readonly':'readonly'}),initial='u.')

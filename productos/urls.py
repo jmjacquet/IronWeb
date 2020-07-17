@@ -13,6 +13,7 @@ urlpatterns = patterns('productos.views',
     url(r'^producto_editar/(?P<id>\d+)/$', ProductosEditView.as_view(), name="producto_editar"),
     url(r'^producto_eliminar/(?P<id>[\w-]+)/$', ProductosDeleteView.as_view(), name="producto_eliminar"),
     url(r'^producto_ver/(?P<id>\d+)/$', ProductosVerView.as_view(), name="producto_ver"),
+    url(r'^producto_nuevo_modal/$', ProductosCreateViewModal.as_view(), name="producto_nuevo_modal"),
     
     url(r'^categorias/$', CategoriasView.as_view(),name="categorias_listado"),
     url(r'^categorias/categoria_nuevo/$', CategoriasCreateView.as_view(), name="categoria_nuevo"),

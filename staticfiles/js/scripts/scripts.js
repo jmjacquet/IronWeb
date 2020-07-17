@@ -99,5 +99,24 @@
         }); 
      };     
 
+  function recargarProds(){
+        $.getJSON('/recargar_productos/1',{},
+        function (c) {            
+          $('.form-detalles tr').each(function(j) {
+            var idp =  $("[name='formDetalle-"+j+"-producto']").val(); 
+            $("[name='formDetalle-"+j+"-producto']").empty().append('<option value="">---</option>');            
+            $.each(c["productos"], function (idx, item) {
+                $("[name='formDetalle-"+j+"-producto']").append('<option value="' + item['id'] + '">' + item['detalle'] + '</option>');                                
+            });                         
+            if ((idp == '')||(idp == undefined)){
+              $("[name='formDetalle-"+j+"-producto']").trigger("chosen:updated");
+            }else{
+            $("[name='formDetalle-"+j+"-producto']").val(idp).trigger("chosen:updated");
+            }
+          });           
+        });
+     };     
+
+
 
 	   

@@ -17,10 +17,27 @@ from comprobantes.views import *
 from chosen import forms as chosenforms
 import math
 
+class EntidadModelChoiceField(forms.ModelChoiceField):
+    def label_from_instance(self, obj):
+		entidad=u'%s' % obj.apellido_y_nombre.upper()
+		cuit='' 
+		if obj.fact_cuit=='':    		
+			if obj.nro_doc=='':
+				cuit = ''
+			else:
+				cuit = u' - %s'  % obj.nro_doc
+		elif obj.fact_cuit:
+			cuit = u' - %s'  % obj.fact_cuit
+		
+		categ_fiscal = ''
+		if obj.fact_categFiscal:
+			categ_fiscal = ' - %s' % obj.get_categFiscal()
+		entidad = u'%s%s%s' % (entidad,cuit,categ_fiscal)
+		return entidad.upper()
 
 class CPBCompraForm(forms.ModelForm):
-	entidad = chosenforms.ChosenModelChoiceField(label='Proveedor',queryset=egr_entidad.objects.filter(tipo_entidad=2,baja=False),empty_label='---',required = False)
-	vendedor = chosenforms.ChosenModelChoiceField(label='Vendedor',queryset=egr_entidad.objects.filter(tipo_entidad=3,baja=False),empty_label='---',required = False)
+	entidad = EntidadModelChoiceField(label='Proveedor',queryset=egr_entidad.objects.filter(tipo_entidad=2,baja=False),empty_label='---',required = False)
+	vendedor = EntidadModelChoiceField(label='Vendedor',queryset=egr_entidad.objects.filter(tipo_entidad=3,baja=False),empty_label='---',required = False)
 	pto_vta = forms.IntegerField(label='Pto. Vta.',required = True)
 	fecha_cpb = forms.DateField(required = True,widget=forms.DateInput(attrs={'class': 'form-control datepicker'}),initial=hoy())
 	fecha_imputacion = forms.DateField(required = False,widget=forms.DateInput(attrs={'class': 'form-control datepicker'}),initial=hoy())
@@ -97,8 +114,12 @@ class CPBCompraForm(forms.ModelForm):
 		
 		return self.cleaned_data
 
+class ProductoModelChoiceField(forms.ModelChoiceField):
+    def label_from_instance(self, obj):
+		return obj.get_prod_busqueda()
+		
 class CPBCompraDetalleForm(forms.ModelForm):
-	producto = chosenforms.ChosenModelChoiceField(queryset=prod_productos.objects.filter(baja=False,mostrar_en__in=(2,3)),required = True)	
+	producto = ProductoModelChoiceField(queryset=prod_productos.objects.filter(baja=False,mostrar_en__in=(2,3)),required = True)	
 	porc_dcto = forms.DecimalField(initial=0,decimal_places=2)	
 	cantidad = forms.DecimalField(initial=1,decimal_places=2)	
 	unidad = forms.CharField(required = False,widget=forms.TextInput(attrs={ 'class':'form-control unidades','readonly':'readonly'}),initial='u.')

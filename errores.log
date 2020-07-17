@@ -4357,3 +4357,231 @@ Traceback (most recent call last):
   File "C:\Python27\Lib\bdb.py", line 68, in dispatch_line
     if self.quitting: raise BdbQuit
 BdbQuit
+[16/jul./2020 20:38:53] ERROR [django.request:256] Internal Server Error: /ingresos/ventas/nuevo/
+Traceback (most recent call last):
+  File "C:\Users\juanma\Envs\ironstable\lib\site-packages\django\core\handlers\base.py", line 164, in get_response
+    response = response.render()
+  File "C:\Users\juanma\Envs\ironstable\lib\site-packages\django\template\response.py", line 158, in render
+    self.content = self.rendered_content
+  File "C:\Users\juanma\Envs\ironstable\lib\site-packages\django\template\response.py", line 135, in rendered_content
+    content = template.render(context, self._request)
+  File "C:\Users\juanma\Envs\ironstable\lib\site-packages\django\template\backends\django.py", line 74, in render
+    return self.template.render(context)
+  File "C:\Users\juanma\Envs\ironstable\lib\site-packages\django\template\base.py", line 209, in render
+    return self._render(context)
+  File "C:\Users\juanma\Envs\ironstable\lib\site-packages\django\test\utils.py", line 96, in instrumented_test_render
+    return self.nodelist.render(context)
+  File "C:\Users\juanma\Envs\ironstable\lib\site-packages\django\template\base.py", line 903, in render
+    bit = self.render_node(node, context)
+  File "C:\Users\juanma\Envs\ironstable\lib\site-packages\django\template\debug.py", line 79, in render_node
+    return node.render(context)
+  File "C:\Users\juanma\Envs\ironstable\lib\site-packages\django\template\loader_tags.py", line 135, in render
+    return compiled_parent._render(context)
+  File "C:\Users\juanma\Envs\ironstable\lib\site-packages\django\test\utils.py", line 96, in instrumented_test_render
+    return self.nodelist.render(context)
+  File "C:\Users\juanma\Envs\ironstable\lib\site-packages\django\template\base.py", line 903, in render
+    bit = self.render_node(node, context)
+  File "C:\Users\juanma\Envs\ironstable\lib\site-packages\django\template\debug.py", line 79, in render_node
+    return node.render(context)
+  File "C:\Users\juanma\Envs\ironstable\lib\site-packages\django\template\loader_tags.py", line 135, in render
+    return compiled_parent._render(context)
+  File "C:\Users\juanma\Envs\ironstable\lib\site-packages\django\test\utils.py", line 96, in instrumented_test_render
+    return self.nodelist.render(context)
+  File "C:\Users\juanma\Envs\ironstable\lib\site-packages\django\template\base.py", line 903, in render
+    bit = self.render_node(node, context)
+  File "C:\Users\juanma\Envs\ironstable\lib\site-packages\django\template\debug.py", line 79, in render_node
+    return node.render(context)
+  File "C:\Users\juanma\Envs\ironstable\lib\site-packages\django\template\loader_tags.py", line 65, in render
+    result = block.nodelist.render(context)
+  File "C:\Users\juanma\Envs\ironstable\lib\site-packages\django\template\base.py", line 903, in render
+    bit = self.render_node(node, context)
+  File "C:\Users\juanma\Envs\ironstable\lib\site-packages\django\template\debug.py", line 79, in render_node
+    return node.render(context)
+  File "C:\Users\juanma\Envs\ironstable\lib\site-packages\django\template\loader_tags.py", line 65, in render
+    result = block.nodelist.render(context)
+  File "C:\Users\juanma\Envs\ironstable\lib\site-packages\django\template\base.py", line 903, in render
+    bit = self.render_node(node, context)
+  File "C:\Users\juanma\Envs\ironstable\lib\site-packages\django\template\debug.py", line 79, in render_node
+    return node.render(context)
+  File "C:\Users\juanma\Envs\ironstable\lib\site-packages\django\template\defaulttags.py", line 329, in render
+    return nodelist.render(context)
+  File "C:\Users\juanma\Envs\ironstable\lib\site-packages\django\template\base.py", line 903, in render
+    bit = self.render_node(node, context)
+  File "C:\Users\juanma\Envs\ironstable\lib\site-packages\django\template\debug.py", line 79, in render_node
+    return node.render(context)
+  File "C:\Users\juanma\Envs\ironstable\lib\site-packages\django\template\defaulttags.py", line 507, in render
+    six.reraise(*exc_info)
+  File "C:\Users\juanma\Envs\ironstable\lib\site-packages\django\template\defaulttags.py", line 493, in render
+    url = reverse(view_name, args=args, kwargs=kwargs, current_app=current_app)
+  File "C:\Users\juanma\Envs\ironstable\lib\site-packages\django\core\urlresolvers.py", line 578, in reverse
+    return force_text(iri_to_uri(resolver._reverse_with_prefix(view, prefix, *args, **kwargs)))
+  File "C:\Users\juanma\Envs\ironstable\lib\site-packages\django\core\urlresolvers.py", line 495, in _reverse_with_prefix
+    (lookup_view_s, args, kwargs, len(patterns), patterns))
+NoReverseMatch: Reverse for 'producto_nuevo_modal' with arguments '()' and keyword arguments '{}' not found. 0 pattern(s) tried: []
+[16/Jul/2020 20:47:43] ERROR [django.request:256] Internal Server Error: /productos/producto_nuevo_modal/
+Traceback (most recent call last):
+  File "C:\Users\juanma\Envs\ironstable\lib\site-packages\django\core\handlers\base.py", line 164, in get_response
+    response = response.render()
+  File "C:\Users\juanma\Envs\ironstable\lib\site-packages\django\template\response.py", line 158, in render
+    self.content = self.rendered_content
+  File "C:\Users\juanma\Envs\ironstable\lib\site-packages\django\template\response.py", line 135, in rendered_content
+    content = template.render(context, self._request)
+  File "C:\Users\juanma\Envs\ironstable\lib\site-packages\django\template\backends\django.py", line 74, in render
+    return self.template.render(context)
+  File "C:\Users\juanma\Envs\ironstable\lib\site-packages\django\template\base.py", line 209, in render
+    return self._render(context)
+  File "C:\Users\juanma\Envs\ironstable\lib\site-packages\django\test\utils.py", line 96, in instrumented_test_render
+    return self.nodelist.render(context)
+  File "C:\Users\juanma\Envs\ironstable\lib\site-packages\django\template\base.py", line 903, in render
+    bit = self.render_node(node, context)
+  File "C:\Users\juanma\Envs\ironstable\lib\site-packages\django\template\debug.py", line 79, in render_node
+    return node.render(context)
+  File "C:\Users\juanma\Envs\ironstable\lib\site-packages\django\template\base.py", line 1195, in render
+    return func(*resolved_args, **resolved_kwargs)
+  File "C:\Users\juanma\Envs\ironstable\lib\site-packages\bootstrap3\templatetags\bootstrap3.py", line 438, in bootstrap_field
+    return render_field(*args, **kwargs)
+  File "C:\Users\juanma\Envs\ironstable\lib\site-packages\bootstrap3\forms.py", line 62, in render_field
+    return renderer_cls(field, **kwargs).render()
+  File "C:\Users\juanma\Envs\ironstable\lib\site-packages\bootstrap3\renderers.py", line 215, in __init__
+    'Parameter "field" should contain a valid Django BoundField.')
+BootstrapError: Parameter "field" should contain a valid Django BoundField.
+[16/Jul/2020 20:47:43] ERROR [django.request:256] Internal Server Error: /productos/producto_nuevo_modal/
+Traceback (most recent call last):
+  File "C:\Users\juanma\Envs\ironstable\lib\site-packages\django\core\handlers\base.py", line 164, in get_response
+    response = response.render()
+  File "C:\Users\juanma\Envs\ironstable\lib\site-packages\django\template\response.py", line 158, in render
+    self.content = self.rendered_content
+  File "C:\Users\juanma\Envs\ironstable\lib\site-packages\django\template\response.py", line 135, in rendered_content
+    content = template.render(context, self._request)
+  File "C:\Users\juanma\Envs\ironstable\lib\site-packages\django\template\backends\django.py", line 74, in render
+    return self.template.render(context)
+  File "C:\Users\juanma\Envs\ironstable\lib\site-packages\django\template\base.py", line 209, in render
+    return self._render(context)
+  File "C:\Users\juanma\Envs\ironstable\lib\site-packages\django\test\utils.py", line 96, in instrumented_test_render
+    return self.nodelist.render(context)
+  File "C:\Users\juanma\Envs\ironstable\lib\site-packages\django\template\base.py", line 903, in render
+    bit = self.render_node(node, context)
+  File "C:\Users\juanma\Envs\ironstable\lib\site-packages\django\template\debug.py", line 79, in render_node
+    return node.render(context)
+  File "C:\Users\juanma\Envs\ironstable\lib\site-packages\django\template\base.py", line 1195, in render
+    return func(*resolved_args, **resolved_kwargs)
+  File "C:\Users\juanma\Envs\ironstable\lib\site-packages\bootstrap3\templatetags\bootstrap3.py", line 438, in bootstrap_field
+    return render_field(*args, **kwargs)
+  File "C:\Users\juanma\Envs\ironstable\lib\site-packages\bootstrap3\forms.py", line 62, in render_field
+    return renderer_cls(field, **kwargs).render()
+  File "C:\Users\juanma\Envs\ironstable\lib\site-packages\bootstrap3\renderers.py", line 215, in __init__
+    'Parameter "field" should contain a valid Django BoundField.')
+BootstrapError: Parameter "field" should contain a valid Django BoundField.
+[16/Jul/2020 21:00:15] ERROR [django.request:256] Internal Server Error: /productos/producto_nuevo_modal/
+Traceback (most recent call last):
+  File "C:\Users\juanma\Envs\ironstable\lib\site-packages\django\core\handlers\base.py", line 132, in get_response
+    response = wrapped_callback(request, *callback_args, **callback_kwargs)
+  File "C:\Users\juanma\Envs\ironstable\lib\site-packages\django\views\generic\base.py", line 71, in view
+    return self.dispatch(request, *args, **kwargs)
+  File "C:\Users\juanma\Envs\ironstable\lib\site-packages\django\utils\decorators.py", line 34, in _wrapper
+    return bound_func(*args, **kwargs)
+  File "C:\Users\juanma\Envs\ironstable\lib\site-packages\django\contrib\auth\decorators.py", line 22, in _wrapped_view
+    return view_func(request, *args, **kwargs)
+  File "C:\Users\juanma\Envs\ironstable\lib\site-packages\django\utils\decorators.py", line 30, in bound_func
+    return func.__get__(self, type(self))(*args2, **kwargs2)
+  File "D:\Repo\ironStable\productos\views.py", line 254, in dispatch
+    return super(ProductosCreateViewModal, self).dispatch(*args, **kwargs)
+  File "C:\Users\juanma\Envs\ironstable\lib\site-packages\django\views\generic\base.py", line 89, in dispatch
+    return handler(request, *args, **kwargs)
+  File "D:\Repo\ironStable\productos\views.py", line 259, in get
+    form = self.get_form(form_class)
+  File "C:\Users\juanma\Envs\ironstable\lib\site-packages\django\views\generic\edit.py", line 74, in get_form
+    return form_class(**self.get_form_kwargs())
+  File "D:\Repo\ironStable\productos\forms.py", line 86, in __init__
+    super(ProductosForm, self).__init__(*args, **kwargs)
+TypeError: super(type, obj): obj must be an instance or subtype of type
+[16/Jul/2020 21:00:16] ERROR [django.request:256] Internal Server Error: /productos/producto_nuevo_modal/
+Traceback (most recent call last):
+  File "C:\Users\juanma\Envs\ironstable\lib\site-packages\django\core\handlers\base.py", line 132, in get_response
+    response = wrapped_callback(request, *callback_args, **callback_kwargs)
+  File "C:\Users\juanma\Envs\ironstable\lib\site-packages\django\views\generic\base.py", line 71, in view
+    return self.dispatch(request, *args, **kwargs)
+  File "C:\Users\juanma\Envs\ironstable\lib\site-packages\django\utils\decorators.py", line 34, in _wrapper
+    return bound_func(*args, **kwargs)
+  File "C:\Users\juanma\Envs\ironstable\lib\site-packages\django\contrib\auth\decorators.py", line 22, in _wrapped_view
+    return view_func(request, *args, **kwargs)
+  File "C:\Users\juanma\Envs\ironstable\lib\site-packages\django\utils\decorators.py", line 30, in bound_func
+    return func.__get__(self, type(self))(*args2, **kwargs2)
+  File "D:\Repo\ironStable\productos\views.py", line 254, in dispatch
+    return super(ProductosCreateViewModal, self).dispatch(*args, **kwargs)
+  File "C:\Users\juanma\Envs\ironstable\lib\site-packages\django\views\generic\base.py", line 89, in dispatch
+    return handler(request, *args, **kwargs)
+  File "D:\Repo\ironStable\productos\views.py", line 259, in get
+    form = self.get_form(form_class)
+  File "C:\Users\juanma\Envs\ironstable\lib\site-packages\django\views\generic\edit.py", line 74, in get_form
+    return form_class(**self.get_form_kwargs())
+  File "D:\Repo\ironStable\productos\forms.py", line 86, in __init__
+    super(ProductosForm, self).__init__(*args, **kwargs)
+TypeError: super(type, obj): obj must be an instance or subtype of type
+[16/Jul/2020 21:01:11] ERROR [django.request:256] Internal Server Error: /productos/producto_nuevo_modal/
+Traceback (most recent call last):
+  File "C:\Users\juanma\Envs\ironstable\lib\site-packages\django\core\handlers\base.py", line 132, in get_response
+    response = wrapped_callback(request, *callback_args, **callback_kwargs)
+  File "C:\Users\juanma\Envs\ironstable\lib\site-packages\django\views\generic\base.py", line 71, in view
+    return self.dispatch(request, *args, **kwargs)
+  File "C:\Users\juanma\Envs\ironstable\lib\site-packages\django\utils\decorators.py", line 34, in _wrapper
+    return bound_func(*args, **kwargs)
+  File "C:\Users\juanma\Envs\ironstable\lib\site-packages\django\contrib\auth\decorators.py", line 22, in _wrapped_view
+    return view_func(request, *args, **kwargs)
+  File "C:\Users\juanma\Envs\ironstable\lib\site-packages\django\utils\decorators.py", line 30, in bound_func
+    return func.__get__(self, type(self))(*args2, **kwargs2)
+  File "D:\Repo\ironStable\productos\views.py", line 254, in dispatch
+    return super(ProductosCreateViewModal, self).dispatch(*args, **kwargs)
+  File "C:\Users\juanma\Envs\ironstable\lib\site-packages\django\views\generic\base.py", line 89, in dispatch
+    return handler(request, *args, **kwargs)
+  File "D:\Repo\ironStable\productos\views.py", line 259, in get
+    form = self.get_form(form_class)
+  File "C:\Users\juanma\Envs\ironstable\lib\site-packages\django\views\generic\edit.py", line 74, in get_form
+    return form_class(**self.get_form_kwargs())
+  File "D:\Repo\ironStable\productos\forms.py", line 86, in __init__
+    super(ProductosForm, self).__init__(*args, **kwargs)
+TypeError: super(type, obj): obj must be an instance or subtype of type
+[16/Jul/2020 21:01:11] ERROR [django.request:256] Internal Server Error: /productos/producto_nuevo_modal/
+Traceback (most recent call last):
+  File "C:\Users\juanma\Envs\ironstable\lib\site-packages\django\core\handlers\base.py", line 132, in get_response
+    response = wrapped_callback(request, *callback_args, **callback_kwargs)
+  File "C:\Users\juanma\Envs\ironstable\lib\site-packages\django\views\generic\base.py", line 71, in view
+    return self.dispatch(request, *args, **kwargs)
+  File "C:\Users\juanma\Envs\ironstable\lib\site-packages\django\utils\decorators.py", line 34, in _wrapper
+    return bound_func(*args, **kwargs)
+  File "C:\Users\juanma\Envs\ironstable\lib\site-packages\django\contrib\auth\decorators.py", line 22, in _wrapped_view
+    return view_func(request, *args, **kwargs)
+  File "C:\Users\juanma\Envs\ironstable\lib\site-packages\django\utils\decorators.py", line 30, in bound_func
+    return func.__get__(self, type(self))(*args2, **kwargs2)
+  File "D:\Repo\ironStable\productos\views.py", line 254, in dispatch
+    return super(ProductosCreateViewModal, self).dispatch(*args, **kwargs)
+  File "C:\Users\juanma\Envs\ironstable\lib\site-packages\django\views\generic\base.py", line 89, in dispatch
+    return handler(request, *args, **kwargs)
+  File "D:\Repo\ironStable\productos\views.py", line 259, in get
+    form = self.get_form(form_class)
+  File "C:\Users\juanma\Envs\ironstable\lib\site-packages\django\views\generic\edit.py", line 74, in get_form
+    return form_class(**self.get_form_kwargs())
+  File "D:\Repo\ironStable\productos\forms.py", line 86, in __init__
+    super(ProductosForm, self).__init__(*args, **kwargs)
+TypeError: super(type, obj): obj must be an instance or subtype of type
+[16/Jul/2020 21:02:43] ERROR [django.request:256] Internal Server Error: /productos/producto_nuevo_modal/
+Traceback (most recent call last):
+  File "C:\Users\juanma\Envs\ironstable\lib\site-packages\django\core\handlers\base.py", line 132, in get_response
+    response = wrapped_callback(request, *callback_args, **callback_kwargs)
+  File "C:\Users\juanma\Envs\ironstable\lib\site-packages\django\views\generic\base.py", line 71, in view
+    return self.dispatch(request, *args, **kwargs)
+  File "C:\Users\juanma\Envs\ironstable\lib\site-packages\django\utils\decorators.py", line 34, in _wrapper
+    return bound_func(*args, **kwargs)
+  File "C:\Users\juanma\Envs\ironstable\lib\site-packages\django\contrib\auth\decorators.py", line 22, in _wrapped_view
+    return view_func(request, *args, **kwargs)
+  File "C:\Users\juanma\Envs\ironstable\lib\site-packages\django\utils\decorators.py", line 30, in bound_func
+    return func.__get__(self, type(self))(*args2, **kwargs2)
+  File "D:\Repo\ironStable\productos\views.py", line 254, in dispatch
+    return super(ProductosCreateViewModal, self).dispatch(*args, **kwargs)
+  File "C:\Users\juanma\Envs\ironstable\lib\site-packages\django\views\generic\base.py", line 89, in dispatch
+    return handler(request, *args, **kwargs)
+  File "D:\Repo\ironStable\productos\views.py", line 273, in post
+    return self.form_invalid(form, prod_precios)
+  File "D:\Repo\ironStable\productos\views.py", line 298, in form_invalid
+    return super(ProductosCreateViewModal, self).form_invalid(form=form,prod_precios = prod_precios)
+TypeError: form_invalid() got an unexpected keyword argument 'prod_precios'
