@@ -11,14 +11,22 @@
     <!-- END RESPONSIVE MENU TOGGLER -->
     <!-- BEGIN TOP NAVIGATION MENU -->      
     <div class="hor-menu  pull-right">
+       
 
       <ul class="nav navbar-nav pull-right">         
-
+        {% if sitio_mobile %}
+        <li>   
+           <a href="javascript:;">           
+          <span class="username"><strong>{{usuario.nombre}} ({{empresa.nombre}})</strong></span>         
+          </a>
+        </li> 
+       {% else %}
         <li class="mega-menu-dropdown">
           <a href="javascript:;" class="dropdown-toggle usuario_barra"  data-hover="dropdown" data-close-others="true" >            
           <span class="username"><strong>{{usuario.nombre}} ({{empresa.nombre}})  {% if homologacion %} | HOMO/PRUEBA {% endif%}</strong></span>
           <i class="fa fa-angle-down"></i>
           </a>
+         
           <ul class="dropdown-menu">
             <div class="mega-menu-content">
                 <div class="row">                  
@@ -50,14 +58,13 @@
                   </div>
                 </div>
               </div>
-          </ul>
+          </ul>          
         </li>
-        {% if not sitio_mobile %}  
+        {% endif %}      
         <li class="hidden-xs">   
           <a href="mailto:{{EMAIL_CONTACTO}}" title="Contacto/Enviar Consultas"><i class="icono_mail icon-envelope"></i></a>
-        </li>
-        {% endif %}
-      </ul>      
+        </li>        
+      </ul>       
     </div>
 
 

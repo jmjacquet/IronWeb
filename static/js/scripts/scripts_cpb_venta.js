@@ -10,7 +10,10 @@ $.fm({
                },
             "recargarV": function(data, options) {
                recargarVendedores();
-               }
+               },
+            "recargarP": function(data, options) {             
+               recargarProds();
+               },
             }
   });
 
@@ -18,6 +21,7 @@ $("#id_vendedor").chosen({
           no_results_text: "Vendedor inexistente...",
           placeholder_text_single:"Seleccione un Vendedor",
           allow_single_deselect: true,
+          search_contains: true,
       });
 
 
@@ -91,9 +95,6 @@ $("#id_entidad").change(function(){
   }); 
 
 
-
-
-
 function calcularProd(i){  
   
   var cant = parseFloat($("input[name='formDetalle-"+i+"-cantidad']").val())|| 0;
@@ -109,6 +110,7 @@ function calcularProd(i){
   var importe_parcial = (importe_unitario * cant)*(1-porcDcto/100)
   
   letra = $("#id_letra").val();                      
+  
   if (letra=='A'){ 
     importe_iva = importe_parcial * coef_iva;
     importe_subtotal = importe_parcial;
@@ -567,7 +569,8 @@ $('.formDetalle').formset({
                 search_contains: true,
             });
             $("[name='formDetalle-"+i1+"-producto']").focus();
-             $("#id_letra").trigger("change");
+            $("#recargarProductos").trigger("click");
+            $("#id_letra").trigger("change");
             calcularProd(i1);   
             recalcular();
             
@@ -650,12 +653,15 @@ $("#recargarProductos").click(function () {
       
         $.getJSON('/recargar_productos/1',{},
         function (c) {            
+          
           $('.form-detalles tr').each(function(j) {
+            var idp =  $("[name='formDetalle-"+j+"-producto']").val();            
+            //console.log($("[name='formDetalle-"+j+"-producto']").find("option[value="+idp+"]").attr("selected","selected"));
             $("[name='formDetalle-"+j+"-producto']").empty().append('<option value="">---</option>');            
             $.each(c["productos"], function (idx, item) {
-                $("[name='formDetalle-"+j+"-producto']").append('<option value="' + item['id'] + '">' + item['codigo']+' - '+item['nombre'] + '</option>');                
-            }); 
-            $("[name='formDetalle-"+j+"-producto']").trigger("chosen:updated");                       
+                $("[name='formDetalle-"+j+"-producto']").append('<option value="' + item['id'] + '">' + item['detalle'] + '</option>');                
+            });                         
+            $("[name='formDetalle-"+j+"-producto']").val(idp).trigger("chosen:updated");
           });           
         });
   });
@@ -748,11 +754,18 @@ $("#id_letra").change(function(){
           $(this).show();
           $("#tit_precio").attr('data-original-title', "Precio Venta sin impuestos");
           $("#tit_total").attr('data-original-title', "Importe Subtotal + IVA");
-        };
-       });
+        };        
+     });     
      
      ultimoNumCPB(cpb_tipo,letra,pto_vta);    
- });  
+     
+     $('.form-detalles tr').each(function(j) {        
+        calcularProd(j);      
+     });     
+
+     calcularTotales();  
+});  
+
 $("#id_pto_vta").change(function(){
      letra = $("#id_letra").val();
      pto_vta = $("#id_pto_vta").val();
@@ -777,6 +790,7 @@ $('.form-detalles tr').each(function(j) {
                 no_results_text: "Producto inexistente...",
                 placeholder_text_single:"Seleccione una Opcion",
                 allow_single_deselect: true,
+                search_contains: true,
             });
 });
 
@@ -797,14 +811,14 @@ if ($('#id_tipo_form').val()=='EDICION'){
   }; 
 }
 
-$('.form-detalles tr').each(function(j) {        
-        recargarProd(j);              
-      });  
+
+
 
 $("#id_entidad").chosen({
         no_results_text: "Cliente inexistente...",
         placeholder_text_single:"Seleccione un Cliente",
         allow_single_deselect: true,
+        search_contains: true,
     });
 recalcular(); 
 $("#id_entidad").trigger("change");
