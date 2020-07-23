@@ -71,7 +71,7 @@ $("#id_entidad").change(function(){
       if ($('#id_tipo_form').val()=='ALTA')
       {        
             $.ajax({
-                  data: {'id': id},
+                  data: {'id': id , 'tipo':1},
                   url: '/comprobantes/setearLetraCPB/',
                   type: 'get',
                   cache: true,          

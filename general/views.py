@@ -429,22 +429,22 @@ def TareasDeleteView(request, id):
 @login_required 
 def recargar_clientes(request):
     context={}
-    clientes = egr_entidad.objects.filter(tipo_entidad=1,baja=False,empresa__id__in=empresas_habilitadas(request)).order_by('apellido_y_nombre')
-    context["clientes"]=list(clientes.values('id','apellido_y_nombre','codigo','fact_cuit').distinct())   
+    clientes = egr_entidad.objects.filter(tipo_entidad=1,baja=False,empresa__id__in=empresas_habilitadas(request)).distinct().order_by('apellido_y_nombre')
+    context["clientes"]=[{'detalle':p.__unicode__(),'id':p.pk} for p in clientes]    
     return HttpResponse(json.dumps(context))
 
 @login_required 
 def recargar_vendedores(request):
     context={}
-    vendedores = egr_entidad.objects.filter(tipo_entidad=3,baja=False,empresa__id__in=empresas_habilitadas(request)).order_by('apellido_y_nombre')  
-    context["vendedores"]=list(vendedores.values('id','apellido_y_nombre','codigo','fact_cuit').distinct())   
+    vendedores = egr_entidad.objects.filter(tipo_entidad=3,baja=False,empresa__id__in=empresas_habilitadas(request)).distinct().order_by('apellido_y_nombre')      
+    context["vendedores"]=[{'detalle':p.__unicode__(),'id':p.pk} for p in vendedores]
     return HttpResponse(json.dumps(context))
 
 @login_required 
 def recargar_proveedores(request):
     context={}
-    proveedores = egr_entidad.objects.filter(tipo_entidad=2,baja=False,empresa__id__in=empresas_habilitadas(request)).order_by('apellido_y_nombre')  
-    context["proveedores"]=list(proveedores.values('id','apellido_y_nombre','codigo','fact_cuit').distinct())   
+    proveedores = egr_entidad.objects.filter(tipo_entidad=2,baja=False,empresa__id__in=empresas_habilitadas(request)).distinct().order_by('apellido_y_nombre')  
+    context["proveedores"]=[{'detalle':p.__unicode__(),'id':p.pk} for p in proveedores]
     return HttpResponse(json.dumps(context))
 
 @login_required 

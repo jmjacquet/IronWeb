@@ -69,7 +69,7 @@
         function (c) {
             $("#id_entidad").empty().append('<option value="">---</option>');
             $.each(c["clientes"], function (idx, item) {
-                jQuery("<option/>").text(item['apellido_y_nombre']+' - '+item['fact_cuit']).attr("value", item['id']).appendTo("#id_entidad");
+                 $("#id_entidad").append('<option value="' + item['id'] + '">' + item['detalle'] + '</option>');      
             })
             $('#id_entidad').trigger("chosen:updated");
             $("#recargarClientes").trigger("click");
@@ -81,7 +81,7 @@
 	        function (c) {
 	            $("#id_vendedor").empty().append('<option value="">---</option>');
 	            $.each(c["vendedores"], function (idx, item) {
-	                jQuery("<option/>").text(item['apellido_y_nombre']+' - '+item['fact_cuit']).attr("value", item['id']).appendTo("#id_vendedor");
+	                 $("#id_vendedor").append('<option value="' + item['id'] + '">' + item['detalle'] + '</option>');      
 	            })
 	            $('#id_vendedor').trigger("chosen:updated");
 	        });
@@ -92,7 +92,7 @@
         function (c) {
             $("#id_entidad").empty().append('<option value="">---</option>');
             $.each(c["proveedores"], function (idx, item) {
-                jQuery("<option/>").text(item['apellido_y_nombre']+' - '+item['fact_cuit']).attr("value", item['id']).appendTo("#id_entidad");
+                $("#id_entidad").append('<option value="' + item['id'] + '">' + item['detalle'] + '</option>');                     
             })
             $('#id_entidad').trigger("chosen:updated");
             $("#recargarProductos").trigger("click");
