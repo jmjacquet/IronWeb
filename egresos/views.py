@@ -386,14 +386,17 @@ class CPBCompraClonarCreateView(VariablesMixin,CreateView):
 
 @login_required
 def CPBCompraDeleteView(request, id):
-    cpb = get_object_or_404(cpb_comprobante, id=id)
-    if not tiene_permiso(request,'cpb_compras_abm'):
-            return redirect(reverse('principal'))
-    if not puedeEliminarCPB(id):
-            messages.error(request, u'¡No puede editar un Comprobante con Pagos/Saldado!')
-            return redirect(reverse('cpb_compra_listado'))
-    cpb.delete()
-    messages.success(request, u'Los datos se guardaron con éxito!')
+    try:
+        cpb = get_object_or_404(cpb_comprobante, id=id)
+        if not tiene_permiso(request,'cpb_compras_abm'):
+                return redirect(reverse('principal'))
+        if not puedeEliminarCPB(id):
+                messages.error(request, u'¡No puede editar un Comprobante con Pagos/Saldado!')
+                return redirect(reverse('cpb_compra_listado'))
+        cpb.delete()
+        messages.success(request, u'Los datos se guardaron con éxito!')
+    except:
+        messages.error(request, u'¡El Comprobante no existe/no pudo eliminarse!')
     return redirect('cpb_compra_listado')
 
 
@@ -641,11 +644,11 @@ class CPBPagoEditView(VariablesMixin,CreateView):
      
 @login_required
 def CPBPagoDeleteView(request, id):
-    cpb = get_object_or_404(cpb_comprobante, id=id)
-    if not tiene_permiso(request,'cpb_pagos_abm'):
+    try:
+        cpb = get_object_or_404(cpb_comprobante, id=id)
+        if not tiene_permiso(request,'cpb_pagos_abm'):
             return redirect(reverse('principal'))
-    
-    try:                
+            
         fps = cpb_comprobante_fp.objects.filter(cpb_comprobante=cpb,mdcp_salida__isnull=False).values_list('mdcp_salida',flat=True)
     
         if (len(fps)>0):
@@ -898,11 +901,14 @@ class CPBRemitoCViewList(VariablesMixin,ListView):
 
 @login_required
 def CPBRemitoCDeleteView(request, id):
-    cpb = get_object_or_404(cpb_comprobante, id=id)
-    if not tiene_permiso(request,'cpb_remitos'):
-            return redirect(reverse('principal'))
-    cpb.delete()
-    messages.success(request, u'Los datos se guardaron con éxito!')
+    try:
+        cpb = get_object_or_404(cpb_comprobante, id=id)
+        if not tiene_permiso(request,'cpb_remitos'):
+                return redirect(reverse('principal'))
+        cpb.delete()
+        messages.success(request, u'Los datos se guardaron con éxito!')
+    except:
+        messages.error(request, u'¡El Comprobante no existe/no pudo eliminarse!')
     return redirect('cpb_remitoc_listado')
 
 class CPBRemitoCCreateView(VariablesMixin,CreateView):

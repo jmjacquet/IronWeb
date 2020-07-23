@@ -1,280 +1,283 @@
 <div class="page-sidebar-wrapper">
-                        <div class="page-sidebar navbar-collapse collapse">
-                            <ul class="page-sidebar-menu page-sidebar-menu-hover-submenu" data-keep-expanded="false" data-auto-scroll="true" data-slide-speed="200">
-                                <!-- DOC: To remove the search box from the sidebar you just need to completely remove the below "sidebar-search-wrapper" LI element -->
-                                <!-- DOC: This is mobile version of the horizontal menu. The desktop version is defined(duplicated) in the header above -->               
-                                <li class="sidebar-toggler-wrapper">
-                                    <!-- BEGIN SIDEBAR TOGGLER BUTTON -->
-                                    <div class="sidebar-toggler">
-                                    </div>
-                                    <!-- END SIDEBAR TOGGLER BUTTON -->
-                                </li>
-                                <li class="active">   
-                                  <a href="{% url 'principal' %}" title="Página Principal">
-                                      PRINCIPAL
-                                    </a>
-                                </li>
-                                {% if permisos_ingresos or permisos_egresos %} 
+    <div class="page-sidebar navbar-collapse collapse">
+        <ul class="page-sidebar-menu page-sidebar-menu-hover-submenu" data-keep-expanded="false" data-auto-scroll="true" data-slide-speed="200">
+            <!-- DOC: To remove the search box from the sidebar you just need to completely remove the below "sidebar-search-wrapper" LI element -->
+            <!-- DOC: This is mobile version of the horizontal menu. The desktop version is defined(duplicated) in the header above -->               
+            <li class="sidebar-toggler-wrapper">
+                <!-- BEGIN SIDEBAR TOGGLER BUTTON -->
+                <div class="sidebar-toggler">
+                </div>
+                <!-- END SIDEBAR TOGGLER BUTTON -->
+            </li>
+            <li class="active">   
+              <a href="{% url 'principal' %}" title="Página Principal">
+                  Principal
+                </a>
+            </li>
+            {% if permisos_ingresos or permisos_egresos %} 
+            <li>
+                <a href="javascript:;">COMPROBANTES <span class="arrow">
+                </span>
+                </a>
+                
+                <ul class="sub-menu">
+                    {% if permisos_ingresos %}
+                    <li>
+                        <a href="javascript:;">INGRESOS <span class="arrow"></span></a>
+                        <ul class="sub-menu">                                                   
+                                                                          
+                            {% if 'cpb_ventas' in permisos_grupo %}
+                              <li>
+                                 <a href="{% url 'cpb_venta_listado' %}"><i class="icon-note"></i>Comprobantes de Venta</a>
+                              </li>
+                              {% endif %}
+                            {% if 'cpb_liqprod_abm' in permisos_grupo %}
+                            <li>                         
+                              <a href="{% url 'cpb_liqprod_nuevo' %}"><i class="icon-note"></i>Nuevo CPB Liq.Prod.</a>                        
+                            </li>
+                            {% endif %}
+                            {% if 'cpb_cobranzas' in permisos_grupo %}
+                              <li>
+                                <a href="{% url 'cpb_rec_cobranza_listado' %}"><i class="icon-wallet"></i>Recibos Cobranzas</a>
+                              </li>
+                              {% endif %}
+                              {% if 'cpb_remitos' in permisos_grupo %}
+                              <li>
+                                <a href="{% url 'cpb_remito_listado' %}"><i class="fa  fa-truck"></i>Remitos de Venta</a>
+                              </li>
+                              {% endif %}
+                              {% if 'cpb_presupuestos' in permisos_grupo %}
+                              <li>
+                                <a href="{% url 'cpb_presup_listado' %}"><i class="icon-briefcase"></i>Presupuestos</a>
+                              </li>                      
+                              {% endif %}         
+                            
+                        </ul>
+                    </li>
+                    {% endif %}
+                    {% if permisos_egresos %}  
+                    <li>
+                        <a href="javascript:;">EGRESOS <span class="arrow"></span></a>                                                
+                        <ul class="sub-menu">
+                            {% if 'cpb_compras' in permisos_grupo %}
+                              <li>
+                                <a href="{% url 'cpb_compra_listado' %}"><i class="icon-note"></i>Comprobantes de Compra</a>
+                              </li>
+                              {% endif %}
+                              {% if 'cpb_pagos' in permisos_grupo %}
+                              <li>
+                                 <a href="{% url 'cpb_pago_listado' %}"><i class="icon-wallet"></i>Órdenes de Pago</a>
+                              </li>
+                              {% endif %}
+                              {% if 'cpb_remitosc' in permisos_grupo %}
                                 <li>
-                                    <a href="javascript:;">COMPROBANTES <span class="arrow">
-                                    </span>
-                                    </a>
-                                    
-                                    <ul class="sub-menu">
-                                        {% if permisos_ingresos %}
-                                        <li>
-                                            <a href="javascript:;">INGRESOS <span class="arrow"></span></a>
-                                            <ul class="sub-menu">                                                   
-                                                                                              
-                                                {% if 'cpb_ventas' in permisos_grupo %}
-                                                  <li>
-                                                     <a href="{% url 'cpb_venta_listado' %}"><i class="icon-note"></i>Comprobantes de Venta</a>
-                                                  </li>
-                                                  {% endif %}
-                                                {% if 'cpb_liqprod_abm' in permisos_grupo %}
-                                                <li>                         
-                                                  <a href="{% url 'cpb_liqprod_nuevo' %}"><i class="icon-note"></i>Nuevo CPB Liq.Prod.</a>                        
-                                                </li>
-                                                {% endif %}
-                                                {% if 'cpb_cobranzas' in permisos_grupo %}
-                                                  <li>
-                                                    <a href="{% url 'cpb_rec_cobranza_listado' %}"><i class="icon-wallet"></i>Recibos Cobranzas</a>
-                                                  </li>
-                                                  {% endif %}
-                                                  {% if 'cpb_remitos' in permisos_grupo %}
-                                                  <li>
-                                                    <a href="{% url 'cpb_remito_listado' %}"><i class="fa  fa-truck"></i>Remitos de Venta</a>
-                                                  </li>
-                                                  {% endif %}
-                                                  {% if 'cpb_presupuestos' in permisos_grupo %}
-                                                  <li>
-                                                    <a href="{% url 'cpb_presup_listado' %}"><i class="icon-briefcase"></i>Presupuestos</a>
-                                                  </li>                      
-                                                  {% endif %}         
-                                                
-                                            </ul>
-                                        </li>
-                                        {% endif %}
-                                        {% if permisos_egresos %}  
-                                        <li>
-                                            <a href="javascript:;">EGRESOS <span class="arrow"></span></a>                                                
-                                            <ul class="sub-menu">
-                                                {% if 'cpb_compras' in permisos_grupo %}
-                                                  <li>
-                                                    <a href="{% url 'cpb_compra_listado' %}"><i class="icon-note"></i>Comprobantes de Compra</a>
-                                                  </li>
-                                                  {% endif %}
-                                                  {% if 'cpb_pagos' in permisos_grupo %}
-                                                  <li>
-                                                     <a href="{% url 'cpb_pago_listado' %}"><i class="icon-wallet"></i>Órdenes de Pago</a>
-                                                  </li>
-                                                  {% endif %}
-                                                  {% if 'cpb_remitosc' in permisos_grupo %}
-                                                    <li>
-                                                      <a href="{% url 'cpb_remitoc_listado' %}"><i class="fa fa-truck"></i>Remitos de Compra</a>
-                                                    </li>
-                                                  {% endif %}
-                                            </ul>
-                                        </li>
-                                        {% endif %}
-                                        {% if 'cpb_movimientos' in permisos_grupo %}
-                                        <li>
-                                            <a href="javascript:;">FINANZAS <span class="arrow"></span></a>                                                
-                                            <ul class="sub-menu">
-                                                <li>{% if 'cpb_mov_abm' in permisos_grupo %}
-                                                    <a href="{% url 'movimientos_listado' %}"><i class="icon-shuffle"></i>Movimientos entre Cuentas</a>
-                                                </li> {% endif %}                                                      
-                                            </ul>
-                                        </li>
-                                        {% endif %}  
-                                    </ul>
+                                  <a href="{% url 'cpb_remitoc_listado' %}"><i class="fa fa-truck"></i>Remitos de Compra</a>
                                 </li>
-                                {% endif %}                                 
-                                {% if permisos_rep_ingr_egr or permisos_rep_contables %} 
-                                <li>
-                                    <a href="javascript:;">
-                                    REPORTES/ESTADÍSTICAS <span class="arrow">
-                                    </span>
-                                    </a>
-                                    <ul class="sub-menu">
-                                        {% if permisos_rep_ingr_egr %}
-                                        <li>
-                                            <a href="javascript:;">REPORTES CUENTAS CORRIENTES <span class="arrow"></span></a>
-                                            <ul class="sub-menu">
-                                                {% if 'rep_cta_cte_clientes' in permisos_grupo %} 
-                                                  <li>
-                                                    <a href="{% url 'cta_cte_clientes' %}">Cta.Cte.Clientes</a>
-                                                  </li>
-                                                  {% endif %}
-                                                  {% if 'rep_saldos_clientes' in permisos_grupo %}
-                                                  <li>
-                                                    <a href="{% url 'saldos_clientes' %}">Saldos Clientes</a>
-                                                  </li>
-                                                  {% endif %}                                                     
-                                           
-                                                {% if 'rep_cta_cte_prov' in permisos_grupo %}
-                                                  <li>
-                                                    <a href="{% url 'cta_cte_proveedores' %}">Cta.Cte.Proveedores</a>
-                                                  </li>
-                                                  {% endif %}
-                                                  {% if 'rep_saldos_prov' in permisos_grupo %}   
-                                                  <li>
-                                                    <a href="{% url 'saldos_proveedores' %}">Saldos Proveedores</a>
-                                                  </li>
-                                                  {% endif %}            
-                                            </ul>
-                                        </li>
-                                        {% endif %}
-                                        {% if 'rep_varios' in permisos_grupo %} 
-                                        <li>
-                                            <a href="javascript:;">REPORTES VARIOS <span class="arrow"></span></a>
-                                            <ul class="sub-menu">
-                                                
-                                                  <li>
-                                                    <a href="{% url 'vencimientos_cpbs' %}">Consulta Comprobantes</a>
-                                                  </li>
-                                                 
-                                                  <li>
-                                                    <a href="{% url 'movimientos_stock' %}">Movimientos Productos/Stock</a>
-                                                  </li>
-                                                  <li>
-                                                    <a href="{% url 'rankings' %}">Estadísticas Ventas/Compras</a>
-                                                  </li>
-                                            </ul>
-                                        </li>
-                                        {% endif %}
-                                        {% if permisos_rep_contables %}
-                                        <li>
-                                            <a href="javascript:;">REPORTES CONTABLES <span class="arrow"></span></a>
-                                            <ul class="sub-menu">
-                                                {% if 'rep_libro_iva' in permisos_grupo %}
-                                                  <li>
-                                                    <a href="{% url 'libro_iva_ventas' %}">Libro IVA Ventas</a>
-                                                  </li>
-                                                  {% endif %}
-                                                  {% if 'rep_libro_iva' in permisos_grupo %}                      
-                                                  <li>
-                                                    <a href="{% url 'libro_iva_compras' %}">Libro IVA Compras</a>
-                                                  </li> 
-                                                  {% endif %}                                                  
-                                            </ul>
-                                        </li>
-                                        
-                                        <li>
-                                            <a href="javascript:;">FINANZAS <span class="arrow"></span></a>                                                
-                                            <ul class="sub-menu">
-                                                {% if 'rep_saldos_cuentas' in permisos_grupo %}
-                                                  <li>
-                                                    <a href="{% url 'saldos_cuentas' %}">Saldos Cuentas</a>
-                                                  </li>   
-                                                  {% endif %}            
-                                                {% if 'rep_caja_diaria' in permisos_grupo %}
-                                                  <li>
-                                                    <a href="{% url 'caja_diaria' %}">Detalle Ingresos/Egresos</a>
-                                                  </li>   
-                                                  {% endif %}        
-                                                {% if 'rep_seguim_cheques' in permisos_grupo %}
-                                                  <li>
-                                                    <a href="{% url 'seguimiento_cheques' %}">Seguimiento Cheques</a>
-                                                  </li>   
-                                                 {% endif %}        
-                                            </ul>
-                                        </li>
-                                        {% endif %}
-                                        
-                                    </ul>
-                                </li>
-                                {% endif %} 
-                                {% if permisos_entidades or permisos_productos %} 
-                                <li>
-                                    <a href="javascript:;">
-                                    CONFIGURACIÓN <span class="arrow">
-                                    </span>
-                                    </a>
-                                    <ul class="sub-menu">
-                                       {% if permisos_entidades %}
-                                        <li>
-                                            <a href="javascript:;">ENTIDADES <span class="arrow"></span></a>
-                                            <ul class="sub-menu">
-                                                {% if 'ent_clientes' in permisos_grupo %}
-                                                <li>
-                                                     <a href="{% url 'clientes_listado' %}">Clientes</a>
-                                                  </li>
-                                                {% endif %}
-                                                {% if 'ent_proveedores' in permisos_grupo %}   
-                                                  <li>
-                                                    <a href="{% url 'proveedores_listado' %}">Proveedores</a>
-                                                  </li>
-                                                {% endif %}
-                                                {% if 'ent_vendedores' in permisos_grupo %}   
-                                                  <li>
-                                                    <a href="{% url 'vendedores_listado' %}">Empleados/Vendedores</a>
-                                                  </li>       
-                                                {% endif %}
-                                                
-                                            </ul>
-                                        </li>
-                                        {% endif %} 
-                                        {% if permisos_productos %} 
-                                        <li>
-                                            <a href="javascript:;">PRODUCTOS/SERVICIOS <span class="arrow"></span></a>                                                
-                                            <ul class="sub-menu">
-                                                {% if 'prod_productos' in permisos_grupo %} 
-                                                <li>
-                                                    <a href="{% url 'productos_listado' %}">Productos/Servicios</a>
-                                                  </li>
-                                            {% endif %}
-                                            {% if 'prod_precios' in permisos_grupo %}  
-                                                   <li>
-                                                    <a href="{% url 'prod_precios_listado' %}">Actualización Precios</a>
-                                                  </li>
-                                            {% endif %}
-                                            {% if 'prod_stock' in permisos_grupo %}                          
-                                                  <li>
-                                                    <a href="{% url 'prod_stock_listado' %}">Mantenimiento Stock</a>
-                                                  </li>             
-                                             {% endif %} 
-                                            </ul>
-                                        </li>
-                                       {% endif %}
-                                       {% if 'gral_configuracion' in permisos_grupo %} 
-                                        <li>
-                                            <a href="javascript:;">GENERAL <span class="arrow"></span></a>                                                
-                                            <ul class="sub-menu">
-                                                 <li>
-                                                    <a href="{% url 'lista_precios_listado' %}">Listas de Precios</a>
-                                                  </li> 
-                                                  <li>
-                                                    <a href="{% url 'categorias_listado' %}">Categorías</a>
-                                                  </li>
-                                                  <li>
-                                                    <a href="{% url 'depositos_listado' %}">Depósitos/Ubicación</a>
-                                                  </li>         
-                                                  {% if  tipo_usr == 0 %}
-                                                  <li>
-                                                    <a href="{% url 'pto_vta_listado' %}">Puntos de Venta</a>
-                                                  </li>
-                                                  <li>
-                                                    <a href="{% url 'percimp_listado' %}">Percep./Impuestos</a>
-                                                  </li> 
-                                                  <li>
-                                                    <a href="{% url 'formapago_listado' %}">Formas de Pago/Cobro</a>
-                                                  </li>
-                                                  {% endif %}
-                                                  <li>
-                                                    <a href="{% url 'bancos_listado' %}">Bancos</a>
-                                                  </li>  
-                                                  <li>
-                                                    <a href="{% url 'disponibilidades_listado' %}">Cuentas/Disponibilidades</a>
-                                                  </li>
-                                            </ul>
-                                        </li>
-                                       {% endif %} 
-                                    </ul>
-                                </li>
-                                 {% endif %} 
-                            </ul>
+                              {% endif %}
+                        </ul>
+                    </li>
+                    {% endif %}
+                    {% if 'cpb_movimientos' in permisos_grupo %}
+                    <li>
+                        <a href="javascript:;">FINANZAS <span class="arrow"></span></a>                                                
+                        <ul class="sub-menu">
+                            <li>{% if 'cpb_mov_abm' in permisos_grupo %}
+                                <a href="{% url 'movimientos_listado' %}"><i class="icon-shuffle"></i>Movimientos entre Cuentas</a>
+                            </li> {% endif %}                                                      
+                        </ul>
+                    </li>
+                    {% endif %}  
+                </ul>
+            </li>
+            {% endif %}                                 
+            {% if permisos_rep_ingr_egr or permisos_rep_contables %} 
+            <li>
+                <a href="javascript:;">
+                REPORTES/ESTADÍSTICAS <span class="arrow">
+                </span>
+                </a>
+                <ul class="sub-menu">
+                    {% if permisos_rep_ingr_egr %}
+                    <li>
+                        <a href="javascript:;">REPORTES CUENTAS CORRIENTES <span class="arrow"></span></a>
+                        <ul class="sub-menu">
+                            {% if 'rep_cta_cte_clientes' in permisos_grupo %} 
+                              <li>
+                                <a href="{% url 'cta_cte_clientes' %}">Cta.Cte.Clientes</a>
+                              </li>
+                              {% endif %}
+                              {% if 'rep_saldos_clientes' in permisos_grupo %}
+                              <li>
+                                <a href="{% url 'saldos_clientes' %}">Saldos Clientes</a>
+                              </li>
+                              {% endif %}                                                     
+                       
+                            {% if 'rep_cta_cte_prov' in permisos_grupo %}
+                              <li>
+                                <a href="{% url 'cta_cte_proveedores' %}">Cta.Cte.Proveedores</a>
+                              </li>
+                              {% endif %}
+                              {% if 'rep_saldos_prov' in permisos_grupo %}   
+                              <li>
+                                <a href="{% url 'saldos_proveedores' %}">Saldos Proveedores</a>
+                              </li>
+                              {% endif %}            
+                        </ul>
+                    </li>
+                    {% endif %}
+                    {% if 'rep_varios' in permisos_grupo %} 
+                    <li>
+                        <a href="javascript:;">REPORTES VARIOS <span class="arrow"></span></a>
+                        <ul class="sub-menu">
+                            
+                              <li>
+                                <a href="{% url 'vencimientos_cpbs' %}">Consulta Comprobantes</a>
+                              </li>
+                             
+                              <li>
+                                <a href="{% url 'movimientos_stock' %}">Movimientos Productos/Stock</a>
+                              </li>
+                              <li>
+                                <a href="{% url 'rankings' %}">Estadísticas Ventas/Compras</a>
+                              </li>
+                        </ul>
+                    </li>
+                    {% endif %}
+                    {% if permisos_rep_contables %}
+                    <li>
+                        <a href="javascript:;">REPORTES CONTABLES <span class="arrow"></span></a>
+                        <ul class="sub-menu">
+                            {% if 'rep_libro_iva' in permisos_grupo %}
+                              <li>
+                                <a href="{% url 'libro_iva_ventas' %}">Libro IVA Ventas</a>
+                              </li>
+                              {% endif %}
+                              {% if 'rep_libro_iva' in permisos_grupo %}                      
+                              <li>
+                                <a href="{% url 'libro_iva_compras' %}">Libro IVA Compras</a>
+                              </li> 
+                              {% endif %}                                                  
+                        </ul>
+                    </li>
+                    
+                    <li>
+                        <a href="javascript:;">FINANZAS <span class="arrow"></span></a>                                                
+                        <ul class="sub-menu">
+                            {% if 'rep_saldos_cuentas' in permisos_grupo %}
+                              <li>
+                                <a href="{% url 'saldos_cuentas' %}">Saldos Cuentas</a>
+                              </li>   
+                              {% endif %}            
+                            {% if 'rep_caja_diaria' in permisos_grupo %}
+                              <li>
+                                <a href="{% url 'caja_diaria' %}">Detalle Ingresos/Egresos</a>
+                              </li>   
+                              {% endif %}        
+                            {% if 'rep_seguim_cheques' in permisos_grupo %}
+                              <li>
+                                <a href="{% url 'seguimiento_cheques' %}">Seguimiento Cheques</a>
+                              </li>   
+                             {% endif %}        
+                        </ul>
+                    </li>
+                    {% endif %}
+                    
+                </ul>
+            </li>
+            {% endif %} 
+            {% if permisos_entidades or permisos_productos %} 
+            <li>
+                <a href="javascript:;">
+                CONFIGURACIÓN <span class="arrow">
+                </span>
+                </a>
+                <ul class="sub-menu">
+                   {% if permisos_entidades %}
+                    <li>
+                        <a href="javascript:;">ENTIDADES <span class="arrow"></span></a>
+                        <ul class="sub-menu">
+                            {% if 'ent_clientes' in permisos_grupo %}
+                            <li>
+                                 <a href="{% url 'clientes_listado' %}">Clientes</a>
+                              </li>
+                            {% endif %}
+                            {% if 'ent_proveedores' in permisos_grupo %}   
+                              <li>
+                                <a href="{% url 'proveedores_listado' %}">Proveedores</a>
+                              </li>
+                            {% endif %}
+                            {% if 'ent_vendedores' in permisos_grupo %}   
+                              <li>
+                                <a href="{% url 'vendedores_listado' %}">Empleados/Vendedores</a>
+                              </li>       
+                            {% endif %}
+                            
+                        </ul>
+                    </li>
+                    {% endif %} 
+                    {% if permisos_productos %} 
+                    <li>
+                        <a href="javascript:;">PRODUCTOS/SERVICIOS <span class="arrow"></span></a>                                                
+                        <ul class="sub-menu">
+                            {% if 'prod_productos' in permisos_grupo %} 
+                            <li>
+                                <a href="{% url 'productos_listado' %}">Productos/Servicios</a>
+                              </li>
+                        {% endif %}
+                        {% if 'prod_precios' in permisos_grupo %}  
+                               <li>
+                                <a href="{% url 'prod_precios_listado' %}">Actualización Precios</a>
+                              </li>
+                        {% endif %}
+                        {% if 'prod_stock' in permisos_grupo %}                          
+                              <li>
+                                <a href="{% url 'prod_stock_listado' %}">Mantenimiento Stock</a>
+                              </li>             
+                         {% endif %} 
+                        </ul>
+                    </li>
+                   {% endif %}
+                   {% if 'gral_configuracion' in permisos_grupo %} 
+                    <li>
+                        <a href="javascript:;">GENERAL <span class="arrow"></span></a>                                                
+                        <ul class="sub-menu">
+                             <li>
+                                <a href="{% url 'lista_precios_listado' %}">Listas de Precios</a>
+                              </li> 
+                              <li>
+                                <a href="{% url 'categorias_listado' %}">Categorías</a>
+                              </li>
+                              <li>
+                                <a href="{% url 'depositos_listado' %}">Depósitos/Ubicación</a>
+                              </li>         
+                              {% if  tipo_usr == 0 %}
+                              <li>
+                                <a href="{% url 'pto_vta_listado' %}">Puntos de Venta</a>
+                              </li>
+                              <li>
+                                <a href="{% url 'percimp_listado' %}">Percep./Impuestos</a>
+                              </li> 
+                              <li>
+                                <a href="{% url 'formapago_listado' %}">Formas de Pago/Cobro</a>
+                              </li>
+                              {% endif %}
+                              <li>
+                                <a href="{% url 'bancos_listado' %}">Bancos</a>
+                              </li>  
+                              <li>
+                                <a href="{% url 'disponibilidades_listado' %}">Cuentas/Disponibilidades</a>
+                              </li>
+                        </ul>
+                    </li>
+                   {% endif %} 
+                </ul>
+            </li>
+            {% endif %} 
+            <li class="active">   
+              <a href="{% url 'logout' %}" title="Desconectar">Desconectar</a>
+            </li>
+        </ul>
 
-                        </div>
-                        <!-- END HORIZONTAL RESPONSIVE MENU -->
-            </div>
+    </div>
+    <!-- END HORIZONTAL RESPONSIVE MENU -->
+</div>

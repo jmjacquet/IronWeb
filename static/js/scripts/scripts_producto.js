@@ -99,6 +99,7 @@ function recalcular(){
             var $precio_costo = parseFloat($("input[name='formPrecios-"+j+"-precio_costo']").val())|| 0;  
             var $coef_ganancia = parseFloat($("input[name='formPrecios-"+j+"-coef_ganancia']").val())|| 0;
             var coef = parseFloat($("#id_coef_iva").val())|| 0;  
+            var $precio_cimp = $precio_costo * (coef+1);  
             var $precio_venta = $precio_cimp * ($coef_ganancia+1); 
             $("input[name='formPrecios-"+j+"-precio_venta']").val($precio_venta.toFixed(2));
            });
@@ -106,6 +107,7 @@ function recalcular(){
             var $precio_costo = parseFloat($("input[name='formPrecios-"+j+"-precio_costo']").val())|| 0;  
             var $coef_ganancia = parseFloat($("input[name='formPrecios-"+j+"-coef_ganancia']").val())|| 0;
             var coef = parseFloat($("#id_coef_iva").val())|| 0;  
+            var $precio_cimp = $precio_costo * (coef+1);  
             var $precio_venta = $precio_cimp * ($coef_ganancia+1); 
             $("input[name='formPrecios-"+j+"-precio_venta']").val($precio_venta.toFixed(2));
            });        
@@ -136,5 +138,35 @@ $("#id_tasa_iva").change(function(){
 
 recalcular(); 
 $("#id_tasa_iva").trigger("change");
+
+
+$("#generarCB").click(function(e){  
+     codigo = $("#id_codigo").val();
+     if (codigo=='')
+     {
+      alertify.alert("GENERAR CODIGO DE BARRAS","¡Debe cargar un Código de producto!"); 
+     }
+     else
+      {
+        $.ajax({
+          data: {'codigo': codigo},
+          url: '/productos/generarCB/',
+          type: 'get',
+          cache: true,          
+          success : function(data) {               
+               if (data!='')
+                  {$("#id_codigo_barras").val(data);                    
+                  }else
+                  {alertify.alert("GENERAR CODIGO DE BARRAS","¡No se pudo generar el Código de Barras!"); }
+          },
+          error : function(message) {
+               alertify.alert("GENERAR CODIGO DE BARRAS","¡No se pudo generar el Código de Barras!"); 
+               console.log(message);
+            }
+        });     
+      }
+        
+});
+
 
 });
