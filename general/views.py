@@ -11,7 +11,7 @@ from django.utils.decorators import method_decorator
 from django.db import connection
 from django.core.urlresolvers import reverse
 from django.shortcuts import render_to_response,redirect
-from fm.views import AjaxCreateView,AjaxUpdateView,AjaxDeleteView
+from modal.views import AjaxCreateView,AjaxUpdateView,AjaxDeleteView
 from django.contrib import messages
 import json
 import urllib

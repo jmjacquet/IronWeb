@@ -1,3 +1,3 @@
 
-<a href="{% url 'comprobante_ver' id=cc.cpb_factura.id %}"  title="Ver Detalle {{ cc.cpb_factura.cpb_tipo}} {{cc.cpb_factura}}" class="modal-detail" data-modal-head="DETALLE {{cc.cpb_factura.cpb_tipo.nombre|upper}} {{cc.cpb_factura}}   Fecha: {{cc.cpb_factura.fecha_cpb|date:'d/m/Y'}}" data-fm-callback="reload"><i class="fa fa-list-alt text-success"></i>
+<a href="{% url 'comprobante_ver' id=cc.cpb_factura.id %}"  title="Ver Detalle {{ cc.cpb_factura.cpb_tipo}} {{cc.cpb_factura}}" class="modal-detail" data-modal-head="DETALLE {{cc.cpb_factura.cpb_tipo.nombre|upper}} {{cc.cpb_factura}}   Fecha: {{cc.cpb_factura.fecha_cpb|date:'d/m/Y'}}" data-modal-callback="reload"><i class="fa fa-list-alt text-success"></i>
 </a>

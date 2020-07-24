@@ -12,7 +12,7 @@ from django.core.urlresolvers import reverse
 from django.shortcuts import render_to_response,redirect
 from django.contrib import messages
 from general.views import VariablesMixin,ultimoNroId,getVariablesMixin
-from fm.views import AjaxCreateView,AjaxUpdateView,AjaxDeleteView
+from modal.views import AjaxCreateView,AjaxUpdateView,AjaxDeleteView
 from .forms import *
 from django.forms.models import inlineformset_factory,BaseInlineFormSet,formset_factory
 from django.utils.functional import curry 
@@ -207,15 +207,18 @@ class ProductosEditView(VariablesMixin,UpdateView):
         messages.success(self.request, u'Los datos se guardaron con éxito!')
         return HttpResponseRedirect(reverse('productos_listado'))
 
-class ProductosDeleteView(VariablesMixin,AjaxDeleteView):
-    model = prod_productos
-    pk_url_kwarg = 'id'
 
-    @method_decorator(login_required)
-    def dispatch(self, *args, **kwargs):        
-        if not tiene_permiso(self.request,'prod_productos_abm'):
-            return redirect(reverse('principal'))
-        return super(ProductosDeleteView, self).dispatch(*args, **kwargs)
+@login_required
+def ProductosDeleteView(request, id):
+    try:
+        objeto = get_object_or_404(prod_productos, id=id)
+        if not tiene_permiso(request,'prod_productos_abm'):
+                return redirect(reverse('principal'))       
+        objeto.delete()
+        messages.success(request, u'¡Los datos se guardaron con éxito!')
+    except:
+        messages.error(request, u'¡Los datos no pudieron eliminarse!')
+    return redirect('productos_listado')           
 
 class ProductosVerView(VariablesMixin,DetailView):
     model = prod_productos
@@ -245,7 +248,7 @@ class ProductosVerView(VariablesMixin,DetailView):
 
 class ProductosCreateViewModal(VariablesMixin,AjaxCreateView):
     form_class = ProductosFormModal
-    template_name = 'fm/productos/form.html'
+    template_name = 'modal/productos/form.html'
 
     @method_decorator(login_required)
     def dispatch(self, *args, **kwargs): 
@@ -323,7 +326,7 @@ class CategoriasView(VariablesMixin,ListView):
 
 class CategoriasCreateView(VariablesMixin,AjaxCreateView):
     form_class = CategoriasForm
-    template_name = 'fm/productos/form_2.html'
+    template_name = 'modal/productos/form_2.html'
 
     @method_decorator(login_required)
     def dispatch(self, *args, **kwargs):        
@@ -344,7 +347,7 @@ class CategoriasEditView(VariablesMixin,AjaxUpdateView):
     form_class = CategoriasForm
     model = prod_categoria
     pk_url_kwarg = 'id'
-    template_name = 'fm/productos/form_2.html'
+    template_name = 'modal/productos/form_2.html'
 
     @method_decorator(login_required)
     def dispatch(self, *args, **kwargs):        
@@ -410,7 +413,7 @@ class DepositosView(VariablesMixin,ListView):
 
 class DepositosCreateView(VariablesMixin,AjaxCreateView):
     form_class = UbicacionForm
-    template_name = 'fm/productos/form_depo.html'
+    template_name = 'modal/productos/form_depo.html'
 
     @method_decorator(login_required)
     def dispatch(self, *args, **kwargs):        
@@ -431,7 +434,7 @@ class DepositosEditView(VariablesMixin,AjaxUpdateView):
     form_class = UbicacionForm
     model = prod_ubicacion
     pk_url_kwarg = 'id'
-    template_name = 'fm/productos/form_depo.html'
+    template_name = 'modal/productos/form_depo.html'
 
     @method_decorator(login_required)
     def dispatch(self, *args, **kwargs):        
@@ -485,7 +488,7 @@ class LPreciosView(VariablesMixin,ListView):
 
 class LPreciosCreateView(VariablesMixin,AjaxCreateView):
     form_class = ListaPreciosForm
-    template_name = 'fm/productos/form_lprecios.html'
+    template_name = 'modal/productos/form_lprecios.html'
 
     @method_decorator(login_required)
     def dispatch(self, *args, **kwargs):        
@@ -506,7 +509,7 @@ class LPreciosEditView(VariablesMixin,AjaxUpdateView):
     form_class = ListaPreciosForm
     model = prod_lista_precios
     pk_url_kwarg = 'id'
-    template_name = 'fm/productos/form_lprecios.html'
+    template_name = 'modal/productos/form_lprecios.html'
 
     @method_decorator(login_required)
     def dispatch(self, *args, **kwargs):        
@@ -593,7 +596,7 @@ class ProdLPreciosEditView(VariablesMixin,AjaxUpdateView):
     form_class = Producto_EditarPrecioForm
     model = prod_producto_lprecios
     pk_url_kwarg = 'id'
-    template_name = 'fm/productos/form_precio_prod.html'
+    template_name = 'modal/productos/form_precio_prod.html'
 
     @method_decorator(login_required)
     def dispatch(self, *args, **kwargs):        
@@ -755,7 +758,7 @@ class ProdStockView(VariablesMixin,ListView):
 
 class ProdStockCreateView(VariablesMixin,AjaxCreateView):
     form_class = Producto_StockForm
-    template_name = 'fm/productos/form_stock_prod.html'
+    template_name = 'modal/productos/form_stock_prod.html'
 
     @method_decorator(login_required)
     def dispatch(self, *args, **kwargs):        
@@ -780,7 +783,7 @@ class ProdStockEditView(VariablesMixin,AjaxUpdateView):
     form_class = Producto_StockForm
     model = prod_producto_ubicac
     pk_url_kwarg = 'id'
-    template_name = 'fm/productos/form_stock_prod.html'
+    template_name = 'modal/productos/form_stock_prod.html'
 
     @method_decorator(login_required)
     def dispatch(self, *args, **kwargs):        

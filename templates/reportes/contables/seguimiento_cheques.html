@@ -77,7 +77,7 @@
                                    <td class="">{{i.mdcp_fecha|date:'d/m/Y'}}</td> 
                                    <td class="importe">$ {{i.importe|default_if_none:0|floatformat:2}}</td>
                                    <td title="{{i.cpb_comprobante.cpb_tipo|default_if_none:''}}" class="">
-                                    <a href="{% url 'recibo_ver' id=i.cpb_comprobante.id %}"  title="VER" class="modal-detail" data-modal-head="DETALLE {{i.cpb_comprobante.cpb_tipo.nombre|upper}} {{i.cpb_comprobante}}   Fecha:{{i.cpb_comprobante.fecha_cpb|date:'d/m/Y'}}  Vencimiento:{{i.cpb_comprobante.fecha_vto|date:'d/m/Y'}}" data-fm-callback="reload">  
+                                    <a href="{% url 'recibo_ver' id=i.cpb_comprobante.id %}"  title="VER" class="modal-detail" data-modal-head="DETALLE {{i.cpb_comprobante.cpb_tipo.nombre|upper}} {{i.cpb_comprobante}}   Fecha:{{i.cpb_comprobante.fecha_cpb|date:'d/m/Y'}}  Vencimiento:{{i.cpb_comprobante.fecha_vto|date:'d/m/Y'}}" data-modal-callback="reload">  
                                       <i class="fa fa-list-alt text-primary"></i></a>{{i.cpb_comprobante.cpb_tipo.codigo|default_if_none:''}}: {{i.cpb_comprobante|default_if_none:''}}</td>
                                    <td class="">{{i.cpb_comprobante.entidad|default_if_none:''}}</td> 
                                   </tr>
@@ -124,10 +124,10 @@
                                    <td class="">{{i.mdcp_fecha|date:'d/m/Y'}}</td> 
                                    <td class="importe">$ {{i.importe|default_if_none:0|floatformat:2}}</td>
                                    <td title="{{i.cpb_comprobante.cpb_tipo|default_if_none:''}}" class="">
-                                    <a href="{% url 'recibo_ver' id=i.cpb_comprobante.id %}"  title="VER" class="modal-detail" data-modal-head="DETALLE {{i.cpb_comprobante.cpb_tipo.nombre|upper}} {{i.cpb_comprobante}}   Fecha:{{i.cpb_comprobante.fecha_cpb|date:'d/m/Y'}}  Vencimiento:{{i.cpb_comprobante.fecha_vto|date:'d/m/Y'}}" data-fm-callback="reload">  
+                                    <a href="{% url 'recibo_ver' id=i.cpb_comprobante.id %}"  title="VER" class="modal-detail" data-modal-head="DETALLE {{i.cpb_comprobante.cpb_tipo.nombre|upper}} {{i.cpb_comprobante}}   Fecha:{{i.cpb_comprobante.fecha_cpb|date:'d/m/Y'}}  Vencimiento:{{i.cpb_comprobante.fecha_vto|date:'d/m/Y'}}" data-modal-callback="reload">  
                                       <i class="fa fa-list-alt text-primary"></i></a>{{i.cpb_comprobante.cpb_tipo.codigo|default_if_none:''}}: {{i.cpb_comprobante|default_if_none:''}}</td>
                                     <td title="{{i.mdcp_salida.cpb_comprobante.cpb_tipo|default_if_none:''}}" class="">
-                                    <a href="{% url 'recibo_ver' id=i.mdcp_salida.cpb_comprobante.id %}"  title="VER" class="modal-detail" data-modal-head="DETALLE {{i.mdcp_salida.cpb_comprobante.cpb_tipo.nombre|upper}} {{i.mdcp_salida.cpb_comprobante}}   Fecha:{{i.mdcp_salida.cpb_comprobante.fecha_cpb|date:'d/m/Y'}}  Vencimiento:{{i.mdcp_salida.cpb_comprobante.fecha_vto|date:'d/m/Y'}}" data-fm-callback="reload">  
+                                    <a href="{% url 'recibo_ver' id=i.mdcp_salida.cpb_comprobante.id %}"  title="VER" class="modal-detail" data-modal-head="DETALLE {{i.mdcp_salida.cpb_comprobante.cpb_tipo.nombre|upper}} {{i.mdcp_salida.cpb_comprobante}}   Fecha:{{i.mdcp_salida.cpb_comprobante.fecha_cpb|date:'d/m/Y'}}  Vencimiento:{{i.mdcp_salida.cpb_comprobante.fecha_vto|date:'d/m/Y'}}" data-modal-callback="reload">  
                                       <i class="fa fa-list-alt text-primary"></i></a>{{i.mdcp_salida.cpb_comprobante.cpb_tipo.codigo|default_if_none:''}}: {{i.mdcp_salida.cpb_comprobante|default_if_none:''}}</td>
                                    <td class="">{{i.cpb_comprobante.entidad|default_if_none:''}}</td>
                                  {% endfor %}
@@ -172,10 +172,10 @@
                                    <td class="">{{i.mdcp_fecha|date:'d/m/Y'}}</td> 
                                    <td class="importe">$ {{i.importe|default_if_none:0|floatformat:2}}</td>
                                    <td title="{{i.cpb_comprobante.cpb_tipo|default_if_none:''}}" class="">
-                                    <a href="{% url 'recibo_ver' id=i.cpb_comprobante.id %}"  title="VER" class="modal-detail" data-modal-head="DETALLE {{i.cpb_comprobante.cpb_tipo.nombre|upper}} {{i.cpb_comprobante}}   Fecha:{{i.cpb_comprobante.fecha_cpb|date:'d/m/Y'}}  Vencimiento:{{i.cpb_comprobante.fecha_vto|date:'d/m/Y'}}" data-fm-callback="reload">  
+                                    <a href="{% url 'recibo_ver' id=i.cpb_comprobante.id %}"  title="VER" class="modal-detail" data-modal-head="DETALLE {{i.cpb_comprobante.cpb_tipo.nombre|upper}} {{i.cpb_comprobante}}   Fecha:{{i.cpb_comprobante.fecha_cpb|date:'d/m/Y'}}  Vencimiento:{{i.cpb_comprobante.fecha_vto|date:'d/m/Y'}}" data-modal-callback="reload">  
                                       <i class="fa fa-list-alt text-primary"></i></a>{{i.cpb_comprobante.cpb_tipo.codigo|default_if_none:''}}: {{i.cpb_comprobante|default_if_none:''}}</td>
                                    <td title="{{i.get_origen.cpb_tipo|default_if_none:''}}" class="">{% if i.get_origen %}
-                                    <a href="{% url 'recibo_ver' id=i.get_origen.id %}"  title="VER" class="modal-detail" data-modal-head="DETALLE {{i.get_origen.cpb_tipo.nombre|upper}} {{i.get_origen}}   Fecha:{{i.get_origen.fecha_cpb|date:'d/m/Y'}}  Vencimiento:{{i.get_origen.fecha_vto|date:'d/m/Y'}}" data-fm-callback="reload">  
+                                    <a href="{% url 'recibo_ver' id=i.get_origen.id %}"  title="VER" class="modal-detail" data-modal-head="DETALLE {{i.get_origen.cpb_tipo.nombre|upper}} {{i.get_origen}}   Fecha:{{i.get_origen.fecha_cpb|date:'d/m/Y'}}  Vencimiento:{{i.get_origen.fecha_vto|date:'d/m/Y'}}" data-modal-callback="reload">  
                                       <i class="fa fa-list-alt text-primary"></i></a>{{i.get_origen.cpb_tipo.codigo|default_if_none:''}}: {{i.get_origen|default_if_none:''}}{% endif %}
                                     </td>
 
@@ -223,7 +223,7 @@
                                    <td class="">{{c.mdcp_fecha|date:'d/m/Y'}}</td> 
                                    <td class="importe">$ {{c.importe|default_if_none:0|floatformat:2}}</td>
                                    <td title="{{c.cpb_comprobante.cpb_tipo|default_if_none:''}}" class="">
-                                    <a href="{% url 'recibo_ver' id=c.cpb_comprobante.id %}"  title="VER" class="modal-detail" data-modal-head="DETALLE {{c.cpb_comprobante.cpb_tipo.nombre|upper}} {{c.cpb_comprobante}}   Fecha:{{c.cpb_comprobante.fecha_cpb|date:'d/m/Y'}}  Vencimiento:{{c.cpb_comprobante.fecha_vto|date:'d/m/Y'}}" data-fm-callback="reload">  
+                                    <a href="{% url 'recibo_ver' id=c.cpb_comprobante.id %}"  title="VER" class="modal-detail" data-modal-head="DETALLE {{c.cpb_comprobante.cpb_tipo.nombre|upper}} {{c.cpb_comprobante}}   Fecha:{{c.cpb_comprobante.fecha_cpb|date:'d/m/Y'}}  Vencimiento:{{c.cpb_comprobante.fecha_vto|date:'d/m/Y'}}" data-modal-callback="reload">  
                                       <i class="fa fa-list-alt text-primary"></i></a>{{c.cpb_comprobante.cpb_tipo.codigo|default_if_none:''}}: {{c.cpb_comprobante|default_if_none:''}}</td>
                                    <td class="">{{c.cpb_comprobante.entidad|default_if_none:''}}</td> 
                                   </tr>

@@ -9,7 +9,7 @@ from django.utils.decorators import method_decorator
 from django.db import connection
 from django.core.urlresolvers import reverse
 from django.shortcuts import render_to_response,redirect
-from fm.views import AjaxCreateView,AjaxUpdateView,AjaxDeleteView
+from modal.views import AjaxCreateView,AjaxUpdateView,AjaxDeleteView
 from django.forms.models import inlineformset_factory,BaseInlineFormSet,formset_factory
 from django.contrib import messages
 import json
@@ -339,7 +339,7 @@ class OPEstadoEditView(VariablesMixin,AjaxUpdateView):
     form_class = OPEstadoForm
     model = orden_pedido
     pk_url_kwarg = 'id'
-    template_name = 'fm/trabajos/formEstadoOP.html'
+    template_name = 'modal/trabajos/formEstadoOP.html'
 
     @method_decorator(login_required)
     def dispatch(self, *args, **kwargs): 
@@ -624,7 +624,7 @@ class OTEstadoEditView(VariablesMixin,AjaxUpdateView):
     form_class = OPEstadoForm
     model = orden_trabajo
     pk_url_kwarg = 'id'
-    template_name = 'fm/trabajos/formEstadoOP.html'
+    template_name = 'modal/trabajos/formEstadoOP.html'
 
     @method_decorator(login_required)
     def dispatch(self, *args, **kwargs): 
@@ -845,7 +845,7 @@ class OCEstadoEditView(VariablesMixin,AjaxUpdateView):
     form_class = OPEstadoForm
     model = orden_colocacion
     pk_url_kwarg = 'id'
-    template_name = 'fm/trabajos/formEstadoOP.html'
+    template_name = 'modal/trabajos/formEstadoOP.html'
 
     @method_decorator(login_required)
     def dispatch(self, *args, **kwargs): 

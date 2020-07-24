@@ -45,9 +45,9 @@
                     {% for cpb in totales %}
                     <tr>                                
                         <td  title="{{ cpb.entidad__apellido_y_nombre}}" > 
-                            <a href="{% url 'cliente_ver' id=cpb.entidad %}"  title="VER" class="modal-detail" data-modal-head="DETALLE CLIENTE {{cpb.codigo}}" data-fm-callback="reload">
+                            <a href="{% url 'cliente_ver' id=cpb.entidad %}"  title="VER" class="modal-detail" data-modal-head="DETALLE CLIENTE {{cpb.codigo}}" data-modal-callback="reload">
                             <i class="icon-user icono"></i></a> 
-                            <a href="{% url 'cliente_editar' id=cpb.entidad %}" title="EDITAR" class="fm-update "data-fm-callback="reload" data-fm-head="EDITAR CLIENTE"data-fm-target="#object-{{ cpb.entidad }}">
+                            <a href="{% url 'cliente_editar' id=cpb.entidad %}" title="EDITAR" class="modal-update "data-modal-callback="reload" data-modal-head="EDITAR CLIENTE"data-modal-target="#object-{{ cpb.entidad }}">
                             <i class="icon-pencil icono"></i></a> {{ cpb.entidad__codigo }} - {{ cpb.entidad__apellido_y_nombre}} {% if cpb.entidad__fact_cuit %} - {{cpb.entidad__fact_cuit}}{%endif%}</td>
                         <td class="importe">${{cpb.saldo|default_if_none:0|floatformat:2}}</td>                                 
                     </tr>

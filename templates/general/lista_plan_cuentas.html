@@ -13,7 +13,7 @@
 
                 </div> 
             </div>  
-                    <a class="btn btn-sm blue-hoki fm-create" style="float:left;margin-right:20px;" href="{% url 'disponibilidades_nuevo' %}" data-fm-head="AGREGAR CUENTA/DISPONIBILIDAD" data-fm-callback="reload">Nueva Disponibilidad</a>
+                    <a class="btn btn-sm blue-hoki modal-create" style="float:left;margin-right:20px;" href="{% url 'disponibilidades_nuevo' %}" data-modal-head="AGREGAR CUENTA/DISPONIBILIDAD" data-modal-callback="reload">Nueva Disponibilidad</a>
                     <table width="100%" id="dataTables-primary" class="table table-striped table-hover table-condensed table-no-bordered tabla_nueva">         
                         <thead>
                             <tr>
@@ -31,9 +31,9 @@
                                         <i class="icon-settings"> </i> <span class="caret"></span>
                                       </button>                                    
                                        <ul class="dropdown-menu dropdown-menu-default">                                        
-                                        <li><a href="{% url 'disponibilidades_editar' id=c.pk %}"  class="fm-update " title="Editar" data-fm-callback="reload" data-fm-head="EDITAR CUENTA/DISPONIBILIDAD"data-fm-target="#object-{{ c.pk }}"><i class="icon-note"></i> Editar</a></li>
+                                        <li><a href="{% url 'disponibilidades_editar' id=c.pk %}"  class="modal-update " title="Editar" data-modal-callback="reload" data-modal-head="EDITAR CUENTA/DISPONIBILIDAD"data-modal-target="#object-{{ c.pk }}"><i class="icon-note"></i> Editar</a></li>
                                         <li>
-                                            <a href="{% url 'disponibilidades_eliminar' id=c.pk %}" class="fm-delete " data-fm-head="¿DESEA ELIMINAR EL REGISTRO SELECCIONADO?" data-fm-callback="reload" data-fm-target="#object-{{ c.pk }}" title="Quitar"> <i class="icon-trash"></i> Eliminar </a> 
+                                            <a href="{% url 'disponibilidades_eliminar' id=c.pk %}" class="modal-delete " data-modal-head="¿DESEA ELIMINAR EL REGISTRO SELECCIONADO?" data-modal-callback="reload" data-modal-target="#object-{{ c.pk }}" title="Quitar"> <i class="icon-trash"></i> Eliminar </a> 
                                         </li>
                                                                         
                                       </ul>      

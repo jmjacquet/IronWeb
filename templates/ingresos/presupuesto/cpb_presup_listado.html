@@ -57,7 +57,7 @@
                                         <li role="separator" class="divider"></li>
                                         {% if cpb.presup_aprobacion.pk != 14 %}
                                             
-                                            <li><a href="{% url 'cpb_presup_editar' id=cpb.pk %}"  title="Editar" data-fm-callback="reload" ><i class="icon-note"></i> Editar</a></li>
+                                            <li><a href="{% url 'cpb_presup_editar' id=cpb.pk %}"  title="Editar" data-modal-callback="reload" ><i class="icon-note"></i> Editar</a></li>
                                             {% endif %}
                                             <li><a href="#" 
                                                         onClick="alerta= alertify.dialog('confirm').set({'labels':{ok:'Aceptar', cancel:'Cancelar'},'message': '¿DESEA ELIMINAR EL PRESUPUESTO SELECCIONADO?',transition:'fade','onok': function(){ window.location.href = '{% url 'cpb_presup_eliminar' id=cpb.pk %}'; },'oncancel': function(){ return true;} }); alerta.setting('modal', true); alerta.setHeader('ELIMINAR COMPROBANTE'); alerta.show(); return true;"><i class="icon-trash"></i>Eliminar</a>
@@ -93,7 +93,7 @@
                                         {% endif %}
                                     {% endif %} 
                                         <li role="separator" class="divider"></li>
-                                        <li><a href="{% url 'cpb_editar_seguimiento' id=cpb.pk %}"  class="fm-update" data-fm-head="EDITAR SEGUIMIENTO"  title="Editar Seguimiento" data-fm-target="#object-{{ item.pk }}" data-fm-callback="reload" ><i class="icon-speech"></i>Seguimiento</a></li>                                            
+                                        <li><a href="{% url 'cpb_editar_seguimiento' id=cpb.pk %}"  class="modal-update" data-modal-head="EDITAR SEGUIMIENTO"  title="Editar Seguimiento" data-modal-target="#object-{{ item.pk }}" data-modal-callback="reload" ><i class="icon-speech"></i>Seguimiento</a></li>                                            
                                       </ul>
                                         
                                         

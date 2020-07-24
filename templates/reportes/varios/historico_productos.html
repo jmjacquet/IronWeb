@@ -49,7 +49,7 @@
                             <td class="text-left" title="{{ cpb.cpb_tipo|default_if_none:'' }}">{% include "general/varios/cpb_ver.html" %}{{ cpb}}</td>
                             <td class="">{{ cpb.cpb_tipo|default_if_none:'' }}</td>
                             {% endwith %}                            
-                            <td {% if m.producto.baja %} title='DADO DE BAJA' {% endif %}>{% if m.producto %} <a href="{% url 'producto_ver' id=m.producto.pk %}" class="modal-detail" data-modal-head="DETALLE PRODUCTO {{m.producto.codigo}}" data-fm-callback="reload">{% endif %}
+                            <td {% if m.producto.baja %} title='DADO DE BAJA' {% endif %}>{% if m.producto %} <a href="{% url 'producto_ver' id=m.producto.pk %}" class="modal-detail" data-modal-head="DETALLE PRODUCTO {{m.producto.codigo}}" data-modal-callback="reload">{% endif %}
                             <strong>{{m.producto|default_if_none:''|truncatechars:60}}</strong></a></td>                                                                 
                             <td>{{ m.producto.categoria|default_if_none:'' }}</td>                                                            
                             <td>{{ m.producto.get_tipo_producto_display|default_if_none:'' }}</td>                                                                                

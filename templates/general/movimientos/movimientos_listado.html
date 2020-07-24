@@ -71,14 +71,14 @@
                                         <i class="icon-settings"> </i> <span class="caret"></span>
                                       </button>
                                       <ul class="dropdown-menu dropdown-menu-default">                                        
-                                        <li><a href="{% url 'movimientos_editar' id=cpb.cpb_comprobante.pk %}"  title="Editar" data-fm-callback="reload" ><i class="icon-note"></i> Editar</a></li>
+                                        <li><a href="{% url 'movimientos_editar' id=cpb.cpb_comprobante.pk %}"  title="Editar" data-modal-callback="reload" ><i class="icon-note"></i> Editar</a></li>
                                         {% if not cpb.cae %}
                                         <li><a href="#" 
                                                     onClick="alerta= alertify.dialog('confirm').set({'labels':{ok:'Aceptar', cancel:'Cancelar'},'message': '¿DESEA ELIMINAR EL REGISTRO SELECCIONADO?',transition:'fade','onok': function(){ window.location.href = '{% url 'movimientos_eliminar' id=cpb.cpb_comprobante.pk %}'; },'oncancel': function(){ return true;} }); alerta.setting('modal', true); alerta.setHeader('ELIMINAR COMPROBANTE'); alerta.show(); return true;"><i class="icon-trash"></i>Eliminar</a>
                                                 </li>
                                         {% endif %}
                                         <li role="separator" class="divider"></li>
-                                            <li><a href="{% url 'cpb_editar_seguimiento' id=cpb.cpb_comprobante.pk %}"  class="fm-update" data-fm-head="EDITAR SEGUIMIENTO"  title="Editar Seguimiento" data-fm-target="#object-{{ item.pk }}" data-fm-callback="reload" ><i class="icon-speech"></i>Seguimiento</a></li>
+                                            <li><a href="{% url 'cpb_editar_seguimiento' id=cpb.cpb_comprobante.pk %}"  class="modal-update" data-modal-head="EDITAR SEGUIMIENTO"  title="Editar Seguimiento" data-modal-target="#object-{{ item.pk }}" data-modal-callback="reload" ><i class="icon-speech"></i>Seguimiento</a></li>
                                       </ul>
                                     </div>
                                     {% if cpb.seguimiento %}  <i title="{{cpb.seguimiento|default_if_none:''}}" class="icon-speech icono_seguimiento"></i> {% endif %}                               

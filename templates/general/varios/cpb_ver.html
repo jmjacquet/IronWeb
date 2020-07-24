@@ -11,7 +11,7 @@
 		href="{% url 'comprobante_ver' id=cpb.id %}"
 	{% endif %}
 
-	title="Ver Detalle" class="modal-detail" data-modal-head="DETALLE {{cpb.cpb_tipo.nombre|upper}} {{cpb.get_cpb}} - Fecha:{{cpb.fecha_cpb|date:'d/m/Y'}} - Vencimiento:{{cpb.fecha_vto|date:'d/m/Y'}}" data-fm-callback="reload">  
+	title="Ver Detalle" class="modal-detail" data-modal-head="DETALLE {{cpb.cpb_tipo.nombre|upper}} {{cpb.get_cpb}} - Fecha:{{cpb.fecha_cpb|date:'d/m/Y'}} - Vencimiento:{{cpb.fecha_vto|date:'d/m/Y'}}" data-modal-callback="reload">  
 	<i class="fa fa-list-alt text-primary"></i>
 </a>
 

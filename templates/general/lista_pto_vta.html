@@ -18,7 +18,7 @@
             </div>  
                   <div class="row cerca">
                     <div class="col-sm-7">
-                        <a class="btn btn-sm blue-hoki fm-create" style="float:left;margin-right:20px;" href="{% url 'pto_vta_nuevo' %}" data-fm-head="AGREGAR PUNTO DE VENTA" data-fm-callback="reload">Nuevo Punto de Venta</a>
+                        <a class="btn btn-sm blue-hoki modal-create" style="float:left;margin-right:20px;" href="{% url 'pto_vta_nuevo' %}" data-modal-head="AGREGAR PUNTO DE VENTA" data-modal-callback="reload">Nuevo Punto de Venta</a>
                         <table width="100%" id="dataTables-primary" class="table table-striped table-hover table-condensed table-no-bordered tabla_nueva">         
                             <thead>
                                 <tr>
@@ -43,7 +43,7 @@
                                                 <i class="icon-settings"> </i> <span class="caret"></span>
                                               </button>                                    
                                                <ul class="dropdown-menu dropdown-menu-default">
-                                                <li><a href="{% url 'pto_vta_editar' id=p.pk %}"  class="fm-update " title="Editar" data-fm-callback="reload" data-fm-head="EDITAR PUNTO DE VENTA"data-fm-target="#object-{{ p.pk }}"><i class="icon-note"></i> Editar</a></li>
+                                                <li><a href="{% url 'pto_vta_editar' id=p.pk %}"  class="modal-update " title="Editar" data-modal-callback="reload" data-modal-head="EDITAR PUNTO DE VENTA"data-modal-target="#object-{{ p.pk }}"><i class="icon-note"></i> Editar</a></li>
                                                 <li><a href="#" 
                                                     onClick="alerta= alertify.dialog('confirm').set({'labels':{ok:'Aceptar', cancel:'Cancelar'},'message': '¿DESEA DAR DE BAJA/REACTIVAR EL REGISTRO ACTUAL?',transition:'fade','onok': function(){ window.location.href = '{% url 'pto_vta_baja_reactivar' id=p.pk  %}'; },'oncancel': function(){ return true;} }); alerta.setting('modal', true); alerta.setHeader('BAJA/REACTIVAR'); alerta.show(); return true;" ><i class="icon-dislike"></i><i class="icon-like"></i>Baja/Reactivar</a>
                                                 </li>                                            

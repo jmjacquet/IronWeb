@@ -13,7 +13,7 @@
 
                 </div> 
             </div>  
-                    <a class="btn btn-sm blue-hoki fm-create" style="float:left;margin-right:20px;" href="{% url 'depositos_nuevo' %}" data-fm-head="AGREGAR DEPÓSITO" data-fm-callback="reload">Nuevo Depósito</a>
+                    <a class="btn btn-sm blue-hoki modal-create" style="float:left;margin-right:20px;" href="{% url 'depositos_nuevo' %}" data-modal-head="AGREGAR DEPÓSITO" data-modal-callback="reload">Nuevo Depósito</a>
                     <table width="100%" id="dataTables-primary" class="table table-striped compact table-hover table-no-bordered tabla_nueva nowrap">         
                         <thead>
                             <tr>
@@ -36,7 +36,7 @@
                                         <i class="icon-settings"> </i> <span class="caret"></span>
                                       </button>                                    
                                        <ul class="dropdown-menu dropdown-menu-default">                                        
-                                        <li><a href="{% url 'depositos_editar' id=d.pk %}"  class="fm-update " title="Editar" data-fm-callback="reload" data-fm-head="EDITAR DEPÓSITO"data-fm-target="#object-{{ d.pk }}"><i class="icon-note"></i> Editar</a></li>
+                                        <li><a href="{% url 'depositos_editar' id=d.pk %}"  class="modal-update " title="Editar" data-modal-callback="reload" data-modal-head="EDITAR DEPÓSITO"data-modal-target="#object-{{ d.pk }}"><i class="icon-note"></i> Editar</a></li>
                                         <li><a href="#" 
                                             onClick="alerta= alertify.dialog('confirm').set({'labels':{ok:'Aceptar', cancel:'Cancelar'},'message': '¿DESEA DAR DE BAJA/REACTIVAR EL REGISTRO ACTUAL?',transition:'fade','onok': function(){ window.location.href = '{% url 'deposito_baja_reactivar' id=d.pk  %}'; },'oncancel': function(){ return true;} }); alerta.setting('modal', true); alerta.setHeader('BAJA/REACTIVAR'); alerta.show(); return true;" ><i class="icon-dislike"></i><i class="icon-like"></i>Baja/Reactivar</a>
                                         </li>      

@@ -17,7 +17,7 @@ from .models import *
 import json
 import random
 from decimal import *
-from fm.views import AjaxCreateView,AjaxUpdateView,AjaxDeleteView
+from modal.views import AjaxCreateView,AjaxUpdateView,AjaxDeleteView
 from django.contrib import messages
 from general.utilidades import *
 from general.models import gral_empresa
@@ -562,7 +562,7 @@ class EditarSeguimientoView(VariablesMixin,AjaxUpdateView):
     form_class = SeguimientoForm
     model = cpb_comprobante
     pk_url_kwarg = 'id'
-    template_name = 'fm/general/form_seguimiento.html'
+    template_name = 'modal/general/form_seguimiento.html'
 
     @method_decorator(login_required)
     def dispatch(self, *args, **kwargs):        
@@ -1116,7 +1116,7 @@ class BancosView(VariablesMixin,ListView):
 
 class BancosCreateView(VariablesMixin,AjaxCreateView):
     form_class = BancosForm
-    template_name = 'fm/general/form_banco.html'
+    template_name = 'modal/general/form_banco.html'
 
     @method_decorator(login_required)
     def dispatch(self, *args, **kwargs):        
@@ -1137,7 +1137,7 @@ class BancosEditView(VariablesMixin,AjaxUpdateView):
     form_class = BancosForm
     model = cpb_banco
     pk_url_kwarg = 'id'
-    template_name = 'fm/general/form_banco.html'
+    template_name = 'modal/general/form_banco.html'
 
     @method_decorator(login_required)
     def dispatch(self, *args, **kwargs):        
@@ -1153,13 +1153,18 @@ class BancosEditView(VariablesMixin,AjaxUpdateView):
         initial = super(BancosEditView, self).get_initial()                      
         return initial    
 
-class BancosDeleteView(VariablesMixin,AjaxDeleteView):
-    model = cpb_banco
-    pk_url_kwarg = 'id'
 
-    @method_decorator(login_required)
-    def dispatch(self, *args, **kwargs):        
-        return super(BancosDeleteView, self).dispatch(*args, **kwargs)
+@login_required
+def BancosDeleteView(request, id):
+    try:
+        objeto = get_object_or_404(cpb_banco, id=id)
+        if not tiene_permiso(request,'gral_configuracion'):
+                return redirect(reverse('principal'))       
+        objeto.delete()
+        messages.success(request, u'¡Los datos se guardaron con éxito!')
+    except:
+        messages.error(request, u'¡Los datos no pudieron eliminarse!')
+    return redirect('bancos_listado')        
 
 #************* MOVIMIENTOS INTERNOS **************
 
@@ -1511,7 +1516,7 @@ class PercImpView(VariablesMixin,ListView):
 
 class PercImpCreateView(VariablesMixin,AjaxCreateView):
     form_class = PercImpForm
-    template_name = 'fm/general/form_perc_imp.html'
+    template_name = 'modal/general/form_perc_imp.html'
 
     @method_decorator(login_required)
     def dispatch(self, *args, **kwargs):        
@@ -1532,7 +1537,7 @@ class PercImpEditView(VariablesMixin,AjaxUpdateView):
     form_class = PercImpForm
     model = cpb_perc_imp
     pk_url_kwarg = 'id'
-    template_name = 'fm/general/form_perc_imp.html'
+    template_name = 'modal/general/form_perc_imp.html'
 
     @method_decorator(login_required)
     def dispatch(self, *args, **kwargs):        
@@ -1548,15 +1553,17 @@ class PercImpEditView(VariablesMixin,AjaxUpdateView):
         initial = super(PercImpEditView, self).get_initial()                      
         return initial    
 
-class PercImpDeleteView(VariablesMixin,AjaxDeleteView):
-    model = cpb_perc_imp
-    pk_url_kwarg = 'id'
-
-    @method_decorator(login_required)
-    def dispatch(self, *args, **kwargs):        
-        if not tiene_permiso(self.request,'gral_configuracion'):
-            return redirect(reverse('principal'))
-        return super(PercImpDeleteView, self).dispatch(*args, **kwargs)
+@login_required
+def PercImpDeleteView(request, id):
+    try:
+        objeto = get_object_or_404(cpb_perc_imp, id=id)
+        if not tiene_permiso(request,'gral_configuracion'):
+                return redirect(reverse('principal'))       
+        objeto.delete()
+        messages.success(request, u'¡Los datos se guardaron con éxito!')
+    except:
+        messages.error(request, u'¡Los datos no pudieron eliminarse!')
+    return redirect('percimp_listado')   
 
 #************* Retenciones ****
 class RetencView(VariablesMixin,ListView):
@@ -1579,7 +1586,7 @@ class RetencView(VariablesMixin,ListView):
 
 class RetencCreateView(VariablesMixin,AjaxCreateView):
     form_class = RetencForm
-    template_name = 'fm/general/form_retenc.html'
+    template_name = 'modal/general/form_retenc.html'
 
     @method_decorator(login_required)
     def dispatch(self, *args, **kwargs):        
@@ -1600,7 +1607,7 @@ class RetencEditView(VariablesMixin,AjaxUpdateView):
     form_class = RetencForm
     model = cpb_retenciones
     pk_url_kwarg = 'id'
-    template_name = 'fm/general/form_retenc.html'
+    template_name = 'modal/general/form_retenc.html'
 
     @method_decorator(login_required)
     def dispatch(self, *args, **kwargs):        
@@ -1616,17 +1623,17 @@ class RetencEditView(VariablesMixin,AjaxUpdateView):
         initial = super(RetencEditView, self).get_initial()                      
         return initial    
 
-class RetencDeleteView(VariablesMixin,AjaxDeleteView):
-    model = cpb_retenciones
-    pk_url_kwarg = 'id'
-
-    @method_decorator(login_required)
-    def dispatch(self, *args, **kwargs):        
-        if not tiene_permiso(self.request,'gral_configuracion'):
-            return redirect(reverse('principal'))
-        return super(RetencDeleteView, self).dispatch(*args, **kwargs)
-
-
+@login_required
+def RetencDeleteView(request, id):
+    try:
+        objeto = get_object_or_404(cpb_retenciones, id=id)
+        if not tiene_permiso(request,'gral_configuracion'):
+                return redirect(reverse('principal'))       
+        objeto.delete()
+        messages.success(request, u'¡Los datos se guardaron con éxito!')
+    except:
+        messages.error(request, u'¡Los datos no pudieron eliminarse!')
+    return redirect('retenc_listado')   
 
 #************* FormaPago  **************
 class FPView(VariablesMixin,ListView):
@@ -1649,7 +1656,7 @@ class FPView(VariablesMixin,ListView):
 
 class FPCreateView(VariablesMixin,AjaxCreateView):
     form_class = FormaPagoForm
-    template_name = 'fm/general/form_formapago.html'
+    template_name = 'modal/general/form_formapago.html'
 
     @method_decorator(login_required)
     def dispatch(self, *args, **kwargs):        
@@ -1675,7 +1682,7 @@ class FPEditView(VariablesMixin,AjaxUpdateView):
     form_class = FormaPagoForm
     model = cpb_tipo_forma_pago
     pk_url_kwarg = 'id'
-    template_name = 'fm/general/form_formapago.html'
+    template_name = 'modal/general/form_formapago.html'
 
     @method_decorator(login_required)
     def dispatch(self, *args, **kwargs):        
@@ -1696,15 +1703,17 @@ class FPEditView(VariablesMixin,AjaxUpdateView):
         kwargs['request'] = self.request
         return kwargs
 
-class FPDeleteView(VariablesMixin,AjaxDeleteView):
-    model = cpb_tipo_forma_pago
-    pk_url_kwarg = 'id'
-
-    @method_decorator(login_required)
-    def dispatch(self, *args, **kwargs):        
-        if not tiene_permiso(self.request,'gral_configuracion'):
-            return redirect(reverse('principal'))
-        return super(FPDeleteView, self).dispatch(*args, **kwargs)
+@login_required
+def FPDeleteView(request, id):
+    try:
+        objeto = get_object_or_404(cpb_tipo_forma_pago, id=id)
+        if not tiene_permiso(request,'gral_configuracion'):
+                return redirect(reverse('principal'))       
+        objeto.delete()
+        messages.success(request, u'¡Los datos se guardaron con éxito!')
+    except:
+        messages.error(request, u'¡Los datos no pudieron eliminarse!')
+    return redirect('formapago_listado')           
 
 #************* Pto de Venta y sus Nros **************
 class PtoVtaView(VariablesMixin,ListView):
@@ -1812,15 +1821,7 @@ class PtoVtaEditView(VariablesMixin,UpdateView):
         # initial['request'] = self.request                      
         return initial
 
-class PtoVtaDeleteView(VariablesMixin,AjaxDeleteView):
-    model = cpb_pto_vta
-    pk_url_kwarg = 'id'
 
-    @method_decorator(login_required)
-    def dispatch(self, *args, **kwargs):        
-        if not tiene_permiso(self.request,'gral_configuracion'):
-            return redirect(reverse('principal'))
-        return super(PtoVtaDeleteView, self).dispatch(*args, **kwargs)
 
 @login_required 
 def pto_vta_baja_reactivar(request,id):
@@ -1864,7 +1865,7 @@ class DispoView(VariablesMixin,ListView):
 
 class DispoCreateView(VariablesMixin,AjaxCreateView):
     form_class = DispoForm
-    template_name = 'fm/general/form_dispo.html'
+    template_name = 'modal/general/form_dispo.html'
 
     @method_decorator(login_required)
     def dispatch(self, *args, **kwargs):        
@@ -1890,7 +1891,7 @@ class DispoEditView(VariablesMixin,AjaxUpdateView):
     form_class = DispoForm
     model = cpb_cuenta
     pk_url_kwarg = 'id'
-    template_name = 'fm/general/form_dispo.html'
+    template_name = 'modal/general/form_dispo.html'
 
     @method_decorator(login_required)
     def dispatch(self, *args, **kwargs):        
@@ -1915,17 +1916,17 @@ class DispoEditView(VariablesMixin,AjaxUpdateView):
         kwargs['request'] = self.request
         return kwargs    
 
-class DispoDeleteView(VariablesMixin,AjaxDeleteView):
-    model = cpb_cuenta
-    pk_url_kwarg = 'id'
-
-    @method_decorator(login_required)
-    def dispatch(self, *args, **kwargs):        
-        if not tiene_permiso(self.request,'gral_configuracion'):
-            return redirect(reverse('principal'))
-        if not self.get_object().modificable:
-            return redirect(reverse('disponibilidades_listado'))
-        return super(DispoDeleteView, self).dispatch(*args, **kwargs)    
+@login_required
+def DispoDeleteView(request, id):
+    try:
+        objeto = get_object_or_404(cpb_cuenta, id=id)
+        if not tiene_permiso(request,'gral_configuracion'):
+                return redirect(reverse('principal'))       
+        objeto.delete()
+        messages.success(request, u'¡Los datos se guardaron con éxito!')
+    except:
+        messages.error(request, u'¡Los datos no pudieron eliminarse!')
+    return redirect('disponibilidades_listado')     
 
 @login_required 
 def dispo_baja_reactivar(request,id):

@@ -1,8 +1,29 @@
 {% load crispy_forms_tags %}
 <div id="form-container">
-    <form role="form" class="form" method="POST" enctype="multipart/form-data" action="">
+    <form role="form" autocomplete="off" class="form" method="POST" enctype="multipart/form-data" action="">
         {% csrf_token %}
         {{ form.media }}
         {{ form|crispy }}
-    </form>
+        
+    </div>
+<div class="modal-buttons">
+    <div class="row">
+        <div class="col-xs-6">
+         <button data-dismiss="modal" class="btn btn-sm pull-left btn btn-danger" type="button">
+              <i class="fa fa-times"></i> {% trans 'Cancelar' %}
+         </button>
+        </div>
+        <div class="col-xs-6">
+         <button data-dismiss="modal" class="btn pull-right btn-sm btn-primary" id="Aceptar" type="submit">
+              <i class="fa fa-check"></i>{% trans 'Aceptar' %}</button>
+        </div>
+      
+      </div>
+    
 </div>
+ {% if form.non_field_errors  %}
+          <script type="text/javascript">
+          alertify.errorAlert("{% for err in form.non_field_errors %}{{ err|safe }}{% endfor %}");
+          </script>
+        {% endif %}      
+</form> 

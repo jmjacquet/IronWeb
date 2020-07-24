@@ -41,7 +41,7 @@ $("#id_entidad").change(function(){
      if ($('#id_tipo_form').val()=='ALTA')
     {
               $.ajax({
-                data: {'id': id},
+                data: {'id': id , 'tipo':2},
                 url: '/comprobantes/setearLetraCPB/',
                 type: 'get',
                 cache: true,          
@@ -474,6 +474,7 @@ $("#id_entidad").chosen({
           no_results_text: "Proveedor inexistente...",
           placeholder_text_single:"Seleccione un Proveedor",
           allow_single_deselect: true,
+          search_contains: true,
       });
 
 recalcular(); 

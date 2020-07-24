@@ -1,9 +1,9 @@
 {% load i18n %}
 {% load static from staticfiles %}
 {% load crispy_forms_tags %}
+{% load bootstrap3 %}
 
-
-  <div id="form-container">
+  <div  class="col-xs-12" id="form-container">
     <form role="form" class="form " method="POST" action="" id="form-alta">
      {% csrf_token %}         
      <div class="row">
@@ -81,6 +81,22 @@
 		    {% endif %}       	        
 	        {% for hidden in form.hidden_fields %} {{ hidden }} {% endfor %}
 	  </div>
-    </form>
+<div class="modal-buttons">
+    <div class="row">
+        <div class="col-xs-6">
+         <button data-dismiss="modal" class="btn btn-sm pull-left btn btn-danger" type="button">
+              <i class="fa fa-times"></i> {% trans 'Cancelar' %}
+         </button>
+        </div>
+        <div class="col-xs-6">
+         <button  class="btn pull-right btn-sm btn-primary" id="Aceptar" type="button" 
+                onclick="this.disabled=true;$('#form-alta' ).submit();">
+              <i class="fa fa-check"></i>{% trans 'Aceptar' %}</button>
+        </div>
+      
+      </div>
+    
 </div>
+</div>
+</form>
 

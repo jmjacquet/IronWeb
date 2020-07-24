@@ -63,7 +63,7 @@
                     <td class="text-center">
                         <input class="hidden" value="{{pp.pk|safe}}" id="chk_{{forloop.counter0}}_id" /><input type="checkbox" class='tildado stock' id="chk_{{forloop.counter0}}"/>
                     </td> 
-                    <td title="{{pp.producto}}"><a href="{% url 'producto_ver' id=pp.producto.pk %}" class="modal-detail" data-modal-head="DETALLE PRODUCTO {{pp.producto.codigo}}" data-fm-callback="reload">
+                    <td title="{{pp.producto}}"><a href="{% url 'producto_ver' id=pp.producto.pk %}" class="modal-detail" data-modal-head="DETALLE PRODUCTO {{pp.producto.codigo}}" data-modal-callback="reload">
                         <strong>{{pp.producto|truncatechars:60}}</strong></a></td>
                     <td>{{ pp.producto.categoria|default_if_none:'' }}</td>                                
                     <td>{{ pp.producto.get_tipo_producto_display|default_if_none:'' }}</td>

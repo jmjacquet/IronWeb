@@ -6,7 +6,7 @@
   <link rel="stylesheet" href="{% static 'fm/css/modal.css' %}" />
   <link rel="stylesheet" href="{% static 'css/comprobantes.css'%}" type="text/css" >  
 {% endblock %}
-<div tabindex="-1" role="dialog" aria-hidden="true" id="fm-modal" class="fm-modal modal" data-backdrop="static"  data-keyboard="false">
+<div tabindex="-1" role="dialog" aria-hidden="true" id="modal-modal" class="modal-modal modal" style="width:520px" data-backdrop="static"  data-keyboard="false">
     <div class="modal-loader" style="display: none;">
         <img class="modal-loader-img" src="{% static 'fm/img/loading-bars.svg' %}">
     </div>
@@ -25,15 +25,17 @@
                         <div class="modal-body"></div>
                         <div class="modal-buttons">
                             <div class="row">
-                                <div class="col-xs-6">
+                              <div class="col-xs-6">
                                   <button data-dismiss="modal" class="btn pull-left btn red-flamingo" type="button">
-                                      <i class="fa fa-times"></i> {% trans 'Cancelar' %}
+                                      <i class="fa fa-times"></i>
+                                      {% trans 'Cancelar' %}
                                   </button>
                                 </div>
                                 <div class="col-xs-6">
-                                 <button class="btn pull-right blue-steel" id="Aceptar" type="submit">{% trans 'Aceptar' %}</button>
+                                  <button class="btn pull-right blue" id="Aceptar" type="submit">
+                                      {% trans 'Aceptar' %}
+                                  </button>
                                 </div>
-                              
                               </div>
                             
                         </div>
@@ -42,4 +44,8 @@
         </div>
     </div>
 </div>
+
+
+
+
 

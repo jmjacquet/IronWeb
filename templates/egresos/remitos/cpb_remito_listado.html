@@ -41,16 +41,16 @@
                                         <i class="icon-settings"> </i> <span class="caret"></span>
                                       </button>
                                       <ul class="dropdown-menu dropdown-menu-default">
-                                         <li><a href="{% url 'remito_ver' id=cpb.id %}"  title="VER" class="modal-detail" data-modal-head="DETALLE {{cpb.cpb_tipo.nombre|upper}} {{cpb}}   Fecha: {{cpb.fecha_cpb|date:'d/m/Y'}}" data-fm-callback="reload"><i class="icon-screen-desktop"></i> Vista Previa</a></li>
+                                         <li><a href="{% url 'remito_ver' id=cpb.id %}"  title="VER" class="modal-detail" data-modal-head="DETALLE {{cpb.cpb_tipo.nombre|upper}} {{cpb}}   Fecha: {{cpb.fecha_cpb|date:'d/m/Y'}}" data-modal-callback="reload"><i class="icon-screen-desktop"></i> Vista Previa</a></li>
                                         <li><a target="_blank" href="{% url 'imprimirRemito' id=cpb.pk %}"><i class=" icon-printer"></i> Imprimir</a></li>
                                         <li><a href="{% url 'mandarEmail' id=cpb.pk %}"><i class="icon-envelope-open"></i> Enviar por Email</a></li>
                                             <li role="separator" class="divider"></li>
-                                        <li><a href="{% url 'cpb_remitoc_editar' id=cpb.pk %}"  title="Editar" data-fm-callback="reload" ><i class="icon-note"></i> Editar</a></li>
+                                        <li><a href="{% url 'cpb_remitoc_editar' id=cpb.pk %}"  title="Editar" data-modal-callback="reload" ><i class="icon-note"></i> Editar</a></li>
                                          <li><a href="#" 
                                                     onClick="alerta= alertify.dialog('confirm').set({'labels':{ok:'Aceptar', cancel:'Cancelar'},'message': '¿DESEA ELIMINAR EL REMITO SELECCIONADO?',transition:'fade','onok': function(){ window.location.href = '{% url 'cpb_remitoc_eliminar' id=cpb.pk %}'; },'oncancel': function(){ return true;} }); alerta.setting('modal', true); alerta.setHeader('ELIMINAR COMPROBANTE'); alerta.show(); return true;"><i class="icon-trash"></i>Eliminar</a>
                                                 </li>       
                                         <li role="separator" class="divider"></li>
-                                            <li><a href="{% url 'cpb_editar_seguimiento' id=cpb.pk %}"  class="fm-update" data-fm-head="EDITAR SEGUIMIENTO"  title="Editar Seguimiento" data-fm-target="#object-{{ item.pk }}" data-fm-callback="reload" ><i class="icon-speech"></i>Seguimiento</a></li>                                                                               
+                                            <li><a href="{% url 'cpb_editar_seguimiento' id=cpb.pk %}"  class="modal-update" data-modal-head="EDITAR SEGUIMIENTO"  title="Editar Seguimiento" data-modal-target="#object-{{ item.pk }}" data-modal-callback="reload" ><i class="icon-speech"></i>Seguimiento</a></li>                                                                               
                                       </ul>
                                     </div> 
                                     {% if cpb.seguimiento %}  <i title="{{cpb.seguimiento}}" class="icon-speech icono_seguimiento"></i> {% endif %}                              

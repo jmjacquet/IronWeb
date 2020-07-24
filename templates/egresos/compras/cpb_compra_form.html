@@ -42,7 +42,7 @@
 										</div>						
 										{% if not sitio_mobile %}
 												<div class="col-sm-1 col-xs-1">
-								                  <a id="nuevoProveedor" href="{% url 'proveedor_nuevo' %}" data-fm-head="AGREGAR PROVEEDOR" class="recargarDatos fm-create" type="button" data-toggle="tooltip" data-fm-callback="recargarP" data-placement="top" title="Agregar Proveedor"><i class="icon-users"></i></a>
+								                  <a id="nuevoProveedor" href="{% url 'proveedor_nuevo' %}" data-modal-head="AGREGAR PROVEEDOR" class="recargarDatos modal-create" type="button" data-toggle="tooltip" data-modal-callback="recargarP" data-placement="top" title="Agregar Proveedor"><i class="icon-users"></i></a>
 								                </div>       				
 						                {% endif %}      										
 								  </div>								  
@@ -94,7 +94,7 @@
 						                              	
 									                    	<a id="recargarProductos" href="#" class="recargarDatos" type="button" data-toggle="tooltip" data-placement="top" 
 									                    	title="Recargar listados de Productos"><i class="fa fa-refresh"></i></a>
-									                    	<a id="agregarProductos" href="{% url 'producto_nuevo_modal' %}" class="recargarDatos fm-create" data-fm-callback="recargarProds" data-fm-head="AGREGAR NUEVO PRODUCTO" type="button" data-toggle="tooltip" data-placement="top" title="Agregar Nuevo Producto"><i class="fa fa-plus"></i></a>
+									                    	<a id="agregarProductos" href="{% url 'producto_nuevo_modal' %}" class="recargarDatos modal-create" data-modal-callback="recargarProds" data-modal-head="AGREGAR NUEVO PRODUCTO" type="button" data-toggle="tooltip" data-placement="top" title="Agregar Nuevo Producto"><i class="fa fa-plus"></i></a>
 						                              	</th>						                          						
 						                              {% if not empresa.usa_impuestos %}<th style="width: 20%;">Detalle</th>{% endif %}
 						                              <th style="width: 15px;">Cantidad</th>

@@ -14,7 +14,7 @@ from django.contrib import messages
 from general.views import VariablesMixin,ultimoNroId,getVariablesMixin
 from usuarios.views import tiene_permiso
 from general.utilidades import *
-from fm.views import AjaxCreateView,AjaxUpdateView,AjaxDeleteView
+from modal.views import AjaxCreateView,AjaxUpdateView,AjaxDeleteView
 # from modal.views import Detailview
 from .forms import EntidadesForm,EntidadesEditForm,VendedoresForm,ImportarEntidadesForm
 from django.http import JsonResponse
@@ -53,7 +53,7 @@ class ClientesView(VariablesMixin,ListView):
 
 class ClientesCreateView(VariablesMixin,AjaxCreateView):
     form_class = EntidadesForm
-    template_name = 'fm/entidades/form.html'
+    template_name = 'modal/entidades/form.html'
 
     @method_decorator(login_required)
     def dispatch(self, *args, **kwargs): 
@@ -95,7 +95,7 @@ class ClientesEditView(VariablesMixin,AjaxUpdateView):
     form_class = EntidadesEditForm
     model = egr_entidad
     pk_url_kwarg = 'id'
-    template_name = 'fm/entidades/form.html'
+    template_name = 'modal/entidades/form.html'
 
     @method_decorator(login_required)
     def dispatch(self, *args, **kwargs): 
@@ -119,16 +119,18 @@ class ClientesEditView(VariablesMixin,AjaxUpdateView):
         initial = super(ClientesEditView, self).get_initial()                      
         return initial    
 
-class ClientesDeleteView(VariablesMixin,AjaxDeleteView):
-    model = egr_entidad
-    pk_url_kwarg = 'id'
 
-    @method_decorator(login_required)
-    def dispatch(self, *args, **kwargs): 
-        if not tiene_permiso(self.request,'ent_clientes_abm'):
-            return redirect(reverse('principal'))
-        messages.success(self.request, u'Los datos se eliminaron con éxito!')
-        return super(ClientesDeleteView, self).dispatch(*args, **kwargs)
+@login_required
+def ClientesDeleteView(request, id):
+    try:
+        objeto = get_object_or_404(cpb_cuenta, id=id)
+        if not tiene_permiso(request,'ent_clientes_abm'):
+                return redirect(reverse('principal'))       
+        objeto.delete()
+        messages.success(request, u'¡Los datos se guardaron con éxito!')
+    except:
+        messages.error(request, u'¡Los datos no pudieron eliminarse!')
+    return redirect('clientes_listado')     
 
 class ClientesVerView(VariablesMixin,DetailView):
     model = egr_entidad
@@ -164,7 +166,7 @@ class ProveedoresView(VariablesMixin,ListView):
 
 class ProveedoresCreateView(VariablesMixin,AjaxCreateView):
     form_class = EntidadesForm
-    template_name = 'fm/entidades/form.html'
+    template_name = 'modal/entidades/form.html'
 
     @method_decorator(login_required)
     def dispatch(self, *args, **kwargs): 
@@ -198,7 +200,7 @@ class ProveedoresEditView(VariablesMixin,AjaxUpdateView):
     form_class = EntidadesEditForm
     model = egr_entidad
     pk_url_kwarg = 'id'
-    template_name = 'fm/entidades/form.html'
+    template_name = 'modal/entidades/form.html'
 
     @method_decorator(login_required)
     def dispatch(self, *args, **kwargs): 
@@ -218,16 +220,17 @@ class ProveedoresEditView(VariablesMixin,AjaxUpdateView):
         kwargs['request'] = self.request
         return kwargs  
 
-class ProveedoresDeleteView(VariablesMixin,AjaxDeleteView):
-    model = egr_entidad
-    pk_url_kwarg = 'id'
-
-    @method_decorator(login_required)
-    def dispatch(self, *args, **kwargs): 
-        if not tiene_permiso(self.request,'ent_proveedores_abm'):
-            return redirect(reverse('principal'))
-        messages.success(self.request, u'Los datos se eliminaron con éxito!')
-        return super(ProveedoresDeleteView, self).dispatch(*args, **kwargs)
+@login_required
+def ProveedoresDeleteView(request, id):
+    try:
+        objeto = get_object_or_404(cpb_cuenta, id=id)
+        if not tiene_permiso(request,'ent_proveedores_abm'):
+                return redirect(reverse('principal'))       
+        objeto.delete()
+        messages.success(request, u'¡Los datos se guardaron con éxito!')
+    except:
+        messages.error(request, u'¡Los datos no pudieron eliminarse!')
+    return redirect('proveedores_listado')   
 
 class ProveedoresVerView(VariablesMixin,DetailView):
     model = egr_entidad
@@ -261,7 +264,7 @@ class VendedoresView(VariablesMixin,ListView):
 
 class VendedoresCreateView(VariablesMixin,AjaxCreateView):
     form_class = VendedoresForm
-    template_name = 'fm/entidades/form_vendedores.html'
+    template_name = 'modal/entidades/form_vendedores.html'
 
     @method_decorator(login_required)
     def dispatch(self, *args, **kwargs): 
@@ -292,7 +295,7 @@ class VendedoresEditView(VariablesMixin,AjaxUpdateView):
     form_class = VendedoresForm
     model = egr_entidad
     pk_url_kwarg = 'id'
-    template_name = 'fm/entidades/form_vendedores.html'
+    template_name = 'modal/entidades/form_vendedores.html'
 
     @method_decorator(login_required)
     def dispatch(self, *args, **kwargs): 
@@ -314,16 +317,17 @@ class VendedoresEditView(VariablesMixin,AjaxUpdateView):
         kwargs['request'] = self.request
         return kwargs
 
-class VendedoresDeleteView(VariablesMixin,AjaxDeleteView):
-    model = egr_entidad
-    pk_url_kwarg = 'id'       
-
-    @method_decorator(login_required)
-    def dispatch(self, *args, **kwargs): 
-        if not tiene_permiso(self.request,'ent_vendedores_abm'):
-            return redirect(reverse('principal'))
-        messages.success(self.request, u'Los datos se eliminaron con éxito!')
-        return super(VendedoresDeleteView, self).dispatch(*args, **kwargs)
+@login_required
+def VendedoresDeleteView(request, id):
+    try:
+        objeto = get_object_or_404(cpb_cuenta, id=id)
+        if not tiene_permiso(request,'ent_vendedores_abm'):
+                return redirect(reverse('principal'))       
+        objeto.delete()
+        messages.success(request, u'¡Los datos se guardaron con éxito!')
+    except:
+        messages.error(request, u'¡Los datos no pudieron eliminarse!')
+    return redirect('vendedores_listado') 
 
 class VendedoresVerView(VariablesMixin,DetailView):
     model = egr_entidad

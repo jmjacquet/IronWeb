@@ -3,7 +3,7 @@ from django.template import RequestContext,Context
 from django.shortcuts import *
 from .models import *
 from django.contrib.auth.decorators import login_required
-from fm.views import AjaxDeleteView
+from modal.views import AjaxDeleteView
 from django.views.generic import TemplateView,ListView,CreateView,UpdateView
 from .forms import *
 

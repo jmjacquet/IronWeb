@@ -1,7 +1,7 @@
 
 
-.modal-modal .modal-content{max-width:668px;padding-top:0px;padding-bottom:20px;position:relative;z-index:1050;padding:0px 10px 10px 10px;margin-right:auto;margin-left:auto;border-radius:5px;font-size:11px;}
-@media (min-width:668px){.modal-dialog{width:668px;margin:20px auto;}
+.modal-modal .modal-content{max-width:668px;padding:0 0 0 0;position:relative;z-index:1050;margin-right:auto;margin-left:auto;border-radius:5px;font-size:11px;}
+@media (min-width:768px){.modal-dialog{width:668px;margin:20px auto;}
 .modal-content{-webkit-box-shadow:0 5px 15px rgba(0, 0, 0, 0.5);box-shadow:0 5px 15px rgba(0, 0, 0, 0.5);}
 .modal-sm{width:300px;}
 }
@@ -12,9 +12,9 @@
     /* background: linear-gradient(to bottom, rgba(110, 135, 164, 1) 0%, rgba(57, 79, 103, 1) 100%); */
     filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#6e87a4', endColorstr='#394f67', GradientType=0);
     /*background-color:#4f5a67;*/
-    padding:10px 0px 10px 0px;margin-left:5px;margin-right:5px}
-.modal-modal .modal-body{padding:15px;}
-.modal-modal .modal-buttons{text-align:left;margin-left:10px;margin-right:10px;}
+    padding:10px 0px 10px 0px;}
+.modal-modal .modal-body{padding:10px;}
+.modal-modal .modal-buttons{text-align:left;margin:10px 10px 10px 10px;}
 .modal-modal .close-modal{background-color:transparent;cursor:pointer;height:25px;position:absolute;right:10px;top:10px;width:45px;}
 .close{float:right;font-size:15px;font-weight:bold;line-height:1;color:#eee;text-shadow:none;opacity:0.8;}
 .modal-modal .close-modal:hover{}
@@ -34,3 +34,4 @@
 .modal-modal table{font-size:12px;text-align:left;}
 .modal-modal table td{padding-left:5px;padding-right:5px,}
 .modal-modal .titulo{font-weight:bold;text-align:right;}
+.modal-modal form{padding:5px 5px 5px 5px;}

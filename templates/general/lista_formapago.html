@@ -12,7 +12,7 @@
 
                 </div> 
             </div>  
-                    <a class="btn btn-sm blue-hoki fm-create" style="float:left;margin-right:20px;" href="{% url 'formapago_nuevo' %}" data-fm-head="AGREGAR FORMA DE PAGO/COBRO" data-fm-callback="reload">Nueva Forma de Pago/Cobro</a>
+                    <a class="btn btn-sm blue-hoki modal-create" style="float:left;margin-right:20px;" href="{% url 'formapago_nuevo' %}" data-modal-head="AGREGAR FORMA DE PAGO/COBRO" data-modal-callback="reload">Nueva Forma de Pago/Cobro</a>
                     <table width="100%" id="dataTables-primary" class="table table-striped table-hover table-condensed table-no-bordered tabla_nueva">         
                         <thead>
                             <tr>
@@ -34,10 +34,10 @@
                                         <i class="icon-settings"> </i> <span class="caret"></span>
                                       </button>                                    
                                        <ul class="dropdown-menu dropdown-menu-default">                                        
-                                        <li><a href="{% url 'formapago_editar' id=d.pk %}"  class="fm-update " title="Editar" data-fm-callback="reload" data-fm-head="EDITAR FORMA DE PAGO/COBRO"data-fm-target="#object-{{ d.pk }}"><i class="icon-note"></i> Editar</a></li>
-                                        <li>
-                                            <a href="{% url 'formapago_eliminar' id=d.pk %}" class="fm-delete " data-fm-head="¿DESEA ELIMINAR EL REGISTRO SELECCIONADO?" data-fm-callback="reload" data-fm-target="#object-{{ d.pk }}" title="Quitar"> <i class="icon-trash"></i> Eliminar </a> 
-                                        </li>
+                                        <li><a href="{% url 'formapago_editar' id=d.pk %}"  class="modal-update " title="Editar" data-modal-callback="reload" data-modal-head="EDITAR FORMA DE PAGO/COBRO"data-modal-target="#object-{{ d.pk }}"><i class="icon-note"></i> Editar</a></li>
+                                        <li><a href="#" 
+                                            onClick="alerta= alertify.dialog('confirm').set({'labels':{ok:'Aceptar', cancel:'Cancelar'},'message': '¿DESEA ELIMINAR EL DATO SELECCIONADO?',transition:'fade','onok': function(){ window.location.href = '{% url 'formapago_eliminar' id=d.pk %}'; },'oncancel': function(){ return true;} }); alerta.setting('modal', true); alerta.setHeader('ELIMINAR FORMA DE PAGO'); alerta.show(); return true;"><i class="icon-trash"></i>Eliminar</a>
+                                            </li>
                                                                         
                                       </ul>      
                                     </div>

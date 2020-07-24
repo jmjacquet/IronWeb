@@ -56,7 +56,7 @@
                         </button>
                         <ul class="dropdown-menu dropdown-menu-default">
                             <li><a href="{% url 'producto_ver' id=prod.pk %}" class="modal-detail"
-                                    data-modal-head="DETALLE PRODUCTO {{prod.codigo}}" data-fm-callback="reload">
+                                    data-modal-head="DETALLE PRODUCTO {{prod.codigo}}" data-modal-callback="reload">
                                     <i class=" icon-screen-desktop"></i> Detalle</a></li>
                             {% if 'prod_productos_abm' in permisos_grupo %}
                             <li><a href="{% url 'producto_editar' id=prod.pk %}" title="Editar"><i
@@ -72,7 +72,7 @@
                 <td>{{ prod.codigo|default_if_none:'' }}</td>
                 <td><a href="{% url 'producto_ver' id=prod.pk %}" title="{{ prod.nombre}}" class="modal-detail"
                         data-modal-head="DETALLE PRODUCTO {{prod.codigo}}"
-                        data-fm-callback="reload"><strong>{{ prod.nombre|truncatechars:60 }}</strong></a></td>
+                        data-modal-callback="reload"><strong>{{ prod.nombre|truncatechars:60 }}</strong></a></td>
                 <td>{{ prod.categoria|default_if_none:'' }}</td>
                 <td>{{ prod.get_tipo_producto_display|default_if_none:'' }}</td>
                 <td>[{{ prod.get_unidad_display|default_if_none:'' }}]</td>

@@ -18,7 +18,7 @@
                 </div> 
             </div>          
                     {% if 'ent_clientes_abm' in permisos_grupo %}
-                    <a class="btn btn-sm blue-hoki fm-create" style="float:left;margin-right:20px;" href="{% url 'cliente_nuevo' %}" data-fm-head="AGREGAR CLIENTE" data-fm-callback="reload">Nuevo Cliente</a>
+                    <a class="btn btn-sm blue-hoki modal-create" style="float:left;margin-right:20px;" href="{% url 'cliente_nuevo' %}" data-modal-head="AGREGAR CLIENTE" data-modal-callback="reload">Nuevo Cliente</a>
                     {% endif %}
                     <table width="100%" id="dataTables-primary"style="display:none;"  class="table table-striped compact table-hover table-no-bordered tabla_nueva text-nowrap">         
                         <thead >
@@ -47,10 +47,10 @@
                                         <i class="icon-settings"> </i> <span class="caret"></span>
                                       </button>
                                       <ul class="dropdown-menu dropdown-menu-default">
-                                        <li><a href="{% url 'cliente_ver' id=cli.id %}" class="modal-detail" data-modal-head="DETALLE CLIENTE {{cli.codigo}}" data-fm-callback="reload">
+                                        <li><a href="{% url 'cliente_ver' id=cli.id %}" class="modal-detail" data-modal-head="DETALLE CLIENTE {{cli.codigo}}" data-modal-callback="reload">
                                         <i class=" icon-screen-desktop"></i> Detalle</a></li>
                                         {% if 'ent_clientes_abm' in permisos_grupo %}
-                                        <li><a href="{% url 'cliente_editar' id=cli.id %}" class="fm-update " title="Editar" data-fm-callback="reload" data-fm-head="EDITAR CLIENTE"data-fm-target="#object-{{ item.pk }}"><i class="icon-note"></i> Editar</a></li>
+                                        <li><a href="{% url 'cliente_editar' id=cli.id %}" class="modal-update " title="Editar" data-modal-callback="reload" data-modal-head="EDITAR CLIENTE"data-modal-target="#object-{{ item.pk }}"><i class="icon-note"></i> Editar</a></li>
                                                                         
                                         <li><a href="#" 
                                             onClick="alerta= alertify.dialog('confirm').set({'labels':{ok:'Aceptar', cancel:'Cancelar'},'message': '¿DESEA DAR DE BAJA/REACTIVAR EL REGISTRO ACTUAL?',transition:'fade','onok': function(){ window.location.href = '{% url 'entidad_baja_reactivar' id=cli.pk  %}'; },'oncancel': function(){ return true;} }); alerta.setting('modal', true); alerta.setHeader('BAJA/REACTIVAR'); alerta.show(); return true;" ><i class="icon-dislike"></i><i class="icon-like"></i>Baja/Reactivar</a>

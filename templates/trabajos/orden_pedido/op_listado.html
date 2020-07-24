@@ -46,21 +46,17 @@
                                         <i class="icon-settings"> </i> <span class="caret"></span>
                                       </button>
                                       <ul class="dropdown-menu dropdown-menu-default">
-                                        <li><a href="{% url 'orden_pedido_ver' id=orden.pk %}"  title="VER" class="modal-detail" data-modal-head="DETALLE ORDEN DE PEDIDO Nº {{orden}}" data-fm-callback="reload"><i class="icon-screen-desktop"></i> Vista Previa</a></li>
+                                        <li><a href="{% url 'orden_pedido_ver' id=orden.pk %}"  title="VER" class="modal-detail" data-modal-head="DETALLE ORDEN DE PEDIDO Nº {{orden}}" data-modal-callback="reload"><i class="icon-screen-desktop"></i> Vista Previa</a></li>
                                         <li><a target="_blank" href="{% url 'imprimirNotaPedido' id=orden.pk %}"><i class=" icon-printer"></i> Imprimir</a></li>
-                                        <li><a href="{% url 'orden_pedido_editar' id=orden.pk %}"  title="Editar" data-fm-callback="reload" ><i class="icon-note"></i> Editar</a></li>
-                                        {% if orden.estado.pk <= 102 %}
-                                        <li>
-                                            <a href="{% url 'orden_pedido_eliminar' id=orden.pk %}" class="fm-delete " data-fm-head="¿DESEA ELIMINAR EL REGISTRO SELECCIONADO?" data-fm-callback="reload" data-fm-target="#object-{{ orden.pk }}" title="Quitar"> <i class="icon-trash"></i> Eliminar </a> 
-                                        </li>                                       
-                                        {% endif %}
+                                        <li><a href="{% url 'orden_pedido_editar' id=orden.pk %}"  title="Editar" data-modal-callback="reload" ><i class="icon-note"></i> Editar</a></li>
+                                       
                                         
                                         
                                             <li role="separator" class="divider"></li>
-                                            <li><a href="{% url 'orden_pedido_editar_estado' id=orden.pk %}"    class="fm-update " title="Editar Estado" data-fm-callback="reload" data-fm-head="EDITAR ESTADO ORDEN"data-fm-target="#object-{{ orden.pk }}"><i class="icon-note"></i> Editar Estado</a></li>
+                                            <li><a href="{% url 'orden_pedido_editar_estado' id=orden.pk %}"    class="modal-update " title="Editar Estado" data-modal-callback="reload" data-modal-head="EDITAR ESTADO ORDEN"data-modal-target="#object-{{ orden.pk }}"><i class="icon-note"></i> Editar Estado</a></li>
                                         {% if orden.estado.pk = 102 and orden.generaOT %}
                                             <li role="separator" class="divider"></li>
-                                            <li><a href="{% url 'orden_trabajo_nuevo' id=orden.pk %}" title="Orden de Trabajo" data-fm-callback="reload" ><i class="icon-notebook"></i> Crear Orden de Trabajo</a></li>
+                                            <li><a href="{% url 'orden_trabajo_nuevo' id=orden.pk %}" title="Orden de Trabajo" data-modal-callback="reload" ><i class="icon-notebook"></i> Crear Orden de Trabajo</a></li>
                                         {% endif %}
                                         {% if orden.estado.pk >= 102  %}
                                             <li role="separator" class="divider"></li>
@@ -73,7 +69,7 @@
                                 <td class="listado_estado {{orden.estado_color}}">{{orden.estado|default_if_none:'A CONFIRMAR'}}</td>
                                 <td class="text-center">{{orden.fecha|date:'d/m/Y'}}</td>                                
                                 <td>{{ orden}}</td>                                
-                                <td title="{{ orden.cliente}}"><a href="{% url 'cliente_ver' id=orden.cliente.id %}"   class="modal-detail" data-modal-head="DETALLE CLIENTE {{orden.cliente.codigo}}" data-fm-callback="reload">
+                                <td title="{{ orden.cliente}}"><a href="{% url 'cliente_ver' id=orden.cliente.id %}"   class="modal-detail" data-modal-head="DETALLE CLIENTE {{orden.cliente.codigo}}" data-modal-callback="reload">
                                     <strong>{{ orden.cliente|truncatechars:50 }}</strong></a></td>
                                 <td class="importe">${{orden.importe_total|default_if_none:0|floatformat:2}}</td>                                                                 
                                 <td class="text-center">{{orden.fecha_entrega|date:'d/m/Y'}} {{orden.hora_entrega|time:'H:i'}}</td>                                

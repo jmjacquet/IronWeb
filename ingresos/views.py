@@ -15,7 +15,7 @@ from django.db.models import Q,Sum,Count
 from comprobantes.models import *
 import json
 from decimal import *
-from fm.views import AjaxCreateView,AjaxUpdateView,AjaxDeleteView
+from modal.views import AjaxCreateView,AjaxUpdateView,AjaxDeleteView
 from django.contrib import messages
 from general.utilidades import *
 from general.views import VariablesMixin

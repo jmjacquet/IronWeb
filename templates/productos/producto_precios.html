@@ -64,16 +64,16 @@
                                             <i class="icon-settings"> </i> <span class="caret"></span>
                                           </button>
                                           <ul class="dropdown-menu dropdown-menu-default">
-                                            <li><a href="{% url 'producto_ver' id=pp.pk %}" class="modal-detail" data-modal-head="DETALLE PRODUCTO {{pp.codigo}}" data-fm-callback="reload">
+                                            <li><a href="{% url 'producto_ver' id=pp.pk %}" class="modal-detail" data-modal-head="DETALLE PRODUCTO {{pp.codigo}}" data-modal-callback="reload">
                                             <i class=" icon-screen-desktop"></i> Detalle</a></li>
-                                             <li><a href="{% url 'prod_precios_editar' id=pp.pk %}" class="fm-update" data-fm-callback="reload" data-fm-head="EDITAR PRECIO" data-fm-target="#object-{{ pp.pk }}" title="Editar"><i class="icon-note"></i> Editar</a></li>
+                                             <li><a href="{% url 'prod_precios_editar' id=pp.pk %}" class="modal-update" data-modal-callback="reload" data-modal-head="EDITAR PRECIO" data-modal-target="#object-{{ pp.pk }}" title="Editar"><i class="icon-note"></i> Editar</a></li>
                                           </ul>                                      
                                         </div>
                                     </td>
                                     <td class="text-center">
                                         <input class="hidden" value="{{pp.pk|safe}}" id="chk_{{forloop.counter0}}_id" /><input type="checkbox" class='tildado precios' id="chk_{{forloop.counter0}}"/>
                                     </td> 
-                                    <td title="{{pp.producto}}"><a href="{% url 'producto_ver' id=pp.producto.pk %}" class="modal-detail" data-modal-head="DETALLE PRODUCTO {{pp.producto.codigo}}" data-fm-callback="reload"><strong>{{pp.producto|truncatechars:60}}</strong></a></td>
+                                    <td title="{{pp.producto}}"><a href="{% url 'producto_ver' id=pp.producto.pk %}" class="modal-detail" data-modal-head="DETALLE PRODUCTO {{pp.producto.codigo}}" data-modal-callback="reload"><strong>{{pp.producto|truncatechars:60}}</strong></a></td>
                                     <td>{{ pp.producto.categoria|default_if_none:''|truncatechars:40 }}</td>                                
                                     <td>{{ pp.producto.get_tipo_producto_display|default_if_none:'' }}</td>                                                                    
                                     <td class="importe">${{pp.precio_costo|default_if_none:0|floatformat:2}}</td>                                                                     
