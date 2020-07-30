@@ -279,9 +279,14 @@ def buscarDatosEntidad(request):
 def setearLetraCPB(request):
    try:                          
     id = request.GET['id']   
+    tipo = int(request.GET['tipo'])
     entidad = egr_entidad.objects.get(id=id)
     empr=empresa_actual(request)        
-    letra = get_letra(entidad.fact_categFiscal,empr.categ_fiscal)    
+    #Si el tipo es de Compra(2) paso los params a la inversa
+    if tipo==2:
+      letra = get_letra(empr.categ_fiscal,entidad.fact_categFiscal)    
+    else:
+      letra = get_letra(entidad.fact_categFiscal,empr.categ_fiscal)    
     letra=list({letra})  
    except:
     letra= []
@@ -350,6 +355,7 @@ def ultimp_nro_cpb_ajax(request):
               nro = tipo.ultimo_nro + 1  
     except:                        
         nro = 1  
+
     nro=list({nro})     
     
     return HttpResponse( json.dumps(nro, cls=DjangoJSONEncoder), content_type='application/json' )   

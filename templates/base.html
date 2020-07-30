@@ -94,6 +94,7 @@
       <script type="text/javascript">
         jQuery(document).ready(function() {
            $.modal({debug: false});
+           $.fm({debug: false});         
            Metronic.init();
            Layout.init();
            {% if messages %}
@@ -101,14 +102,15 @@
                           toastr.{{ message.tags }}('{{ message }}');                                        
               {% endfor %}
             {% endif %}    
+
         });
       </script> 
       {% block extra_js_final %}
       {% endblock extra_js_final %} 
-
-       {% if empresa.afip_categoria %}
+      {% if empresa.afip_categoria %}
         <script type="text/javascript">
            alertify.warningAlert("<b>Su abono Mensual se encuentra Vencido.<br>Por favor comunicarse a los teléfonos de la Empresa.<br>¡Muchas Gracias!</b>");            
            </script>   
       {% endif %} 
+
 </html>

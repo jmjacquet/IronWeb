@@ -7,7 +7,7 @@ $.fm({
             "recargarP": function(data, options) {
                recargarProveedores();
                },
-              "recargarP": function(data, options) {             
+              "recargarProds": function(data, options) {             
                recargarProds();
                },
             }
@@ -15,6 +15,7 @@ $.fm({
 
 $("#id_entidad").change(function(){
     var id =  $("#id_entidad").val();
+    
     $.ajax({
                 data: {'id': id},
                 url: '/comprobantes/buscarDatosEntidad/',
@@ -43,7 +44,7 @@ $("#id_entidad").change(function(){
      if ($('#id_tipo_form').val()=='ALTA')
     {
               $.ajax({
-                data: {'id': id},
+                data: {'id': id , 'tipo':2},
                 url: '/comprobantes/setearLetraCPB/',
                 type: 'get',
                 cache: true,          

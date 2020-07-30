@@ -23,18 +23,6 @@ DB_USER = config('DB_USER')
 DB_PASS = config('DB_PASS')
 DB_HOST = config('DB_HOST')
 
-DATABASES = {
-        'default': {
-            'ENGINE': 'django.db.backends.mysql', # Add 'postgresql_psycopg2', 'postgresql', 'mysql', 'sqlite3' or 'oracle'.
-            'NAME': ENTIDAD_DB,           # Or path to database file if using sqlite3.
-            'USER':  DB_USER,    
-            'PASSWORD':  DB_PASS,            # Not used with sqlite3.
-            'HOST':  DB_HOST,                      # Set to empty string for localhost. Not used with sqlite3.
-            'PORT': '',      
-        },
-    }
-
-    
 
 ALLOWED_HOSTS = '*'
 TIME_ZONE = 'America/Argentina/Buenos_Aires'
@@ -135,10 +123,7 @@ INSTALLED_APPS = (
 
 SESSION_SERIALIZER = 'django.contrib.sessions.serializers.JSONSerializer'
 
-
-
 EMAIL_USE_TLS = True
-
 EMAIL_HOST = config('EMAIL_HOST', default='localhost')
 EMAIL_HOST_PASSWORD = config('EMAIL_HOST_PASSWORD', default='')
 EMAIL_HOST_USER = config('EMAIL_HOST_USER', default='')

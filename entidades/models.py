@@ -87,42 +87,21 @@ class egr_entidad(models.Model):
 			return 'OT'
 
 	def __unicode__(self):
-		entidad=u'%s' % self.apellido_y_nombre
-		# if self.codigo:
-		# 	entidad = u'%s - %s' % (self.codigo,entidad)     
-
-		cuit = ''
-		if self.fact_cuit=='':
+		entidad=u'%s' % self.apellido_y_nombre.upper()
+		cuit='' 
+		if self.fact_cuit=='':    		
 			if self.nro_doc=='':
 				cuit = ''
 			else:
 				cuit = u' - %s'  % self.nro_doc
 		elif self.fact_cuit:
-			cuit = u' - %s'  % self.fact_cuit		
-			
-
+			cuit = u' - %s'  % self.fact_cuit
+		
 		categ_fiscal = ''
 		if self.fact_categFiscal:
-			if self.fact_categFiscal==1:
-				categ_fiscal = 'RI'
-			elif self.fact_categFiscal==2:
-				categ_fiscal ='RNI'
-			elif self.fact_categFiscal==3:
-				categ_fiscal = 'NR'
-			elif self.fact_categFiscal==4:
-				categ_fiscal ='EX'
-			elif self.fact_categFiscal==5:
-				categ_fiscal = 'CF'
-			elif self.fact_categFiscal==6:
-				categ_fiscal = 'MT'
-			else:
-				categ_fiscal = 'OT'
-			
-			categ_fiscal = ' - %s' % categ_fiscal
-		
-		entidad = u'%s%s%s' % (entidad,cuit,categ_fiscal)		
-
-		return  entidad      
+			categ_fiscal = ' - %s' % self.get_categFiscal()
+		entidad = u'%s%s%s' % (entidad,cuit,categ_fiscal)
+		return entidad.upper()
 
 	detalle_entidad = property(__unicode__)
 
