@@ -3,7 +3,7 @@ $(document).ready(function() {
 $("input[type=number]").click(function(){
             this.select()
           });
-$.fm({        
+$.modal({        
         custom_callbacks: {
             "recargarP": function(data, options) {
                recargarProveedores();

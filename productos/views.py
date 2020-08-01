@@ -137,12 +137,13 @@ class ProductosCreateView(VariablesMixin,CreateView):
         ppedido = form.cleaned_data.get('ppedido')
         ubicacion = form.cleaned_data.get('ubicacion')
         if not stock:            
-            stock=1
+            stock=0
         if not ppedido:
             ppedido=0
         ubi_prod = prod_producto_ubicac(producto=self.object,ubicacion=ubicacion,punto_pedido=ppedido)
         ubi_prod.save()
-        actualizar_stock(self.request,self.object,ubicacion,21,stock)
+        if stock>0:
+            actualizar_stock(self.request,self.object,ubicacion,21,stock)
         messages.success(self.request, u'Los datos se guardaron con éxito!')
         
         return HttpResponseRedirect(reverse('productos_listado'))
@@ -274,12 +275,13 @@ class ProductosCreateViewModal(VariablesMixin,AjaxCreateView):
         ppedido = form.cleaned_data.get('ppedido')
         ubicacion = form.cleaned_data.get('ubicacion')
         if not stock:            
-            stock=1
+            stock=0
         if not ppedido:
             ppedido=0
         ubi_prod = prod_producto_ubicac(producto=self.object,ubicacion=ubicacion,punto_pedido=ppedido)
         ubi_prod.save()
-        actualizar_stock(self.request,self.object,ubicacion,21,stock)
+        if stock>0:
+           actualizar_stock(self.request,self.object,ubicacion,21,stock)
         return super(ProductosCreateViewModal, self).form_valid(form)
 
     def form_invalid(self, form):                                                               

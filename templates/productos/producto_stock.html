@@ -59,15 +59,16 @@
                 {% elif pp.get_reposicion %}
                 class='warning'                
              {% endif %}>                                                                                                                            
-                    <td title="{{pp.pk|safe}}" class="no-sort text-center"></td>
-                    <td class="text-center">
-                        <input class="hidden" value="{{pp.pk|safe}}" id="chk_{{forloop.counter0}}_id" /><input type="checkbox" class='tildado stock' id="chk_{{forloop.counter0}}"/>
+                    <td class="no-sort text-center"> {% if pp.producto.baja %}<i class="fa fa-warning text-danger" data-toggle="tooltip" data-placement="top"  title="Producto dado de Baja"></i>
+                        {% elif pp.get_reposicion %}<i class="fa fa-warning text-warning" data-toggle="tooltip" data-placement="top" title="Stock menor al Punto de Pedido"></i>{% endif %}</td>
+                    <td  class="text-center">
+                        <input class="hidden" value="{{pp.pk|safe}}" id="chk_{{forloop.counter0}}_id" /><input type="checkbox"  title="{{pp.pk|safe}}" class='tildado stock' id="chk_{{forloop.counter0}}"/>
                     </td> 
-                    <td title="{{pp.producto}}"><a href="{% url 'producto_ver' id=pp.producto.pk %}" class="modal-detail" data-modal-head="DETALLE PRODUCTO {{pp.producto.codigo}}" data-modal-callback="reload">
+                    <td ><a href="{% url 'producto_ver' id=pp.producto.pk %}"  title="{{pp.producto}}" class="modal-detail" data-modal-head="DETALLE PRODUCTO {{pp.producto.codigo}}" data-modal-callback="reload">
                         <strong>{{pp.producto|truncatechars:60}}</strong></a></td>
                     <td>{{ pp.producto.categoria|default_if_none:'' }}</td>                                
                     <td>{{ pp.producto.get_tipo_producto_display|default_if_none:'' }}</td>
-                    <td class="text-center"><i class="fa {% if pp.producto.llevar_stock %}fa-check text-success{% else %}fa-close text-danger{% endif %}"</td>
+                    <td class="text-center"><i class="fa {% if pp.producto.llevar_stock %}fa-check text-success{% else %}fa-close text-danger{% endif %}"></i></td>
                     <td class="importe_total">{% if pp.producto.llevar_stock %}{{pp.get_stock|default_if_none:0|floatformat:2}}{% else %}-{% endif %}</td>
                     <td class="text-left">[{{pp.producto.get_unidad_display|default_if_none:''}}]</td>
                     <td class="importe_total">{{pp.punto_pedido|default_if_none:0|floatformat:2}}</td>

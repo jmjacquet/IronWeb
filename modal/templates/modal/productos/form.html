@@ -3,10 +3,11 @@
 {% load crispy_forms_tags %}
 {% load bootstrap3 %}
 {% load i18n %}
+{% load humanize %}
 
 <script src="{% static 'js/scripts/scripts_producto_modal.js' %}" type="text/javascript"></script>
 <div id="form-container">
- <form role="form" class="form " method="POST" action="" id="form-alta" enctype="multipart/form-data">
+ <form role="form" class="form abm" method="POST" action="" id="form-alta" enctype="multipart/form-data">
 		{% csrf_token %}
 		{{ form.media }}
 		<div class="col-xs-12">
@@ -65,5 +66,21 @@
 				        {% for hidden in form.hidden_fields %} {{ hidden }} {% endfor %}	
 				</div>
 	</div>
- </form>
+<div class="modal-buttons">
+    <div class="row">
+        <div class="col-xs-6">
+         <button data-dismiss="modal" class="btn btn-sm pull-left btn btn-danger" type="button">
+              <i class="fa fa-times"></i> {% trans 'Cancelar' %}
+         </button>
+        </div>
+        <div class="col-xs-6">
+         <button  class="btn pull-right btn-sm btn-primary" id="Aceptar" type="submit">
+              <i class="fa fa-check"></i>{% trans 'Aceptar' %}</button>
+        </div>
+      
+      </div>
+    
+</div>
+
+</form>	
 </div>

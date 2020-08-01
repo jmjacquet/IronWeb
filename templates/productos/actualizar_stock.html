@@ -3,10 +3,12 @@
 {% load humanize %}
 {% block extra_css %}
   <link rel="stylesheet" href="{% static 'css/comprobantes.css'%}?{% now "Ymd"%}" type="text/css" >  
+    <link rel="stylesheet" href="{% static 'modal/css/modal.css' %}" />
 {% endblock %}
 
 <div style="width:350px" class="modal-dialog modal-modal">
         <div class="modal-content">
+          <div class="col-xs-12"> 
                <div class="row">
                  <div data-dismiss="modal" class="close-modal">
                           <button type="button" class="close" data-dismiss="modal" aria-hidden="true">x</button>        
@@ -24,17 +26,21 @@
                           </div>
                       </div>
                 </div>
-                <div class="modal-buttons">
-                      <div class="row">
-                          <div class="col-xs-12"> 
-                            <button data-dismiss="modal" class="btn pull-left btn red-flamingo" type="button">
-                                <i class="fa fa-times"></i>Cancelar</button>
-                                <button id="AceptarSeleccion" type="button" data-dismiss="modal" class="btn pull-right blue-steel"><i class="fa fa-check"></i>Aceptar</button>
-                          </div>
-                      </div>
-                 </div>
                 </form>
+                <div class="modal-buttons">                      
+                       <div class="row">
+                          <div class="col-xs-12"> 
+                            <div class=" col-sm-6"><button data-dismiss="modal" class="btn pull-left btn-sm red-flamingo" type="button">
+                                <i class="fa fa-times"></i>Cancelar</button></div>
+                            <div class=" col-sm-6">
+                                <button id="AceptarSeleccion" type="button" data-dismiss="modal" class="btn pull-right btn-sm blue-steel"><i class="fa fa-check"></i>Aceptar</button>
+                            </div>
+                          </div>                      
+                       </div>
+                 </div>
+                
             </div>  
+          </div>
         </div>
     
     <script src="{% static 'js/scripts/scripts_actualizar_stock.js' %}" type="text/javascript"></script>   

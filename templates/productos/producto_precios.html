@@ -64,7 +64,7 @@
                                             <i class="icon-settings"> </i> <span class="caret"></span>
                                           </button>
                                           <ul class="dropdown-menu dropdown-menu-default">
-                                            <li><a href="{% url 'producto_ver' id=pp.pk %}" class="modal-detail" data-modal-head="DETALLE PRODUCTO {{pp.codigo}}" data-modal-callback="reload">
+                                            <li><a href="{% url 'producto_ver' id=pp.producto.pk %}" class="modal-detail" data-modal-head="DETALLE PRODUCTO {{pp.codigo}}" data-modal-callback="reload">
                                             <i class=" icon-screen-desktop"></i> Detalle</a></li>
                                              <li><a href="{% url 'prod_precios_editar' id=pp.pk %}" class="modal-update" data-modal-callback="reload" data-modal-head="EDITAR PRECIO" data-modal-target="#object-{{ pp.pk }}" title="Editar"><i class="icon-note"></i> Editar</a></li>
                                           </ul>                                      

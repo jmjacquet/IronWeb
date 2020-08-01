@@ -11,48 +11,6 @@ $("input[type=number]").click(function(){
             this.select()
           });
 
-$('.formStock').formset({
-          addText: 'Agregar Ubicación',
-          addCssClass: 'add-row btn blue-hoki ',       
-          deleteCssClass: 'delete-row1',     
-          deleteText: 'Eliminar',
-          prefix: 'formStock',
-          formCssClass: 'dynamic-form',
-          keepFieldValues:'',
-          added: function (row) {
-            var i = $(row).index();
-            $(row).attr("id", "formStock-"+i);
-            $("[name='formStock-"+i+"-stock']").val(1);           
-           },
-          removed: function (row) {
-            var i = $(row).index();
-            $(row).attr("id", "formStock-"+i);             
-          }
-      });
-
-$('.formPrecios').formset({
-          addText: 'Agregar Precio',
-          addCssClass: 'add-row btn blue-hoki ',       
-          deleteCssClass: 'delete-row2',     
-          deleteText: 'Eliminar',
-          prefix: 'formPrecios',
-          formCssClass: 'dynamic-form2',
-          keepFieldValues:'',
-          added: function (row) {
-            var i = $(row).index();
-            $(row).attr("id", "formPrecios-"+i);            
-            $("[name='formPrecios-"+i+"-precio_costo']").val(0);           
-            $("[name='formPrecios-"+i+"-precio_cimp']").val(0);           
-            $("[name='formPrecios-"+i+"-precio_venta']").val(0);           
-            $("[name='formPrecios-"+i+"-coef_ganancia']").val(0);           
-            recalcular();
-          },
-          removed: function (row) {
-            var i = $(row).index();
-            $(row).attr("id", "formPrecios-"+i);             
-          }
-      });
-
 
     $.datepicker.regional['es'] = {
      closeText: 'Cerrar',
@@ -78,34 +36,29 @@ $('.formPrecios').formset({
     });
 
 
-    $( "#Guardar" ).click(function() {        
-       $("#form-alta:disabled").removeAttr('disabled');      
-        $("#Guardar").prop("disabled", true);    
-        $( "#form-alta" ).submit();         
-      });
-
+ 
 function recalcular(){
         $("#id_precio_costo").change(function(){
-             var $precio_costo = parseFloat($("#id_precio_costo").val())|| 0;  
-             var $coef_ganancia = parseFloat($("#id_coef_ganancia").val())|| 0;
-             var coef = parseFloat($("#id_coef_iva").val())|| 0;  
+             var $precio_costo = parseFloat($("#id_precio_costo").val())|| 0.00;  
+             var $coef_ganancia = parseFloat($("#id_coef_ganancia").val())|| 0.00;
+             var coef = parseFloat($("#id_coef_iva").val())|| 0.00;  
              var $precio_cimp = $precio_costo * (coef+1);  
              var $precio_venta = $precio_cimp * ($coef_ganancia+1);   
              $("#id_precio_cimp").val($precio_cimp.toFixed(2));  
              $("#id_precio_venta").val($precio_venta.toFixed(2));
            });
         $("#id_precio_cimp").change(function(){            
-            var $precio_costo = parseFloat($("#id_precio_costo").val())|| 0;  
-            var $coef_ganancia = parseFloat($("#id_coef_ganancia").val())|| 0;
-            var coef = parseFloat($("#id_coef_iva").val())|| 0;  
+            var $precio_costo = parseFloat($("#id_precio_costo").val())|| 0.00;  
+            var $coef_ganancia = parseFloat($("#id_coef_ganancia").val())|| 0.00;
+            var coef = parseFloat($("#id_coef_iva").val())|| 0.000;  
             var $precio_cimp = $precio_costo * (coef+1);  
             var $precio_venta = $precio_cimp * ($coef_ganancia+1); 
             $("#id_precio_venta").val($precio_venta.toFixed(2));
            });
         $("#id_coef_ganancia").change(function(){
-            var $precio_costo = parseFloat($("#id_precio_costo").val())|| 0;  
-            var $coef_ganancia = parseFloat($("#id_coef_ganancia").val())|| 0;
-            var coef = parseFloat($("#id_coef_iva").val())|| 0;  
+            var $precio_costo = parseFloat($("#id_precio_costo").val())|| 0.00;  
+            var $coef_ganancia = parseFloat($("#id_coef_ganancia").val())|| 0.00;
+            var coef = parseFloat($("#id_coef_iva").val())|| 0.00;  
             var $precio_cimp = $precio_costo * (coef+1);  
             var $precio_venta = $precio_cimp * ($coef_ganancia+1); 
             $("#id_precio_venta").val($precio_venta.toFixed(2));

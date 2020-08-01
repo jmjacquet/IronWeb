@@ -2,7 +2,7 @@ $(document).ready(function() {
 $("input[type=number]").click(function(){
             this.select()
           });
-$.fm({        
+$.modal({        
         custom_callbacks: {
             "recargarC": function(data, options) {
                recargarClientes();

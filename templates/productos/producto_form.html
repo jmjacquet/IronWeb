@@ -93,8 +93,10 @@
 										                              <th style="width: 5%;" title="" >Gan.&nbsp;
 										                              <i id="tit_precio" class="fa fa-question-circle recargarDatos" data-toggle="tooltip" data-placement="top" title="Coeficiente de Ganancia (1=100%) [0 a 10]"/></th>						
 										                              <th style="width: 15%;" title="Precio de Venta (Costo c/Imp * Coef.Gan.)">P.Venta</th>
-										                              <th style="width: 10%;" title="Coeficiente de Ganancia (1=100%)" >Coef.ITC</th>						
-										                              <th style="width: 10%;" title="Precio de Venta (Costo c/Imp * Coef.Gan.)">Coef.TH</th>
+										                               {% if empresa.usa_impuestos %}
+										                              <th style="width: 10%;" title="Coeficiente ITC" >Coef.ITC</th>						
+										                              <th style="width: 10%;" title="Coeficiente Tasa Hídrica">Coef.TH</th>
+										                              {% endif %}
 										                              
 										                              <th class="remove-sorting"></th>
 										                          </tr>
@@ -110,8 +112,10 @@
 												                      	<td>{% bootstrap_field l.precio_cimp show_label=False%}</td>
 												                      	<td>{% bootstrap_field l.coef_ganancia show_label=False%}</td>	
 												                      	<td>{% bootstrap_field l.precio_venta show_label=False%}</td>
+												                      	 {% if empresa.usa_impuestos %}
 												                      	<td>{% bootstrap_field l.precio_itc show_label=False%}</td>	
 												                      	<td>{% bootstrap_field l.precio_tasa show_label=False%}</td>
+												                      	{% endif %}
 												                      	
 												                      	<td>{{l.DELETE}}
 												                      	 <a class="btn btn-danger delete-row2" title="Eliminar">

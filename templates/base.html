@@ -99,7 +99,7 @@
                           toastr.{{ message.tags }}('{{ message }}');                                        
               {% endfor %}
             {% endif %}    
-
+           $('[data-toggle=tooltip]').tooltip();   
         });
       </script> 
       {% block extra_js_final %}
