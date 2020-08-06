@@ -1287,9 +1287,7 @@ class MovInternosEditView(VariablesMixin,UpdateView):
     @method_decorator(login_required)
     def dispatch(self, *args, **kwargs):            
         if not tiene_permiso(self.request,'cpb_mov_abm'):
-            return redirect(reverse('principal'))
-        if not puedeEditarCPB(self.get_object().pk):
-            return redirect(reverse('movimientos_listado'))
+            return redirect(reverse('principal'))        
         return super(MovInternosEditView, self).dispatch(*args, **kwargs)
     
     def get_initial(self):    

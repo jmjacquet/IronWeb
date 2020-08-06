@@ -34,32 +34,82 @@
                             <a href="#tab_15_1" data-toggle="tab" aria-expanded="true">
                             INGRESOS</a>
                         </li>
-                        <li>
-                            <a href="#tab_15_2" data-toggle="tab">
+                        <li >
+                            <a href="#tab_15_2" data-toggle="tab" aria-expanded="true">
                             EGRESOS</a>
                         </li>                        
                     </ul>
                     <div class="tab-content">
                         <div class="tab-pane active" id="tab_15_1">
-                            <div class="col-xs-12">
-                                 <div class="row cerca">
-                                    <div class="col-sm-9">
-                                        <div class="portlet box green-jungle">
+                            <div class="col-sm-6 cerca">                                
+                                <div class="portlet box green-jungle">
                                             <div class="portlet-title">
-                                                <div class="caption"><i class="fa fa-money"></i>Listado Ingresos</div>
+                                                <div class="caption"><i class="fa fa-money"></i>Detalle Ingresos</div>
                                                 <div class="actions"><span class="monto_total"> $ {{ingresos_total.ingresos_total|default_if_none:0|floatformat:2}}</span></div>
                                             </div>                                                                                         
                                         </div> 
+                                <div class="row cerca">                 
+                                    <div class="col-sm-12 cerca">                                        
+                                        <table id="dataTables-resumenCtaIngresos" class="table table-striped compact table-hover table-no-bordered tabla_nueva nowrap">         
+                                            <thead>
+                                                <tr>
+                                                    <th>Cuenta Ingresos</th>                        
+                                                    <th class="text-right">Importe</th>                                
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+                                               {% for icta in ingresos_cta_resumen %}
+                                                <tr>                                
+                                                 <td title="{{icta.pk|safe}}">{{ icta.cta_ingreso__codigo|default_if_none:'' }} - {{ icta.cta_ingreso__nombre|default_if_none:'' }}</td>
+                                                 <td class="importe_total">$ {{icta.saldo|default_if_none:0|floatformat:2}}</td>
+                                                </tr>
+                                               {% endfor %}
+                                            </tbody>
+                                            <tfoot>
+                                               <tr>
+                                                <th></th>
+                                                <th class="importe_total"></th>                                                     
+                                               </tr>
+                                            </tfoot>
+                                        </table> 
+                                    </div>
+                                    <div class="col-sm-12 cerca">   
+                                        <table id="dataTables-resumenIngresos" class="table table-striped compact table-hover table-no-bordered tabla_nueva nowrap">         
+                                            <thead>
+                                                <tr>
+                                                    <th>Formas de Cobro</th>                        
+                                                    <th class="text-right">Importe</th>                                
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+                                               {% for ingr in ingresos_resumen %}
+                                                <tr>                                
+                                                 <td title="{{ingr.pk|safe}}">{{ ingr.tipo_forma_pago__codigo|default_if_none:'' }} - {{ ingr.tipo_forma_pago__nombre|default_if_none:'' }}</td>
+                                                 <td class="importe_total">$ {{ingr.saldo|default_if_none:0|floatformat:2}}</td>
+                                                </tr>
+                                               {% endfor %}
+                                            </tbody>
+                                            <tfoot>
+                                               <tr>
+                                                <th></th>
+                                                <th class="importe_total"></th>                                                     
+                                               </tr>
+                                            </tfoot>
+                                        </table> 
+                                    </div>
+                                </div>
+                                <div class="row cerca">
+                                    <div class="col-sm-12 cerca">                                        
                                         <table id="dataTables-ingresos" class="table table-striped compact table-hover table-no-bordered tabla_nueva nowrap">         
                                             <thead>
                                                 <tr>
-                                                  <th>Comprobante</th>                                                  
-                                                  <th>Cuenta</th>
-                                                  <th>Forma de Cobro</th>                                                  
-                                                  <th style="width: 10%;">MDCP Fecha</th>
-                                                  <th style="width: 20%;">MDCP Banco</th>
-                                                  <th style="width: 10%;">MDCP Cheque</th>
-                                                  <th class="text-right" style="width: 20%;">Importe</th>                                  
+                                                  <th  data-priority="1">Comprobante</th>                                                  
+                                                  <th  data-priority="2">Cuenta</th>
+                                                  <th  data-priority="3">Forma de Cobro</th>                                                  
+                                                  <th style="width: 10%;"  data-priority="5">MDCP Fecha</th>
+                                                  <th style="width: 20%;"  data-priority="6">MDCP Banco</th>
+                                                  <th style="width: 10%;"  data-priority="7">MDCP Cheque</th>
+                                                  <th  data-priority="4" class="text-right" style="width: 20%;">Importe</th>                                  
                                                 </tr>
                                             </thead>
                                             <tbody>
@@ -87,14 +137,20 @@
                                                </tr>
                                             </tfoot>
                                         </table> 
-                                    </div>                    
-                                    <div class="col-sm-3">
-                                        <div class="portlet box green-jungle">
+                                    </div>   
+                                </div>                   
+                            </div>
+                        </div>
+                        <div class="tab-pane" id="tab_15_2">
+                            <div class="col-xs-12">
+                               <div class="portlet box red-sunglo">
                                             <div class="portlet-title">
-                                                <div class="caption">Totales</div>
-                                                <div class="actions"><span class="monto_total"> $ {{ingresos_total.ingresos_total|default_if_none:0|floatformat:2}}</span></div>
+                                                <div class="caption"><i class="fa fa-money"></i>Detalle Egresos</div>
+                                                <div class="actions "> <span class="monto_total">$ {{egresos_total.egresos_total|default_if_none:0|floatformat:2}}</span></div>
                                             </div>                                                                                         
                                         </div> 
+                                <div class="row cerca">
+                                    <div class="col-sm-6 cerca">
                                         <table id="dataTables-resumenCtaIngresos" class="table table-striped compact table-hover table-no-bordered tabla_nueva nowrap">         
                                             <thead>
                                                 <tr>
@@ -103,32 +159,10 @@
                                                 </tr>
                                             </thead>
                                             <tbody>
-                                               {% for icta in ingresos_cta_resumen %}
+                                               {% for ecta in egresos_cta_resumen %}
                                                 <tr>                                
-                                                 <td title="{{icta.pk|safe}}">{{ icta.cta_ingreso__codigo|default_if_none:'' }} - {{ icta.cta_ingreso__nombre|default_if_none:'' }}</td>
-                                                 <td class="importe_total">$ {{icta.saldo|default_if_none:0|floatformat:2}}</td>
-                                                </tr>
-                                               {% endfor %}
-                                            </tbody>
-                                            <tfoot>
-                                               <tr>
-                                                <th></th>
-                                                <th class="importe_total"></th>                                                     
-                                               </tr>
-                                            </tfoot>
-                                        </table> 
-                                        <table id="dataTables-resumenIngresos" class="table table-striped compact table-hover table-no-bordered tabla_nueva nowrap">         
-                                            <thead>
-                                                <tr>
-                                                    <th>Formas de Cobro</th>                        
-                                                    <th class="text-right">Importe</th>                                
-                                                </tr>
-                                            </thead>
-                                            <tbody>
-                                               {% for ingr in ingresos_resumen %}
-                                                <tr>                                
-                                                 <td title="{{ingr.pk|safe}}">{{ ingr.tipo_forma_pago__codigo|default_if_none:'' }} - {{ ingr.tipo_forma_pago__nombre|default_if_none:'' }}</td>
-                                                 <td class="importe_total">$ {{ingr.saldo|default_if_none:0|floatformat:2}}</td>
+                                                 <td title="{{ecta.pk|safe}}">{{ ecta.cta_egreso__codigo|default_if_none:'' }} - {{ ecta.cta_egreso__nombre|default_if_none:'' }}</td>
+                                                 <td class="importe_total">$ {{ecta.saldo|default_if_none:0|floatformat:2}}</td>
                                                 </tr>
                                                {% endfor %}
                                             </tbody>
@@ -140,29 +174,43 @@
                                             </tfoot>
                                         </table> 
                                     </div>
-                                </div>                   
-                            </div>
-                        </div>
-                        <div class="tab-pane" id="tab_15_2">
-                            <div class="col-xs-12">
-                                 <div class="row cerca">
-                                    <div class="col-sm-9">
-                                        <div class="portlet box red-sunglo">
-                                            <div class="portlet-title">
-                                                <div class="caption"><i class="fa fa-money"></i>Listado Egresos</div>
-                                                <div class="actions "> <span class="monto_total">$ {{egresos_total.egresos_total|default_if_none:0|floatformat:2}}</span></div>
-                                            </div>                                                                                         
-                                        </div> 
-                                        <table id="dataTables-egresos" class="table table-striped compact table-hover table-no-bordered tabla_nueva nowrap">         
+                                    <div class="col-sm-6 cerca">
+                                        <table id="dataTables-resumenEgresos" class="table table-striped compact table-hover table-no-bordered tabla_nueva nowrap">         
                                             <thead>
                                                 <tr>
-                                                  <th>Comprobante</th>                                                  
-                                                  <th>Cuenta</th>  
-                                                  <th>Forma de Pago</th>            
-                                                  <th style="width: 10%;">MDCP Fecha</th>
-                                                  <th style="width: 20%;">MDCP Banco</th>
-                                                  <th style="width: 10%;">MDCP Cheque</th>
-                                                  <th class="text-right" style="width: 20%;">Importe</th>                                  
+                                                    <th>Formas de Cobro</th>                        
+                                                    <th class="text-right">Importe</th>                                
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+                                               {% for eres in egresos_resumen %}
+                                                <tr>                                
+                                                 <td title="{{eres.pk|safe}}">{{ eres.tipo_forma_pago__codigo|default_if_none:'' }} - {{ eres.tipo_forma_pago__nombre|default_if_none:'' }}</td>
+                                                 <td class="importe_total">$ {{eres.saldo|default_if_none:0|floatformat:2}}</td>
+                                                </tr>
+                                               {% endfor %}
+                                            </tbody>
+                                            <tfoot>
+                                               <tr>
+                                                <th></th>
+                                                <th class="importe_total"></th>                                                     
+                                               </tr>
+                                            </tfoot>
+                                        </table> 
+                                    </div>
+                                </div>           
+                                <div class="row cerca">
+                                    <div class="col-sm-12 cerca">                                        
+                                        <table id="dataTables-egresos" class="table table-striped table-hover table-no-bordered tabla_nueva nowrap">         
+                                            <thead>
+                                                <tr>
+                                                  <th  data-priority="1">Comprobante</th>                                                  
+                                                  <th  data-priority="2">Cuenta</th>
+                                                  <th  data-priority="3">Forma de Pago</th>                                                  
+                                                  <th style="width: 10%;"  data-priority="5">MDCP Fecha</th>
+                                                  <th style="width: 20%;"  data-priority="6">MDCP Banco</th>
+                                                  <th style="width: 10%;"  data-priority="7">MDCP Cheque</th>
+                                                  <th  data-priority="4" class="text-right" style="width: 20%;">Importe</th>                                
                                                 </tr>
                                             </thead>
                                             <tbody>
@@ -190,63 +238,12 @@
                                                </tr>
                                             </tfoot>
                                         </table> 
-                                    </div>                    
-                                    <div class="col-sm-3">
-                                        <div class="portlet box red-sunglo">
-                                            <div class="portlet-title">
-                                                <div class="caption">Totales</div>
-                                                <div class="actions"><span class="monto_total"> $ {{egresos_total.egresos_total|default_if_none:0|floatformat:2}}</span></div>
-                                            </div>                                                                                         
-                                        </div> 
-                                        <table id="dataTables-resumenCtaIngresos" class="table table-striped compact table-hover table-no-bordered tabla_nueva nowrap">         
-                                            <thead>
-                                                <tr>
-                                                    <th>Cuenta Ingresos</th>                        
-                                                    <th class="text-right">Importe</th>                                
-                                                </tr>
-                                            </thead>
-                                            <tbody>
-                                               {% for ecta in egresos_cta_resumen %}
-                                                <tr>                                
-                                                 <td title="{{ecta.pk|safe}}">{{ ecta.cta_egreso__codigo|default_if_none:'' }} - {{ ecta.cta_egreso__nombre|default_if_none:'' }}</td>
-                                                 <td class="importe_total">$ {{ecta.saldo|default_if_none:0|floatformat:2}}</td>
-                                                </tr>
-                                               {% endfor %}
-                                            </tbody>
-                                            <tfoot>
-                                               <tr>
-                                                <th></th>
-                                                <th class="importe_total"></th>                                                     
-                                               </tr>
-                                            </tfoot>
-                                        </table> 
-                                        <table id="dataTables-resumenEgresos" class="table table-striped compact table-hover table-no-bordered tabla_nueva nowrap">         
-                                            <thead>
-                                                <tr>
-                                                    <th>Formas de Cobro</th>                        
-                                                    <th class="text-right">Importe</th>                                
-                                                </tr>
-                                            </thead>
-                                            <tbody>
-                                               {% for eres in egresos_resumen %}
-                                                <tr>                                
-                                                 <td title="{{eres.pk|safe}}">{{ eres.tipo_forma_pago__codigo|default_if_none:'' }} - {{ eres.tipo_forma_pago__nombre|default_if_none:'' }}</td>
-                                                 <td class="importe_total">$ {{eres.saldo|default_if_none:0|floatformat:2}}</td>
-                                                </tr>
-                                               {% endfor %}
-                                            </tbody>
-                                            <tfoot>
-                                               <tr>
-                                                <th></th>
-                                                <th class="importe_total"></th>                                                     
-                                               </tr>
-                                            </tfoot>
-                                        </table> 
                                     </div>
-                                </div>                   
+                                </div>                    
+                                        
                             </div>
                         </div>
-                    </div>
+                   
         </div>
 
 
@@ -279,81 +276,82 @@ $.fn.datepicker.dates['es'] = {
 moment.locale('es');
 $.fn.dataTable.moment('DD/MM/YYYY'); 
 
-var tabla = $('#dataTables-resumenIngresos').DataTable({
-            "language": {
-                "decimal": ",",
-                "thousands": ".",                
-                "sProcessing": "Procesando...",
-                "sLengthMenu": "Mostrar _MENU_ registros",
-                "sZeroRecords": "No se encontraron resultados",
-                "sEmptyTable": "No hay registros en esta tabla",
-                "sInfo": "Mostrando registros del _START_ al _END_ de un total de _TOTAL_ registros",
-                "sInfoEmpty": "Mostrando registros del 0 al 0 de un total de 0 registros",
-                "sInfoFiltered": "(filtrado de un total de _MAX_ registros)",
-                "sInfoPostFix": "",
-                "sSearch": "Buscar:",
-                "sUrl": "",
-                "sInfoThousands": ".",
-                "sLoadingRecords": "Cargando...",
-                "oPaginate": {
-                    "sFirst": "Primero",
-                    "sLast": "Último",
-                    "sNext": "Siguiente",
-                    "sPrevious": "Anterior"
-                },
-                "oAria": {
-                    "sSortAscending": ": Activar para ordenar la columna de manera ascendente",
-                    "sSortDescending": ": Activar para ordenar la columna de manera descendente"
-                },
+// var tabla = $('#dataTables-resumenIngresos').DataTable({
+//             "language": {
+//                 "decimal": ",",
+//                 "thousands": ".",                
+//                 "sProcessing": "Procesando...",
+//                 "sLengthMenu": "Mostrar _MENU_ registros",
+//                 "sZeroRecords": "No se encontraron resultados",
+//                 "sEmptyTable": "No hay registros en esta tabla",
+//                 "sInfo": "Mostrando registros del _START_ al _END_ de un total de _TOTAL_ registros",
+//                 "sInfoEmpty": "Mostrando registros del 0 al 0 de un total de 0 registros",
+//                 "sInfoFiltered": "(filtrado de un total de _MAX_ registros)",
+//                 "sInfoPostFix": "",
+//                 "sSearch": "Buscar:",
+//                 "sUrl": "",
+//                 "sInfoThousands": ".",
+//                 "sLoadingRecords": "Cargando...",
+//                 "oPaginate": {
+//                     "sFirst": "Primero",
+//                     "sLast": "Último",
+//                     "sNext": "Siguiente",
+//                     "sPrevious": "Anterior"
+//                 },
+//                 "oAria": {
+//                     "sSortAscending": ": Activar para ordenar la columna de manera ascendente",
+//                     "sSortDescending": ": Activar para ordenar la columna de manera descendente"
+//                 },
                       
-            },                      
-            "columnDefs": [ {
-                  "targets"  : 'no-sort',
-                  "orderable": false,
-                }],                    
-           "paging":   false,
-           "autoWidth": true,
-           "order": [],
-           "colReorder": false,
-           "searching": false,
-            fixedHeader: {
-              header: false,
-              footer: false
-              },
-            responsive: false,
+//             },                      
+//             "columnDefs": [ {
+//                   "targets"  : 'no-sort',
+//                   "orderable": false,
+//                 }],                    
+//            "paging":   false,
+//            "autoWidth": false,
+//            "order": [],
+//            "colReorder": false,
+//            "searching": false,
+//            dom: 'tl',
+//             fixedHeader: {
+//               header: false,
+//               footer: false
+//               },
+//             responsive: false,
            
-            footerCallback: function ( row, data, start, end, display ) {
-            var api = this.api(), data;
-            var floatVal = function (i) {
-                if (typeof i === "number") {
-                    return i;
-                } else if (typeof i === "string") {
-                    i = i.replace(/\$/g, "");
-                    i = i.replace(/\,/g ,"");                    
-                    i = i.replace(/\./g, "");
-                    var result = parseFloat(i)/100;
-                    // console.log(result);
-                    if (isNaN(result)) {
-                        try {
-                            var result = $jq(i).text();
-                            result = parseFloat(result);
-                            if (isNaN(result)) { result = 0 };
-                            return result * 1;
-                        } catch (error) {
-                            return 0;
-                        }
-                    } else {
-                        return result * 1;
-                    }
-                } else {
-                    alert("Unhandled type for totals [" + (typeof i) + "]");
-                    return 0
-                }
-            };            
-            pageTotal = api.column(1, { page: 'current'} ).data().reduce( function (a, b) {return floatVal(a) + floatVal(b);}, 0 );
-            $( api.column(1).footer() ).html('$'+pageTotal.toLocaleString(undefined,{minimumFractionDigits:2}));                       
-        }
-        });
+//             footerCallback: function ( row, data, start, end, display ) {
+//             var api = this.api(), data;
+//             var floatVal = function (i) {
+//                 if (typeof i === "number") {
+//                     return i;
+//                 } else if (typeof i === "string") {
+//                     i = i.replace(/\$/g, "");
+//                     i = i.replace(/\,/g ,"");                    
+//                     i = i.replace(/\./g, "");
+//                     var result = parseFloat(i)/100;
+//                     // console.log(result);
+//                     if (isNaN(result)) {
+//                         try {
+//                             var result = $jq(i).text();
+//                             result = parseFloat(result);
+//                             if (isNaN(result)) { result = 0 };
+//                             return result * 1;
+//                         } catch (error) {
+//                             return 0;
+//                         }
+//                     } else {
+//                         return result * 1;
+//                     }
+//                 } else {
+//                     alert("Unhandled type for totals [" + (typeof i) + "]");
+//                     return 0
+//                 }
+//             };            
+//             pageTotal = api.column(1, { page: 'current'} ).data().reduce( function (a, b) {return floatVal(a) + floatVal(b);}, 0 );
+//             $( api.column(1).footer() ).html('$'+pageTotal.toLocaleString(undefined,{minimumFractionDigits:2}));                       
+//         }
+//         });
 
 var tabla2 = $('#dataTables-ingresos').DataTable({
             "language": {
@@ -397,7 +395,7 @@ var tabla2 = $('#dataTables-ingresos').DataTable({
               footer: false
               },
             responsive: true,
-            dom: 'Bfrtlip',
+            dom: 'Bfrtli',
             buttons: [
                 {
                     extend:    'colvis',
@@ -437,6 +435,11 @@ var tabla2 = $('#dataTables-ingresos').DataTable({
                     className: 'btnToolbar',                    
                 },
             ],
+            initComplete: function () {
+               
+                $("#dataTables-ingresos").show();
+                  this.fnAdjustColumnSizing();                
+            },
             footerCallback: function ( row, data, start, end, display ) {
             var api = this.api(), data;
             var floatVal = function (i) {
@@ -471,81 +474,81 @@ var tabla2 = $('#dataTables-ingresos').DataTable({
         });
 
 
-var tabla3 = $('#dataTables-resumenEgresos').DataTable({
-            "language": {
-                "decimal": ",",
-                "thousands": ".",                
-                "sProcessing": "Procesando...",
-                "sLengthMenu": "Mostrar _MENU_ registros",
-                "sZeroRecords": "No se encontraron resultados",
-                "sEmptyTable": "No hay registros en esta tabla",
-                "sInfo": "Mostrando registros del _START_ al _END_ de un total de _TOTAL_ registros",
-                "sInfoEmpty": "Mostrando registros del 0 al 0 de un total de 0 registros",
-                "sInfoFiltered": "(filtrado de un total de _MAX_ registros)",
-                "sInfoPostFix": "",
-                "sSearch": "Buscar:",
-                "sUrl": "",
-                "sInfoThousands": ".",
-                "sLoadingRecords": "Cargando...",
-                "oPaginate": {
-                    "sFirst": "Primero",
-                    "sLast": "Último",
-                    "sNext": "Siguiente",
-                    "sPrevious": "Anterior"
-                },
-                "oAria": {
-                    "sSortAscending": ": Activar para ordenar la columna de manera ascendente",
-                    "sSortDescending": ": Activar para ordenar la columna de manera descendente"
-                },
+// var tabla3 = $('#dataTables-resumenEgresos').DataTable({
+//             "language": {
+//                 "decimal": ",",
+//                 "thousands": ".",                
+//                 "sProcessing": "Procesando...",
+//                 "sLengthMenu": "Mostrar _MENU_ registros",
+//                 "sZeroRecords": "No se encontraron resultados",
+//                 "sEmptyTable": "No hay registros en esta tabla",
+//                 "sInfo": "Mostrando registros del _START_ al _END_ de un total de _TOTAL_ registros",
+//                 "sInfoEmpty": "Mostrando registros del 0 al 0 de un total de 0 registros",
+//                 "sInfoFiltered": "(filtrado de un total de _MAX_ registros)",
+//                 "sInfoPostFix": "",
+//                 "sSearch": "Buscar:",
+//                 "sUrl": "",
+//                 "sInfoThousands": ".",
+//                 "sLoadingRecords": "Cargando...",
+//                 "oPaginate": {
+//                     "sFirst": "Primero",
+//                     "sLast": "Último",
+//                     "sNext": "Siguiente",
+//                     "sPrevious": "Anterior"
+//                 },
+//                 "oAria": {
+//                     "sSortAscending": ": Activar para ordenar la columna de manera ascendente",
+//                     "sSortDescending": ": Activar para ordenar la columna de manera descendente"
+//                 },
                       
-            },                      
-            "columnDefs": [ {
-                  "targets"  : 'no-sort',
-                  "orderable": false,
-                }],                    
-           "paging":   false,
-           "autoWidth": true,
-           "order": [],
-           "colReorder": false,
-           "searching": false,
-            fixedHeader: {
-              header: false,
-              footer: false
-              },
-            responsive: false,
-           
-            footerCallback: function ( row, data, start, end, display ) {
-            var api = this.api(), data;
-            var floatVal = function (i) {
-                if (typeof i === "number") {
-                    return i;
-                } else if (typeof i === "string") {
-                    i = i.replace(/\$/g, "");
-                    i = i.replace(/\,/g ,"");                    
-                    i = i.replace(/\./g, "");
-                    var result = parseFloat(i)/100;
-                    // console.log(result);
-                    if (isNaN(result)) {
-                        try {
-                            var result = $jq(i).text();
-                            result = parseFloat(result);
-                            if (isNaN(result)) { result = 0 };
-                            return result * 1;
-                        } catch (error) {
-                            return 0;
-                        }
-                    } else {
-                        return result * 1;
-                    }
-                } else {
-                    alert("Unhandled type for totals [" + (typeof i) + "]");
-                    return 0
-                }
-            };            
-            pageTotal = api.column(1, { page: 'current'} ).data().reduce( function (a, b) {return floatVal(a) + floatVal(b);}, 0 );
-            $( api.column(1).footer() ).html('$'+pageTotal.toLocaleString(undefined,{minimumFractionDigits:2}));                       
-        }
-        });
+//             },                      
+//             "columnDefs": [ {
+//                   "targets"  : 'no-sort',
+//                   "orderable": false,
+//                 }],                    
+//            "paging":   false,
+//            "autoWidth": true,
+//            "order": [],
+//            "colReorder": false,
+//            "searching": false,
+//             fixedHeader: {
+//               header: false,
+//               footer: false
+//               },
+//             responsive: false,
+//             dom: 'tl',
+//             footerCallback: function ( row, data, start, end, display ) {
+//             var api = this.api(), data;
+//             var floatVal = function (i) {
+//                 if (typeof i === "number") {
+//                     return i;
+//                 } else if (typeof i === "string") {
+//                     i = i.replace(/\$/g, "");
+//                     i = i.replace(/\,/g ,"");                    
+//                     i = i.replace(/\./g, "");
+//                     var result = parseFloat(i)/100;
+//                     // console.log(result);
+//                     if (isNaN(result)) {
+//                         try {
+//                             var result = $jq(i).text();
+//                             result = parseFloat(result);
+//                             if (isNaN(result)) { result = 0 };
+//                             return result * 1;
+//                         } catch (error) {
+//                             return 0;
+//                         }
+//                     } else {
+//                         return result * 1;
+//                     }
+//                 } else {
+//                     alert("Unhandled type for totals [" + (typeof i) + "]");
+//                     return 0
+//                 }
+//             };            
+//             pageTotal = api.column(1, { page: 'current'} ).data().reduce( function (a, b) {return floatVal(a) + floatVal(b);}, 0 );
+//             $( api.column(1).footer() ).html('$'+pageTotal.toLocaleString(undefined,{minimumFractionDigits:2}));                       
+//         }
+//         });
 
 var tabla4 = $('#dataTables-egresos').DataTable({
             "language": {
@@ -588,8 +591,8 @@ var tabla4 = $('#dataTables-egresos').DataTable({
               header: false,
               footer: false
               },
-            responsive: false,
-            dom: 'Bfrtlip',
+            responsive: true,
+            dom: 'Bfrtli',
             buttons: [
                 {
                     extend:    'colvis',
@@ -629,6 +632,11 @@ var tabla4 = $('#dataTables-egresos').DataTable({
                     className: 'btnToolbar',                    
                 },
             ],
+            initComplete: function () {
+               
+                $("#dataTables-egresos").show();
+                  this.fnAdjustColumnSizing();                
+            },
             footerCallback: function ( row, data, start, end, display ) {
             var api = this.api(), data;
             var floatVal = function (i) {

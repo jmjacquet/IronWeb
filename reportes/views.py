@@ -807,7 +807,7 @@ class saldos_cuentas(VariablesMixin,ListView):
             
             for cta in ctas:
                 
-                cpbs = cpb_comprobante_fp.objects.filter(cpb_comprobante__empresa=empresa,cpb_comprobante__estado__in=[1,2],cpb_comprobante__fecha_cpb__lte=fhasta).select_related('cpb_comprobante','cpb_comprobante__cpb_tipo','cta_egreso','cta_ingreso','tipo_forma_pago').order_by('cpb_comprobante__fecha_cpb','id')                
+                cpbs = cpb_comprobante_fp.objects.filter(cpb_comprobante__empresa=empresa,cpb_comprobante__estado__in=[1,2]).select_related('cpb_comprobante','cpb_comprobante__cpb_tipo','cta_egreso','cta_ingreso','tipo_forma_pago').order_by('cpb_comprobante__fecha_cpb','id')                
                 if pto_vta:
                     cpbs = cpbs.filter(cpb_comprobante__pto_vta=pto_vta)
                 
@@ -827,8 +827,8 @@ class saldos_cuentas(VariablesMixin,ListView):
                
                 
                 # cpbs = cpbs.filter(cpb_comprobante__fecha_cpb__gte=fdesde)
-                cpbs_anteriores = cpbs.filter(mdcp_fecha__lte=fdesde)
-                cpbs_detalles = cpbs.filter(mdcp_fecha__gt=fdesde,mdcp_fecha__lte=fhasta)  
+                cpbs_anteriores = cpbs.filter(mdcp_fecha__lt=fdesde)
+                cpbs_detalles = cpbs.filter(mdcp_fecha__gte=fdesde,mdcp_fecha__lte=fhasta)  
                 cpbs_posteriores = cpbs.filter(mdcp_fecha__gt=fhasta)                 
 
                 debe_ant= cpbs_anteriores.filter(cta_ingreso=cta).aggregate(sum=Sum(F('importe'), output_field=DecimalField()))['sum'] or 0  

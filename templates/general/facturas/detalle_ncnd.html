@@ -2,7 +2,9 @@
 {% load bootstrap3 %}
 {% load crispy_forms_tags %}
 {% block main %}    
-
+<div class=" col-sm-12 "> 
+<div class="row">
+<div class=" col-sm-12 "> 
 <table width="100%"  class="table table-striped compact table-hover table-no-bordered tabla_nueva nowrap">
   <tr>
     <td width="10%" class=" borde_izq texto_der">Entidad/Institución:</td>
@@ -21,7 +23,13 @@
     <td class="texto_izq borde_abajo">{{cpb.entidad.get_fact_categFiscal_display|default_if_none:''|upper}}</td>
     <td class="texto_der borde_abajo">CUIT:</td>
     <td class="texto_izq borde_der borde_abajo">{{cpb.entidad.fact_cuit|default_if_none:''|upper}}</td>
+  </tr>
+   {% if cpb.observacion %}
+   <tr>
+    <td class="texto_der borde_izq borde_abajo">Detalle:</td>
+    <td class="texto_izq borde_izq borde_der borde_abajo" colspan="3">{{cpb.observacion}}</td>    
   </tr> 
+ {% endif %} 
  
   
 </table>
@@ -65,7 +73,11 @@
   </table> 
   {% endif %}
 
+</div>
 
-<button data-dismiss="modal" class="btn pull-left btn red-flamingo" type="button"><i class="fa fa-times"></i>Cancelar</button>
-<a class="btn pull-right blue-steel" target="_blank" href="{% url 'imprimirFactura' id=cpb.pk %}">Imprimir</a>
+<div class=" col-sm-12 "> 
+<button data-dismiss="modal" class="btn pull-left btn-sm red-flamingo" type="button"><i class="fa fa-times"></i>Cancelar</button>
+<a class="btn pull-right btn-sm blue-steel" target="_blank" href="{% url 'imprimirFactura' id=cpb.pk %}">Imprimir</a>
+</div>
+</div>
 {% endblock main %} 
