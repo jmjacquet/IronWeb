@@ -283,7 +283,12 @@
                       {% endif %} 
                       {% if 'rep_caja_diaria' in permisos_grupo %}
                       <li>
-                        <a href="{% url 'caja_diaria' %}"><i class="icon-bar-chart"></i>Detalle Ingresos/Egresos</a>
+                        <a href="{% url 'ingresos_egresos' %}"><i class="icon-bar-chart"></i>Detalle Ingresos/Egresos</a>
+                      </li>   
+                      {% endif %}
+                      {% if 'rep_caja_diaria' in permisos_grupo %}
+                      <li>
+                        <a href="{% url 'caja_diaria' %}"><i class="icon-bar-chart"></i>Caja Diaria</a>
                       </li>   
                       {% endif %}
                       {% if 'rep_seguim_cheques' in permisos_grupo %} 

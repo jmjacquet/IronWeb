@@ -20,6 +20,7 @@ urlpatterns = patterns('reportes.views',
  url(r'^libro_iva_compras/$', libro_iva_compras, name="libro_iva_compras"),
 
  url(r'^caja_diaria/$', caja_diaria.as_view(), name="caja_diaria"),   
+ url(r'^ingresos_egresos/$', ingresos_egresos.as_view(), name="ingresos_egresos"),   
  
  url(r'^saldos_cuentas/$', saldos_cuentas.as_view(), name="saldos_cuentas"),   
 

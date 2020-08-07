@@ -101,7 +101,20 @@ class ConsultaLibroIVACompras(forms.Form):
 
 #############################################################################	
 
-class ConsultaCajaDiaria(forms.Form):               
+class ConsultaCajaDiaria(forms.Form):                   
+    cuenta = forms.ModelChoiceField(label='Cuenta Ingreso/Egreso',queryset=cpb_cuenta.objects.all(),empty_label=label_todos,required = True)
+    tipo_forma_pago = forms.ModelChoiceField(label='Forma de Pago/Cobro',queryset=cpb_tipo_forma_pago.objects.filter(baja=False),empty_label=label_todos,required = False)
+    fdesde =  forms.DateField(label='Fecha Desde',widget=forms.DateInput(attrs={'class': 'form-control datepicker','autocomplete':'off'}),initial=inicioMes(),required = True)
+    fhasta =  forms.DateField(label='Fecha Hasta',widget=forms.DateInput(attrs={'class': 'form-control datepicker','autocomplete':'off'}),initial=finMes(),required = True)    
+        
+    def __init__(self, *args, **kwargs):
+		empresa = kwargs.pop('empresa', None)  
+		request = kwargs.pop('request', None) 
+		super(ConsultaCajaDiaria, self).__init__(*args, **kwargs)				
+		self.fields['cuenta'].queryset = cpb_cuenta.objects.filter(baja=False,empresa__id__in=empresas_habilitadas(request)).order_by('codigo')
+		self.fields['tipo_forma_pago'].queryset = cpb_tipo_forma_pago.objects.filter(empresa__id__in=empresas_habilitadas(request),baja=False)			
+
+class ConsultaIngresosEgresos(forms.Form):               
     tipo_forma_pago = forms.ModelChoiceField(label='Forma de Pago/Cobro',queryset=cpb_tipo_forma_pago.objects.filter(baja=False),empty_label=label_todos,required = False)
     cuenta = forms.ModelChoiceField(label='Cuenta Ingreso/Egreso',queryset=cpb_cuenta.objects.all(),empty_label=label_todos,required = False)
     fdesde =  forms.DateField(label='Fecha Desde',widget=forms.DateInput(attrs={'class': 'form-control datepicker','autocomplete':'off'}),initial=inicioMes(),required = True)
@@ -111,9 +124,9 @@ class ConsultaCajaDiaria(forms.Form):
     def __init__(self, *args, **kwargs):
 		empresa = kwargs.pop('empresa', None)  
 		request = kwargs.pop('request', None) 
-		super(ConsultaCajaDiaria, self).__init__(*args, **kwargs)				
+		super(ConsultaIngresosEgresos, self).__init__(*args, **kwargs)				
 		self.fields['cuenta'].queryset = cpb_cuenta.objects.filter(baja=False,empresa__id__in=empresas_habilitadas(request)).order_by('codigo')
-		self.fields['tipo_forma_pago'].queryset = cpb_tipo_forma_pago.objects.filter(empresa__id__in=empresas_habilitadas(request),baja=False)			
+		self.fields['tipo_forma_pago'].queryset = cpb_tipo_forma_pago.objects.filter(empresa__id__in=empresas_habilitadas(request),baja=False)				
 #############################################################################	
 
 class ConsultaSaldosCuentas(forms.Form):                   
