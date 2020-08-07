@@ -706,28 +706,27 @@ class caja_diaria(VariablesMixin,ListView):
         form = ConsultaCajaDiaria(self.request.POST or None,empresa=empresa,request=self.request)   
         cpbs = None
         fecha = date.today()
-        datos = []
+        detalles = []
         if form.is_valid():                                            
             fdesde = form.cleaned_data['fdesde']   
             fhasta = form.cleaned_data['fhasta']   
             cta = form.cleaned_data['cuenta']                                                         
             tipo_forma_pago = form.cleaned_data['tipo_forma_pago']            
                                    
-            cpbs = cpb_comprobante_fp.objects.filter(cpb_comprobante__empresa=empresa,cpb_comprobante__estado__in=[1,2]).select_related('cpb_comprobante','cpb_comprobante__cpb_tipo','cta_egreso','cta_ingreso','tipo_forma_pago').order_by('cpb_comprobante__fecha_cpb','id')                
+            cpbs = cpb_comprobante_fp.objects.filter(cpb_comprobante__empresa=empresa,cpb_comprobante__estado__in=[1,2]).select_related('cpb_comprobante','cpb_comprobante__cpb_tipo','cta_egreso','cta_ingreso','tipo_forma_pago').order_by('mdcp_fecha','cpb_comprobante__fecha_cpb','id')                
             
             debe=0
             haber=0
             saldo=0
             saldo_cpb=0
-            detalles = []
-                            
+                                        
             cpbs_debe = cpbs.filter(cta_ingreso=cta)
             cpbs_haber= cpbs.filter(cta_egreso=cta) 
             debe = cpbs_debe.aggregate(sum=Sum(F('importe'), output_field=DecimalField()))['sum'] or 0  
             haber = cpbs_haber.aggregate(sum=Sum(F('importe'), output_field=DecimalField()))['sum'] or 0  
            
             cpbs= cpbs_debe | cpbs_haber
-            cpbs = cpbs.order_by('cpb_comprobante__fecha_cpb')
+            cpbs = cpbs.order_by('mdcp_fecha')
            
             
             # cpbs = cpbs.filter(cpb_comprobante__fecha_cpb__gte=fdesde)
@@ -743,18 +742,19 @@ class caja_diaria(VariablesMixin,ListView):
             saldo_inicial = debe_ant - haber_ant
             saldo_futuro = debe_pos - haber_pos                
               
-            if saldo_inicial != 0:                                
-                detalles.append(
-                        {
-                        'fecha':fdesde,
-                        'tipo':'',
-                        'nro_cpb':'SALDO ANTERIOR',
-                        'debe': debe_ant,
-                        'haber':haber_ant,
-                        'saldo': saldo_inicial,
-                        }
-                    )
-                saldo_cpb = saldo_inicial
+            # if saldo_inicial != 0:                                
+            #     detalles.append(
+            #             {
+            #             'fecha':fdesde,
+            #             'tipo':'',
+            #             'nro_cpb':'SALDO ANTERIOR',
+            #             'debe': debe_ant,
+            #             'haber':haber_ant,
+            #             'saldo': saldo_inicial,
+            #             }
+            #         )
+            #     saldo_cpb = saldo_inicial
+                
             for c in cpbs_detalles:
                 debe_cpb=0
                 haber_cpb=0
@@ -766,47 +766,41 @@ class caja_diaria(VariablesMixin,ListView):
                     haber_cpb = c.importe                                            
 
                 saldo_cpb += (debe_cpb-haber_cpb)
-
                 detalles.append(
                     {
                     'fecha':c.mdcp_fecha,
                     'tipo':c.cpb_comprobante.cpb_tipo,
+                    'cpb_id':c.cpb_comprobante.pk,
+                    'cpb_fecha':c.cpb_comprobante.fecha_cpb,
+                    'cpb_venc':c.cpb_comprobante.fecha_vto,
                     'nro_cpb':c.cpb_comprobante.get_cpb,
                     'fp':c.tipo_forma_pago,
-                    'mdcp_cheque':c.mdcp_cheque,
+                    'cheque':c.mdcp_cheque, 
+                    'banco':c.mdcp_banco,                   
                     'debe':debe_cpb,
                     'haber':haber_cpb,
                     'saldo': saldo_cpb,
                     }
                 )
-            if saldo_futuro != 0:                                
-                detalles.append(
-                        {
-                        'fecha':fhasta,
-                        'tipo':'',
-                        'nro_cpb':'COMPROMISOS A FUTURO',
-                        'debe': debe_pos,
-                        'haber':haber_pos,
-                        'saldo': saldo_futuro,
-                        }
-                    )
-                saldo_cpb += saldo_futuro
+            # if saldo_futuro != 0:                                
+            #     detalles.append(
+            #             {
+            #             'fecha':fhasta,
+            #             'tipo':'',
+            #             'nro_cpb':'COMPROMISOS A FUTURO',
+            #             'debe': debe_pos,
+            #             'haber':haber_pos,
+            #             'saldo': saldo_futuro,
+            #             }
+            #         )
+            #     saldo_cpb += saldo_futuro
 
             saldo = debe - haber 
-            datos.append(
-                {
-                    'id_cuenta':cta.id,
-                    'cuenta':cta,
-                    'debe':debe,
-                    'haber':haber,
-                    'saldo': saldo,
-                    'detalles': detalles,                        
-                }
-            )
+            
                     
         context['form'] = form
-        context['datos'] = datos
         context['fecha'] = fecha
+        context['detalles'] = detalles
         return context
     def post(self, *args, **kwargs):
         return self.get(*args, **kwargs)

@@ -32,24 +32,28 @@
                 <thead>
                     <tr>
                       <th  data-priority="1">Comprobante</th>                                                  
-                      <th  data-priority="2">Cuenta</th>
-                      <th  data-priority="3">Forma de Cobro</th>                                                  
-                      <th style="width: 10%;"  data-priority="5">MDCP Fecha</th>
-                      <th style="width: 20%;"  data-priority="6">MDCP Banco</th>
-                      <th style="width: 10%;"  data-priority="7">MDCP Cheque</th>
-                      <th  data-priority="4" class="text-right" style="width: 20%;">Importe</th>                                  
+                      <th  data-priority="1">Tipo</th> 
+                      <th  data-priority="2">Forma de Cobro/Pago</th>                                                  
+                      <th style="width: 10%;"  data-priority="5">Fecha</th>
+                      <th style="width: 20%;"  data-priority="6">Banco</th>
+                      <th style="width: 10%;"  data-priority="7">Cheque</th>
+                      <th class="text-right">Debe</th>                                                               
+                      <th class="text-right">Haber</th>                                                               
+                      <th class="text-right">Saldo</th>                                  
                     </tr>
                 </thead>
                 <tbody>
-                   {% for i in cpbs %}
+                   {% for c in detalles %}
                     <tr>                                
-                     <td title="{{i.cpb_comprobante.cpb_tipo|default_if_none:''}}" class="">{{i.cpb_comprobante.cpb_tipo.codigo|default_if_none:''}}:{{i.cpb_comprobante|default_if_none:''}}</td> 
-                     <td class="">{{i.cta_ingreso|default_if_none:''}}</td> 
-                     <td title="{{i.pk|safe}}">{{ i.tipo_forma_pago|default_if_none:'' }}</td>
-                     <td class="">{{i.mdcp_fecha|date:'d/m/Y'}}</td> 
-                     <td class="">{{i.mdcp_banco|default_if_none:''}}</td> 
-                     <td class="">{{i.mdcp_cheque|default_if_none:''}}</td>                          
-                     <td class="importe_total">$ {{i.importe|default_if_none:0|floatformat:2}}</td>
+                     <td class="">{% include "general/varios/cpb_ver_lista.html" %} {{c.nro_cpb}}</td>                      
+                     <td class="">{{c.tipo|default_if_none:''}}</td>                      
+                     <td>{{ c.fp|default_if_none:'' }}</td>
+                     <td class="">{{c.fecha|date:'d/m/Y'}}</td> 
+                     <td class="">{{c.banco|default_if_none:''}}</td> 
+                     <td class="">{{c.cheque|default_if_none:''}}</td>                                               
+                     <td class="importe">${{c.debe|default_if_none:0|floatformat:2}}</td>                                 
+                     <td class="importe">${{c.haber|default_if_none:0|floatformat:2}}</td>                                 
+                     <td class="importe">${{c.saldo|default_if_none:0|floatformat:2}}</td>
                     </tr>
                    {% endfor %}
                 </tbody>
@@ -62,6 +66,8 @@
                     <th></th>
                     <th></th>
                     <th class="importe_total"></th>                                                     
+                    <th class="importe_total"></th>   
+                    <th class="importe_total"></th>   
                    </tr>
                 </tfoot>
             </table> 
@@ -291,6 +297,10 @@ var tabla2 = $('#dataTables-ingresos').DataTable({
             };            
             pageTotal = api.column(6, { page: 'current'} ).data().reduce( function (a, b) {return floatVal(a) + floatVal(b);}, 0 );
             $( api.column(6).footer() ).html('$'+pageTotal.toLocaleString(undefined,{minimumFractionDigits:2}));                       
+            pageTotal = api.column(7, { page: 'current'} ).data().reduce( function (a, b) {return floatVal(a) + floatVal(b);}, 0 );
+            $( api.column(7).footer() ).html('$'+pageTotal.toLocaleString(undefined,{minimumFractionDigits:2}));                       
+            pageTotal = api.column(8, { page: 'current'} ).data().reduce( function (a, b) {return floatVal(a) + floatVal(b);}, 0 );
+            $( api.column(8).footer() ).html('$'+pageTotal.toLocaleString(undefined,{minimumFractionDigits:2}));                       
         }
         });
 

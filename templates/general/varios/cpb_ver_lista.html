@@ -1,0 +1,18 @@
+{% if c.cpb_id %}
+<a 
+	{% if c.tipo.tipo == 4 or c.tipo.tipo == 7 %}
+		href="{% url 'recibo_ver' id=c.cpb_id %}"  
+	{% elif c.tipo.tipo == 2 or c.tipo.tipo == 3 %}
+		href="{% url 'ncredndeb_ver' id=c.cpb_id %}"
+	{% elif c.tipo.tipo == 5 %}
+		href="{% url 'remito_ver' id=c.cpb_id %}"
+	{% elif c.tipo.tipo == 6 %}
+		href="{% url 'presup_ver' id=c.cpb_id %}"
+	{% else %}
+		href="{% url 'comprobante_ver' id=c.cpb_id %}"
+	{% endif %}
+
+	title="Ver Detalle" class="modal-detail" data-modal-head="DETALLE {{c.tipo}} {{c.nro_cpb}} - Fecha:{{c.cpb_fecha|date:'d/m/Y'}} - Vencimiento:{{c.cpb_venc|date:'d/m/Y'}}" data-modal-callback="reload">  
+	<i class="fa fa-list-alt text-primary"></i>
+</a>
+{% endif %}
