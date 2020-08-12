@@ -114,6 +114,7 @@ TIPO_COMPROBANTE = (
     (21,u'Factura Crédito Electrónica'),    
     (22,u'Nota Débito Electrónica'),
     (23,u'Nota Crédito Electrónica'),
+    (24,u'Saldo Inicial'),
 )
 
 COMPROB_FISCAL = (

@@ -1,0 +1,60 @@
+{% load static from staticfiles %}
+{% load bootstrap3 %}
+{% load i18n %}
+{% load crispy_forms_tags %}
+{% load humanize %}
+
+<div id="form-container">
+         <form role="form" class="form cpb" method="POST" action="" id="form-alta">
+		     {% csrf_token %}   		           
+		     {{ form.non_field_errors }}					     
+		     {{ form.non_form_errors  }}
+
+              <div class="col-sm-12">
+              	<div class="row">
+              		<div class="col-sm-4">
+              			{% bootstrap_field form.cta_ingreso %}
+              		</div>
+              		<div class="col-sm-4">
+              			{% bootstrap_field form.tipo_forma_pago %}
+              		</div>
+              		<div class="col-sm-2">
+              			{% bootstrap_field form.mdcp_fecha %}
+              		</div>
+              		<div class="col-sm-2">
+              			{% bootstrap_field form.importe %}
+              		</div>
+              	</div>								                      	
+              				                      									                  								
+                {% for hidden in cpb_fp.hidden_fields %} {{ hidden }} {% endfor %}
+              </div>						                     							                     
+		            						         
+	     
+		    {% if form.non_field_errors  %}
+		     	<script type="text/javascript">
+		     	alertify.errorAlert("{% for err in form.non_field_errors %}{{ err }}{% endfor %}");
+		     	</script>
+		    {% endif %}       
+	        {% for hidden in form.hidden_fields %} {{ hidden }} {% endfor %}
+	    <div class="modal-buttons">
+            <div class="row">
+                <div class="col-xs-6">
+                 <button data-dismiss="modal" class="btn btn-sm pull-left btn btn-danger" type="button">
+                      <i class="fa fa-times"></i> {% trans 'Cancelar' %}
+                 </button>
+                </div>
+                <div class="col-xs-6">
+                 <button  class="btn pull-right btn-sm btn-primary" id="Aceptar" type="submit">
+                      <i class="fa fa-check"></i>{% trans 'Aceptar' %}</button>
+                </div>
+              
+              </div>
+            
+        </div> 	 
+	    </form>
+</div>	      
+
+
+</div>
+
+

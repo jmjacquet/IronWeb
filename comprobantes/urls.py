@@ -93,4 +93,7 @@ urlpatterns = patterns('comprobantes.views',
 
     url(r'^imprimirFacturaHTML/(?P<id>\d+)/$',imprimirFacturaHTML,name="imprimirFacturaHTML"),
     
+    url(r'^saldo_inicial/nuevo/$', SaldoInicialCreateView.as_view(), name="saldo_inicial_nuevo"),
+    url(r'^saldo_inicial/eliminar/(?P<id>[\w-]+)/$', SaldoInicialDeleteView, name="saldo_inicial_eliminar"),
+
     )

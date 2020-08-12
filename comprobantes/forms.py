@@ -248,3 +248,26 @@ class FormChequesCobro(forms.Form):
 #                     raise forms.ValidationError('No deben repetirse productos!')
 #                 values.add(value)
 #     return UniqueFieldFormSet
+
+class SaldoInicialForm(forms.ModelForm):
+	tipo_forma_pago = forms.ModelChoiceField(label='Medio de Pago',queryset=cpb_tipo_forma_pago.objects.filter(baja=False),empty_label='---')
+	mdcp_fecha = forms.DateField(label='Fecha',widget=forms.DateInput(attrs={'class': 'form-control datepicker'}),initial=hoy(),required = False)
+	mdcp_banco = forms.ModelChoiceField(label='Banco',queryset=cpb_banco.objects.filter(baja=False),empty_label='---',required = False)
+	detalle = forms.CharField(label='Detalle',widget=forms.Textarea(attrs={ 'class':'form-control','rows': 3}),required = False)		
+	importe = forms.DecimalField(widget=PrependWidget(attrs={'class':'form-control','step':0},base_widget=NumberInput, data='$'),initial=0.00,decimal_places=2)	
+	cta_ingreso = forms.ModelChoiceField(label='Cuenta Destino/Ingreso',queryset=cpb_cuenta.objects.all(),empty_label='---')
+	class Meta:
+			model = cpb_comprobante_fp
+			exclude = ['id','fecha_creacion']			
+
+	def __init__(self, *args, **kwargs):
+		request = kwargs.pop('request', None)
+		super(SaldoInicialForm, self).__init__(*args, **kwargs)
+		try:
+			empresa = empresa_actual(request)			
+			self.fields['tipo_forma_pago'].queryset = cpb_tipo_forma_pago.objects.filter(empresa__id__in=empresas_habilitadas(request),baja=False,cuenta__tipo__in=[0,1,3])			
+			self.fields['mdcp_banco'].queryset = cpb_banco.objects.filter(empresa__id__in=empresas_habilitadas(request),baja=False)			
+			self.fields['cta_ingreso'].queryset = cpb_cuenta.objects.filter(empresa__id__in=empresas_habilitadas(request),baja=False,tipo__in=[0,1,3])			
+		except gral_empresa.DoesNotExist:
+			empresa = None		
+	

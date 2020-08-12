@@ -703,7 +703,13 @@ class caja_diaria(VariablesMixin,ListView):
             empresa = empresa_actual(self.request)
         except gral_empresa.DoesNotExist:
             empresa = None 
-        form = ConsultaCajaDiaria(self.request.POST or None,empresa=empresa,request=self.request)   
+        busq = None        
+        if self.request.POST:
+            busq = self.request.POST
+        else:
+            if 'caja_diara_busq' in self.request.session:
+                busq = self.request.session["caja_diara_busq"]        
+        form = ConsultaCajaDiaria(busq or None,empresa=empresa,request=self.request)   
         cpbs = None
         fecha = date.today()
         detalles = []
@@ -713,7 +719,9 @@ class caja_diaria(VariablesMixin,ListView):
             cta = form.cleaned_data['cuenta']                                                         
             tipo_forma_pago = form.cleaned_data['tipo_forma_pago']            
                                    
-            cpbs = cpb_comprobante_fp.objects.filter(cpb_comprobante__empresa=empresa,cpb_comprobante__estado__in=[1,2]).select_related('cpb_comprobante','cpb_comprobante__cpb_tipo','cta_egreso','cta_ingreso','tipo_forma_pago').order_by('mdcp_fecha','cpb_comprobante__fecha_cpb','id')                
+            cpbs = cpb_comprobante_fp.objects.filter(cpb_comprobante__empresa=empresa)
+                .filter(Q(cpb_comprobante__estado__in=[1,2])||Q((cpb_comprobante__estado__in=[3])))
+                .select_related('cpb_comprobante','cpb_comprobante__cpb_tipo','cta_egreso','cta_ingreso','tipo_forma_pago').order_by('mdcp_fecha','cpb_comprobante__fecha_cpb','id')                
             
             debe=0
             haber=0
@@ -796,12 +804,15 @@ class caja_diaria(VariablesMixin,ListView):
             #     saldo_cpb += saldo_futuro
 
             saldo = debe - haber 
-            
+            self.request.session["caja_diara_busq"] = self.request.POST
+        else:
+            self.request.session["caja_diara_busq"] = None        
                     
         context['form'] = form
         context['fecha'] = fecha
         context['detalles'] = detalles
         return context
+    
     def post(self, *args, **kwargs):
         return self.get(*args, **kwargs)
 

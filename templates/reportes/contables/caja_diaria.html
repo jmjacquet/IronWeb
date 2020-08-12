@@ -28,7 +28,10 @@
         </div>
         <div class="row">
             <div class="col-md-12">
-              <table id="dataTables-ingresos" class="table table-striped compact table-hover table-no-bordered tabla_nueva nowrap">         
+              <div class="btn-group btnAccion" style="float:left;margin-right:10px;margin-bottom:10px;">                    
+                    <a class="btn btn-sm blue-hoki modal-create" style="float:left;margin-right:20px;" href="{% url 'saldo_inicial_nuevo' %}" data-modal-head="SALDO INICIAL DIARIO" data-modal-callback="reload">Saldo Inicial Diario</a>
+              </div>
+              <table id="dataTables-ingresos" class="table table-striped compact table-hover table-no-bordered tabla_nueva nowrap">   
                 <thead>
                     <tr>
                       <th  data-priority="1">Comprobante</th>                                                  
@@ -212,17 +215,14 @@ var tabla2 = $('#dataTables-ingresos').DataTable({
                   "targets"  : 'no-sort',
                   "orderable": false,
                 }],                    
-           "paging":   false,
-           "autoWidth": true,
+           "paging":   true,
+           "lengthMenu": [[20, 50, -1], [20, 50, "Todos"]],
+           "autoWidth": false,           
            "order": [],
-           "colReorder": false,
+           "colReorder": true,
            "searching": true,
-            fixedHeader: {
-              header: false,
-              footer: false
-              },
             responsive: true,
-            dom: 'Bfrtli',
+            dom: 'Bfrtlip',
             buttons: [
                 {
                     extend:    'colvis',

@@ -2029,3 +2029,50 @@ def imprimir_detalles(request):
     context['fecha'] = fecha 
     template = 'reportes/varios/rep_detalle_cpbs.html'                        
     return render_to_pdf_response(request, template, context)
+
+
+###############################################################
+from .forms import SaldoInicialForm
+class SaldoInicialCreateView(VariablesMixin,AjaxCreateView):
+    form_class = SaldoInicialForm
+    template_name = 'modal/general/form_saldo_inicial.html'
+    model = cpb_tipo_forma_pago
+
+    @method_decorator(login_required)
+    def dispatch(self, *args, **kwargs):                    
+        return super(SaldoInicialCreateView, self).dispatch(*args, **kwargs)
+    
+    def get_initial(self):    
+        initial = super(SaldoInicialCreateView, self).get_initial()        
+        initial['tipo_form'] = 'ALTA'        
+        return initial   
+
+    def get_form_kwargs(self,**kwargs):
+        kwargs = super(SaldoInicialCreateView, self).get_form_kwargs()
+        kwargs['request'] = self.request                      
+        return kwargs
+     
+
+    def form_valid(self, form):
+        self.object = form.save(commit=False)        
+        estado=cpb_estado.objects.get(pk=3)
+        tipo=cpb_tipo.objects.get(pk=27)
+        nro = ultimoNro(27,0,'X')
+        cpb = cpb_comprobante(cpb_tipo=tipo,pto_vta=0,letra="X",numero=nro,fecha_cpb=self.object.mdcp_fecha,importe_iva=0,fecha_imputacion=self.object.mdcp_fecha,
+                importe_total=self.object.importe,estado=estado,usuario=usuario_actual(self.request),fecha_vto=self.object.mdcp_fecha,empresa = empresa_actual(self.request))
+        cpb.save()      
+        self.object.instance = cpb
+        self.object.cpb_comprobante = cpb        
+        self.object.save()
+        messages.success(self.request, u'Los datos se guardaron con éxito!') 
+        return HttpResponseRedirect(reverse('caja_diaria'))
+
+@login_required
+def SaldoInicialDeleteView(request, id):
+    try:
+        objeto = get_object_or_404(cpb_tipo_forma_pago, id=id)       
+        objeto.delete()
+        messages.success(request, u'¡Los datos se guardaron con éxito!')
+    except:
+        messages.error(request, u'¡Los datos no pudieron eliminarse!')
+    return redirect('caja_diaria')       
