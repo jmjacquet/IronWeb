@@ -34,6 +34,7 @@
               <table id="dataTables-ingresos" class="table table-striped compact table-hover table-no-bordered tabla_nueva nowrap">   
                 <thead>
                     <tr>
+                      <th class="no-sort text-center" data-priority="1"></th>
                       <th  data-priority="1">Comprobante</th>                                                  
                       <th  data-priority="1">Tipo</th> 
                       <th  data-priority="2">Forma de Cobro/Pago</th>                                                  
@@ -48,7 +49,14 @@
                 <tbody>
                    {% for c in detalles %}
                     <tr>                                
-                     <td class="">{% include "general/varios/cpb_ver_lista.html" %} {{c.nro_cpb}}</td>                      
+                     <td class="text-right">
+                      {% if c.tipo.tipo == 24 %}
+                        <a href="#" title="Eliminar" onClick="alerta= alertify.dialog('confirm').set({'labels':{ok:'Aceptar', cancel:'Cancelar'},'message': '¿DESEA ELIMINAR EL SALDO INICIAL SELECCIONADO?',transition:'fade','onok': function(){ window.location.href = '{% url 'saldo_inicial_eliminar' id=c.cpb_id %}'; },'oncancel': function(){ return true;} }); alerta.setting('modal', true); alerta.setHeader('ELIMINAR COMPROBANTE'); alerta.show(); return true;"><i class="fa fa-trash text-danger"></i></a>
+                      {% else %}
+                        {% include "general/varios/cpb_ver_lista.html" %}
+                      {% endif %}
+                    </td>               
+                     <td class="">{{c.nro_cpb}}</td>                      
                      <td class="">{{c.tipo|default_if_none:''}}</td>                      
                      <td>{{ c.fp|default_if_none:'' }}</td>
                      <td class="">{{c.fecha|date:'d/m/Y'}}</td> 
@@ -62,6 +70,7 @@
                 </tbody>
                 <tfoot>
                    <tr>
+                    <th></th>
                     <th></th>
                     <th></th>
                     <th></th>
@@ -85,6 +94,7 @@
 
 $(document).ready(function() { 
 
+
 $.fn.datepicker.dates['es'] = {
     days: ["Domingo", "Lunes", "Martes", "Miércoles", "Jueves", "Viernes", "Sábado", "Domingo"],
     daysShort: ["Dom", "Lun", "Mar", "Mié", "Jue", "Vie", "Sáb", "Dom"],
@@ -103,403 +113,132 @@ $.fn.datepicker.dates['es'] = {
 
  
      
-moment.locale('es');
-$.fn.dataTable.moment('DD/MM/YYYY'); 
+  moment.locale('es');
+  $.fn.dataTable.moment('DD/MM/YYYY'); 
 
-// var tabla = $('#dataTables-resumenIngresos').DataTable({
-//             "language": {
-//                 "decimal": ",",
-//                 "thousands": ".",                
-//                 "sProcessing": "Procesando...",
-//                 "sLengthMenu": "Mostrar _MENU_ registros",
-//                 "sZeroRecords": "No se encontraron resultados",
-//                 "sEmptyTable": "No hay registros en esta tabla",
-//                 "sInfo": "Mostrando registros del _START_ al _END_ de un total de _TOTAL_ registros",
-//                 "sInfoEmpty": "Mostrando registros del 0 al 0 de un total de 0 registros",
-//                 "sInfoFiltered": "(filtrado de un total de _MAX_ registros)",
-//                 "sInfoPostFix": "",
-//                 "sSearch": "Buscar:",
-//                 "sUrl": "",
-//                 "sInfoThousands": ".",
-//                 "sLoadingRecords": "Cargando...",
-//                 "oPaginate": {
-//                     "sFirst": "Primero",
-//                     "sLast": "Último",
-//                     "sNext": "Siguiente",
-//                     "sPrevious": "Anterior"
-//                 },
-//                 "oAria": {
-//                     "sSortAscending": ": Activar para ordenar la columna de manera ascendente",
-//                     "sSortDescending": ": Activar para ordenar la columna de manera descendente"
-//                 },
-                      
-//             },                      
-//             "columnDefs": [ {
-//                   "targets"  : 'no-sort',
-//                   "orderable": false,
-//                 }],                    
-//            "paging":   false,
-//            "autoWidth": false,
-//            "order": [],
-//            "colReorder": false,
-//            "searching": false,
-//            dom: 'tl',
-//             fixedHeader: {
-//               header: false,
-//               footer: false
-//               },
-//             responsive: false,
-           
-//             footerCallback: function ( row, data, start, end, display ) {
-//             var api = this.api(), data;
-//             var floatVal = function (i) {
-//                 if (typeof i === "number") {
-//                     return i;
-//                 } else if (typeof i === "string") {
-//                     i = i.replace(/\$/g, "");
-//                     i = i.replace(/\,/g ,"");                    
-//                     i = i.replace(/\./g, "");
-//                     var result = parseFloat(i)/100;
-//                     // console.log(result);
-//                     if (isNaN(result)) {
-//                         try {
-//                             var result = $jq(i).text();
-//                             result = parseFloat(result);
-//                             if (isNaN(result)) { result = 0 };
-//                             return result * 1;
-//                         } catch (error) {
-//                             return 0;
-//                         }
-//                     } else {
-//                         return result * 1;
-//                     }
-//                 } else {
-//                     alert("Unhandled type for totals [" + (typeof i) + "]");
-//                     return 0
-//                 }
-//             };            
-//             pageTotal = api.column(1, { page: 'current'} ).data().reduce( function (a, b) {return floatVal(a) + floatVal(b);}, 0 );
-//             $( api.column(1).footer() ).html('$'+pageTotal.toLocaleString(undefined,{minimumFractionDigits:2}));                       
-//         }
-//         });
-
-var tabla2 = $('#dataTables-ingresos').DataTable({
-            "language": {
-                "decimal": ",",
-                "thousands": ".",                
-                "sProcessing": "Procesando...",
-                "sLengthMenu": "Mostrar _MENU_ registros",
-                "sZeroRecords": "No se encontraron resultados",
-                "sEmptyTable": "No hay registros en esta tabla",
-                "sInfo": "Mostrando registros del _START_ al _END_ de un total de _TOTAL_ registros",
-                "sInfoEmpty": "Mostrando registros del 0 al 0 de un total de 0 registros",
-                "sInfoFiltered": "(filtrado de un total de _MAX_ registros)",
-                "sInfoPostFix": "",
-                "sSearch": "Buscar:",
-                "sUrl": "",
-                "sInfoThousands": ".",
-                "sLoadingRecords": "Cargando...",
-                "oPaginate": {
-                    "sFirst": "Primero",
-                    "sLast": "Último",
-                    "sNext": "Siguiente",
-                    "sPrevious": "Anterior"
-                },
-                "oAria": {
-                    "sSortAscending": ": Activar para ordenar la columna de manera ascendente",
-                    "sSortDescending": ": Activar para ordenar la columna de manera descendente"
-                },
-                      
-            },                      
-            "columnDefs": [ {
-                  "targets"  : 'no-sort',
-                  "orderable": false,
-                }],                    
-           "paging":   true,
-           "lengthMenu": [[20, 50, -1], [20, 50, "Todos"]],
-           "autoWidth": false,           
-           "order": [],
-           "colReorder": true,
-           "searching": true,
-            responsive: true,
-            dom: 'Bfrtlip',
-            buttons: [
-                {
-                    extend:    'colvis',
-                    text:      '<i class="fa fa-list"></i>',
-                    titleAttr: 'Ver/Ocultar',
-                    className: 'btnToolbar',                    
-                },
-                {
-                    extend:    'copyHtml5',
-                    text:      '<i class="fa fa-files-o"></i>',
-                    titleAttr: 'Copiar',
-                    exportOptions: { columns: ':visible' },
-                    className: 'btnToolbar',     
-
-                },
-                {
-                    extend:    'excel',
-                    text:      '<i class="fa fa-file-excel-o"></i>',
-                    titleAttr: 'Excel',                    
-                    exportOptions: { columns: ':visible',},
-                    className: 'btnToolbar',     
-                },
+  var tabla2 = $('#dataTables-ingresos').DataTable({
+              "language": {
+                  "decimal": ",",
+                  "thousands": ".",                
+                  "sProcessing": "Procesando...",
+                  "sLengthMenu": "Mostrar _MENU_ registros",
+                  "sZeroRecords": "No se encontraron resultados",
+                  "sEmptyTable": "No hay registros en esta tabla",
+                  "sInfo": "Mostrando registros del _START_ al _END_ de un total de _TOTAL_ registros",
+                  "sInfoEmpty": "Mostrando registros del 0 al 0 de un total de 0 registros",
+                  "sInfoFiltered": "(filtrado de un total de _MAX_ registros)",
+                  "sInfoPostFix": "",
+                  "sSearch": "Buscar:",
+                  "sUrl": "",
+                  "sInfoThousands": ".",
+                  "sLoadingRecords": "Cargando...",
+                  "oPaginate": {
+                      "sFirst": "Primero",
+                      "sLast": "Último",
+                      "sNext": "Siguiente",
+                      "sPrevious": "Anterior"
+                  },
+                  "oAria": {
+                      "sSortAscending": ": Activar para ordenar la columna de manera ascendente",
+                      "sSortDescending": ": Activar para ordenar la columna de manera descendente"
+                  },
                         
-                {
-                    extend:    'pdfHtml5',
-                    text:      '<i class="fa fa-file-pdf-o"></i>',
-                    titleAttr: 'PDF',footer: true,
-                    exportOptions: { columns: ':visible'},
-                    orientation: 'landscape',
-                    className: 'btnToolbar',                    
-                },
-                {
-                    extend: 'print',
-                    text:      '<i class="fa fa-print"></i>',
-                    titleAttr: 'Imprimir',
-                    exportOptions: { columns: ':visible' },
-                    className: 'btnToolbar',                    
-                },
-            ],
-            initComplete: function () {
-               
-                $("#dataTables-ingresos").show();
-                  this.fnAdjustColumnSizing();                
-            },
-            footerCallback: function ( row, data, start, end, display ) {
-            var api = this.api(), data;
-            var floatVal = function (i) {
-                if (typeof i === "number") {
-                    return i;
-                } else if (typeof i === "string") {
-                    i = i.replace(/\$/g, "");
-                    i = i.replace(/\,/g ,"");                    
-                    i = i.replace(/\./g, "");
-                    var result = parseFloat(i)/100;
-                    // console.log(result);
-                    if (isNaN(result)) {
-                        try {
-                            var result = $jq(i).text();
-                            result = parseFloat(result);
-                            if (isNaN(result)) { result = 0 };
-                            return result * 1;
-                        } catch (error) {
-                            return 0;
-                        }
-                    } else {
-                        return result * 1;
-                    }
-                } else {
-                    alert("Unhandled type for totals [" + (typeof i) + "]");
-                    return 0
-                }
-            };            
-            pageTotal = api.column(6, { page: 'current'} ).data().reduce( function (a, b) {return floatVal(a) + floatVal(b);}, 0 );
-            $( api.column(6).footer() ).html('$'+pageTotal.toLocaleString(undefined,{minimumFractionDigits:2}));                       
-            pageTotal = api.column(7, { page: 'current'} ).data().reduce( function (a, b) {return floatVal(a) + floatVal(b);}, 0 );
-            $( api.column(7).footer() ).html('$'+pageTotal.toLocaleString(undefined,{minimumFractionDigits:2}));                       
-            pageTotal = api.column(8, { page: 'current'} ).data().reduce( function (a, b) {return floatVal(a) + floatVal(b);}, 0 );
-            $( api.column(8).footer() ).html('$'+pageTotal.toLocaleString(undefined,{minimumFractionDigits:2}));                       
-        }
-        });
+              },                      
+              "columnDefs": [ {
+                    "targets"  : 'no-sort',
+                    "orderable": false,
+                  }],                    
+             "paging":   true,
+             "lengthMenu": [[20, 50, -1], [20, 50, "Todos"]],
+             "autoWidth": false,           
+             "order": [],
+             "colReorder": true,
+             "searching": true,
+              responsive: true,
+              dom: 'Bfrtlip',
+              buttons: [
+                  {
+                      extend:    'colvis',
+                      text:      '<i class="fa fa-list"></i>',
+                      titleAttr: 'Ver/Ocultar',
+                      className: 'btnToolbar',                    
+                  },
+                  {
+                      extend:    'copyHtml5',
+                      text:      '<i class="fa fa-files-o"></i>',
+                      titleAttr: 'Copiar',
+                      exportOptions: { columns: ':visible' },
+                      className: 'btnToolbar',     
 
-
-// var tabla3 = $('#dataTables-resumenEgresos').DataTable({
-//             "language": {
-//                 "decimal": ",",
-//                 "thousands": ".",                
-//                 "sProcessing": "Procesando...",
-//                 "sLengthMenu": "Mostrar _MENU_ registros",
-//                 "sZeroRecords": "No se encontraron resultados",
-//                 "sEmptyTable": "No hay registros en esta tabla",
-//                 "sInfo": "Mostrando registros del _START_ al _END_ de un total de _TOTAL_ registros",
-//                 "sInfoEmpty": "Mostrando registros del 0 al 0 de un total de 0 registros",
-//                 "sInfoFiltered": "(filtrado de un total de _MAX_ registros)",
-//                 "sInfoPostFix": "",
-//                 "sSearch": "Buscar:",
-//                 "sUrl": "",
-//                 "sInfoThousands": ".",
-//                 "sLoadingRecords": "Cargando...",
-//                 "oPaginate": {
-//                     "sFirst": "Primero",
-//                     "sLast": "Último",
-//                     "sNext": "Siguiente",
-//                     "sPrevious": "Anterior"
-//                 },
-//                 "oAria": {
-//                     "sSortAscending": ": Activar para ordenar la columna de manera ascendente",
-//                     "sSortDescending": ": Activar para ordenar la columna de manera descendente"
-//                 },
-                      
-//             },                      
-//             "columnDefs": [ {
-//                   "targets"  : 'no-sort',
-//                   "orderable": false,
-//                 }],                    
-//            "paging":   false,
-//            "autoWidth": true,
-//            "order": [],
-//            "colReorder": false,
-//            "searching": false,
-//             fixedHeader: {
-//               header: false,
-//               footer: false
-//               },
-//             responsive: false,
-//             dom: 'tl',
-//             footerCallback: function ( row, data, start, end, display ) {
-//             var api = this.api(), data;
-//             var floatVal = function (i) {
-//                 if (typeof i === "number") {
-//                     return i;
-//                 } else if (typeof i === "string") {
-//                     i = i.replace(/\$/g, "");
-//                     i = i.replace(/\,/g ,"");                    
-//                     i = i.replace(/\./g, "");
-//                     var result = parseFloat(i)/100;
-//                     // console.log(result);
-//                     if (isNaN(result)) {
-//                         try {
-//                             var result = $jq(i).text();
-//                             result = parseFloat(result);
-//                             if (isNaN(result)) { result = 0 };
-//                             return result * 1;
-//                         } catch (error) {
-//                             return 0;
-//                         }
-//                     } else {
-//                         return result * 1;
-//                     }
-//                 } else {
-//                     alert("Unhandled type for totals [" + (typeof i) + "]");
-//                     return 0
-//                 }
-//             };            
-//             pageTotal = api.column(1, { page: 'current'} ).data().reduce( function (a, b) {return floatVal(a) + floatVal(b);}, 0 );
-//             $( api.column(1).footer() ).html('$'+pageTotal.toLocaleString(undefined,{minimumFractionDigits:2}));                       
-//         }
-//         });
-
-var tabla4 = $('#dataTables-egresos').DataTable({
-            "language": {
-                "decimal": ",",
-                "thousands": ".",                
-                "sProcessing": "Procesando...",
-                "sLengthMenu": "Mostrar _MENU_ registros",
-                "sZeroRecords": "No se encontraron resultados",
-                "sEmptyTable": "No hay registros en esta tabla",
-                "sInfo": "Mostrando registros del _START_ al _END_ de un total de _TOTAL_ registros",
-                "sInfoEmpty": "Mostrando registros del 0 al 0 de un total de 0 registros",
-                "sInfoFiltered": "(filtrado de un total de _MAX_ registros)",
-                "sInfoPostFix": "",
-                "sSearch": "Buscar:",
-                "sUrl": "",
-                "sInfoThousands": ".",
-                "sLoadingRecords": "Cargando...",
-                "oPaginate": {
-                    "sFirst": "Primero",
-                    "sLast": "Último",
-                    "sNext": "Siguiente",
-                    "sPrevious": "Anterior"
-                },
-                "oAria": {
-                    "sSortAscending": ": Activar para ordenar la columna de manera ascendente",
-                    "sSortDescending": ": Activar para ordenar la columna de manera descendente"
-                },
-                      
-            },                      
-            "columnDefs": [ {
-                  "targets"  : 'no-sort',
-                  "orderable": false,
-                }],                    
-           "paging":   false,
-           "autoWidth": true,
-           "order": [],
-           "colReorder": false,
-           "searching": true,
-            fixedHeader: {
-              header: false,
-              footer: false
+                  },
+                  {
+                      extend:    'excel',
+                      text:      '<i class="fa fa-file-excel-o"></i>',
+                      titleAttr: 'Excel',                    
+                      exportOptions: { columns: ':visible',},
+                      className: 'btnToolbar',     
+                  },
+                          
+                  {
+                      extend:    'pdfHtml5',
+                      text:      '<i class="fa fa-file-pdf-o"></i>',
+                      titleAttr: 'PDF',footer: true,
+                      exportOptions: { columns: ':visible'},
+                      orientation: 'landscape',
+                      className: 'btnToolbar',                    
+                  },
+                  {
+                      extend: 'print',
+                      text:      '<i class="fa fa-print"></i>',
+                      titleAttr: 'Imprimir',
+                      exportOptions: { columns: ':visible' },
+                      className: 'btnToolbar',                    
+                  },
+              ],
+              initComplete: function () {
+                 
+                  $("#dataTables-ingresos").show();
+                    this.fnAdjustColumnSizing();                
               },
-            responsive: true,
-            dom: 'Bfrtli',
-            buttons: [
-                {
-                    extend:    'colvis',
-                    text:      '<i class="fa fa-list"></i>',
-                    titleAttr: 'Ver/Ocultar',
-                    className: 'btnToolbar',                    
-                },
-                {
-                    extend:    'copyHtml5',
-                    text:      '<i class="fa fa-files-o"></i>',
-                    titleAttr: 'Copiar',
-                    exportOptions: { columns: ':visible' },
-                    className: 'btnToolbar',     
+              footerCallback: function ( row, data, start, end, display ) {
+              var api = this.api(), data;
+              var floatVal = function (i) {
+                  if (typeof i === "number") {
+                      return i;
+                  } else if (typeof i === "string") {
+                      i = i.replace(/\$/g, "");
+                      i = i.replace(/\,/g ,"");                    
+                      i = i.replace(/\./g, "");
+                      var result = parseFloat(i)/100;
+                      // console.log(result);
+                      if (isNaN(result)) {
+                          try {
+                              var result = $jq(i).text();
+                              result = parseFloat(result);
+                              if (isNaN(result)) { result = 0 };
+                              return result * 1;
+                          } catch (error) {
+                              return 0;
+                          }
+                      } else {
+                          return result * 1;
+                      }
+                  } else {
+                      alert("Unhandled type for totals [" + (typeof i) + "]");
+                      return 0
+                  }
+              };            
+              pageTotal1 = api.column(7, { page: 'current'} ).data().reduce( function (a, b) {return floatVal(a) + floatVal(b);}, 0 );
+              $( api.column(7).footer() ).html('$'+pageTotal1.toLocaleString(undefined,{minimumFractionDigits:2}));                       
+              pageTotal2 = api.column(8, { page: 'current'} ).data().reduce( function (a, b) {return floatVal(a) + floatVal(b);}, 0 );
+              $( api.column(8).footer() ).html('$'+pageTotal2.toLocaleString(undefined,{minimumFractionDigits:2}));                       
+              pageTotal =  pageTotal1 - pageTotal2;
+              $( api.column(9).footer() ).html('$'+pageTotal.toLocaleString(undefined,{minimumFractionDigits:2}));                       
 
-                },
-                {
-                    extend:    'excel',
-                    text:      '<i class="fa fa-file-excel-o"></i>',
-                    titleAttr: 'Excel',                    
-                    exportOptions: { columns: ':visible',},
-                    className: 'btnToolbar',     
-                },
-                        
-                {
-                    extend:    'pdfHtml5',
-                    text:      '<i class="fa fa-file-pdf-o"></i>',
-                    titleAttr: 'PDF',footer: true,
-                    exportOptions: { columns: ':visible'},
-                    orientation: 'landscape',
-                    className: 'btnToolbar',                    
-                },
-                {
-                    extend: 'print',
-                    text:      '<i class="fa fa-print"></i>',
-                    titleAttr: 'Imprimir',
-                    exportOptions: { columns: ':visible' },
-                    className: 'btnToolbar',                    
-                },
-            ],
-            initComplete: function () {
-               
-                $("#dataTables-egresos").show();
-                  this.fnAdjustColumnSizing();                
-            },
-            footerCallback: function ( row, data, start, end, display ) {
-            var api = this.api(), data;
-            var floatVal = function (i) {
-                if (typeof i === "number") {
-                    return i;
-                } else if (typeof i === "string") {
-                    i = i.replace(/\$/g, "");
-                    i = i.replace(/\,/g ,"");                    
-                    i = i.replace(/\./g, "");
-                    var result = parseFloat(i)/100;
-                    // console.log(result);
-                    if (isNaN(result)) {
-                        try {
-                            var result = $jq(i).text();
-                            result = parseFloat(result);
-                            if (isNaN(result)) { result = 0 };
-                            return result * 1;
-                        } catch (error) {
-                            return 0;
-                        }
-                    } else {
-                        return result * 1;
-                    }
-                } else {
-                    alert("Unhandled type for totals [" + (typeof i) + "]");
-                    return 0
-                }
-            };            
-            pageTotal = api.column(6, { page: 'current'} ).data().reduce( function (a, b) {return floatVal(a) + floatVal(b);}, 0 );
-            $( api.column(6).footer() ).html('$'+pageTotal.toLocaleString(undefined,{minimumFractionDigits:2}));                       
-        }
-        });
+          }
+          });
+
+ 
 
 });
 

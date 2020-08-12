@@ -54,7 +54,41 @@
 	    </form>
 </div>	      
 
+<script type="text/javascript">
+$(document).ready(function() {
 
+
+$("input[type=number]").click(function() {
+        this.select()
+    });
+function setear_FP(cta,fp){
+    var id_cta =  cta.val();      
+    $.ajax({
+          data: {'cta':id_cta},
+          url: '/comprobantes/setearCta_FP/',
+          type: 'get',
+          cache: true,          
+          success : function(data) {
+             
+               if (data!='')
+                  {                    
+                    fp.val(data[0]);
+                  }
+                 
+          },
+          error : function(message) {
+               /*alertify.alert('Búsqueda por CUIT','No se encontró el Proveedor.');*/
+               console.log(message);
+            }
+        });
+};
+
+$("#id_cta_ingreso").change(function(){            
+            setear_FP($("[name='cta_ingreso']"),$("[name='tipo_forma_pago']"));             
+            $("[name='importe']").select() 
+         });  
+});
+</script>
 </div>
 
 

@@ -719,10 +719,13 @@ class caja_diaria(VariablesMixin,ListView):
             cta = form.cleaned_data['cuenta']                                                         
             tipo_forma_pago = form.cleaned_data['tipo_forma_pago']            
                                    
-            cpbs = cpb_comprobante_fp.objects.filter(cpb_comprobante__empresa=empresa)
-                .filter(Q(cpb_comprobante__estado__in=[1,2])||Q((cpb_comprobante__estado__in=[3])))
-                .select_related('cpb_comprobante','cpb_comprobante__cpb_tipo','cta_egreso','cta_ingreso','tipo_forma_pago').order_by('mdcp_fecha','cpb_comprobante__fecha_cpb','id')                
+            cpbs = cpb_comprobante_fp.objects.filter(cpb_comprobante__empresa=empresa)\
+                .filter(Q(cpb_comprobante__estado__in=[1,2])|Q(cpb_comprobante__cpb_tipo__tipo=24))\
+                .select_related('cpb_comprobante','cpb_comprobante__cpb_tipo','cta_egreso','cta_ingreso','tipo_forma_pago')\
+                .order_by('mdcp_fecha','cpb_comprobante__fecha_cpb')
             
+            if tipo_forma_pago:
+                cpbs = cpbs.filter(tipo_forma_pago=tipo_forma_pago)
             debe=0
             haber=0
             saldo=0
@@ -733,35 +736,11 @@ class caja_diaria(VariablesMixin,ListView):
             debe = cpbs_debe.aggregate(sum=Sum(F('importe'), output_field=DecimalField()))['sum'] or 0  
             haber = cpbs_haber.aggregate(sum=Sum(F('importe'), output_field=DecimalField()))['sum'] or 0  
            
-            cpbs= cpbs_debe | cpbs_haber
-            cpbs = cpbs.order_by('mdcp_fecha')
-           
+            cpbs= cpbs_debe | cpbs_haber                       
             
-            # cpbs = cpbs.filter(cpb_comprobante__fecha_cpb__gte=fdesde)
-            cpbs_anteriores = cpbs.filter(mdcp_fecha__lt=fdesde)
             cpbs_detalles = cpbs.filter(mdcp_fecha__gte=fdesde,mdcp_fecha__lte=fhasta)  
-            cpbs_posteriores = cpbs.filter(mdcp_fecha__gt=fhasta)                 
+            cpbs_detalles = cpbs_detalles.order_by('mdcp_fecha','cpb_comprobante__pto_vta','cpb_comprobante__letra','cpb_comprobante__numero')                
 
-            debe_ant= cpbs_anteriores.filter(cta_ingreso=cta).aggregate(sum=Sum(F('importe'), output_field=DecimalField()))['sum'] or 0  
-            haber_ant = cpbs_anteriores.filter(cta_egreso=cta).aggregate(sum=Sum(F('importe'), output_field=DecimalField()))['sum'] or 0         
-            debe_pos= 0
-            haber_pos = cpbs_posteriores.filter(cta_egreso=cta).aggregate(sum=Sum(F('importe'), output_field=DecimalField()))['sum'] or 0         
-                            
-            saldo_inicial = debe_ant - haber_ant
-            saldo_futuro = debe_pos - haber_pos                
-              
-            # if saldo_inicial != 0:                                
-            #     detalles.append(
-            #             {
-            #             'fecha':fdesde,
-            #             'tipo':'',
-            #             'nro_cpb':'SALDO ANTERIOR',
-            #             'debe': debe_ant,
-            #             'haber':haber_ant,
-            #             'saldo': saldo_inicial,
-            #             }
-            #         )
-            #     saldo_cpb = saldo_inicial
                 
             for c in cpbs_detalles:
                 debe_cpb=0
@@ -789,25 +768,14 @@ class caja_diaria(VariablesMixin,ListView):
                     'haber':haber_cpb,
                     'saldo': saldo_cpb,
                     }
-                )
-            # if saldo_futuro != 0:                                
-            #     detalles.append(
-            #             {
-            #             'fecha':fhasta,
-            #             'tipo':'',
-            #             'nro_cpb':'COMPROMISOS A FUTURO',
-            #             'debe': debe_pos,
-            #             'haber':haber_pos,
-            #             'saldo': saldo_futuro,
-            #             }
-            #         )
-            #     saldo_cpb += saldo_futuro
-
+                )            
+            #detalles.reverse()
+         
             saldo = debe - haber 
             self.request.session["caja_diara_busq"] = self.request.POST
         else:
             self.request.session["caja_diara_busq"] = None        
-                    
+                            
         context['form'] = form
         context['fecha'] = fecha
         context['detalles'] = detalles

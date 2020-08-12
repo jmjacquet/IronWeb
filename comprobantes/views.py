@@ -2044,7 +2044,6 @@ class SaldoInicialCreateView(VariablesMixin,AjaxCreateView):
     
     def get_initial(self):    
         initial = super(SaldoInicialCreateView, self).get_initial()        
-        initial['tipo_form'] = 'ALTA'        
         return initial   
 
     def get_form_kwargs(self,**kwargs):
@@ -2057,20 +2056,18 @@ class SaldoInicialCreateView(VariablesMixin,AjaxCreateView):
         self.object = form.save(commit=False)        
         estado=cpb_estado.objects.get(pk=3)
         tipo=cpb_tipo.objects.get(pk=27)
-        nro = ultimoNro(27,0,'X')
-        cpb = cpb_comprobante(cpb_tipo=tipo,pto_vta=0,letra="X",numero=nro,fecha_cpb=self.object.mdcp_fecha,importe_iva=0,fecha_imputacion=self.object.mdcp_fecha,
+        cpb = cpb_comprobante(cpb_tipo=tipo,pto_vta=0,letra="X",numero=0,fecha_cpb=self.object.mdcp_fecha,importe_iva=0,fecha_imputacion=self.object.mdcp_fecha,
                 importe_total=self.object.importe,estado=estado,usuario=usuario_actual(self.request),fecha_vto=self.object.mdcp_fecha,empresa = empresa_actual(self.request))
-        cpb.save()      
-        self.object.instance = cpb
+        cpb.save()              
         self.object.cpb_comprobante = cpb        
         self.object.save()
         messages.success(self.request, u'Los datos se guardaron con éxito!') 
-        return HttpResponseRedirect(reverse('caja_diaria'))
+        return super(SaldoInicialCreateView, self).form_valid(form)
 
 @login_required
 def SaldoInicialDeleteView(request, id):
     try:
-        objeto = get_object_or_404(cpb_tipo_forma_pago, id=id)       
+        objeto = get_object_or_404(cpb_comprobante, id=id)       
         objeto.delete()
         messages.success(request, u'¡Los datos se guardaron con éxito!')
     except:
