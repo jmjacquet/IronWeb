@@ -56,7 +56,7 @@ urlpatterns = patterns('comprobantes.views',
     url(r'^ncredndeb_ver/(?P<id>\d+)/$', NCNDVerView.as_view(), name="ncredndeb_ver"),       
     url(r'^remito_ver/(?P<id>\d+)/$', RemitoVerView.as_view(), name="remito_ver"),       
     url(r'^presup_ver/(?P<id>\d+)/$', PresupVerView.as_view(), name="presup_ver"),       
-    # url(r'^movim_ver/(?P<id>\d+)/$', MovimVerView.as_view(), name="movim_ver"),       
+    url(r'^movim_ver/(?P<id>\d+)/$', MovimVerView.as_view(), name="movim_ver"),       
     
     url(r'^cpb_anular_reactivar/(?P<id>\d+)/(?P<estado>\d+)/$', cpb_anular_reactivar, name='cpb_anular_reactivar'),
     url(r'^cpbs_anular/$',  cpbs_anular,name="cpbs_anular"),

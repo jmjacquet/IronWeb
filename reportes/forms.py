@@ -106,7 +106,6 @@ class ConsultaCajaDiaria(forms.Form):
     tipo_forma_pago = forms.ModelChoiceField(label='Forma de Pago/Cobro',queryset=cpb_tipo_forma_pago.objects.filter(baja=False),empty_label=label_todos,required = False)
     fdesde =  forms.DateField(label='Fecha Desde',widget=forms.DateInput(attrs={'class': 'form-control datepicker','autocomplete':'off'}),initial=hoy(),required = True)
     fhasta =  forms.DateField(label='Fecha Hasta',widget=forms.DateInput(attrs={'class': 'form-control datepicker','autocomplete':'off'}),initial=hoy(),required = True)    
-        
     def __init__(self, *args, **kwargs):
 		empresa = kwargs.pop('empresa', None)  
 		request = kwargs.pop('request', None) 

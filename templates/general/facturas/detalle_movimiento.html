@@ -1,0 +1,54 @@
+{% load static from staticfiles %}
+{% load bootstrap3 %}
+{% load crispy_forms_tags %}
+{% block main %}    
+<div class=" col-sm-12 "> 
+<div class="row">
+<div class=" col-sm-12 "> 
+{% if cpb.observacion %}
+<table width="100%"  class="table table-striped compact table-hover table-no-bordered tabla_nueva nowrap">   
+   <tr>
+    <td class="texto_der borde_izq borde_abajo">Detalle:</td>
+    <td class="texto_izq borde_izq borde_der borde_abajo" colspan="3">{{cpb.observacion}}</td>    
+  </tr>   
+</table>
+ {% endif %}
+<table width="100%" class="table table-striped compact table-hover table-no-bordered tabla_nueva nowrap">
+  <thead>
+    <th style="width: 30%;">Tipo</th>
+    <th style="width: 30%;">Egreso</th>                                                                      
+    <th style="width: 30%;">Ingreso</th>                                                                          
+    <th style="width: 8%;">Fecha</th>
+    <th style="width: 20%;">Banco</th>
+    <th style="width: 10%;">Nº Cheque</th>
+    <th style="width: 20%;">Importe</th>          
+  </thead>
+  <tbody>
+  {% for item in detalle %}
+    <tr>
+      <td class="listado_izq borde_izq">{{item.tipo_forma_pago|default_if_none:''}}</td>
+      <td class="listado_izq borde_izq">{{item.cta_egreso|default_if_none:''}}</td>
+      <td class="listado_izq borde_izq">{{item.cta_ingreso|default_if_none:''}}</td>
+      <td class="listado_izq borde_izq">{{item.mdcp_fecha|date:'d/m/Y'}}</td>
+      <td class="listado_izq borde_izq">{{item.mdcp_banco|default_if_none:''}}</td>
+      <td class="listado_izq borde_izq">{{item.mdcp_cheque|default_if_none:''}}</td>      
+      <td class="listado_der borde_der borde_izq">${{item.importe|default_if_none:0|floatformat:2}}</td>
+    </tr>       
+  {% endfor detalle %}
+  </tbody>
+  <tfoot>
+     <tr>
+       <th colspan="5"></th>
+       <th >Total:</th>
+       <th> ${{cpb.importe_total|default_if_none:0|floatformat:2}}</th>
+     </tr>
+    </tfoot>   
+ </table> 
+</div>
+
+<div class=" col-sm-12 "> 
+<button data-dismiss="modal" class="btn pull-left btn-sm red-flamingo" type="button"><i class="fa fa-times"></i>Cancelar</button>
+<a class="btn pull-right btn-sm blue-steel" target="_blank" href="{% url 'imprimirCobranza' id=cpb.pk %}">Imprimir</a>
+</div>
+</div>  
+{% endblock main %}      

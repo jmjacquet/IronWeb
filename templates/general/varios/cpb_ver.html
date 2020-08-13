@@ -7,6 +7,8 @@
 		href="{% url 'remito_ver' id=cpb.id %}"
 	{% elif cpb.cpb_tipo.tipo == 6 %}
 		href="{% url 'presup_ver' id=cpb.id %}"
+	{% elif c.tipo.tipo == 8 %}
+		href="{% url 'movim_ver' id=c.cpb_id %}"
 	{% else %}
 		href="{% url 'comprobante_ver' id=cpb.id %}"
 	{% endif %}

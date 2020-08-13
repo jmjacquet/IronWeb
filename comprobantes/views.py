@@ -1265,8 +1265,7 @@ class MovInternosCreateView(VariablesMixin,CreateView):
         tipo=cpb_tipo.objects.get(pk=13)
         self.object.cpb_tipo=tipo
         self.object.empresa = empresa_actual(self.request)
-        self.object.usuario = usuario_actual(self.request)
-        self.object.fecha_cpb = hoy()
+        self.object.usuario = usuario_actual(self.request)        
         self.object.fecha_imputacion=self.object.fecha_cpb
         self.object.save()
         cpb_fp.instance = self.object
@@ -1491,6 +1490,28 @@ class PresupVerView(VariablesMixin,DetailView):
         detalle_comprobante = cpb_comprobante_detalle.objects.filter(cpb_comprobante=cpb).select_related('producto','tasa_iva')       
         context['detalle_comprobante'] = detalle_comprobante    
 
+        return context
+
+class MovimVerView(VariablesMixin,DetailView):
+    model = cpb_comprobante
+    pk_url_kwarg = 'id'
+    context_object_name = 'cpb'
+    template_name = 'general/facturas/detalle_movimiento.html'
+
+    @method_decorator(login_required)
+    def dispatch(self, *args, **kwargs): 
+        return super(MovimVerView, self).dispatch(*args, **kwargs)
+
+    def get_context_data(self, **kwargs):        
+        context = super(MovimVerView, self).get_context_data(**kwargs)
+        try:
+            config = empresa_actual(self.request)
+        except gral_empresa.DoesNotExist:
+            config = None 
+        cpb = self.object
+        context['config'] = config
+        detalle = cpb_comprobante_fp.objects.filter(cpb_comprobante=cpb).select_related('tipo_forma_pago','mdcp_banco','cta_ingreso','cta_egreso')       
+        context['detalle'] = detalle               
         return context
 
 #************* PercImp **************

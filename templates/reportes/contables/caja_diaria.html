@@ -14,7 +14,7 @@
     </div> 
          <div class="row cerca">
             <div class="col-md-12">
-             <form class="form" accept-charset="UTF-8" role="form" action="" method="post">
+             <form class="form" accept-charset="UTF-8" role="form" id="form-cierre" action="" method="post">
                 {% csrf_token %} 
                 <div class="barra_busqueda col-sm-12">
                     <div class="col-sm-4">{% bootstrap_field form.cuenta  %}</div>
@@ -22,6 +22,7 @@
                     <div class="col-sm-1">{% bootstrap_field form.fdesde  %}</div>                                
                     <div class="col-sm-1">{% bootstrap_field form.fhasta  %}</div>                                    
                     <div class="col-sm-1"><button style="float:left;margin-left:20px;" class="btn btn-sm blue-hoki" type="submit">Buscar</button></div>
+                    {% for hidden in form.hidden_fields %} {{ hidden }} {% endfor %}
                 </div>     
                 </form>         
             </div>
@@ -30,6 +31,7 @@
             <div class="col-md-12">
               <div class="btn-group btnAccion" style="float:left;margin-right:10px;margin-bottom:10px;">                    
                     <a class="btn btn-sm blue-hoki modal-create" style="float:left;margin-right:20px;" href="{% url 'saldo_inicial_nuevo' %}" data-modal-head="SALDO INICIAL DIARIO" data-modal-callback="reload">Saldo Inicial Diario</a>
+                    <button class="btn btn-sm btn-danger" id="cierre_diario" style="float:right;margin-right:20px;">Ver Cierre Diario</button>
               </div>
               <table id="dataTables-ingresos" class="table table-striped compact table-hover table-no-bordered tabla_nueva nowrap">   
                 <thead>
@@ -242,6 +244,35 @@ $.fn.datepicker.dates['es'] = {
 
 });
 
+  const form = document.forms.form;
+  function abrir_modal(url) {
+      $('#popup').load(url, function() {
+          $(this).modal('show');
+      });
+      return false;
+  }
+  function cerrar_modal() {
+      $('#popup').modal('hide');
+      return false;
+  }
+
+  function copiarBusq() {
+    const fdesde = $('#id_fdesde').val();
+    const fhasta = $('#id_fhasta').val();
+  };
+  $('#cierre_diario').click(function(){         
+      var fdesde = $('#id_fdesde').val();
+      var fhasta = $('#id_fhasta').val();
+      var cuenta = $('#id_cuenta').val();
+      var fp = $('#id_tipo_forma_pago').val();
+      var url = '?fdesde='+fdesde+'&fhasta='+fhasta+'&cuenta='+cuenta;
+      if (fp!=''){
+        url = url+'&fp='+fp;
+      };
+      if (url!=''){
+        return abrir_modal("/reportes/ver_cierre_diario"+url);
+    }
+ });   
 
 
 </script>
