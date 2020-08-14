@@ -7,40 +7,42 @@
         <link rel="stylesheet" href="{% static 'css/comprobantes.css'%}?{% now "Ymd"%}" type="text/css" >  
 {% endblock %}
 <div class="modal-dialog modal-modal">
-        <div class="modal-content">
-               <div class="row">
-                 <div data-dismiss="modal" class="close-modal">
-                          <button type="button" class="close" data-dismiss="modal" aria-hidden="true">x</button>        
-                        </div>
-                 <div class="modal-head">                        
-                        CHEQUES EN CARTERA
-                </div>
-               
-                <div class="modal-body">
-                        <div class="row">
-                               <div class=" col-sm-12 ">                                                                       
-                                 <form role="form" class="form cpb" method="POST" action="" id="selecc_cheques">
-                                {% csrf_token %}     
-                                 <div class=" col-xs-12">
-                                 {% bootstrap_field formCheques.cheques  %}                                  
-                                  </div> 
-                                                     
-                         </div> 
-                        </div>
-                </div>
-                <div class="modal-buttons">
-                        <div class="row">
-                              <div class="col-xs-6">
-                                  <button data-dismiss="modal" class="btn pull-left btn red-flamingo" type="button"><i class="fa fa-times"></i>Cancelar</button>
-                              </div>
-                              <div class="col-xs-6">
-                                  <button id="AceptarSeleccionCheque" data-dismiss="modal" type="button" class="btn pull-right blue-steel"><i class="fa fa-check"></i>Aceptar</button>                                
-                              </div>
-                        </div>
-                </div>
-                </form>
-            </div>  
+  <div class="modal-content">
+    <div class="modal-wrapper">
+      <div data-dismiss="modal" class="close-modal">
+        <button type="button" class="close" data-dismiss="modal" aria-hidden="true">x</button>
+      </div>
+      <div class="modal-head">
+        CHEQUES EN CARTERA
+      </div>
+      
+      <div class="modal-body">
+
+          <div class=" col-sm-12 ">
+            <form role="form" class="form cpb" method="POST" action="" id="selecc_cheques">
+              {% csrf_token %}
+              <div class=" col-xs-12">
+                {% bootstrap_field formCheques.cheques  %}
+              </div>
+              
+            </div>
+
         </div>
+        <div class="modal-buttons">
+          <div class="col-xs-12">
+          <div class="row">
+            <div class="col-xs-6">
+              <button data-dismiss="modal" class="btn pull-left btn-sm red-flamingo" type="button"><i class="fa fa-times"></i>Cancelar</button>
+            </div>
+            <div class="col-xs-6">
+              <button id="AceptarSeleccionCheque" data-dismiss="modal" type="button" class="btn btn-sm pull-right blue-steel"><i class="fa fa-check"></i>Aceptar</button>
+            </div>
+          </div>
+        </div>
+        </div>
+      </form>
+    </div>
+  </div>
     <script type="text/javascript">
            function calcularTotales(){                
               var tot=0;
