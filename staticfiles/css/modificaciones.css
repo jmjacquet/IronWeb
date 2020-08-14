@@ -496,3 +496,14 @@ textarea.form-control{height:auto}
 .texto_detalle{
     font-size: 12px !important;
 }
+
+.cierre_caja{
+  font-size: 1.5em;
+    font-weight: bold;  
+}
+
+
+.total_saldo{
+    font-weight: bold;
+   border-top: 1px solid #707070;   
+}

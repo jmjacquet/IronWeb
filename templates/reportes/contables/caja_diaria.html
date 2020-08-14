@@ -31,7 +31,9 @@
             <div class="col-md-12">
               <div class="btn-group btnAccion" style="float:left;margin-right:10px;margin-bottom:10px;">                    
                     <a class="btn btn-sm blue-hoki modal-create" style="float:left;margin-right:20px;" href="{% url 'saldo_inicial_nuevo' %}" data-modal-head="SALDO INICIAL DIARIO" data-modal-callback="reload">Saldo Inicial Diario</a>
-                    <button class="btn btn-sm btn-danger" id="cierre_diario" style="float:right;margin-right:20px;">Ver Cierre Diario</button>
+                    {% if detalles %}
+                      <button class="btn btn-sm btn-danger" id="cierre_diario" style="float:right;margin-right:20px;">Ver Cierre Diario</button>
+                    {% endif %}
               </div>
               <table id="dataTables-ingresos" class="table table-striped compact table-hover table-no-bordered tabla_nueva nowrap">   
                 <thead>
@@ -269,7 +271,7 @@ $.fn.datepicker.dates['es'] = {
       if (fp!=''){
         url = url+'&fp='+fp;
       };
-      if (url!=''){
+      if ((url!='')&&(cuenta!='')) {
         return abrir_modal("/reportes/ver_cierre_diario"+url);
     }
  });   

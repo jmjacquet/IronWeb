@@ -5,23 +5,38 @@
 {% block extra_css %}
   <link rel="stylesheet" href="{% static 'css/comprobantes.css'%}" type="text/css" >
 {% endblock %}
-<div class="modal-dialog modal-modal ">
+<div class="modal-dialog modal-modal " style="width: 468px;">
   <div class="modal-content">
     <div class="modal-wrapper">
-      <div data-dismiss="modal" class="close-modal"><button type="button" class="close" data-dismiss="modal" aria-hidden="true">x</button></div>
+      <div data-dismiss="modal" class="close-modal" ><button type="button" class="close" data-dismiss="modal" aria-hidden="true">x</button></div>
       <div class="modal-head">TOTAL DIARIO</div>
-      <div class="modal-body  text-center">
-        <div class="row">
-          <div class="col-sm-6">{{tot_debe}}</div>
-          <div class="col-sm-6">{{tot_haber}}</div>
-          
+      <div class="modal-body cierre_caja">
+        <div class="col-xs-1"></div>
+        <div class="col-xs-10">
+        <div class="row">          
+          <div class="col-sm-6 text-right">Total Saldo Inicial</div>
+          <div class="col-sm-6  text-right {% if tot_saldo_ini < 0 %}text-danger{% endif %}">${{tot_saldo_ini}}</div>          
         </div>
+        <div class="row">
+          <div class="col-sm-6 text-right">Total Ingresos</div>
+          <div class="col-sm-6  text-right {% if tot_debe < 0 %}text-danger{% endif %}">${{tot_debe}}</div>          
+        </div>
+        <div class="row">
+          <div class="col-sm-6 text-right">Total Egresos</div>
+          <div class="col-sm-6  text-right {% if tot_haber < 0 %}text-danger{% endif %}">${{tot_haber}}</div>          
+        </div>
+        <div class="row">
+          <div class="col-sm-6 total_saldo text-right">Saldo Restante</div>
+          <div class="col-sm-6 total_saldo text-right text-{% if saldo < 0 %}danger{% else %}success{% endif %}">${{saldo}}</div>          
+        </div>
+        </div>
+        <div class="col-xs-1"></div>
       </div>
       <div class="modal-buttons">
          <div class="col-xs-12" id="form-container">
           <div class="row">
           <div class="col-xs-6">
-            <button data-dismiss="modal" class="btn btn-sm pull-left btn btn-danger" type="button">
+            <button data-dismiss="modal" class="btn btn-xs pull-left btn btn-danger" type="button">
             <i class="fa fa-times"></i> {% trans 'Cancelar' %}
             </button>
           </div>

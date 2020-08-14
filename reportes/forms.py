@@ -103,7 +103,7 @@ class ConsultaLibroIVACompras(forms.Form):
 
 class ConsultaCajaDiaria(forms.Form):                   
     cuenta = forms.ModelChoiceField(label='Cuenta Ingreso/Egreso',queryset=cpb_cuenta.objects.all(),empty_label='Seleccione la Cuenta',required = True)
-    tipo_forma_pago = forms.ModelChoiceField(label='Forma de Pago/Cobro',queryset=cpb_tipo_forma_pago.objects.filter(baja=False),empty_label=label_todos,required = False)
+    tipo_forma_pago = forms.ModelChoiceField(label='Forma de Pago/Cobro',queryset=cpb_tipo_forma_pago.objects.filter(baja=False),empty_label=label_todos,required = True)
     fdesde =  forms.DateField(label='Fecha Desde',widget=forms.DateInput(attrs={'class': 'form-control datepicker','autocomplete':'off'}),initial=hoy(),required = True)
     fhasta =  forms.DateField(label='Fecha Hasta',widget=forms.DateInput(attrs={'class': 'form-control datepicker','autocomplete':'off'}),initial=hoy(),required = True)    
     def __init__(self, *args, **kwargs):

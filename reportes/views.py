@@ -769,8 +769,7 @@ class caja_diaria(VariablesMixin,ListView):
                     'saldo': saldo_cpb,
                     }
                 )            
-            #detalles.reverse()
-         
+
             saldo = debe - haber 
             self.request.session["caja_diara_busq"] = self.request.POST
         else:
@@ -789,24 +788,31 @@ def ver_cierre_diario(request):
     fdesde = datetime. strptime(request.GET.get('fdesde', hoy()),'%d/%m/%Y')
     fhasta = datetime. strptime(request.GET.get('fhasta', hoy()),'%d/%m/%Y')
     cuenta = request.GET.get('cuenta', None)    
+    if not cuenta:
+        return HttpResponseRedirect(reverse('caja_diaria'))
     fp = request.GET.get('fp', None)
     try:
         empresa = empresa_actual(request)
     except gral_empresa.DoesNotExist:
         empresa = None 
+    
     cpbs = cpb_comprobante_fp.objects.filter(cpb_comprobante__empresa=empresa,mdcp_fecha__gte=fdesde,mdcp_fecha__lte=fhasta)\
                 .filter(Q(cpb_comprobante__estado__in=[1,2])|Q(cpb_comprobante__cpb_tipo__tipo=24))\
                 .order_by('mdcp_fecha','cpb_comprobante__fecha_cpb')
     if fp:
         cpbs = cpbs.filter(tipo_forma_pago__pk=fp)
 
-    cpbs_debe = cpbs.filter(cta_ingreso=cuenta)
-    cpbs_haber= cpbs.filter(cta_egreso=cuenta) 
+    tot_saldo_ini = cpbs.filter(cpb_comprobante__cpb_tipo__tipo=24).aggregate(sum=Sum(F('importe'), output_field=DecimalField()))['sum'] or 0  
+    
+    cpbs_debe = cpbs.filter(cta_ingreso=cuenta).exclude(cpb_comprobante__cpb_tipo__tipo=24)
+    cpbs_haber= cpbs.filter(cta_egreso=cuenta).exclude(cpb_comprobante__cpb_tipo__tipo=24)
+
     tot_debe = cpbs_debe.aggregate(sum=Sum(F('importe'), output_field=DecimalField()))['sum'] or 0  
+    
     tot_haber = cpbs_haber.aggregate(sum=Sum(F('importe'), output_field=DecimalField()))['sum'] or 0  
-    print tot_debe
-    print tot_haber
-    variables = RequestContext(request, {'tot_debe':tot_debe,'tot_haber':tot_haber})        
+    saldo = tot_saldo_ini + tot_debe - tot_haber
+    variables = RequestContext(request, {'tot_debe':tot_debe,'tot_haber':tot_haber,'tot_saldo_ini':tot_saldo_ini,'saldo':saldo})        
+    
     return render_to_response("reportes/contables/caja_diaria_total.html", variables)
 
 ################################################################
