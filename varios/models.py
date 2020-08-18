@@ -344,7 +344,6 @@ class cpb_comprobante(models.Model):
             return self.importe_perc_imp * signo
         else:
             return self.importe_perc_imp
-
     
 class cpb_comprobante_detalle(models.Model):
     id = models.AutoField(primary_key=True,db_index=True)
@@ -367,7 +366,6 @@ class cpb_comprobante_detalle(models.Model):
     origen_destino = models.ForeignKey('productos.prod_ubicacion',verbose_name='Origen/Destino', db_column='origen_destino',blank=True, null=True,on_delete=models.SET_NULL)
     fecha_creacion = models.DateTimeField(auto_now_add = True)
     detalle = models.TextField(max_length=500,blank=True, null=True) # Field name made lowercase.   
-
     class Meta:
         db_table = 'cpb_comprobante_detalle'
     
@@ -425,7 +423,6 @@ class cpb_comprobante_perc_imp(models.Model):
     perc_imp = models.ForeignKey('comprobantes.cpb_perc_imp',db_column='perc_imp',blank=True, null=True,on_delete=models.SET_NULL) #Cliente/Proveedor    
     detalle = models.TextField(max_length=500,blank=True, null=True) # Field name made lowercase.   
     importe_total = models.DecimalField(max_digits=15, decimal_places=2, blank=True, null=True,default=0)    
-
     class Meta:
         db_table = 'cpb_comprobante_perc_imp'
     
@@ -454,7 +451,6 @@ class cpb_comprobante_retenciones(models.Model):
     ret_fecha_cpb = models.DateField(verbose_name=u'Fecha Retención',blank=True, null=True) #Fecha del certificado de retención recibido.
     detalle = models.TextField(max_length=500,blank=True, null=True) 
     importe_total = models.DecimalField(u'Importe Retenido',max_digits=15, decimal_places=2, blank=True, null=True,default=0)# Valor de la retención.
-
     class Meta:
         db_table = 'cpb_comprobante_retenciones'
     
@@ -487,7 +483,6 @@ class cpb_cobranza(models.Model):
     #Descuento o Recargo que tuvo la factura
     desc_rec = models.DecimalField(max_digits=15, decimal_places=2, blank=True, null=True,default=0)    
     fecha_creacion = models.DateTimeField(auto_now_add = True)
-
     class Meta:
         db_table = 'cpb_cobranza'
     
@@ -537,7 +532,6 @@ class cpb_tipo_forma_pago(models.Model):
     def __unicode__(self):
         return u'%s - %s' % (self.codigo,self.nombre) 
 
-
 class cpb_comprobante_fp(models.Model):
     id = models.AutoField(primary_key=True,db_index=True)
     cpb_comprobante = models.ForeignKey('comprobantes.cpb_comprobante',verbose_name=u'CPB', db_column='cpb_comprobante',blank=True, null=True,on_delete=models.CASCADE)
@@ -551,7 +545,6 @@ class cpb_comprobante_fp(models.Model):
     detalle = models.TextField(max_length=500,blank=True, null=True) # Field name made lowercase.   
     fecha_creacion = models.DateTimeField(auto_now_add = True)    
     mdcp_salida = models.ForeignKey('comprobantes.cpb_comprobante_fp',db_column='mdcp_salida',related_name='fp_mov_salida',blank=True, null=True,on_delete=models.SET_NULL)     
-
     class Meta:
         db_table = 'cpb_comprobante_fp'
     

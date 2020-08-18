@@ -15,7 +15,7 @@ from django.db.models import Q,Sum,Count,FloatField,Func
 from comprobantes.models import *
 import json
 from decimal import *
-from modal.views import AjaxCreateView,AjaxUpdateView,AjaxDeleteView
+from fm.views import AjaxCreateView,AjaxUpdateView,AjaxDeleteView
 from django.contrib import messages
 from general.utilidades import *
 from general.views import VariablesMixin,getVariablesMixin
@@ -310,6 +310,7 @@ def cta_cte_proveedores(request,id=None):
 
         return render(request,'reportes/cta_cte/cta_cte_proveedores.html',context )
     
+
 class saldos_proveedores(VariablesMixin,ListView):
     model = cpb_comprobante
     template_name = 'reportes/cta_cte/saldos_proveedores.html'
@@ -668,10 +669,10 @@ def libro_iva_compras(request):
 
         if int(fact_x)==1:
             cpbs= cpbs.filter(cpb_tipo__libro_iva=True).exclude(letra='X')
-
+        
         id_cpbs = [c.pk for c in cpbs]        
         alicuotas = cpb_comprobante_tot_iva.objects.filter(cpb_comprobante__pk__in=id_cpbs).order_by('-cpb_comprobante__fecha_imputacion','-cpb_comprobante__id')
-        
+
         if ('cpbs' in request.POST)and(cpbs):                
             response = HttpResponse(generarCITI(cpbs,'C','cpbs'),content_type='text/plain')
             response['Content-Disposition'] = 'attachment;filename="CITI_COMPRAS_CBTE.txt"'
@@ -708,139 +709,7 @@ class caja_diaria(VariablesMixin,ListView):
             empresa = empresa_actual(self.request)
         except gral_empresa.DoesNotExist:
             empresa = None 
-        busq = None        
-        if self.request.POST:
-            busq = self.request.POST
-        else:
-            if 'caja_diara_busq' in self.request.session:
-                busq = self.request.session["caja_diara_busq"]        
-        form = ConsultaCajaDiaria(busq or None,empresa=empresa,request=self.request)   
-        cpbs = None
-        fecha = date.today()
-        detalles = []
-        if form.is_valid():                                            
-            fdesde = form.cleaned_data['fdesde']   
-            fhasta = form.cleaned_data['fhasta']   
-            cta = form.cleaned_data['cuenta']                                                         
-            tipo_forma_pago = form.cleaned_data['tipo_forma_pago']            
-                                   
-            cpbs = cpb_comprobante_fp.objects.filter(cpb_comprobante__empresa=empresa)\
-                .filter(Q(cpb_comprobante__estado__in=[1,2])|Q(cpb_comprobante__cpb_tipo__tipo=24))\
-                .select_related('cpb_comprobante','cpb_comprobante__cpb_tipo','cta_egreso','cta_ingreso','tipo_forma_pago')\
-                .order_by('mdcp_fecha','cpb_comprobante__fecha_cpb')
-            
-            if tipo_forma_pago:
-                cpbs = cpbs.filter(tipo_forma_pago=tipo_forma_pago)
-            debe=0
-            haber=0
-            saldo=0
-            saldo_cpb=0
-                                        
-            cpbs_debe = cpbs.filter(cta_ingreso=cta)
-            cpbs_haber= cpbs.filter(cta_egreso=cta) 
-            debe = cpbs_debe.aggregate(sum=Sum(F('importe'), output_field=DecimalField()))['sum'] or 0  
-            haber = cpbs_haber.aggregate(sum=Sum(F('importe'), output_field=DecimalField()))['sum'] or 0  
-           
-            cpbs= cpbs_debe | cpbs_haber                       
-            
-            cpbs_detalles = cpbs.filter(mdcp_fecha__gte=fdesde,mdcp_fecha__lte=fhasta)  
-            cpbs_detalles = cpbs_detalles.order_by('mdcp_fecha','cpb_comprobante__pto_vta','cpb_comprobante__letra','cpb_comprobante__numero')                
-
-                
-            for c in cpbs_detalles:
-                debe_cpb=0
-                haber_cpb=0
-                                    
-                if c.cta_ingreso == cta:
-                    debe_cpb = c.importe                        
-                
-                if c.cta_egreso == cta:
-                    haber_cpb = c.importe                                            
-
-                saldo_cpb += (debe_cpb-haber_cpb)
-                detalles.append(
-                    {
-                    'fecha':c.mdcp_fecha,
-                    'tipo':c.cpb_comprobante.cpb_tipo,
-                    'cpb_id':c.cpb_comprobante.pk,
-                    'cpb_fecha':c.cpb_comprobante.fecha_cpb,
-                    'cpb_venc':c.cpb_comprobante.fecha_vto,
-                    'nro_cpb':c.cpb_comprobante.get_cpb,
-                    'fp':c.tipo_forma_pago,
-                    'cheque':c.mdcp_cheque, 
-                    'banco':c.mdcp_banco,                   
-                    'debe':debe_cpb,
-                    'haber':haber_cpb,
-                    'saldo': saldo_cpb,
-                    }
-                )            
-
-            saldo = debe - haber 
-            self.request.session["caja_diara_busq"] = self.request.POST
-        else:
-            self.request.session["caja_diara_busq"] = None        
-                            
-        context['form'] = form
-        context['fecha'] = fecha
-        context['detalles'] = detalles
-        return context
-    
-    def post(self, *args, **kwargs):
-        return self.get(*args, **kwargs)
-
-@login_required 
-def ver_cierre_diario(request):            
-    fdesde = datetime. strptime(request.GET.get('fdesde', hoy()),'%d/%m/%Y')
-    fhasta = datetime. strptime(request.GET.get('fhasta', hoy()),'%d/%m/%Y')
-    cuenta = request.GET.get('cuenta', None)    
-    if not cuenta:
-        return HttpResponseRedirect(reverse('caja_diaria'))
-    fp = request.GET.get('fp', None)
-    try:
-        empresa = empresa_actual(request)
-    except gral_empresa.DoesNotExist:
-        empresa = None 
-    
-    cpbs = cpb_comprobante_fp.objects.filter(cpb_comprobante__empresa=empresa,mdcp_fecha__gte=fdesde,mdcp_fecha__lte=fhasta)\
-                .filter(Q(cpb_comprobante__estado__in=[1,2])|Q(cpb_comprobante__cpb_tipo__tipo=24))\
-                .order_by('mdcp_fecha','cpb_comprobante__fecha_cpb')
-    if fp:
-        cpbs = cpbs.filter(tipo_forma_pago__pk=fp)
-
-    tot_saldo_ini = cpbs.filter(cpb_comprobante__cpb_tipo__tipo=24).aggregate(sum=Sum(F('importe'), output_field=DecimalField()))['sum'] or 0  
-    
-    cpbs_debe = cpbs.filter(cta_ingreso=cuenta).exclude(cpb_comprobante__cpb_tipo__tipo=24)
-    cpbs_haber= cpbs.filter(cta_egreso=cuenta).exclude(cpb_comprobante__cpb_tipo__tipo=24)
-
-    tot_debe = cpbs_debe.aggregate(sum=Sum(F('importe'), output_field=DecimalField()))['sum'] or 0  
-    
-    tot_haber = cpbs_haber.aggregate(sum=Sum(F('importe'), output_field=DecimalField()))['sum'] or 0  
-    saldo = tot_saldo_ini + tot_debe - tot_haber
-    variables = RequestContext(request, {'tot_debe':tot_debe,'tot_haber':tot_haber,'tot_saldo_ini':tot_saldo_ini,'saldo':saldo})        
-    
-    return render_to_response("reportes/contables/caja_diaria_total.html", variables)
-
-################################################################
-
-class ingresos_egresos(VariablesMixin,ListView):
-    model = cpb_comprobante
-    template_name = 'reportes/contables/ingresos_egresos.html'
-    context_object_name = 'cpbs'    
-
-    @method_decorator(login_required)
-    def dispatch(self, *args, **kwargs):         
-        limpiar_sesion(self.request)        
-        if not tiene_permiso(self.request,'rep_caja_diaria'):
-            return redirect(reverse('principal'))  
-        return super(ingresos_egresos, self).dispatch(*args,**kwargs)
-
-    def get_context_data(self, **kwargs):
-        context = super(ingresos_egresos, self).get_context_data(**kwargs)
-        try:
-            empresa = empresa_actual(self.request)
-        except gral_empresa.DoesNotExist:
-            empresa = None 
-        form = ConsultaIngresosEgresos(self.request.POST or None,empresa=empresa,request=self.request)            
+        form = ConsultaCajaDiaria(self.request.POST or None,empresa=empresa,request=self.request)            
         fecha = date.today()
         ingresos = None
         egresos = None
@@ -943,7 +812,7 @@ class saldos_cuentas(VariablesMixin,ListView):
             
             for cta in ctas:
                 
-                cpbs = cpb_comprobante_fp.objects.filter(cpb_comprobante__empresa=empresa,cpb_comprobante__estado__in=[1,2]).select_related('cpb_comprobante','cpb_comprobante__cpb_tipo','cta_egreso','cta_ingreso','tipo_forma_pago').order_by('cpb_comprobante__fecha_cpb','id')                
+                cpbs = cpb_comprobante_fp.objects.filter(cpb_comprobante__empresa=empresa,cpb_comprobante__estado__in=[1,2],cpb_comprobante__fecha_cpb__lte=fhasta).select_related('cpb_comprobante','cpb_comprobante__cpb_tipo','cta_egreso','cta_ingreso','tipo_forma_pago').order_by('cpb_comprobante__fecha_cpb','id')                
                 if pto_vta:
                     cpbs = cpbs.filter(cpb_comprobante__pto_vta=pto_vta)
                 
@@ -963,8 +832,8 @@ class saldos_cuentas(VariablesMixin,ListView):
                
                 
                 # cpbs = cpbs.filter(cpb_comprobante__fecha_cpb__gte=fdesde)
-                cpbs_anteriores = cpbs.filter(mdcp_fecha__lt=fdesde)
-                cpbs_detalles = cpbs.filter(mdcp_fecha__gte=fdesde,mdcp_fecha__lte=fhasta)  
+                cpbs_anteriores = cpbs.filter(mdcp_fecha__lte=fdesde)
+                cpbs_detalles = cpbs.filter(mdcp_fecha__gt=fdesde,mdcp_fecha__lte=fhasta)  
                 cpbs_posteriores = cpbs.filter(mdcp_fecha__gt=fhasta)                 
 
                 debe_ant= cpbs_anteriores.filter(cta_ingreso=cta).aggregate(sum=Sum(F('importe'), output_field=DecimalField()))['sum'] or 0  

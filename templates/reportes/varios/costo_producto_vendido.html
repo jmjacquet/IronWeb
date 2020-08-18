@@ -33,7 +33,7 @@
                     <tr>                                                               
                         <th class="text-center">Fecha Mov.</th>
                         <th class="text-left">Nº CPB</th>
-                        <th class="text-left">Tipo Movimiento</th>
+                        <th class="text-left">Tipo</th>
                         <th class="">Producto</th>                                                                
                         <th>Categoría</th>                        
                         <th class="text-right">Cantidad</th>                                                
@@ -48,8 +48,8 @@
                         <tr  {% if m.producto.baja %} class='danger' {% endif %}>                                                                                                        
                             <td class="text-center">{{m.cpb_comprobante.fecha_cpb|date:'d/m/Y'}}</td>
                             {% with cpb=m.cpb_comprobante %}                            
-                            <td class="text-left" title="{{ cpb.cpb_tipo|default_if_none:'' }}">{% include "general/varios/cpb_ver.html" %}{{ cpb}}</td>
-                            <td class="">{{ cpb.cpb_tipo|default_if_none:'' }}</td>
+                            <td class="text-left" title="{{ cpb.cpb_tipo|default_if_none:'' }}">{% include "general/varios/cpb_ver.html" %}{{ cpb}}</td>                            
+                            <td class="text-center" title="{{ cpb.cpb_tipo|default_if_none:'' }}">{{ cpb.cpb_tipo.codigo|default_if_none:'' }}</td>
                             {% endwith %}                            
                             <td {% if m.producto.baja %} title='DADO DE BAJA' {% endif %}>{% if m.producto %} <a href="{% url 'producto_ver' id=m.producto.pk %}" class="modal-detail" data-modal-head="DETALLE PRODUCTO {{m.producto.codigo}}" data-modal-callback="reload">{% endif %}
                             <strong>{{m.producto|default_if_none:''|truncatechars:60}}</strong></a></td>           
