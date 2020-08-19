@@ -103,9 +103,9 @@
                             <tr>                                
                                 <td class="text-center" title="{{ a.cpb_comprobante.cpb_tipo}}">{{ a.cpb_comprobante.cpb_tipo.codigo|default_if_none:'' }}</td>
                                 <td >{{ a.cpb_comprobante.get_cpb}}</td>                                
-                                <td class="importe">${{a.importe_base|default_if_none:0|floatformat:2}}</td>
+                                <td class="importe">${{a.importe|default_if_none:0|floatformat:2}}</td>
                                 <td class="importe">{{a.get_iva|default_if_none:0|floatformat:2}}</td>
-                                <td class="importe">${{a.importe_total|default_if_none:0|floatformat:2}}</td>
+                                <td class="importe">${{a.importe_final|default_if_none:0|floatformat:2}}</td>
                             </tr>
                             {% endfor %}
                         </tbody>
