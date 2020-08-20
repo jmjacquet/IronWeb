@@ -635,7 +635,6 @@ def libro_iva_ventas(request):
 
 @login_required                    
 def libro_iva_compras(request):
-
     if not tiene_permiso(request,'rep_libro_iva'):
             return redirect(reverse('principal'))  
     context = {}

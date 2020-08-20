@@ -575,6 +575,7 @@ def libro_iva_ventas(request):
     form = ConsultaLibroIVAVentas(request.POST or None,request=request)            
     fecha = date.today()
     cpbs = None
+    alicuotas = None
     if form.is_valid():                                
         entidad = form.cleaned_data['entidad']                                                              
         fdesde = form.cleaned_data['fdesde']   
@@ -612,6 +613,12 @@ def libro_iva_ventas(request):
         if int(fact_x)==1:
             cpbs= cpbs.filter(cpb_tipo__libro_iva=True)
                
+        id_cpbs = [c.pk for c in cpbs]        
+        alicuotas = cpb_comprobante_tot_iva.objects.filter(cpb_comprobante__pk__in=id_cpbs)\
+                    .annotate(importe_final=Sum(F('importe_total')*F('cpb_comprobante__cpb_tipo__signo_ctacte'), output_field=DecimalField()),\
+                        importe=Sum(F('importe_base')*F('cpb_comprobante__cpb_tipo__signo_ctacte'), output_field=DecimalField()))\
+                    .order_by('-cpb_comprobante__fecha_imputacion','-cpb_comprobante__id')
+
         if ('cpbs' in request.POST)and(cpbs):                
             response = HttpResponse(generarCITI(cpbs,'V','cpbs'),content_type='text/plain')
             response['Content-Disposition'] = 'attachment;filename="CITI_VENTAS_CBTE.txt"'
@@ -622,6 +629,7 @@ def libro_iva_ventas(request):
             return response 
         
     context['form'] = form
+    context['alicuotas'] = alicuotas
     context['cpbs'] = cpbs
     context['fecha'] = fecha          
     return render(request,'reportes/contables/libro_iva_ventas.html',context )
@@ -669,10 +677,13 @@ def libro_iva_compras(request):
 
         if int(fact_x)==1:
             cpbs= cpbs.filter(cpb_tipo__libro_iva=True).exclude(letra='X')
-        
-        id_cpbs = [c.pk for c in cpbs]        
-        alicuotas = cpb_comprobante_tot_iva.objects.filter(cpb_comprobante__pk__in=id_cpbs).order_by('-cpb_comprobante__fecha_imputacion','-cpb_comprobante__id')
 
+        id_cpbs = [c.pk for c in cpbs]        
+        alicuotas = cpb_comprobante_tot_iva.objects.filter(cpb_comprobante__pk__in=id_cpbs)\
+                    .annotate(importe_final=Sum(F('importe_total')*F('cpb_comprobante__cpb_tipo__signo_ctacte'), output_field=DecimalField()),\
+                        importe=Sum(F('importe_base')*F('cpb_comprobante__cpb_tipo__signo_ctacte'), output_field=DecimalField()))\
+                    .order_by('-cpb_comprobante__fecha_imputacion','-cpb_comprobante__id')
+        
         if ('cpbs' in request.POST)and(cpbs):                
             response = HttpResponse(generarCITI(cpbs,'C','cpbs'),content_type='text/plain')
             response['Content-Disposition'] = 'attachment;filename="CITI_COMPRAS_CBTE.txt"'

@@ -91,8 +91,10 @@
                     <table id="dataTables-cpb_venta_alic" class="table table-striped compact table-hover table-no-bordered tabla_nueva nowrap">         
                         <thead>
                             <tr>                                
+                                <th class="text-center">F.Imputac.</th>  
                                 <th></th>
                                 <th >Comprobante</th>
+                                <th >Proveedor</th> 
                                 <th class="text-right">Importe</th>
                                 <th class="text-right">% IVA</th>                                                                
                                 <th class="text-right">Total</th>                                                                      
@@ -101,8 +103,10 @@
                         <tbody>
                             {% for a in alicuotas %}
                             <tr>                                
+                                <td title="{{cpb.pk|safe}}" class="text-center">{{ a.cpb_comprobante.fecha_imputacion|date:'d/m/Y' }}</td>
                                 <td class="text-center" title="{{ a.cpb_comprobante.cpb_tipo}}">{{ a.cpb_comprobante.cpb_tipo.codigo|default_if_none:'' }}</td>
                                 <td >{{ a.cpb_comprobante.get_cpb}}</td>                                
+                                <td  title="{{ a.cpb_comprobante.entidad}}" ><strong>{{ a.cpb_comprobante.entidad|truncatechars:60 }}</strong></td>
                                 <td class="importe">${{a.importe|default_if_none:0|floatformat:2}}</td>
                                 <td class="importe">{{a.get_iva|default_if_none:0|floatformat:2}}</td>
                                 <td class="importe">${{a.importe_final|default_if_none:0|floatformat:2}}</td>
@@ -111,6 +115,8 @@
                         </tbody>
                         <tfoot>
                             <tr>
+                                <th></th>
+                                <th></th>    
                                 <th></th>    
                                 <th></th>                                                               
                                 <th class="importe"></th>                                 
@@ -471,7 +477,7 @@ var tabla = $('#dataTables-cpb_venta_alic').DataTable({
             ],
             initComplete: function () {
                // this.api().columns().every( function () {[0, 1, 9]
-                this.api().columns([3]).every( function () {
+                this.api().columns([5]).every( function () {
                     var column = this;
                     var select = $('<select class="form-control"><option value="">Todos</option></select>')
                         .appendTo( $(column.footer()).empty() )
@@ -521,10 +527,10 @@ var tabla = $('#dataTables-cpb_venta_alic').DataTable({
                     return 0
                 }
             };            
-            pageTotal = api.column(2, { page: 'current'} ).data().reduce( function (a, b) {return floatVal(a) + floatVal(b);}, 0 );
-            $( api.column(2).footer() ).html('$'+pageTotal.toLocaleString(undefined,{minimumFractionDigits:2}));      
             pageTotal = api.column(4, { page: 'current'} ).data().reduce( function (a, b) {return floatVal(a) + floatVal(b);}, 0 );
             $( api.column(4).footer() ).html('$'+pageTotal.toLocaleString(undefined,{minimumFractionDigits:2}));      
+            pageTotal = api.column(6, { page: 'current'} ).data().reduce( function (a, b) {return floatVal(a) + floatVal(b);}, 0 );
+            $( api.column(6).footer() ).html('$'+pageTotal.toLocaleString(undefined,{minimumFractionDigits:2}));      
             
                              
         }
