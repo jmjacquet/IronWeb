@@ -59,7 +59,7 @@ class MovimCuentasForm(forms.ModelForm):
 	importe_total = forms.DecimalField(label='Total Comprobante',widget=PrependWidget(attrs={'class':'form-control','readonly':'readonly',},base_widget=NumberInput, data='$'),initial=0.00,decimal_places=2,required = False)					
 	class Meta:
 			model = cpb_comprobante			
-			fields = ['observacion','importe_total']
+			fields = ['observacion','importe_total','fecha_cpb']
 
 
 	def __init__(self, *args, **kwargs):
