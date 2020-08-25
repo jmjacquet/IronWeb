@@ -1,0 +1,77 @@
+{% extends "index.html" %}
+{% load static from staticfiles %}
+{% load i18n l10n %}
+{% load humanize %}
+{% block main %} 
+<script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
+<script type='text/javascript'>
+var usuarios = {{ usuarios_json|safe }};
+</script> 
+<div id="app">
+    [[message]]
+
+  
+  
+        <div class="col-md-12">
+            
+            <div class="portlet box toolbar_blue">
+                <div class="portlet-title">
+                    <div class="caption bold">
+                                <i class="icon-user"></i>LISTADO USUARIOS <small>carga y permisos</small>
+                    </div>
+                </div> 
+            </div>          
+
+                   
+                    <table  id="dataTables-usuarios"  class="table table-striped compact table-hover table-no-bordered tabla_nueva nowrap">         
+                        <thead >
+                            <tr>
+                                <th></th>                                
+                                <th class="imprimir">Nombre</th>
+                                
+                            </tr>
+                        </thead>
+                        <tbody>
+                            
+                            <tr v-for="usu in usuarios"{% if usu.baja %} class='danger' title="Estado: BAJA"{% endif %}>
+                               
+                                <td>[[ usu.id_usuario ]]</td>
+                                <td>[[ usu.usuario]]</td>                                
+                               
+                            </tr>
+                            
+                        </tbody>
+                        <tfoot>
+                            <tr>
+                                <th></th> 
+                                <th></th> 
+                                
+                            </tr>
+                        </tfoot>
+                        
+                    </table>                   
+        </div>  
+
+</div>      
+<script type="text/javascript">
+
+var app = new Vue({
+      delimiters: ['[[', ']]'],
+      el: '#app',
+      data: {
+          message: 'Hello Vue!',
+          usuarios: usuarios,
+      },
+      methods: {
+          
+      }
+    });
+
+</script>
+
+{% endblock main %}
+
+
+
+
+

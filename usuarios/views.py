@@ -110,6 +110,34 @@ class UsuarioList(VariablesMixin,ListView):
 
         return context
 
+class UsuarioList2(VariablesMixin,ListView):
+    template_name = 'usuarios/lista_usuarios2.html'
+    model = usu_usuario
+    context_object_name = 'usuarios'
+
+    @method_decorator(login_required)
+    def dispatch(self, *args, **kwargs):                
+        if not tiene_permiso(self.request,'gral_configuracion'):
+            return redirect(reverse('principal'))
+        return super(UsuarioList2, self).dispatch(*args, **kwargs)
+
+    def get_context_data(self, **kwargs):
+        context = super(UsuarioList2, self).get_context_data(**kwargs)        
+        try:             
+            usuario = usuario_actual(self.request)
+            empresa = empresa_actual(self.request)
+            if habilitado_contador(usuario.tipoUsr):
+                usuarios = usu_usuario.objects.filter().order_by('nombre')            
+            else:
+                usuarios = usu_usuario.objects.filter(empresa=empresa).order_by('nombre')            
+            context['usuarios'] = usuarios
+            context["usuarios_json"] = json.dumps(usuarios)
+        except:
+            context['usuarios'] = None
+            context["usuarios_json"] = None
+        context["usuarios_json"] = [{'id_usuario':int(u.pk),'usuario':str(u.usuario)} for u in usuarios]
+        return context        
+
 @login_required
 def UsuarioCreateView(request):    
     if not tiene_permiso(request,'gral_configuracion'):

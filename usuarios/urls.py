@@ -21,5 +21,7 @@ urlpatterns = patterns('usuarios.views',
   url(r'^usuarios/baja_reactivar/(?P<id>\d+)/$', usuarios_baja_reactivar, name='usuarios_baja_reactivar'),
 
   url(r'^usuarios/resetear_passwd/(?P<id>\d+)/$', usuarios_resetear_passwd, name='usuarios_resetear_passwd'),
+
+  url(r'^vue/$', UsuarioList2.as_view(),name="usuarios2"),
     
 )
