@@ -268,7 +268,9 @@ class ProductosCreateViewModal(VariablesMixin,AjaxCreateView):
         coef_ganancia = form.cleaned_data.get('coef_ganancia')
         lista_precios = form.cleaned_data.get('lista_precios')
         precio_venta = form.cleaned_data.get('precio_venta')        
-        ubi_prec = prod_producto_lprecios(producto=self.object,lista_precios=lista_precios,precio_costo=precio_costo,precio_cimp=precio_cimp,coef_ganancia=coef_ganancia,precio_venta=precio_venta)
+        pimp1 = form.cleaned_data.get('precio_itc')        
+        pimp2 = form.cleaned_data.get('precio_tasa')        
+        ubi_prec = prod_producto_lprecios(producto=self.object,lista_precios=lista_precios,precio_costo=precio_costo,precio_cimp=precio_cimp,coef_ganancia=coef_ganancia,precio_venta=precio_venta,precio_itc=pimp1,precio_tasa=pimp2)
         ubi_prec.save()
 
         stock = form.cleaned_data.get('stock')

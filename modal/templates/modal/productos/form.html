@@ -50,6 +50,13 @@
 									<div class="col-sm-2 cerca">{{form.coef_ganancia|as_crispy_field}}</div>									
 									<div class="col-sm-2 cerca">{% bootstrap_field form.precio_venta %}</div>
 							</div>
+							{% if empresa.usa_impuestos %}
+							<div class="row">									
+									<div class="col-sm-4 cerca"></div>
+									<div class="col-sm-2 cerca">{% bootstrap_field form.precio_itc %}</div>
+									<div class="col-sm-2 cerca">{% bootstrap_field form.precio_tasa %}</div>																			
+							</div>
+							{% endif %}  
 						</div>
 					</fieldset>
 				</div>
