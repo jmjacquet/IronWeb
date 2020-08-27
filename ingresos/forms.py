@@ -194,8 +194,7 @@ class CPBVentaDetalleForm(forms.ModelForm):
 			elif clonacion:				
 				prod = self.initial.get('producto',None)
 				lp = self.initial.get('lista_precios',None)
-				precios = buscarPrecioListaProd(prod,lp)
-				print precios
+				precios = buscarPrecioListaProd(prod,lp)				
 				self.fields['coef_tasa1'].initial=precios.get('pitc',0)
 				self.fields['coef_tasa2'].initial=precios.get('ptasa',0)
 

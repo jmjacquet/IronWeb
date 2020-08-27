@@ -94,8 +94,8 @@
 										                              <i id="tit_precio" class="fa fa-question-circle recargarDatos" data-toggle="tooltip" data-placement="top" title="Coeficiente de Ganancia (1=100%) [0 a 10]"/></th>						
 										                              <th style="width: 15%;" title="Precio de Venta (Costo c/Imp * Coef.Gan.)">P.Venta</th>
 										                               {% if empresa.usa_impuestos %}
-										                              <th style="width: 10%;" title="Coeficiente ITC" >Coef.ITC</th>						
-										                              <th style="width: 10%;" title="Coeficiente Tasa Hídrica">Coef.TH</th>
+											                              <th style="width: 10%;">{{empresa.nombre_impuesto1}}</th>						
+											                              <th style="width: 10%;">{{empresa.nombre_impuesto2}}</th>
 										                              {% endif %}
 										                              
 										                              <th class="remove-sorting"></th>

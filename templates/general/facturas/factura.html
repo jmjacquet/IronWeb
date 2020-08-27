@@ -82,9 +82,9 @@
     <tr>
       <td class="listado_der borde_izq" width="15%">{{item.cantidad|default_if_none:0|floatformat:2|intcomma}} {{item.producto.get_unidad_display}}</td>
       <td class="listado_izq borde_izq" {% if not discrimina_iva %}colspan="2"{% endif %}>{{item.producto}} 
-       {% if empresa.describe_impuestos %} 
-        {% if item.importe_tasa1 > 0 %} ITC: {{item.get_itc|default_if_none:0|floatformat:2|intcomma}}[$/lts.] {% endif %}
-        {% if item.importe_tasa2 > 0 %} TH: {{item.get_th|default_if_none:0|floatformat:2|intcomma}}[$/lts.] {% endif %}
+       {% if cpb.empresa.describe_impuestos %} 
+        {% if item.importe_tasa1 > 0 %} {{cpb.empresa.nombre_impuesto1}}: {{item.get_itc|default_if_none:0|floatformat:2|intcomma}}[$/lts.] {% endif %}
+        {% if item.importe_tasa2 > 0 %} {{cpb.empresa.nombre_impuesto2}}: {{item.get_th|default_if_none:0|floatformat:2|intcomma}}[$/lts.] {% endif %}
        {% endif %}
         {% if item.detalle %} - {{item.detalle}} {% endif %}
       </td>
@@ -136,11 +136,11 @@
       <td class="listado_der borde_der borde_izq"  width="20%"></td>
     </tr>       
   {% endfor cobranzas %}
-  {% if empresa.describe_impuestos %} 
-    {% if total_imp %}
+  {% if cpb.empresa.usa_impuestos %} 
+    {% if total_imp > 0 %}
       <tr>
         <td class="listado_der borde_izq">&nbsp;</td>
-        <td  {% if not discrimina_iva %}colspan="2"{% endif %} class="listado_izq borde_izq">Total {{empresa.nombre_impuesto1}}/{{empresa.nombre_impuesto2}}</td>      
+        <td  {% if not discrimina_iva %}colspan="2"{% endif %} class="listado_izq borde_izq">Total {{cpb.empresa.nombre_impuesto1}} {{cpb.empresa.nombre_impuesto2}}</td>      
         <td class="listado_der borde_izq"></td>
         {%if discrimina_iva %}<td class="listado_der borde_izq"></td> {% endif %}
         <td class="listado_der borde_der borde_izq">${{total_imp|default_if_none:0|floatformat:2|intcomma}}</td>

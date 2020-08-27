@@ -701,7 +701,7 @@ def imprimirFactura(request,id,pdf=None):
     try:
       total_imp1 = cpb.importe_tasa1
       total_imp2 = cpb.importe_tasa2
-      total_imp = total_imp1 + total_imp2
+      total_imp = total_imp1 + total_imp2      
     except:
       total_imp1=0
       total_imp2=0

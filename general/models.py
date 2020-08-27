@@ -70,7 +70,7 @@ class gral_empresa(models.Model):
     tipo_logo_factura = models.IntegerField(u'Tipo Logotipo',choices=TIPO_LOGOTIPO, blank=True, null=True)  
 
     usa_impuestos = models.BooleanField(u'Utiliza Impuestos Adicionales',default=False)
-    describe_impuestos = models.BooleanField(u'Muestra Impuestos en Detalle Factura',default=False)
+    describe_impuestos = models.BooleanField(u'Impuestos en Detalle Factura',default=False)
     nombre_impuesto1 = models.CharField('Nombre Impuesto1',max_length=50,blank=True, null=True)   
     nombre_impuesto2 = models.CharField('Nombre Impuesto2',max_length=50,blank=True, null=True)   
     class Meta:
