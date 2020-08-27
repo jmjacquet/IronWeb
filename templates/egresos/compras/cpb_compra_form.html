@@ -96,7 +96,7 @@
 									                    	title="Recargar listados de Productos"><i class="fa fa-refresh"></i></a>
 									                    	<a id="agregarProductos" href="{% url 'producto_nuevo_modal' %}" class="recargarDatos modal-create" data-modal-callback="recargarProds" data-modal-head="AGREGAR NUEVO PRODUCTO" type="button" data-toggle="tooltip" data-placement="top" title="Agregar Nuevo Producto"><i class="fa fa-plus"></i></a>
 						                              	</th>						                          						
-						                              {% if not empresa.usa_impuestos %}<th style="width: 20%;">Detalle</th>{% endif %}
+						                              <th style="width: 20%;">Detalle</th>
 						                              <th style="width: 15px;">Cantidad</th>
 						                              <th style="width: 5%;"></th>
 						                              <th style="width: 80px;">Precio <i id="tit_precio" class="fa fa-question-circle recargarDatos" data-toggle="tooltip" data-placement="top" title="Precio"/></th>
@@ -115,7 +115,7 @@
 							                      	
 							                      	<tr class="{{ compras_detalle.prefix }}">           					                      	
 								                      	<td>{% bootstrap_field form2.producto show_label=False%}</td>
-								                      	{% if not empresa.usa_impuestos %}<td>{% bootstrap_field form2.detalle show_label=False%}</td>{% endif %}
+								                      	<td>{% bootstrap_field form2.detalle show_label=False%}</td>
 								                      	<td>{% bootstrap_field form2.cantidad show_label=False%}</td>
 								                      	<td class="unidades">{% bootstrap_field form2.unidad show_label=False%}</td>
 								                      	<td>{% bootstrap_field form2.importe_unitario show_label=False%}</td>

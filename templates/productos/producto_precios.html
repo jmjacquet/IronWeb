@@ -50,8 +50,10 @@
                                 <th class="imprimir text-right">Precio c/Imp.</th>
                                 <th class="imprimir text-right">Coef.Gan.</th>                                                               
                                 <th class="imprimir text-right">Precio Venta</th>                                                                                               
-                                <th class="imprimir text-right">Valor ITC</th>                                                               
-                                <th class="imprimir text-right">Valor Tasa</th>
+                                {% if empresa.usa_impuestos %}
+                                <th class="imprimir text-right">{{empresa.nombre_impuesto1}}</th>                                                               
+                                <th class="imprimir text-right">{{empresa.nombre_impuesto2}}</th>
+                                {% endif %}  
                             </tr>
                         </thead>
                         <tbody>                                                   
@@ -80,8 +82,10 @@
                                     <td class="importe">${{pp.precio_cimp|default_if_none:0|floatformat:2}}</td>                                                                     
                                     <td class="importe">{{pp.coef_ganancia|default_if_none:0|floatformat:2}}</td>                                                                     
                                     <td class="importe_total">${{pp.precio_venta|default_if_none:0|floatformat:2}}</td>
+                                    {% if empresa.usa_impuestos %}
                                     <td class="importe_total">${{pp.precio_itc|default_if_none:0|floatformat:2}}</td>
                                     <td class="importe_total">${{pp.precio_tasa|default_if_none:0|floatformat:2}}</td>
+                                    {% endif %}  
                                 </tr>
                             {% endfor %}                        
                         </tbody>
@@ -96,8 +100,10 @@
                                 <th class="importe"></th>                                 
                                 <th class="importe"></th>                                 
                                 <th class="importe_total"></th>  
+                                {% if empresa.usa_impuestos %}
                                 <th class="importe"></th>                                 
-                                <th class="importe"></th>                                 
+                                <th class="importe"></th>   
+                                {% endif %}                                
                             </tr>
                         </tfoot>
                     </table>                                                 
@@ -308,6 +314,14 @@ var tabla = $('#dataTables-lprecios').DataTable({
 
             pageTotal = api.column(8, { page: 'current'} ).data().reduce( function (a, b) {return floatVal(a) + floatVal(b);}, 0 );            
             $( api.column(8).footer() ).html('$'+pageTotal.toLocaleString(undefined,{minimumFractionDigits:2}));
+            {% if empresa.usa_impuestos %}
+            pageTotal = api.column(9, { page: 'current'} ).data().reduce( function (a, b) {return floatVal(a) + floatVal(b);}, 0 );            
+            $( api.column(9).footer() ).html('$'+pageTotal.toLocaleString(undefined,{minimumFractionDigits:2}));
+
+            pageTotal = api.column(10, { page: 'current'} ).data().reduce( function (a, b) {return floatVal(a) + floatVal(b);}, 0 );            
+            $( api.column(10).footer() ).html('$'+pageTotal.toLocaleString(undefined,{minimumFractionDigits:2}));
+
+            {% endif %}
             
         }
         });

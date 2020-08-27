@@ -305,19 +305,21 @@ class CPBCompraClonarCreateView(VariablesMixin,CreateView):
             form.fields['pto_vta'].initial = cpb.pto_vta
             form.fields['cpb_tipo'].initial = cpb.cpb_tipo
             form.fields['entidad'].initial = cpb.entidad
+            form.fields['importe_tasa1'].initial=cpb.importe_tasa1
+            form.fields['importe_tasa2'].initial=cpb.importe_tasa2
             detalles = cpb_comprobante_detalle.objects.filter(cpb_comprobante=cpb)
             det=[]        
             for c in detalles:            
                 det.append({'producto': c.producto,'cantidad':c.cantidad,'detalle':c.detalle,'porc_dcto':c.porc_dcto,'tasa_iva':c.tasa_iva,
                     'coef_iva':c.coef_iva,'lista_precios':c.lista_precios,'importe_costo':c.importe_costo,'importe_unitario':c.importe_unitario,
-                    'importe_subtotal':c.importe_subtotal,'importe_iva':c.importe_iva,'importe_total':c.importe_total,'origen_destino':c.origen_destino})                        
+                    'importe_subtotal':c.importe_subtotal,'importe_iva':c.importe_iva,'importe_total':c.importe_total,'origen_destino':c.origen_destino,'importe_tasa1':c.importe_tasa1,'importe_tasa2':c.importe_tasa2})                        
             CPBDetalleFormSet = inlineformset_factory(cpb_comprobante, cpb_comprobante_detalle,form=CPBCompraDetalleForm,fk_name='cpb_comprobante',formset=CPBCompraDetalleFormSet, can_delete=True,extra=0,min_num=len(det))
         else:
             detalles = None       
         # ventas_detalle = CPBDetalleFormSet(prefix='formDetalle',initial=det)
         # ventas_pi = CPBPIFormSet(prefix='formDetallePI')
         # cpb_fp = CPBFPFormSet(prefix='formFP')
-        CPBDetalleFormSet.form = staticmethod(curry(CPBCompraDetalleForm,request=request))
+        CPBDetalleFormSet.form = staticmethod(curry(CPBCompraDetalleForm,request=request,clonacion=True))
         compras_detalle = CPBDetalleFormSet(prefix='formDetalle',initial=det)
         CPBPIFormSet.form = staticmethod(curry(CPBCompraPercImpForm,request=request))
         compras_pi = CPBPIFormSet(prefix='formDetallePI')

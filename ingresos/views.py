@@ -495,7 +495,7 @@ class CPBVentaOPCreateView(VariablesMixin,CreateView):
         else:
             detalles = None       
 
-        CPBDetalleFormSet.form = staticmethod(curry(CPBVentaDetalleForm,request=request))
+        CPBDetalleFormSet.form = staticmethod(curry(CPBVentaDetalleForm,request=request,clonacion=True))
         ventas_detalle = CPBDetalleFormSet(prefix='formDetalle',initial=det)
         CPBPIFormSet.form = staticmethod(curry(CPBVentaPercImpForm,request=request))
         ventas_pi = CPBPIFormSet(prefix='formDetallePI')

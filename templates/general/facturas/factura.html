@@ -140,7 +140,7 @@
     {% if total_imp > 0 %}
       <tr>
         <td class="listado_der borde_izq">&nbsp;</td>
-        <td  {% if not discrimina_iva %}colspan="2"{% endif %} class="listado_izq borde_izq">Total {{cpb.empresa.nombre_impuesto1}} {{cpb.empresa.nombre_impuesto2}}</td>      
+        <td  {% if not discrimina_iva %}colspan="2"{% endif %} class="listado_izq borde_izq">Total {{cpb.empresa.nombre_impuesto1}}{% if cpb.empresa.nombre_impuesto2 %} / {{cpb.empresa.nombre_impuesto2}}{% endif %} </td>      
         <td class="listado_der borde_izq"></td>
         {%if discrimina_iva %}<td class="listado_der borde_izq"></td> {% endif %}
         <td class="listado_der borde_der borde_izq">${{total_imp|default_if_none:0|floatformat:2|intcomma}}</td>
