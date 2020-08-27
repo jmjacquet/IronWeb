@@ -93,8 +93,8 @@ class CPBVentaForm(forms.ModelForm):
 				self.fields['importe_tasa1'].widget=forms.HiddenInput()
 				self.fields['importe_tasa2'].widget=forms.HiddenInput()
 			else:				
-				self.fields['importe_tasa1'].label = empresa.nombre_impuesto1				
-				self.fields['importe_tasa2'].label = empresa.nombre_impuesto2
+				self.fields['importe_tasa1'].label = empresa.nombre_impuesto1 or ''				
+				self.fields['importe_tasa2'].label = empresa.nombre_impuesto2 or ''
 			
 
 		except gral_empresa.DoesNotExist:

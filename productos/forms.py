@@ -136,8 +136,8 @@ class Producto_ListaPreciosForm(forms.ModelForm):
 				self.fields['precio_itc'].initial = 0
 				self.fields['precio_tasa'].initial = 0
 			else:				
-				self.fields['precio_itc'].label = empresa.nombre_impuesto1				
-				self.fields['precio_tasa'].label = empresa.nombre_impuesto2
+				self.fields['precio_itc'].label = empresa.nombre_impuesto1	or ''			
+				self.fields['precio_tasa'].label = empresa.nombre_impuesto2 or ''
 		except gral_empresa.DoesNotExist:
 			empresa = None  
 
@@ -224,8 +224,8 @@ class Producto_EditarPrecioForm(forms.ModelForm):
 		try:
 			empresa = empresa_actual(request)			
 			if empresa.usa_impuestos:				
-				self.fields['precio_itc'].label = empresa.nombre_impuesto1				
-				self.fields['precio_tasa'].label = empresa.nombre_impuesto2
+				self.fields['precio_itc'].label = empresa.nombre_impuesto1 or ''				
+				self.fields['precio_tasa'].label = empresa.nombre_impuesto2 or ''
 		except gral_empresa.DoesNotExist:
 			empresa = None  
 
