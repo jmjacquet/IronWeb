@@ -94,8 +94,7 @@ class CPBVentaForm(forms.ModelForm):
 				self.fields['importe_tasa2'].widget=forms.HiddenInput()
 			else:				
 				self.fields['importe_tasa1'].label = empresa.nombre_impuesto1 or ''				
-				self.fields['importe_tasa2'].label = empresa.nombre_impuesto2 or ''
-			
+				self.fields['importe_tasa2'].label = empresa.nombre_impuesto2 or ''						
 
 		except gral_empresa.DoesNotExist:
 			empresa = None
@@ -179,12 +178,27 @@ class CPBVentaDetalleForm(forms.ModelForm):
 
 	def __init__(self, *args, **kwargs):
 		request = kwargs.pop('request', None)
+		clonacion = kwargs.pop('clonacion', False)		
 		super(CPBVentaDetalleForm, self).__init__(*args, **kwargs)
 		try:
 			empresa = empresa_actual(request)			
 			self.fields['producto'].queryset = prod_productos.objects.filter(baja=False,mostrar_en__in=(1,3),empresa__id__in=empresas_habilitadas(request)).order_by('nombre')			
 			self.fields['lista_precios'].queryset = prod_lista_precios.objects.filter(baja=False,empresa__id__in=empresas_habilitadas(request))		
 			self.fields['origen_destino'].queryset = prod_ubicacion.objects.filter(baja=False,empresa__id__in=empresas_habilitadas(request))		
+			#Si es modo EDICION le cargo lso datos de coeficientes
+			padre = self.instance.cpb_comprobante
+			if padre:
+				precios = buscarPrecioListaProd(self.instance.producto,self.instance.lista_precios)
+				self.fields['coef_tasa1'].initial=precios.get('pitc',0)
+				self.fields['coef_tasa2'].initial=precios.get('ptasa',0)
+			elif clonacion:				
+				prod = self.initial.get('producto',None)
+				lp = self.initial.get('lista_precios',None)
+				precios = buscarPrecioListaProd(prod,lp)
+				print precios
+				self.fields['coef_tasa1'].initial=precios.get('pitc',0)
+				self.fields['coef_tasa2'].initial=precios.get('ptasa',0)
+
 		except gral_empresa.DoesNotExist:
 			empresa = None			
 

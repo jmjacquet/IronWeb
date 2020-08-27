@@ -250,7 +250,47 @@ def buscarPrecioProd(prod,letra,cant,precio):
        
    
        return prod
-  
+
+def buscarPrecioListaProd(p,lista):                                      
+  try:
+    coeficiente = 0 
+    pventa = 0
+    precio_siva = 0
+    costo_siva = 0
+    total_iva=0
+    precio_tot = 0
+    pcosto = 0       
+    tasa_iva = 5 #Por defecto 0.21
+    pitc = 0.00
+    ptasa = 0.00
+    unidad = 'u.'
+    coeficiente = p.tasa_iva.coeficiente       
+    tasa_iva = p.tasa_iva.id
+    unidad = p.get_unidad_display()
+    try:
+        prod_lista = prod_producto_lprecios.objects.get(producto=p,lista_precios=lista) 
+    except:
+        prod_lista = None
+    if prod_lista:
+            pventa = prod_lista.precio_venta
+            pcosto = prod_lista.precio_cimp           
+            pitc = prod_lista.precio_itc
+            ptasa = prod_lista.precio_tasa
+
+    precio_siva = pventa /(1+coeficiente)
+    precio_siva = Decimal(round(precio_siva,2))
+    if prod_lista:
+      costo_siva = prod_lista.precio_costo
+    total_iva = pventa - precio_siva
+    total_iva = Decimal(round(total_iva, 2))
+    precio_tot = pventa
+
+    prod={'precio_venta':pventa,'precio_costo':pcosto,'tasa_iva__id':tasa_iva,'tasa_iva__coeficiente':coeficiente
+        ,'unidad':unidad,'precio_siva':precio_siva,'total_iva':total_iva,'precio_tot':precio_tot,'costo_siva':costo_siva,'pitc':pitc,'ptasa':ptasa}  
+  except:
+    prod = {}
+
+  return prod  
 @login_required 
 def buscarDatosEntidad(request):                     
    lista= {}  
