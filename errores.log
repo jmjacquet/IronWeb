@@ -698,3 +698,266 @@ Traceback (most recent call last):
   File "C:\Users\juanma\Envs\ironstable\lib\site-packages\django\db\models\fields\__init__.py", line 985, in get_prep_value
     return int(value)
 ValueError: invalid literal for int() with base 10: ''
+[26/Aug/2020 20:28:21] ERROR [django.request:256] Internal Server Error: /productos/producto_editar/1438/
+Traceback (most recent call last):
+  File "C:\Users\juanma\Envs\ironstable\lib\site-packages\django\core\handlers\base.py", line 132, in get_response
+    response = wrapped_callback(request, *callback_args, **callback_kwargs)
+  File "C:\Users\juanma\Envs\ironstable\lib\site-packages\django\views\generic\base.py", line 71, in view
+    return self.dispatch(request, *args, **kwargs)
+  File "C:\Users\juanma\Envs\ironstable\lib\site-packages\django\utils\decorators.py", line 34, in _wrapper
+    return bound_func(*args, **kwargs)
+  File "C:\Users\juanma\Envs\ironstable\lib\site-packages\django\contrib\auth\decorators.py", line 22, in _wrapped_view
+    return view_func(request, *args, **kwargs)
+  File "C:\Users\juanma\Envs\ironstable\lib\site-packages\django\utils\decorators.py", line 30, in bound_func
+    return func.__get__(self, type(self))(*args2, **kwargs2)
+  File "D:\Repo\ironStable\productos\views.py", line 164, in dispatch
+    return super(ProductosEditView, self).dispatch(*args, **kwargs)
+  File "C:\Users\juanma\Envs\ironstable\lib\site-packages\django\views\generic\base.py", line 89, in dispatch
+    return handler(request, *args, **kwargs)
+  File "D:\Repo\ironStable\productos\views.py", line 181, in get
+    form = self.get_form(form_class)
+  File "C:\Users\juanma\Envs\ironstable\lib\site-packages\django\views\generic\edit.py", line 74, in get_form
+    return form_class(**self.get_form_kwargs())
+  File "D:\Repo\ironStable\productos\forms.py", line 53, in __init__
+    empresa = empresa_actual(request)
+  File "D:\Repo\ironStable\general\utilidades.py", line 301, in empresa_actual
+    return request.user.userprofile.id_usuario.empresa
+  File "C:\Users\juanma\Envs\ironstable\lib\site-packages\django\db\models\fields\related.py", line 604, in __get__
+    rel_obj = qs.get()
+  File "C:\Users\juanma\Envs\ironstable\lib\site-packages\django\db\models\query.py", line 328, in get
+    num = len(clone)
+  File "C:\Users\juanma\Envs\ironstable\lib\site-packages\django\db\models\query.py", line 144, in __len__
+    self._fetch_all()
+  File "C:\Users\juanma\Envs\ironstable\lib\site-packages\django\db\models\query.py", line 965, in _fetch_all
+    self._result_cache = list(self.iterator())
+  File "C:\Users\juanma\Envs\ironstable\lib\site-packages\django\db\models\query.py", line 238, in iterator
+    results = compiler.execute_sql()
+  File "C:\Users\juanma\Envs\ironstable\lib\site-packages\django\db\models\sql\compiler.py", line 840, in execute_sql
+    cursor.execute(sql, params)
+  File "C:\Users\juanma\Envs\ironstable\lib\site-packages\django\db\backends\utils.py", line 79, in execute
+    return super(CursorDebugWrapper, self).execute(sql, params)
+  File "C:\Users\juanma\Envs\ironstable\lib\site-packages\django\db\backends\utils.py", line 64, in execute
+    return self.cursor.execute(sql, params)
+  File "C:\Users\juanma\Envs\ironstable\lib\site-packages\django\db\utils.py", line 97, in __exit__
+    six.reraise(dj_exc_type, dj_exc_value, traceback)
+  File "C:\Users\juanma\Envs\ironstable\lib\site-packages\django\db\backends\utils.py", line 64, in execute
+    return self.cursor.execute(sql, params)
+  File "C:\Users\juanma\Envs\ironstable\lib\site-packages\django\db\backends\mysql\base.py", line 124, in execute
+    return self.cursor.execute(query, args)
+  File "C:\Users\juanma\Envs\ironstable\lib\site-packages\MySQLdb\cursors.py", line 250, in execute
+    self.errorhandler(self, exc, value)
+  File "C:\Users\juanma\Envs\ironstable\lib\site-packages\MySQLdb\connections.py", line 42, in defaulterrorhandler
+    raise errorvalue
+OperationalError: (1054, "Unknown column 'gral_empresa.impuesto1' in 'field list'")
+[26/Aug/2020 20:33:14] ERROR [django.request:256] Internal Server Error: /productos/prod_precios_editar/1823/
+Traceback (most recent call last):
+  File "C:\Users\juanma\Envs\ironstable\lib\site-packages\django\core\handlers\base.py", line 132, in get_response
+    response = wrapped_callback(request, *callback_args, **callback_kwargs)
+  File "C:\Users\juanma\Envs\ironstable\lib\site-packages\django\views\generic\base.py", line 71, in view
+    return self.dispatch(request, *args, **kwargs)
+  File "C:\Users\juanma\Envs\ironstable\lib\site-packages\django\utils\decorators.py", line 34, in _wrapper
+    return bound_func(*args, **kwargs)
+  File "C:\Users\juanma\Envs\ironstable\lib\site-packages\django\contrib\auth\decorators.py", line 22, in _wrapped_view
+    return view_func(request, *args, **kwargs)
+  File "C:\Users\juanma\Envs\ironstable\lib\site-packages\django\utils\decorators.py", line 30, in bound_func
+    return func.__get__(self, type(self))(*args2, **kwargs2)
+  File "D:\Repo\ironStable\productos\views.py", line 607, in dispatch
+    return super(ProdLPreciosEditView, self).dispatch(*args, **kwargs)
+  File "C:\Users\juanma\Envs\ironstable\lib\site-packages\django\views\generic\base.py", line 89, in dispatch
+    return handler(request, *args, **kwargs)
+  File "C:\Users\juanma\Envs\ironstable\lib\site-packages\django\views\generic\edit.py", line 268, in get
+    return super(BaseUpdateView, self).get(request, *args, **kwargs)
+  File "C:\Users\juanma\Envs\ironstable\lib\site-packages\django\views\generic\edit.py", line 205, in get
+    form = self.get_form()
+  File "C:\Users\juanma\Envs\ironstable\lib\site-packages\django\views\generic\edit.py", line 74, in get_form
+    return form_class(**self.get_form_kwargs())
+  File "D:\Repo\ironStable\productos\forms.py", line 222, in __init__
+    empresa = empresa_actual(request)
+  File "D:\Repo\ironStable\general\utilidades.py", line 301, in empresa_actual
+    return request.user.userprofile.id_usuario.empresa
+AttributeError: 'NoneType' object has no attribute 'user'
+[26/Aug/2020 20:33:42] ERROR [django.request:256] Internal Server Error: /productos/prod_precios_editar/1823/
+Traceback (most recent call last):
+  File "C:\Users\juanma\Envs\ironstable\lib\site-packages\django\core\handlers\base.py", line 132, in get_response
+    response = wrapped_callback(request, *callback_args, **callback_kwargs)
+  File "C:\Users\juanma\Envs\ironstable\lib\site-packages\django\views\generic\base.py", line 71, in view
+    return self.dispatch(request, *args, **kwargs)
+  File "C:\Users\juanma\Envs\ironstable\lib\site-packages\django\utils\decorators.py", line 34, in _wrapper
+    return bound_func(*args, **kwargs)
+  File "C:\Users\juanma\Envs\ironstable\lib\site-packages\django\contrib\auth\decorators.py", line 22, in _wrapped_view
+    return view_func(request, *args, **kwargs)
+  File "C:\Users\juanma\Envs\ironstable\lib\site-packages\django\utils\decorators.py", line 30, in bound_func
+    return func.__get__(self, type(self))(*args2, **kwargs2)
+  File "D:\Repo\ironStable\productos\views.py", line 607, in dispatch
+    return super(ProdLPreciosEditView, self).dispatch(*args, **kwargs)
+  File "C:\Users\juanma\Envs\ironstable\lib\site-packages\django\views\generic\base.py", line 89, in dispatch
+    return handler(request, *args, **kwargs)
+  File "C:\Users\juanma\Envs\ironstable\lib\site-packages\django\views\generic\edit.py", line 268, in get
+    return super(BaseUpdateView, self).get(request, *args, **kwargs)
+  File "C:\Users\juanma\Envs\ironstable\lib\site-packages\django\views\generic\edit.py", line 205, in get
+    form = self.get_form()
+  File "C:\Users\juanma\Envs\ironstable\lib\site-packages\django\views\generic\edit.py", line 74, in get_form
+    return form_class(**self.get_form_kwargs())
+  File "D:\Repo\ironStable\productos\forms.py", line 222, in __init__
+    empresa = empresa_actual(request)
+  File "D:\Repo\ironStable\general\utilidades.py", line 301, in empresa_actual
+    return request.user.userprofile.id_usuario.empresa
+AttributeError: 'NoneType' object has no attribute 'user'
+[26/Aug/2020 20:34:52] ERROR [django.request:256] Internal Server Error: /productos/prod_precios_editar/1823/
+Traceback (most recent call last):
+  File "C:\Users\juanma\Envs\ironstable\lib\site-packages\django\core\handlers\base.py", line 132, in get_response
+    response = wrapped_callback(request, *callback_args, **callback_kwargs)
+  File "C:\Users\juanma\Envs\ironstable\lib\site-packages\django\views\generic\base.py", line 71, in view
+    return self.dispatch(request, *args, **kwargs)
+  File "C:\Users\juanma\Envs\ironstable\lib\site-packages\django\utils\decorators.py", line 34, in _wrapper
+    return bound_func(*args, **kwargs)
+  File "C:\Users\juanma\Envs\ironstable\lib\site-packages\django\contrib\auth\decorators.py", line 22, in _wrapped_view
+    return view_func(request, *args, **kwargs)
+  File "C:\Users\juanma\Envs\ironstable\lib\site-packages\django\utils\decorators.py", line 30, in bound_func
+    return func.__get__(self, type(self))(*args2, **kwargs2)
+  File "D:\Repo\ironStable\productos\views.py", line 607, in dispatch
+    return super(ProdLPreciosEditView, self).dispatch(*args, **kwargs)
+  File "C:\Users\juanma\Envs\ironstable\lib\site-packages\django\views\generic\base.py", line 89, in dispatch
+    return handler(request, *args, **kwargs)
+  File "C:\Users\juanma\Envs\ironstable\lib\site-packages\django\views\generic\edit.py", line 268, in get
+    return super(BaseUpdateView, self).get(request, *args, **kwargs)
+  File "C:\Users\juanma\Envs\ironstable\lib\site-packages\django\views\generic\edit.py", line 205, in get
+    form = self.get_form()
+  File "C:\Users\juanma\Envs\ironstable\lib\site-packages\django\views\generic\edit.py", line 74, in get_form
+    return form_class(**self.get_form_kwargs())
+  File "D:\Repo\ironStable\productos\forms.py", line 222, in __init__
+    empresa = empresa_actual(request)
+  File "D:\Repo\ironStable\general\utilidades.py", line 301, in empresa_actual
+    return request.user.userprofile.id_usuario.empresa
+AttributeError: 'NoneType' object has no attribute 'user'
+[26/Aug/2020 20:36:53] ERROR [django.request:256] Internal Server Error: /productos/prod_precios_editar/1823/
+Traceback (most recent call last):
+  File "C:\Users\juanma\Envs\ironstable\lib\site-packages\django\core\handlers\base.py", line 132, in get_response
+    response = wrapped_callback(request, *callback_args, **callback_kwargs)
+  File "C:\Users\juanma\Envs\ironstable\lib\site-packages\django\views\generic\base.py", line 71, in view
+    return self.dispatch(request, *args, **kwargs)
+  File "C:\Users\juanma\Envs\ironstable\lib\site-packages\django\utils\decorators.py", line 34, in _wrapper
+    return bound_func(*args, **kwargs)
+  File "C:\Users\juanma\Envs\ironstable\lib\site-packages\django\contrib\auth\decorators.py", line 22, in _wrapped_view
+    return view_func(request, *args, **kwargs)
+  File "C:\Users\juanma\Envs\ironstable\lib\site-packages\django\utils\decorators.py", line 30, in bound_func
+    return func.__get__(self, type(self))(*args2, **kwargs2)
+  File "D:\Repo\ironStable\productos\views.py", line 607, in dispatch
+    return super(ProdLPreciosEditView, self).dispatch(*args, **kwargs)
+  File "C:\Users\juanma\Envs\ironstable\lib\site-packages\django\views\generic\base.py", line 89, in dispatch
+    return handler(request, *args, **kwargs)
+  File "C:\Users\juanma\Envs\ironstable\lib\site-packages\django\views\generic\edit.py", line 268, in get
+    return super(BaseUpdateView, self).get(request, *args, **kwargs)
+  File "C:\Users\juanma\Envs\ironstable\lib\site-packages\django\views\generic\edit.py", line 205, in get
+    form = self.get_form()
+  File "C:\Users\juanma\Envs\ironstable\lib\site-packages\django\views\generic\edit.py", line 74, in get_form
+    return form_class(**self.get_form_kwargs())
+  File "D:\Repo\ironStable\productos\forms.py", line 222, in __init__
+    empresa = empresa_actual(request)
+  File "D:\Repo\ironStable\general\utilidades.py", line 301, in empresa_actual
+    return request.user.userprofile.id_usuario.empresa
+AttributeError: 'NoneType' object has no attribute 'user'
+[26/Aug/2020 20:37:11] ERROR [django.request:256] Internal Server Error: /productos/prod_precios_editar/1823/
+Traceback (most recent call last):
+  File "C:\Users\juanma\Envs\ironstable\lib\site-packages\django\core\handlers\base.py", line 132, in get_response
+    response = wrapped_callback(request, *callback_args, **callback_kwargs)
+  File "C:\Users\juanma\Envs\ironstable\lib\site-packages\django\views\generic\base.py", line 71, in view
+    return self.dispatch(request, *args, **kwargs)
+  File "C:\Users\juanma\Envs\ironstable\lib\site-packages\django\utils\decorators.py", line 34, in _wrapper
+    return bound_func(*args, **kwargs)
+  File "C:\Users\juanma\Envs\ironstable\lib\site-packages\django\contrib\auth\decorators.py", line 22, in _wrapped_view
+    return view_func(request, *args, **kwargs)
+  File "C:\Users\juanma\Envs\ironstable\lib\site-packages\django\utils\decorators.py", line 30, in bound_func
+    return func.__get__(self, type(self))(*args2, **kwargs2)
+  File "D:\Repo\ironStable\productos\views.py", line 607, in dispatch
+    return super(ProdLPreciosEditView, self).dispatch(*args, **kwargs)
+  File "C:\Users\juanma\Envs\ironstable\lib\site-packages\django\views\generic\base.py", line 89, in dispatch
+    return handler(request, *args, **kwargs)
+  File "C:\Users\juanma\Envs\ironstable\lib\site-packages\django\views\generic\edit.py", line 268, in get
+    return super(BaseUpdateView, self).get(request, *args, **kwargs)
+  File "C:\Users\juanma\Envs\ironstable\lib\site-packages\django\views\generic\edit.py", line 205, in get
+    form = self.get_form()
+  File "C:\Users\juanma\Envs\ironstable\lib\site-packages\django\views\generic\edit.py", line 74, in get_form
+    return form_class(**self.get_form_kwargs())
+  File "D:\Repo\ironStable\productos\forms.py", line 222, in __init__
+    empresa = empresa_actual(request)
+  File "D:\Repo\ironStable\general\utilidades.py", line 301, in empresa_actual
+    return request.user.userprofile.id_usuario.empresa
+AttributeError: 'NoneType' object has no attribute 'user'
+[26/Aug/2020 20:40:43] ERROR [django.request:256] Internal Server Error: /productos/prod_precios_editar/1823/
+Traceback (most recent call last):
+  File "C:\Users\juanma\Envs\ironstable\lib\site-packages\django\core\handlers\base.py", line 132, in get_response
+    response = wrapped_callback(request, *callback_args, **callback_kwargs)
+  File "C:\Users\juanma\Envs\ironstable\lib\site-packages\django\views\generic\base.py", line 71, in view
+    return self.dispatch(request, *args, **kwargs)
+  File "C:\Users\juanma\Envs\ironstable\lib\site-packages\django\utils\decorators.py", line 34, in _wrapper
+    return bound_func(*args, **kwargs)
+  File "C:\Users\juanma\Envs\ironstable\lib\site-packages\django\contrib\auth\decorators.py", line 22, in _wrapped_view
+    return view_func(request, *args, **kwargs)
+  File "C:\Users\juanma\Envs\ironstable\lib\site-packages\django\utils\decorators.py", line 30, in bound_func
+    return func.__get__(self, type(self))(*args2, **kwargs2)
+  File "D:\Repo\ironStable\productos\views.py", line 607, in dispatch
+    return super(ProdLPreciosEditView, self).dispatch(*args, **kwargs)
+  File "C:\Users\juanma\Envs\ironstable\lib\site-packages\django\views\generic\base.py", line 89, in dispatch
+    return handler(request, *args, **kwargs)
+  File "C:\Users\juanma\Envs\ironstable\lib\site-packages\django\views\generic\edit.py", line 268, in get
+    return super(BaseUpdateView, self).get(request, *args, **kwargs)
+  File "C:\Users\juanma\Envs\ironstable\lib\site-packages\django\views\generic\edit.py", line 205, in get
+    form = self.get_form()
+  File "C:\Users\juanma\Envs\ironstable\lib\site-packages\django\views\generic\edit.py", line 74, in get_form
+    return form_class(**self.get_form_kwargs())
+  File "D:\Repo\ironStable\productos\forms.py", line 222, in __init__
+    empresa = empresa_actual(request)
+  File "D:\Repo\ironStable\general\utilidades.py", line 301, in empresa_actual
+    return request.user.userprofile.id_usuario.empresa
+AttributeError: 'NoneType' object has no attribute 'user'
+[26/Aug/2020 20:47:01] ERROR [django.request:256] Internal Server Error: /productos/prod_precios_editar/1823/
+Traceback (most recent call last):
+  File "C:\Users\juanma\Envs\ironstable\lib\site-packages\django\core\handlers\base.py", line 132, in get_response
+    response = wrapped_callback(request, *callback_args, **callback_kwargs)
+  File "C:\Users\juanma\Envs\ironstable\lib\site-packages\django\views\generic\base.py", line 71, in view
+    return self.dispatch(request, *args, **kwargs)
+  File "C:\Users\juanma\Envs\ironstable\lib\site-packages\django\utils\decorators.py", line 34, in _wrapper
+    return bound_func(*args, **kwargs)
+  File "C:\Users\juanma\Envs\ironstable\lib\site-packages\django\contrib\auth\decorators.py", line 22, in _wrapped_view
+    return view_func(request, *args, **kwargs)
+  File "C:\Users\juanma\Envs\ironstable\lib\site-packages\django\utils\decorators.py", line 30, in bound_func
+    return func.__get__(self, type(self))(*args2, **kwargs2)
+  File "D:\Repo\ironStable\productos\views.py", line 607, in dispatch
+    return super(ProdLPreciosEditView, self).dispatch(*args, **kwargs)
+  File "C:\Users\juanma\Envs\ironstable\lib\site-packages\django\views\generic\base.py", line 89, in dispatch
+    return handler(request, *args, **kwargs)
+  File "C:\Users\juanma\Envs\ironstable\lib\site-packages\django\views\generic\edit.py", line 268, in get
+    return super(BaseUpdateView, self).get(request, *args, **kwargs)
+  File "C:\Users\juanma\Envs\ironstable\lib\site-packages\django\views\generic\edit.py", line 205, in get
+    form = self.get_form()
+  File "C:\Users\juanma\Envs\ironstable\lib\site-packages\django\views\generic\edit.py", line 74, in get_form
+    return form_class(**self.get_form_kwargs())
+  File "D:\Repo\ironStable\productos\forms.py", line 224, in __init__
+    self.fields['precio_itc'].label = empresa.nombre_impuesto1
+AttributeError: 'gral_empresa' object has no attribute 'nombre_impuesto1'
+[26/Aug/2020 20:47:10] ERROR [django.request:256] Internal Server Error: /productos/prod_precios_editar/1823/
+Traceback (most recent call last):
+  File "C:\Users\juanma\Envs\ironstable\lib\site-packages\django\core\handlers\base.py", line 132, in get_response
+    response = wrapped_callback(request, *callback_args, **callback_kwargs)
+  File "C:\Users\juanma\Envs\ironstable\lib\site-packages\django\views\generic\base.py", line 71, in view
+    return self.dispatch(request, *args, **kwargs)
+  File "C:\Users\juanma\Envs\ironstable\lib\site-packages\django\utils\decorators.py", line 34, in _wrapper
+    return bound_func(*args, **kwargs)
+  File "C:\Users\juanma\Envs\ironstable\lib\site-packages\django\contrib\auth\decorators.py", line 22, in _wrapped_view
+    return view_func(request, *args, **kwargs)
+  File "C:\Users\juanma\Envs\ironstable\lib\site-packages\django\utils\decorators.py", line 30, in bound_func
+    return func.__get__(self, type(self))(*args2, **kwargs2)
+  File "D:\Repo\ironStable\productos\views.py", line 607, in dispatch
+    return super(ProdLPreciosEditView, self).dispatch(*args, **kwargs)
+  File "C:\Users\juanma\Envs\ironstable\lib\site-packages\django\views\generic\base.py", line 89, in dispatch
+    return handler(request, *args, **kwargs)
+  File "C:\Users\juanma\Envs\ironstable\lib\site-packages\django\views\generic\edit.py", line 268, in get
+    return super(BaseUpdateView, self).get(request, *args, **kwargs)
+  File "C:\Users\juanma\Envs\ironstable\lib\site-packages\django\views\generic\edit.py", line 205, in get
+    form = self.get_form()
+  File "C:\Users\juanma\Envs\ironstable\lib\site-packages\django\views\generic\edit.py", line 74, in get_form
+    return form_class(**self.get_form_kwargs())
+  File "D:\Repo\ironStable\productos\forms.py", line 224, in __init__
+    self.fields['precio_itc'].label = empresa.nombre_impuesto1
+AttributeError: 'gral_empresa' object has no attribute 'nombre_impuesto1'

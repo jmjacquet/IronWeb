@@ -48,9 +48,9 @@
                                 <th class="text-right">Gravado</th>
                                 <th class="text-right">IVA</th>                                
                                 <th class="text-right">Perc/Imp.</th>                                                            
-                                <th class="text-right">No Grav.{% if empresa.usa_impuestos %}(NG+ITC+TH){% endif %}</th>
-                                {% if empresa.usa_impuestos %}<th class="text-right">ITC</th>{% endif %}
-                                {% if empresa.usa_impuestos %}<th class="text-right">TH</th>{% endif %}
+                                <th class="text-right">No Grav.{% if empresa.usa_impuestos %}(NG+Imp+Tasas){% endif %}</th>
+                                {% if empresa.usa_impuestos %}<th class="text-right">{{empresa.nombre_impuesto1}}</th>{% endif %}
+                                {% if empresa.usa_impuestos %}<th class="text-right">{{empresa.nombre_impuesto2}}</th>{% endif %}
                                 <th class="text-right">Exento</th>
                                 <th class="text-right">Total</th>                                                                      
                             </tr>

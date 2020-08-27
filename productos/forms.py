@@ -135,6 +135,9 @@ class Producto_ListaPreciosForm(forms.ModelForm):
 			if not empresa.usa_impuestos:
 				self.fields['precio_itc'].initial = 0
 				self.fields['precio_tasa'].initial = 0
+			else:				
+				self.fields['precio_itc'].label = empresa.nombre_impuesto1				
+				self.fields['precio_tasa'].label = empresa.nombre_impuesto2
 		except gral_empresa.DoesNotExist:
 			empresa = None  
 
@@ -208,13 +211,23 @@ class Producto_EditarPrecioForm(forms.ModelForm):
 	precio_costo = forms.DecimalField(label='Precio Costo',widget=PrependWidget(attrs={'class':'form-control','step':0.00},base_widget=NumberInput, data='$'),initial=0.00,decimal_places=2)
 	precio_cimp = forms.DecimalField(label='Precio c/Imp.',widget=PrependWidget(attrs={'class':'form-control','step':0.00},base_widget=NumberInput, data='$'),initial=0.00,decimal_places=2)
 	precio_venta = forms.DecimalField(label='Precio Venta',widget=PrependWidget(attrs={'class':'form-control','step':0.00},base_widget=NumberInput, data='$'),initial=0.00,decimal_places=2)	
-	precio_itc = forms.DecimalField(label='Valor ITC',widget=PrependWidget(attrs={'class':'form-control','step':0.00},base_widget=NumberInput, data='$'),initial=vitc,decimal_places=2,required = False)	
-	precio_tasa = forms.DecimalField(label='Valor Tasa',widget=PrependWidget(attrs={'class':'form-control','step':0.00},base_widget=NumberInput, data='$'),initial=vtasa,decimal_places=2,required = False)		
+	precio_itc = forms.DecimalField(widget=PrependWidget(attrs={'class':'form-control','step':0.00},base_widget=NumberInput, data='$'),initial=vitc,decimal_places=2,required = False)	
+	precio_tasa = forms.DecimalField(widget=PrependWidget(attrs={'class':'form-control','step':0.00},base_widget=NumberInput, data='$'),initial=vtasa,decimal_places=2,required = False)		
 	coef_ganancia = forms.DecimalField(initial=1,decimal_places=3)		
 	class Meta:
 			model = prod_producto_lprecios
 			exclude = ['id','producto','lista_precios']	
 
+	def __init__(self, *args,**kwargs):
+		request = kwargs.pop('request', None)
+		super(Producto_EditarPrecioForm, self).__init__(*args, **kwargs)      
+		try:
+			empresa = empresa_actual(request)			
+			if empresa.usa_impuestos:				
+				self.fields['precio_itc'].label = empresa.nombre_impuesto1				
+				self.fields['precio_tasa'].label = empresa.nombre_impuesto2
+		except gral_empresa.DoesNotExist:
+			empresa = None  
 
 
 

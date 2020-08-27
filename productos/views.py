@@ -610,6 +610,11 @@ class ProdLPreciosEditView(VariablesMixin,AjaxUpdateView):
         messages.success(self.request, u'Los datos se guardaron con éxito!')
         return super(ProdLPreciosEditView, self).form_valid(form)
 
+    def get_form_kwargs(self):
+        kwargs = super(ProdLPreciosEditView, self).get_form_kwargs()
+        kwargs['request'] = self.request
+        return kwargs
+
 
     def get_initial(self):    
         initial = super(ProdLPreciosEditView, self).get_initial()                      

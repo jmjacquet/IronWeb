@@ -814,6 +814,8 @@ class CPBVentaClonarCreateView(VariablesMixin,CreateView):
             form.fields['cpb_tipo'].initial = cpb.cpb_tipo
             form.fields['entidad'].initial = cpb.entidad
             form.fields['condic_pago'].initial=1
+            form.fields['importe_tasa1'].initial=cpb.importe_tasa1
+            form.fields['importe_tasa2'].initial=cpb.importe_tasa2
             detalles = cpb_comprobante_detalle.objects.filter(cpb_comprobante=cpb)
             det=[]        
             for c in detalles:            
