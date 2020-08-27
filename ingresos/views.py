@@ -63,9 +63,9 @@ class CPBSVentasList(VariablesMixin,ListView):
 
             
             if int(estado) == 1:                
-                comprobantes = cpb_comprobante.objects.filter(cpb_tipo__compra_venta='V',estado__in=[1,2,3],empresa=empresa)
+                comprobantes = cpb_comprobante.objects.filter(cpb_tipo__compra_venta='V',estado__in=[1,2,3],empresa=empresa).order_by('-fecha_cpb','-fecha_creacion','-id')
             elif int(estado) == 2:
-                comprobantes = cpb_comprobante.objects.filter(cpb_tipo__compra_venta='V',estado__in=[3],empresa=empresa)
+                comprobantes = cpb_comprobante.objects.filter(cpb_tipo__compra_venta='V',estado__in=[3],empresa=empresa).order_by('-fecha_cpb','-fecha_creacion','-id')
 
             if int(cae)!=0:
                 no_tiene = (cae=='2')                
@@ -380,7 +380,7 @@ class CPBVentaNCCreateView(VariablesMixin,CreateView):
         # ventas_detalle = CPBDetalleFormSet(prefix='formDetalle',initial=det)
         # ventas_pi = CPBPIFormSet(prefix='formDetallePI')
         # cpb_fp = CPBFPFormSet(prefix='formFP')
-        CPBDetalleFormSet.form = staticmethod(curry(CPBVentaDetalleForm,request=request))
+        CPBDetalleFormSet.form = staticmethod(curry(CPBVentaDetalleForm,request=request,clonacion=True))
         ventas_detalle = CPBDetalleFormSet(prefix='formDetalle',initial=det)
         CPBPIFormSet.form = staticmethod(curry(CPBVentaPercImpForm,request=request))
         ventas_pi = CPBPIFormSet(prefix='formDetallePI',initial=pi)
@@ -495,7 +495,7 @@ class CPBVentaOPCreateView(VariablesMixin,CreateView):
         else:
             detalles = None       
 
-        CPBDetalleFormSet.form = staticmethod(curry(CPBVentaDetalleForm,request=request))
+        CPBDetalleFormSet.form = staticmethod(curry(CPBVentaDetalleForm,request=request,clonacion=True))
         ventas_detalle = CPBDetalleFormSet(prefix='formDetalle',initial=det)
         CPBPIFormSet.form = staticmethod(curry(CPBVentaPercImpForm,request=request))
         ventas_pi = CPBPIFormSet(prefix='formDetallePI')
@@ -611,7 +611,7 @@ class CPBVentaUnificarView(VariablesMixin,CreateView):
         else:
             return redirect(reverse('cpb_venta_listado')) 
 
-        CPBDetalleFormSet.form = staticmethod(curry(CPBVentaDetalleForm,request=request))
+        CPBDetalleFormSet.form = staticmethod(curry(CPBVentaDetalleForm,request=request,clonacion=True))
         ventas_detalle = CPBDetalleFormSet(prefix='formDetalle',initial=det)
         CPBPIFormSet.form = staticmethod(curry(CPBVentaPercImpForm,request=request))
         ventas_pi = CPBPIFormSet(prefix='formDetallePI')
@@ -800,7 +800,7 @@ class CPBVentaClonarCreateView(VariablesMixin,CreateView):
 
     def get_form_kwargs(self):
         kwargs = super(CPBVentaClonarCreateView, self).get_form_kwargs()
-        kwargs['request'] = self.request
+        kwargs['request'] = self.request        
         return kwargs
 
     def get(self, request, *args, **kwargs):
@@ -814,13 +814,16 @@ class CPBVentaClonarCreateView(VariablesMixin,CreateView):
             form.fields['cpb_tipo'].initial = cpb.cpb_tipo
             form.fields['entidad'].initial = cpb.entidad
             form.fields['condic_pago'].initial=1
+            form.fields['importe_tasa1'].initial=cpb.importe_tasa1
+            form.fields['importe_tasa2'].initial=cpb.importe_tasa2
             detalles = cpb_comprobante_detalle.objects.filter(cpb_comprobante=cpb)
-            det=[]        
-            for c in detalles:            
+            det=[]                    
+            for c in detalles:                            
                 det.append({'producto': c.producto,'cantidad':c.cantidad,'detalle':c.detalle,'porc_dcto':c.porc_dcto,'tasa_iva':c.tasa_iva,
                     'coef_iva':c.coef_iva,'lista_precios':c.lista_precios,'importe_costo':c.importe_costo,'importe_unitario':c.importe_unitario,
                     'importe_subtotal':c.importe_subtotal,'importe_iva':c.importe_iva,'importe_total':c.importe_total,'origen_destino':c.origen_destino,
-                    'importe_tasa1':c.importe_tasa1,'importe_tasa2':c.importe_tasa2})                        
+                    'importe_tasa1':c.importe_tasa1,'importe_tasa2':c.importe_tasa2})
+                        
             CPBDetalleFormSet = inlineformset_factory(cpb_comprobante, cpb_comprobante_detalle,form=CPBVentaDetalleForm,fk_name='cpb_comprobante',formset=CPBVentaDetalleFormSet, can_delete=True,extra=0,min_num=len(det))
 
             perc_imp = cpb_comprobante_perc_imp.objects.filter(cpb_comprobante=cpb)
@@ -831,11 +834,10 @@ class CPBVentaClonarCreateView(VariablesMixin,CreateView):
         else:
             detalles = None       
             perc_imp = None
-        # ventas_detalle = CPBDetalleFormSet(prefix='formDetalle',initial=det)
-        # ventas_pi = CPBPIFormSet(prefix='formDetallePI')
-        # cpb_fp = CPBFPFormSet(prefix='formFP')
-        CPBDetalleFormSet.form = staticmethod(curry(CPBVentaDetalleForm,request=request))
+        
+        CPBDetalleFormSet.form = staticmethod(curry(CPBVentaDetalleForm,request=request,clonacion=True))
         ventas_detalle = CPBDetalleFormSet(prefix='formDetalle',initial=det)
+
         CPBPIFormSet.form = staticmethod(curry(CPBVentaPercImpForm,request=request))
         ventas_pi = CPBPIFormSet(prefix='formDetallePI',initial=pi)
         CPBFPFormSet.form = staticmethod(curry(CPBFPForm,request=request))

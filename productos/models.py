@@ -150,6 +150,7 @@ class prod_producto_lprecios(models.Model):
                 return c*100
         except:
             return 100
+    
 
 from comprobantes.models import cpb_comprobante_detalle
 class prod_producto_ubicac(models.Model):

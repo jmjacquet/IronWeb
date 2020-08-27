@@ -7,6 +7,8 @@ $(document).ready(function() {
 //           allow_single_deselect: true,
 //       }); 
 
+$('[data-toggle=tooltip]').tooltip();
+
 $("input[type=number]").click(function(){
             this.select()
           });

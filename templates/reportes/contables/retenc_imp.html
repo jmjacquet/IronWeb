@@ -39,10 +39,12 @@
                                 <a href="#tab_15_2" data-toggle="tab">
                                 RETENCIONES</a>
                             </li>                        
+                            {% if empresa.usa_impuestos %}
                             <li>
                                 <a href="#tab_15_3" data-toggle="tab">
-                                IMPUESTOS COMBUSTIBLES</a>
-                            </li>  
+                                IMPUESTOS ADICIONALES/COMBUSTIBLES</a>
+                            </li>
+                            {% endif %}  
                         </ul>
                         <div class="tab-content">
                             <div class="tab-pane active" id="tab_15_1">
@@ -137,6 +139,7 @@
                                             </table>               
                                 </div>
                             </div>
+                            {% if empresa.usa_impuestos %}
                             <div class="tab-pane" id="tab_15_3">
                                 <div class="col-xs-12">
                                             <table id="dataTables-impuestos" class="table table-striped compact table-hover table-no-bordered tabla_nueva nowrap">         
@@ -146,8 +149,8 @@
                                                         <th>CPB Tipo</th> 
                                                         <th>Comprobante</th>
                                                         <th>Entidad</th>                                                                                                                
-                                                        <th class="text-right">ITC</th>
-                                                        <th class="text-right">TH</th>
+                                                        <th class="text-right">{{empresa.nombre_impuesto1}}</th>
+                                                        <th class="text-right">{{empresa.nombre_impuesto2}}</th>
                                                         <th class="text-right">Total</th>
                                                         <th>Detalle</th>       
                                                     </tr>
@@ -182,6 +185,7 @@
                                             </table>               
                                 </div>
                             </div>
+                             {% endif %}  
                         </div>
                     </div>                                                                    
             
@@ -561,7 +565,7 @@ var tabla = $('#dataTables-retenc').DataTable({
             $( api.column(9).footer() ).html('$'+pageTotal.toLocaleString(undefined,{minimumFractionDigits:2}));      
         }
         });
-
+{% if empresa.usa_impuestos %}
 var tabla = $('#dataTables-impuestos').DataTable({
             "language": {
                 "decimal": ",",
@@ -738,6 +742,7 @@ var tabla = $('#dataTables-impuestos').DataTable({
             $( api.column(6).footer() ).html('$'+pageTotal.toLocaleString(undefined,{minimumFractionDigits:2}));      
         }
         });
+ {% endif %}  
 });
 </script>
 {% endblock main %}
