@@ -52,7 +52,7 @@
                                       <ul class="dropdown-menu dropdown-menu-default">
                                         <li>{% include "general/varios/cpb_ver_dropdown.html" %}</li>
                                         <li><a target="_blank" href="{% url 'imprimirPresupuesto' id=cpb.pk %}"><i class=" icon-printer"></i> Imprimir</a></li>
-                                        <li><a href="{% url 'mandarEmail' id=cpb.pk %}"><i class="icon-envelope-open"></i> Enviar por Email</a></li>
+                                        <li><a href="#" name='mandarEmail' value="{{cpb.pk|safe}}"><i class="icon-envelope-open"></i> Enviar por Email</a></li>
                                     {% if 'cpb_presup_abm' in permisos_grupo %}                                        
                                         <li role="separator" class="divider"></li>
                                         {% if cpb.presup_aprobacion.pk != 14 %}
@@ -340,7 +340,31 @@ var tabla = $('#dataTables-cpb_presupuesto').DataTable({
 
 
 
-
+$("a[name='mandarEmail']").click(function() {
+        var id = $(this).attr('value');
+        datos = []
+        $.ajax({
+            url: "/comprobantes/verifEmail/",
+            type: "post",
+            dataType: 'json',
+            data: {
+                'id': id
+            },
+            success: function(data) {
+                if (data!='') {
+                    window.location.href = '/comprobantes/mandarEmail/'+id;
+                } else {
+                    alertify.prompt('ENVIAR COMPROBANTE x EMAIL','Ingrese la dirección de Email:','',
+                        function(evt, value) 
+                        {
+                            var email = value;
+                            window.location.href = '/comprobantes/mandarEmail/'+id+'/?email='+email;
+                        },
+                        function(){} ).set('labels', {ok:'Aceptar', cancel:'Cancelar'}).set('type', 'email');
+                }
+            }
+        });
+        });
 });
 </script>
 {% endblock main %}

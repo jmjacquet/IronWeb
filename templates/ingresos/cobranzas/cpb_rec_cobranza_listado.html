@@ -54,7 +54,7 @@
                                         <li><a href="{% url 'recibo_ver' id=cpb.id %}"  title="VER" class="modal-detail" data-modal-head="DETALLE {{cpb.cpb_tipo.nombre|upper}} {{cpb}}   Fecha: {{cpb.fecha_cpb|date:'d/m/Y'}}" data-modal-callback="reload"><i class="icon-screen-desktop"></i> Vista Previa</a></li>
                                         <li><a target="_blank" href="{% url 'imprimirCobranza' id=cpb.pk %}"><i class=" icon-printer"></i>Imprimir</a></li>
                                         <li><a target="_blank" href="{% url 'imprimirCobranzaCtaCte' id=cpb.pk %}"><i class=" icon-printer"></i>Imprimir Recibo CtaCte</a></li>
-                                        <li><a href="{% url 'mandarEmail' id=cpb.pk %}"><i class="icon-envelope-open"></i> Enviar por Email</a></li>
+                                        <li><a href="#" name='mandarEmail' value="{{cpb.pk|safe}}"><i class="icon-envelope-open"></i> Enviar por Email</a></li>
                                             <li role="separator" class="divider"></li>
                                         <li><a href="{% url 'cpb_rec_cobranza_editar' id=cpb.pk %}"  title="Editar" data-modal-callback="reload" ><i class="icon-note"></i> Editar</a></li>
                                         {% if cpb.estado.pk = 3 %}
@@ -303,6 +303,32 @@ var tabla = $('#dataTables-cobranzas').DataTable({
             pageTotal = api.column(6, { page: 'current'} ).data().reduce( function (a, b) {return floatVal(a) + floatVal(b);}, 0 );            
             $( api.column(6).footer() ).html('$'+pageTotal.toLocaleString(undefined,{minimumFractionDigits:2}));
         }
+        });
+
+$("a[name='mandarEmail']").click(function() {
+        var id = $(this).attr('value');
+        datos = []
+        $.ajax({
+            url: "/comprobantes/verifEmail/",
+            type: "post",
+            dataType: 'json',
+            data: {
+                'id': id
+            },
+            success: function(data) {
+                if (data!='') {
+                    window.location.href = '/comprobantes/mandarEmail/'+id;
+                } else {
+                    alertify.prompt('ENVIAR COMPROBANTE x EMAIL','Ingrese la dirección de Email:','',
+                        function(evt, value) 
+                        {
+                            var email = value;
+                            window.location.href = '/comprobantes/mandarEmail/'+id+'/?email='+email;
+                        },
+                        function(){} ).set('labels', {ok:'Aceptar', cancel:'Cancelar'}).set('type', 'email');
+                }
+            }
+        });
         });
 });
 </script>
