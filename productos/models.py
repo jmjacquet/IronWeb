@@ -35,7 +35,7 @@ class prod_lista_precios(models.Model):
         db_table = 'prod_lista_precios'
         ordering = ['-default','nombre']
 
-    def save(self):
+    def save(self, *args, **kwargs):
         self.nombre = self.nombre.upper()
         super(prod_lista_precios, self).save()
     
@@ -52,7 +52,7 @@ class prod_ubicacion(models.Model):
         db_table = 'prod_ubicacion'
         ordering = ['-default','nombre']
 
-    def save(self):
+    def save(self, *args, **kwargs):
         self.nombre = self.nombre.upper()
         super(prod_ubicacion, self).save()
     
@@ -68,7 +68,7 @@ class prod_categoria(models.Model):
         db_table = 'prod_categoria'
         ordering = ['nombre']
     
-    def save(self):
+    def save(self, *args, **kwargs):
         self.nombre = self.nombre.upper()
         super(prod_categoria, self).save()
 

@@ -479,7 +479,32 @@ var tabla = $('#dataTables-cpb_venta').DataTable({
 
 
 
-
+    $("a[name='mandarEmail']").click(function() {
+        var id = $(this).attr('value');
+        datos = []
+        $.ajax({
+            url: "/comprobantes/verifEmail/",
+            type: "post",
+            dataType: 'json',
+            data: {
+                'id': id
+            },
+            success: function(data) {
+                if (data!='') {
+                    window.location.href = '/comprobantes/mandarEmail/'+id;
+                } else {
+                    alertify.prompt('ENVIAR COMPROBANTE x EMAIL','Ingrese la dirección de Email:','',
+                        function(evt, value) 
+                        {
+                            var email = value;
+                            window.location.href = '/comprobantes/mandarEmail/'+id+'/?email='+email;
+                        },
+                        function(){} ).set('labels', {ok:'Aceptar', cancel:'Cancelar'}).set('type', 'email');
+                }
+            }
+        });
+        });
+   
 
      
 

@@ -1084,12 +1084,27 @@ def imprimirPago(request,id,pdf=None):
 from django.core.mail import send_mail, EmailMessage
 from django.core.mail.backends.smtp import EmailBackend
 
+
+def verifEmail(request):                     
+    id = request.POST.get('id',None)            
+    email = None
+    try:
+      email = cpb_comprobante.objects.filter(id=id).first().entidad.get_correo()    
+      if not email:
+        email=''
+    except:
+      email=''
+    return HttpResponse(json.dumps(email), content_type = "application/json")
+
 @login_required 
 def mandarEmail(request,id):   
     try:
+        email = str(request.GET.get('email',''))        
         cpb = cpb_comprobante.objects.get(id=id)            
         mail_destino = []
-        direccion = str(cpb.entidad.email)
+        if not email:
+          email=str(cpb.entidad.email)
+        direccion = email
         if not direccion:
             messages.error(request, 'El comprobante no pudo ser enviado! (verifique la dirección de correo del destinatario)')  
             return HttpResponseRedirect(cpb.get_listado())

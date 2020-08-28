@@ -75,7 +75,9 @@
                                           <ul class="dropdown-menu dropdown-menu-default">
                                             <li>{% include "general/varios/cpb_ver_dropdown.html" %}</li>
                                             <li><a target="_blank" href="{% url 'imprimirFactura' id=cpb.pk %}"><i class=" icon-printer"></i> Imprimir</a></li>
-                                            <li><a href="{% url 'mandarEmail' id=cpb.pk %}"><i class="icon-envelope-open"></i> Enviar por Email</a></li>
+                                            <li><a href="{% url 'mandarEmail' id=cpb.pk %}"><i class="icon-envelope-open"></i> Enviar por Email</a>
+                                                <a href="#" name='mandarEmail' value="{{cpb.pk|safe}}"><i class="icon-envelope-open"></i> Enviar por Email</a>
+                                            </li>
                                             <li role="separator" class="divider"></li>
                                             {% if 'cpb_ventas_abm' in permisos_grupo %}
                                                 {% if cpb.cpb_tipo.tipo != 14 %}
