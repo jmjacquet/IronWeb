@@ -251,7 +251,7 @@ jQuery(document).ready(function($) {
             name: 'Vendido',
             data: [
                 {% for p in productos_vendidos %}
-                    { name: '{{p.producto__nombre|safe|truncatechars:50}}', y: {{p.tot|safe}}
+                    { name: '{{p.producto__nombre|default_if_none:"S/E"|truncatechars:50}}', y: {{p.tot|safe}}
                     {% if forloop.first%}  ,sliced: true,  selected: true {% endif %} },           
                 {% endfor %}
             ]
@@ -264,7 +264,7 @@ jQuery(document).ready(function($) {
             name: 'Vendido x Categoría',
             data: [
                 {% for p in productos_vendidos_categ %}
-                    { name: '{{p.producto__categoria__nombre|safe|truncatechars:50}}', y: {{p.tot|safe}}
+                    { name: '{{p.producto__categoria__nombre|default_if_none:"S/E"|truncatechars:50}}', y: {{p.tot|safe}}
                     {% if forloop.first%}  ,sliced: true,  selected: true {% endif %} },           
                 {% endfor %}
             ]

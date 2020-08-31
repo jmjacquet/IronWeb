@@ -257,29 +257,35 @@ class PrincipalView(VariablesMixin,TemplateView):
         comprobantes = comprobantes.filter(cpb_tipo__tipo__in=[1,2,3,9,21,22,23]).distinct().annotate(m=Month('fecha_cpb'),anio=Year('fecha_cpb')).order_by(F('anio'),F('m')).values('m','anio')        
 
         meses_cpbs = comprobantes.values_list('m','anio')
-                
-        ventas = comprobantes.filter(cpb_tipo__compra_venta='V').annotate(pendiente=Sum(F('saldo')*F('cpb_tipo__signo_ctacte'),output_field=DecimalField()),saldado=Sum((F('importe_total')-F('saldo'))*F('cpb_tipo__signo_ctacte'),output_field=DecimalField())).order_by(F('anio'),F('m'))
-        compras = comprobantes.filter(cpb_tipo__compra_venta='C').annotate(pendiente=Sum(F('saldo')*F('cpb_tipo__signo_ctacte'),output_field=DecimalField()),saldado=Sum((F('importe_total')-F('saldo'))*F('cpb_tipo__signo_ctacte'),output_field=DecimalField())).order_by(F('anio'),F('m'))
-        
+
         meses = list()
         import locale        
         locale.setlocale(locale.LC_ALL, '')
-        for m in meses_cpbs:                        
-                meses.append(MESES[m[0]-1][1]+' '+str(m[1])[2:4]+"'")
+        
 
         ventas_deuda = list()
         ventas_pagos = list()
         compras_deuda = list()
         compras_pagos = list()
         
-        for v in ventas:
-            ventas_deuda.append(v['pendiente'])
-            ventas_pagos.append(v['saldado'])
-
-        for c in compras:
-            compras_deuda.append(c['pendiente'])
-            compras_pagos.append(c['saldado'])
-                
+        for m in meses_cpbs:                        
+            meses.append(MESES[m[0]-1][1]+' '+str(m[1])[2:4]+"'")
+            ventas = comprobantes.filter(cpb_tipo__compra_venta='V',anio=m[1],m=m[0]).annotate(pendiente=Sum(F('saldo')*F('cpb_tipo__signo_ctacte'),output_field=DecimalField()),saldado=Sum((F('importe_total')-F('saldo'))*F('cpb_tipo__signo_ctacte'),output_field=DecimalField())).order_by(F('anio'),F('m'))
+            compras = comprobantes.filter(cpb_tipo__compra_venta='C',anio=m[1],m=m[0]).annotate(pendiente=Sum(F('saldo')*F('cpb_tipo__signo_ctacte'),output_field=DecimalField()),saldado=Sum((F('importe_total')-F('saldo'))*F('cpb_tipo__signo_ctacte'),output_field=DecimalField())).order_by(F('anio'),F('m'))
+            if ventas:
+                ventas_deuda.append(ventas.first().get('pendiente',Decimal(0.00)))
+                ventas_pagos.append(ventas.first().get('saldado',Decimal(0.00)))
+            else:
+                ventas_deuda.append(Decimal(0.00))
+                ventas_pagos.append(Decimal(0.00))
+            print compras
+            if compras:
+                compras_deuda.append(compras.first().get('pendiente',Decimal(0.00)))
+                compras_pagos.append(compras.first().get('saldado',Decimal(0.00)))            
+            else:
+                compras_deuda.append(Decimal(0.00))
+                compras_pagos.append(Decimal(0.00))
+            
         context['meses']= json.dumps(meses,cls=DecimalEncoder)
        
         context['ventas_deuda']=  json.dumps(ventas_deuda,cls=DecimalEncoder)

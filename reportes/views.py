@@ -369,8 +369,10 @@ def generarCITI(cpbs,ventas_compras,tipo_archivo):
             linea += str(c.numero).encode('utf-8').rjust(20, "0") #NRO CPB HASTA
             
             tipo_doc=c.entidad.tipo_doc
+            nro_doc=c.entidad.nro_doc
             if tipo_doc == 99:
-                nro_doc = 0
+                if not c.entidad.nro_doc:
+                    nro_doc = 0                
             elif tipo_doc == 96:
                 nro_doc = c.entidad.nro_doc
             elif tipo_doc == 80:    
