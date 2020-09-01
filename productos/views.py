@@ -704,6 +704,36 @@ def prod_precios_actualizar(request):
         variables = RequestContext(request, {'form':form})        
         return render_to_response("productos/actualizar_precios.html", variables)
 
+@login_required 
+def prod_precios_imprimirCBS(request):        
+    limpiar_sesion(request)        
+    lista = request.GET.getlist('id')         
+    form = ImpresionCodbarsForm(request.POST or None)         
+    if form.is_valid():                                   
+        cantidad = int(form.cleaned_data['cantidad'])                                                              
+        pventa = form.cleaned_data['pventa']                                                              
+        detalle = form.cleaned_data['detalle']       
+        precios = prod_producto_lprecios.objects.filter(id__in=lista)   
+        context = {}
+        context = getVariablesMixin(request)  
+        context['precios'] = precios
+        context['pventa'] = pventa
+        context['detalle'] = detalle
+        context['cantidad'] = cantidad
+        fecha = datetime.now()
+        context['fecha'] = fecha             
+        template = 'productos/precios_codbars.html'                                    
+        return easy_pdf.rendering.render_to_pdf_response(request, template, context)   
+    else:            
+        form = ImpresionCodbarsForm(None)          
+        variables = RequestContext(request, {'form':form})        
+        return render_to_response("productos/imprimir_codbars.html", variables)
+       
+
+    
+    
+   
+
 
 #************* PRods Stock **************
 

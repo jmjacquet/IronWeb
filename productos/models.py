@@ -150,7 +150,11 @@ class prod_producto_lprecios(models.Model):
                 return c*100
         except:
             return 100
-    
+    @property
+    def get_codbar(self):
+        from comprobantes.views import armarCodBar
+        return armarCodBar(self.producto.codigo_barras)
+        
 
 from comprobantes.models import cpb_comprobante_detalle
 class prod_producto_ubicac(models.Model):

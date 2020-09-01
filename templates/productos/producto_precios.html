@@ -42,18 +42,18 @@
                     <table id="dataTables-lprecios" class="table table-striped compact table-hover table-no-bordered tabla_nueva nowrap">         
                         <thead>
                             <tr>                                                               
-                                <th class="no-sort text-center"></th>
-                                <th class="no-sort text-center"> <input type="checkbox" id="checkall" title="Seleccionar Todas"/></th>
-                                <th class="imprimir">Producto</th>
-                                <th class="imprimir">Categoría</th>
-                                <th class="imprimir">TipoProd.</th>                                                                
-                                <th class="imprimir text-right">Precio Costo</th>
-                                <th class="imprimir text-right">Precio c/Imp.</th>
-                                <th class="imprimir text-right">Coef.Gan.</th>                                                               
-                                <th class="imprimir text-right">Precio Venta</th>                                                                                               
+                                <th class="no-sort text-center" data-priority="1"></th>
+                                <th class="no-sort text-center" data-priority="1"> <input type="checkbox" id="checkall" title="Seleccionar Todas"/></th>
+                                <th class="imprimir" data-priority="1">Producto</th>
+                                <th class="imprimir" data-priority="3">Categoría</th>
+                                <th class="imprimir" data-priority="3">TipoProd.</th>                                                                
+                                <th class="imprimir text-right" data-priority="1">Costo</th>
+                                <th class="imprimir text-right" data-priority="1">Costo c/Imp.</th>
+                                <th class="imprimir text-right" data-priority="2" title="Coeficiente de Ganancia">C.Gan.</th>                                                               
+                                <th class="imprimir text-right" data-priority="1">Venta</th>                                                                                               
                                 {% if empresa.usa_impuestos %}
-                                <th class="imprimir text-right">{{empresa.nombre_impuesto1}}</th>                                                               
-                                <th class="imprimir text-right">{{empresa.nombre_impuesto2}}</th>
+                                <th class="imprimir text-right" data-priority="2">{{empresa.nombre_impuesto1}}</th>                                                               
+                                <th class="imprimir text-right" data-priority="2">{{empresa.nombre_impuesto2}}</th>
                                 {% endif %}  
                             </tr>
                         </thead>
