@@ -304,6 +304,11 @@ class StockProdForm(forms.ModelForm):
 			model = prod_producto_ubicac
 			exclude = ['id','producto','ubicacion']		
 
+class ImpresionCodbarsForm(forms.Form):	
+	detalle = forms.ChoiceField(label=u'Imprimir Detalle',choices=SINO,required=True,initial='S')
+	pventa = forms.ChoiceField(label=u'Imprimir Precio Venta',choices=SINO,required=True,initial='S')
+	cantidad = forms.IntegerField(label=u'Cantidad de Copias por Producto',required=True,initial=1)
+	
 
 class ImportarProductosForm(forms.Form):	
 	archivo = forms.FileField(label='Seleccione un archivo',required=True)  

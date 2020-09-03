@@ -110,6 +110,7 @@ class UsuarioList(VariablesMixin,ListView):
 
         return context
 
+
 @login_required
 def UsuarioCreateView(request):    
     if not tiene_permiso(request,'gral_configuracion'):
@@ -156,7 +157,7 @@ def UsuarioEditView(request,id):
             post = form.save(commit=False)                                    
             post.save()
             form.save_m2m()
-            messages.success(request, u'Los datos se guardaron con éxito!')
+            messages.success(request, u'Los datos se guardaron con éxito!')            
             return HttpResponseRedirect(reverse('usuarios'))                    
     else:
         form = UsuarioForm(request,usuario,instance=usr)

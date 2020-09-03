@@ -44,7 +44,8 @@ urlpatterns = patterns('comprobantes.views',
     url(r'^imprimirPagoCtaCte/(?P<id>\d+)/$',imprimirPagoCtaCte,name="imprimirPagoCtaCte"),
 
     url(r'^mandarEmail/(?P<id>\d+)/$',mandarEmail,name="mandarEmail"),
-
+    url(r'^verifEmail/$', verifEmail,name="verifEmail"),
+    
     url(r'^movimientos/$', MovInternosViewList.as_view(),name="movimientos_listado"),
     url(r'^movimientos/movimientos_nuevo/$', MovInternosCreateView.as_view(), name="movimientos_nuevo"),
     url(r'^movimientos/movimientos_editar/(?P<id>\d+)/$', MovInternosEditView.as_view(), name="movimientos_editar"),

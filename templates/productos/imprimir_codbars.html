@@ -1,0 +1,50 @@
+{% load static from staticfiles %}
+{% load bootstrap3 %}
+{% load humanize %}
+{% block extra_css %}
+  <link rel="stylesheet" href="{% static 'css/comprobantes.css'%}?{% now "Ymd"%}" type="text/css" >  
+{% endblock %}
+
+<div style="width:520px" class="modal-dialog modal-modal">
+        <div class="modal-content">
+              <div class=" col-sm-12">
+               <div class="row">
+                 <div data-dismiss="modal" class="close-modal">
+                          <button type="button" class="close" data-dismiss="modal" aria-hidden="true">x</button>        
+                        </div>
+                 <div class="modal-head">                        
+                        IMPRESION CÓDIGOS DE BARRAS
+                </div>
+                <form class="form" accept-charset="UTF-8" role="form" action="" method="post">
+                {% csrf_token %}  
+                <div class="modal-body">                        
+                    <div class="row">
+                          <div class="col-xs-12"> 
+                            <div class=" col-sm-3 ">{% bootstrap_field form.detalle %}</div> 
+                            <div class=" col-sm-3 ">{% bootstrap_field form.pventa %}</div> 
+                            <div class=" col-sm-6 ">{% bootstrap_field form.cantidad %}</div>                                      
+                            </div>
+                          </div>
+                    </div>
+                </div>
+                <div class="modal-buttons">
+                      <div class="row">
+                        <div class="col-xs-12">  
+                          <div class="col-xs-6">
+                            <button data-dismiss="modal" class="btn pull-left btn-sm red-flamingo" type="button">
+                                <i class="fa fa-times"></i>Cancelar</button>
+                          </div>
+                          <div class="col-xs-6">
+                            <button type="submit"  class="btn btn-sm pull-right blue-steel"><i class="fa fa-check"></i>Aceptar</button>
+                          </div>
+                      </div>
+                     </div> 
+                 </div>
+                </form>
+            </div> 
+           </div>  
+        </div>
+    
+   
+
+</div>

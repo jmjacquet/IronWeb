@@ -8,7 +8,10 @@
     <script src="{% static 'js/scripts/scripts_prod_precios.js'%}?{% now "Ymd"%}" type="text/javascript"></script>   
 {% endblock %}
 {% block main %}   
-
+            <div id="cargando" class="cargando" >
+                <span class="cargando-txt">CARGANDO...</span>
+                <img class="cargando-img" src="{% static 'img/loading-bars.svg' %}">
+        </div>
           <div class="col-md-12">   
             <div class="portlet box toolbar_green">
                 <div class="portlet-title">
@@ -36,23 +39,24 @@
                     </div>
                     <div class="btn-group " style="float:left;margin-right:20px;margin-bottom:10px;"> 
                     <button class="btn btn-sm green-meadow" value="" style="margin-right:20px;" id="btnActualizar">Actualizar Precios</button>
+                    <button class="btn btn-sm green-meadow" value="" style="margin-right:20px;" id="btnImprimirCBS">Imprimir Cód.Barras</button>
                     
                     </div>               
-                    <table id="dataTables-lprecios" class="table table-striped compact table-hover table-no-bordered tabla_nueva nowrap">         
+                    <table id="dataTables-lprecios" style="display:none;" class="table table-striped compact table-hover table-no-bordered tabla_nueva nowrap">         
                         <thead>
                             <tr>                                                               
-                                <th class="no-sort text-center"></th>
-                                <th class="no-sort text-center"> <input type="checkbox" id="checkall" title="Seleccionar Todas"/></th>
-                                <th class="imprimir">Producto</th>
-                                <th class="imprimir">Categoría</th>
-                                <th class="imprimir">TipoProd.</th>                                                                
-                                <th class="imprimir text-right">Precio Costo</th>
-                                <th class="imprimir text-right">Precio c/Imp.</th>
-                                <th class="imprimir text-right">Coef.Gan.</th>                                                               
-                                <th class="imprimir text-right">Precio Venta</th>                                                                                               
+                                <th class="no-sort text-center" data-priority="1"></th>
+                                <th class="no-sort text-center" data-priority="1"> <input type="checkbox" id="checkall" title="Seleccionar Todas"/></th>
+                                <th class="imprimir" data-priority="1">Producto</th>
+                                <th class="imprimir" data-priority="3">Categoría</th>
+                                <th class="imprimir" data-priority="3">TipoProd.</th>                                                                
+                                <th class="imprimir text-right" data-priority="1">Costo</th>
+                                <th class="imprimir text-right" data-priority="1">Costo c/Imp.</th>
+                                <th class="imprimir text-right" data-priority="2" title="Coeficiente de Ganancia">C.Gan.</th>                                                               
+                                <th class="imprimir text-right" data-priority="1">Venta</th>                                                                                               
                                 {% if empresa.usa_impuestos %}
-                                <th class="imprimir text-right">{{empresa.nombre_impuesto1}}</th>                                                               
-                                <th class="imprimir text-right">{{empresa.nombre_impuesto2}}</th>
+                                <th class="imprimir text-right" data-priority="2">{{empresa.nombre_impuesto1}}</th>                                                               
+                                <th class="imprimir text-right" data-priority="2">{{empresa.nombre_impuesto2}}</th>
                                 {% endif %}  
                             </tr>
                         </thead>
@@ -253,6 +257,9 @@ var tabla = $('#dataTables-lprecios').DataTable({
                     className: 'btnToolbar',                    
                 },
             ],
+                PreDrawCallback:function(){
+            $("#cargando").show();
+            },
             initComplete: function () {
                // this.api().columns().every( function () {[0, 1, 9]
                 this.api().columns([3,4]).every( function () {
@@ -274,7 +281,9 @@ var tabla = $('#dataTables-lprecios').DataTable({
                         select.append( '<option value="'+d+'">'+d+'</option>' )
                     } );
                 } );
-
+                 $("#dataTables-lprecios").show();
+                  this.fnAdjustColumnSizing();
+                $("#cargando").hide();
             },
             footerCallback: function ( row, data, start, end, display ) {
             var api = this.api(), data;

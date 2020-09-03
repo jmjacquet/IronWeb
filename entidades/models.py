@@ -120,6 +120,8 @@ class egr_entidad(models.Model):
 
 	def save(self, *args, **kwargs):
 		self.apellido_y_nombre = self.apellido_y_nombre.upper()
+		self.fecha_modif = hoy()		
+		self.fecha_creacion = hoy()
 		super(egr_entidad, self).save()
 
 	def get_listado(self):
