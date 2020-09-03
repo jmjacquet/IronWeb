@@ -81,7 +81,23 @@ $('#btnImprimirCBS').click(function(){
            return true;
       }
     else {
-        return abrir_modal('/productos/prod_precios_imprimirCBS?'+$('#btnActualizar').val());        
+        alertify.prompt('IMPRESIÓN DE CÓDIGOS DE BARRAS','Ingrese la Cantidad de cada Producto:','',
+        function(evt, value) 
+        {
+            var cant = value;
+            if ((cant<=0)||(cant>50))
+            {          
+                 alertify.errorAlert("La cantidad ingresada no es válida!");
+                 return true;
+            }
+            else{
+            window.open('/productos/prod_precios_imprimirCBS?'+$('#btnActualizar').val()+'&cantidad='+cant);
+            return true;
+          }
+            
+        },
+        function(){} ).set('labels', {ok:'Aceptar', cancel:'Cancelar'}).set('type', 'number');
+
     }
 
 });

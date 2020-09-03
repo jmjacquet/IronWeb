@@ -8,7 +8,10 @@
     <script src="{% static 'js/scripts/scripts_prod_precios.js'%}?{% now "Ymd"%}" type="text/javascript"></script>   
 {% endblock %}
 {% block main %}   
-
+            <div id="cargando" class="cargando" >
+                <span class="cargando-txt">CARGANDO...</span>
+                <img class="cargando-img" src="{% static 'img/loading-bars.svg' %}">
+        </div>
           <div class="col-md-12">   
             <div class="portlet box toolbar_green">
                 <div class="portlet-title">
@@ -39,7 +42,7 @@
                     <button class="btn btn-sm green-meadow" value="" style="margin-right:20px;" id="btnImprimirCBS">Imprimir Cód.Barras</button>
                     
                     </div>               
-                    <table id="dataTables-lprecios" class="table table-striped compact table-hover table-no-bordered tabla_nueva nowrap">         
+                    <table id="dataTables-lprecios" style="display:none;" class="table table-striped compact table-hover table-no-bordered tabla_nueva nowrap">         
                         <thead>
                             <tr>                                                               
                                 <th class="no-sort text-center" data-priority="1"></th>
@@ -254,6 +257,9 @@ var tabla = $('#dataTables-lprecios').DataTable({
                     className: 'btnToolbar',                    
                 },
             ],
+                PreDrawCallback:function(){
+            $("#cargando").show();
+            },
             initComplete: function () {
                // this.api().columns().every( function () {[0, 1, 9]
                 this.api().columns([3,4]).every( function () {
@@ -275,7 +281,9 @@ var tabla = $('#dataTables-lprecios').DataTable({
                         select.append( '<option value="'+d+'">'+d+'</option>' )
                     } );
                 } );
-
+                 $("#dataTables-lprecios").show();
+                  this.fnAdjustColumnSizing();
+                $("#cargando").hide();
             },
             footerCallback: function ( row, data, start, end, display ) {
             var api = this.api(), data;

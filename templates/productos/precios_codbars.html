@@ -45,10 +45,10 @@
          <tr>
         {% endif %}
         <td align="center" class="borde_abajo borde_arriba borde_der borde_izq">
-          <img src="data:image/png;base64,{{c.get_codbar}}" alt="afip" width="100%" height="25"  ><br>    
-              {{c.producto.codigo_barras}}<br>
-              {% if detalle %}<span class="pie_sistema">{{c.producto}}</span><br>{% endif %}
-              {% if pventa %}${{c.precio_venta}}{% endif %} 
+          <img src="data:image/png;base64,{{c.codbar}}" alt="afip" width="100%" height="25"  ><br>    
+              {{c.codigo_barras}}<br>
+              {% if c.detalle %}<span class="pie_sistema">{{c.detalle}}</span><br>{% endif %}
+              {% if c.precio %}${{c.precio}}{% endif %} 
         </td>
     
     {% endfor precios %}

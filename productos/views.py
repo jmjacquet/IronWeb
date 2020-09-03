@@ -707,27 +707,32 @@ def prod_precios_actualizar(request):
 @login_required 
 def prod_precios_imprimirCBS(request):        
     limpiar_sesion(request)        
-    lista = request.GET.getlist('id')         
-    form = ImpresionCodbarsForm(request.POST or None)         
-    if form.is_valid():                                   
-        cantidad = int(form.cleaned_data['cantidad'])                                                              
-        pventa = form.cleaned_data['pventa']                                                              
-        detalle = form.cleaned_data['detalle']       
-        precios = prod_producto_lprecios.objects.filter(id__in=lista)   
-        context = {}
-        context = getVariablesMixin(request)  
-        context['precios'] = precios
-        context['pventa'] = pventa
-        context['detalle'] = detalle
-        context['cantidad'] = cantidad
-        fecha = datetime.now()
-        context['fecha'] = fecha             
-        template = 'productos/precios_codbars.html'                                    
-        return easy_pdf.rendering.render_to_pdf_response(request, template, context)   
-    else:            
-        form = ImpresionCodbarsForm(None)          
-        variables = RequestContext(request, {'form':form})        
-        return render_to_response("productos/imprimir_codbars.html", variables)
+    lista = request.GET.getlist('id')    
+    try:
+        cantidad = int(request.GET.get('cantidad',0))
+        if cantidad>0:
+            # try:
+            #     empresa = empresa_actual(request)
+            # except gral_empresa.DoesNotExist:
+            #     empresa = None 
+            # precio = empresa.codbar_precio
+            # detalle = empresa.codbar_detalle
+            precios = prod_producto_lprecios.objects.filter(id__in=lista)
+            lista_precios = [{'codbar':p.get_codbar,'codigo_barras':p.producto.codigo_barras,'detalle':p.producto.__unicode__(),'precio':p.precio_venta} for p in precios]
+            lista_precios = [x for x in lista_precios for i in range(cantidad)] 
+            print lista_precios
+            context = {}
+            context = getVariablesMixin(request)          
+            context['precios'] = lista_precios        
+            fecha = datetime.now()
+            context['fecha'] = fecha             
+            template = 'productos/precios_codbars.html'                                    
+            from easy_pdf.rendering import render_to_pdf_response
+            return render_to_pdf_response(request, template, context)   
+    except:
+        messages.error(request, u'¡No se pudieron imprimir los CBs seleccionados!')        
+        return HttpResponseRedirect(reverse('prod_precios_listado'))
+
        
 
     
