@@ -9,204 +9,200 @@
 {% endblock %}
 
 {% block main %} 
-        <div id="cargando" class="cargando" >
-                <span class="cargando-txt">CARGANDO...</span>
-                <img class="cargando-img" src="{% static 'img/loading-bars.svg' %}">
-        </div>
-        <div class="col-md-12 "> 
-
-            <div class="portlet box toolbar_blue">
-                <div class="portlet-title ">
-                    <div class="caption bold">
-                                <i class="icon-note"></i>COMPROBANTES DE VENTA <small>carga, impresión y facturación</small>                                
-                    </div>
-                    <div class="actions">
-                            <button tittle="Búsqueda Avanzada" data-toggle="collapse" aria-expanded="true"  class="btn btn-circle active" data-target="#barra_busqueda" aria-controls="barra_busqueda"><i class="glyphicon glyphicon-search"></i></button>                          
-                    </div>
-                </div> 
-                              
+<div id="cargando" class="cargando" >
+    <span class="cargando-txt">CARGANDO...</span>
+    <img class="cargando-img" src="{% static 'img/loading-bars.svg' %}">
+</div>
+<div class="col-md-12 cerca">
+    <div class="portlet box toolbar_blue">
+        <div class="portlet-title ">
+            <div class="caption bold">
+                <i class="icon-note"></i>COMPROBANTES DE VENTA <small>carga, impresión y facturación</small>
             </div>
-                    {% include "general/varios/barra_busqueda.html" %}  
-                    <div class="btn-group btnAccion" style="float:left;margin-right:10px;margin-bottom:10px;"> 
-                    {% if 'cpb_ventas_abm' in permisos_grupo %}
-                    <a class="btn btn-sm blue-steel"  style="margin-right:10px;" href="{% url 'cpb_venta_nuevo' %}">Nueva Venta</a>
-                    {% endif %}
-                    {% if 'cpb_ventas_cobrar' in permisos_grupo %}
-                    <button class="btn btn-sm blue-steel" value="" style="margin-right:10px;" id="btnCobranza">Cobrar</button>                                       
-                    {% endif %}
-                    {% if 'cpb_ventas_abm' in permisos_grupo %}
-                    <button class="btn btn-sm red-flamingo" value="" style="margin-right:10px;" id="btnAnular">Anular</button>                                       
-                    <button class="btn btn-sm blue-steel" value="" style="margin-right:10px;" id="btnUnificarVtas">Unificar</button>
-                    {% endif %}
-                    <button class="btn btn-sm blue-steel" value="" id="btnImprimirDetalles">Listado Detalles</button>                                       
-                    </div>   
-                                   
-                    <table id="dataTables-cpb_venta"   style="display:none;" class="table table-striped compact table-hover table-no-bordered tabla_nueva nowrap">         
-                            <thead>
-                                <tr>
-                                    <th class="no-sort text-center" data-priority="1"></th>
-                                    <th class="no-sort text-center" data-priority="2"></th>
-                                    <th class="no-sort text-center" data-priority="3"></th>
-                                    <th class="imprimir text-center" data-priority="6">Cobranza</th>
-                                    <th class="text-center" data-priority="8">CAE</th>
-                                    <th class="imprimir text-center" data-priority="4">Fecha CPB</th>
-                                    <th class="imprimir text-center" data-priority="8" >Tipo</th>
-                                    <th class="imprimir text-left" data-priority="5">Nº CPB</th>
-                                    <th class="imprimir text-left" data-priority="9" >Cliente</th>
-                                    <th class="imprimir text-right" data-priority="7" >Saldo</th>
-                                    <th class="imprimir text-right" data-priority="10">Total</th>                                
-                                    <th class="imprimir text-right" data-priority="13">Importe</th>
-                                    <th class="imprimir text-right" data-priority="12">IVA</th>
-                                    <th class="imprimir text-right" data-priority="14">Perc./Imp.</th>
-                                    <th class="imprimir text-center" data-priority="15">CAE Nº</th>                                                                
-                                    <th data-priority="17">Descripción</th>                                
-                                    <th data-priority="16">Vendedor</th>
-                                    <th data-priority="18">CPB Relacionado</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                {% for cpb in comprobantes %}
-                                <tr >
-                                    <td></td>  
-                                    <td><div class="btn-group">
-                                          <button title="{{ cpb.pk|safe}}" type="button" class="btn btn-xs color_barra" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                                            <i class="icon-settings"> </i> <span class="caret"></span>
-                                          </button>
-                                          <ul class="dropdown-menu dropdown-menu-default">
-                                            <li>{% include "general/varios/cpb_ver_dropdown.html" %}</li>
-                                            <li><a target="_blank" href="{% url 'imprimirFactura' id=cpb.pk %}"><i class=" icon-printer"></i> Imprimir</a></li>
-                                            <li><a href="#" name='mandarEmail' value="{{cpb.pk|safe}}"><i class="icon-envelope-open"></i> Enviar por Email</a></li>
-                                            <li role="separator" class="divider"></li>
-                                            {% if 'cpb_ventas_abm' in permisos_grupo %}
-                                                {% if cpb.cpb_tipo.tipo != 14 %}
-                                                <li><a href="{% url 'cpb_venta_clonar' id=cpb.pk %}"  title="Clonar" data-modal-callback="reload" ><i class="icon-book-open"></i> Clonar</a></li>
-                                                {% endif %}
-                                            {% endif %}
-                                            {% if not cpb.cae %}                                            
-                                               {% if 'cpb_ventas_abm' in permisos_grupo %}
-                                                {% if cpb.cpb_tipo.tipo == 14 %}
-                                                    <li><a href="{% url 'cpb_liqprod_editar' id=cpb.pk %}"  title="Editar" data-modal-callback="reload" ><i class="icon-note"></i> Editar</a></li>
-                                                {% else %}
-                                                    <li><a href="{% url 'cpb_venta_editar' id=cpb.pk %}"  title="Editar" data-modal-callback="reload" ><i class="icon-note"></i> Editar</a></li>
-                                                {% endif %}
-
-                                                {% if cpb.estado.pk = 3 %}
-                                                    {% if cpb.saldo > 0 %}
-                                                        <li><a href="#" 
-                                                        onClick="alerta= alertify.dialog('confirm').set({'labels':{ok:'Aceptar', cancel:'Cancelar'},'message': '¿DESEA REACTIVAR EL COMPROBANTE ACTUAL?',transition:'fade','onok': function(){ window.location.href = '{% url 'cpb_anular_reactivar' id=cpb.pk estado=1 %}'; },'oncancel': function(){ return true;} }); alerta.setting('modal', true); alerta.setHeader('ANULAR/REACTIVAR COMPROBANTE'); alerta.show(); return true;"><i class="icon-like"></i>Restablecer</a></li>
-                                                    {% else %}
-                                                        <li><a href="#" 
-                                                        onClick="alerta= alertify.dialog('confirm').set({'labels':{ok:'Aceptar', cancel:'Cancelar'},'message': '¿DESEA REACTIVAR EL COMPROBANTE ACTUAL?',transition:'fade','onok': function(){ window.location.href = '{% url 'cpb_anular_reactivar' id=cpb.pk estado=2 %}'; },'oncancel': function(){ return true;} }); alerta.setting('modal', true); alerta.setHeader('ANULAR/REACTIVAR COMPROBANTE'); alerta.show(); return true;"><i class="icon-like"></i>Restablecer</a></li>
-                                                    {% endif %}   
-
-                                                {% elif cpb.estado.pk < 3 %}
-                                                    {% if cpb.cobranzas == 0 %}
-                                                        <li><a href="#" 
-                                                        onClick="alerta= alertify.dialog('confirm').set({'labels':{ok:'Aceptar', cancel:'Cancelar'},'message': '¿DESEA ANULAR EL COMPROBANTE ACTUAL?',transition:'fade','onok': function(){ window.location.href = '{% url 'cpb_anular_reactivar' id=cpb.pk estado=3  %}'; },'oncancel': function(){ return true;} }); alerta.setting('modal', true); alerta.setHeader('ANULAR/REACTIVAR COMPROBANTE'); alerta.show(); return true;" ><i class="icon-dislike"></i>Anular</a></li>
-                                                    {% endif %}
-                                                    {% if cpb.cpb_tipo.facturable %}
-                                                        {% if 'cpb_ventas_cae' in permisos_grupo %}
-                                                            <li role="separator" class="divider"></li>
-                                                            <li>
-                                                                <a href="#"  value="{{cpb.pk|safe}}" id="fact_{{cpb.pk|safe}}" name="btn_facturacion"><i class="icon-cloud-upload"></i>Obtener CAE/Factura Electrónica</a>
-                                                            </li>
-                                                            <li><a href="#" 
-                                                            onClick="alerta= alertify.dialog('confirm').set({'labels':{ok:'Aceptar', cancel:'Cancelar'},'message': '¿DESEA MARCAR EL CPB COMO FACTURADO?',transition:'fade','onok': function(){ 
-                                                            alertify.prompt('FACTURAR COMPROBANTE AFIP','Ingrese el Número de CAE:',0000000000000,function(evt, value) {var nro = value;window.location.href = '/comprobantes/cpb_facturar/{{cpb.id|safe}}/'+nro;},function(){} ).set('labels', {ok:'Aceptar', cancel:'Cancelar'}).set('type', 'number'); 
-                                                            },'oncancel': function(){ return true;} }); alerta.setting('modal', true); alerta.setHeader('FACTURAR COMPROBANTE'); alerta.show(); return true;" ><i class="icon-cloud-upload"></i>Marcar Facturado (CAE manual)</a></li>
-                                                        {% endif %}
-                                                    {% endif %}
-                                                {% endif %} 
-                                                {% if cpb.cobranzas == 0 %}
-                                                     <li><a href="#" 
-                                                        onClick="alerta= alertify.dialog('confirm').set({'labels':{ok:'Aceptar', cancel:'Cancelar'},'message': '¿DESEA ELIMINAR LA VENTA SELECCIONADA?',transition:'fade','onok': function(){ window.location.href = '{% url 'cpb_venta_eliminar' id=cpb.pk %}'; },'oncancel': function(){ return true;} }); alerta.setting('modal', true); alerta.setHeader('ELIMINAR COMPROBANTE'); alerta.show(); return true;"><i class="icon-trash"></i>Eliminar</a>
-                                                    </li>                                                 
-                                                {% endif %}                                                               
-                                               {% endif %}                        
-                                               
-                                            {% endif %}
-                                               
-                                                
-                                            {% if 'cpb_ventas_abm' in permisos_grupo %}
-                                             <li role="separator" class="divider"></li>
-                                             {% if cpb.cpb_tipo.tipo == 1 %}
-                                                <li><a href="{% url 'cpb_venta_nc_nuevo' id=cpb.pk %}"  title="Nota de Crédito"><i class="icon-note"></i> Generar Nota de Crédito</a></li>
-                                             {% endif %}
-                                            {% endif %} 
-                                            {% if 'cpb_ventas_cobrar' in permisos_grupo %}
-                                                {% if cpb.saldo > 0 and cpb.cpb_tipo.usa_forma_pago %}
-                                                    <li><a onclick="return abrir_modal('/ingresos/cobranza/comprobantes/?id_cpb={{cpb.id|safe}}');"><i class=" icon-wallet"></i> Recibo Cobranza</a></li>
-                                                {% endif %}
-                                            {% endif %}
-                                            {% if 'cpb_remitos_abm' in permisos_grupo %}
-                                            <li><a href="{% url 'cpb_remito_nuevo' id=cpb.pk %}"  title="Generar Remito" ><i class="fa  fa-truck"></i> Generar Remito</a></li>
-                                            <li role="separator" class="divider"></li>
-                                            {% endif %}
-                                            <li><a href="{% url 'cpb_editar_seguimiento' id=cpb.pk %}"  class="modal-update" data-modal-head="EDITAR SEGUIMIENTO"  title="Editar Seguimiento" data-modal-target="#object-{{ item.pk }}" data-modal-callback="reload" ><i class="icon-speech"></i>Seguimiento</a></li> 
-                                                                                       
-                                          </ul>
-                                        </div>                              
-                                       {% if cpb.seguimiento %}  <i title="{{cpb.seguimiento}}" class="icon-speech icono_seguimiento"></i> {% endif %} 
-                                       {% if cpb.anulacion_motivo %}  <i title="{{cpb.anulacion_motivo}}" class="glyphicon glyphicon-exclamation-sign text-danger"></i> {% endif %} 
-                                       {% if cpb.fecha_envio_mail %}                                              
-                                        {% if cpb.fecha_recepcion_mail %}
-                                            <i title="Email enviado el {{cpb.fecha_envio_mail|date:'d/m/Y'}}&#13;Email visto el {{cpb.fecha_recepcion_mail|date:'d/m/Y'}}" class="icon-envelope-open icono_seguimiento"></i> 
+            <div class="actions">
+                <button tittle="Búsqueda Avanzada" data-toggle="collapse" aria-expanded="false"  class="btn btn-circle active" data-target="#barra_busqueda" aria-controls="barra_busqueda"><i class="glyphicon glyphicon-search"></i></button>
+            </div>
+        </div>
+        {% include "general/varios/barra_busqueda.html" %}
+    </div>
+   
+    <div class="btn-group btnAccion" style="float:left;margin-right:10px;margin-bottom:10px;">
+        {% if 'cpb_ventas_abm' in permisos_grupo %}
+            <a class="btn btn-sm blue-steel"  style="margin-right:10px;" href="{% url 'cpb_venta_nuevo' %}">Nueva Venta</a>
+        {% endif %}
+        {% if 'cpb_ventas_cobrar' in permisos_grupo %}
+            <button class="btn btn-sm blue-steel" value="" style="margin-right:10px;" id="btnCobranza">Cobrar</button>
+        {% endif %}
+        {% if 'cpb_ventas_abm' in permisos_grupo %}
+            <button class="btn btn-sm red-flamingo" value="" style="margin-right:10px;" id="btnAnular">Anular</button>
+            <button class="btn btn-sm blue-steel" value="" style="margin-right:10px;" id="btnUnificarVtas">Unificar</button>
+        {% endif %}
+        <button class="btn btn-sm blue-steel" value="" id="btnImprimirDetalles">Listado Detalles</button>
+    </div>
+    
+    <table id="dataTables-cpb_venta"   style="display:none;" class="table table-striped compact table-hover table-no-bordered tabla_nueva nowrap">
+        <thead>
+            <tr>
+                <th class="no-sort text-center" data-priority="1"></th>
+                <th class="no-sort text-center" data-priority="2"></th>
+                <th class="no-sort text-center" data-priority="3"></th>
+                <th class="imprimir text-center" data-priority="7">Cobranza</th>
+                <th class="text-center" data-priority="8">CAE</th>
+                <th class="imprimir text-center" data-priority="4">Fecha CPB</th>
+                <th class="imprimir text-center" data-priority="8" >Tipo</th>
+                <th class="imprimir text-left" data-priority="5">Nº CPB</th>
+                <th class="imprimir text-left" data-priority="9" >Cliente</th>
+                <th class="imprimir text-right" data-priority="6" >Saldo</th>
+                <th class="imprimir text-right" data-priority="10">Total</th>
+                <th class="imprimir text-right" data-priority="13">Importe</th>
+                <th class="imprimir text-right" data-priority="12">IVA</th>
+                <th class="imprimir text-right" data-priority="14">Perc./Imp.</th>
+                <th class="imprimir text-center" data-priority="15">CAE Nº</th>
+                <th data-priority="17">Descripción</th>
+                <th data-priority="16">Vendedor</th>
+                <th data-priority="18">CPB Relacionado</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for cpb in comprobantes %}
+                <tr >
+                    <td></td>
+                    <td><div class="btn-group">
+                        <button title="{{ cpb.pk|safe}}" type="button" class="btn btn-xs color_barra" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                        <i class="icon-settings"> </i> <span class="caret"></span>
+                        </button>
+                        <ul class="dropdown-menu dropdown-menu-default">
+                            <li>{% include "general/varios/cpb_ver_dropdown.html" %}</li>
+                            <li><a target="_blank" href="{% url 'imprimirFactura' id=cpb.pk %}"><i class=" icon-printer"></i> Imprimir</a></li>
+                            <li><a href="#" name='mandarEmail' value="{{cpb.pk|safe}}"><i class="icon-envelope-open"></i> Enviar por Email</a></li>
+                            <li role="separator" class="divider"></li>
+                            {% if 'cpb_ventas_abm' in permisos_grupo %}
+                                {% if cpb.cpb_tipo.tipo != 14 %}
+                                    <li><a href="{% url 'cpb_venta_clonar' id=cpb.pk %}"  title="Clonar" data-modal-callback="reload" ><i class="icon-book-open"></i> Clonar</a></li>
+                                {% endif %}
+                            {% endif %}
+                            {% if not cpb.cae %}
+                                {% if 'cpb_ventas_abm' in permisos_grupo %}
+                                    {% if cpb.cpb_tipo.tipo == 14 %}
+                                        <li><a href="{% url 'cpb_liqprod_editar' id=cpb.pk %}"  title="Editar" data-modal-callback="reload" ><i class="icon-note"></i> Editar</a></li>
+                                    {% else %}
+                                        <li><a href="{% url 'cpb_venta_editar' id=cpb.pk %}"  title="Editar" data-modal-callback="reload" ><i class="icon-note"></i> Editar</a></li>
+                                    {% endif %}
+                                    {% if cpb.estado.pk = 3 %}
+                                        {% if cpb.saldo > 0 %}
+                                            <li><a href="#"
+                                            onClick="alerta= alertify.dialog('confirm').set({'labels':{ok:'Aceptar', cancel:'Cancelar'},'message': '¿DESEA REACTIVAR EL COMPROBANTE ACTUAL?',transition:'fade','onok': function(){ window.location.href = '{% url 'cpb_anular_reactivar' id=cpb.pk estado=1 %}'; },'oncancel': function(){ return true;} }); alerta.setting('modal', true); alerta.setHeader('ANULAR/REACTIVAR COMPROBANTE'); alerta.show(); return true;"><i class="icon-like"></i>Restablecer</a></li>
                                         {% else %}
-                                            <i title="Email enviado el {{cpb.fecha_envio_mail|date:'d/m/Y'}}" class="fa fa-envelope-o icono_seguimiento"></i>                                            
+                                            <li><a href="#"
+                                            onClick="alerta= alertify.dialog('confirm').set({'labels':{ok:'Aceptar', cancel:'Cancelar'},'message': '¿DESEA REACTIVAR EL COMPROBANTE ACTUAL?',transition:'fade','onok': function(){ window.location.href = '{% url 'cpb_anular_reactivar' id=cpb.pk estado=2 %}'; },'oncancel': function(){ return true;} }); alerta.setting('modal', true); alerta.setHeader('ANULAR/REACTIVAR COMPROBANTE'); alerta.show(); return true;"><i class="icon-like"></i>Restablecer</a></li>
                                         {% endif %}
-                                       {% endif %}
-                                    </td> 
-                                    <td>
-                                        <input type="checkbox" class="tildado" id="chk_{{forloop.counter0}}" value="{{ cpb.pk|safe }}" aria-label="chk_{{forloop.counter0}}">
-                                    </td>
-                                    <td  class="listado_estado {{cpb.estado_color}}">{{cpb.estado}}</td>
-                                    <td {% if cpb.cae %}title="Nº CAE: {{cpb.cae}} Vencimiento: {{cpb.cae_vto|date:'d/m/Y'}}"{% endif %} class="text-center">{% if cpb.cae %}<a target="_blank" href="{% url 'imprimirFactura' id=cpb.pk %}"><strong><i class="glyphicon glyphicon-paperclip text-primary"></strong></a>{% endif %}</td>
-                                    <td class="text-center" title="Fecha Creación: {{cpb.fecha_creacion|date:'d/m/Y H:i'}}">{{cpb.fecha_cpb|date:'d/m/Y'}}</td>
-                                    <td class="text-center" title="{{ cpb.cpb_tipo|default_if_none:'' }}">{{ cpb.cpb_tipo.codigo|default_if_none:'' }}</td>
-                                    <td>{{cpb}}</td>                                
-                                    <td  title="{{ cpb.entidad}}" >{% include "entidades/cliente_ver.html" %}</td>                               
-                                    <td class="importe">${{cpb.get_saldo|default_if_none:0|floatformat:2}}</td>                                
-                                    <td class="importe">${{cpb.get_importe_total|default_if_none:0}}</td> 
-                                    <td class="importe">${{cpb.get_importe_subtotal|default_if_none:0|floatformat:2}}<input class="hidden" value="{{ item.importe_total }}" id="importe_chk_{{forloop.counter0}}"/></td> 
-                                    <td class="importe">${{cpb.get_importe_iva|default_if_none:0|floatformat:2}}</td>
-                                    <td class="importe">${{cpb.get_importe_perc_imp|default_if_none:0|floatformat:2}}</td>
-                                    <td {% if cpb.cae %}title="Vencimiento CAE: {{cpb.cae_vto|date:'d/m/Y'}}" class="listado_estado success"{% endif %}>{{ cpb.cae|default_if_none:'' }}</td>
-                                    <td  title="{{ cpb.observacion}}">{{ cpb.observacion|default_if_none:''|truncatechars:60 }}</td>
-                                    <td>{{ cpb.vendedor|default_if_none:''|truncatechars:60 }}</td>
-                                    <td>{{ cpb.id_cpb_padre|default_if_none:''}}</td>
-                                </tr>
-                                {% endfor %}
-                            </tbody>
-                            <tfoot>
-                                <tr>
-                                    <th></th>
-                                    <th></th> 
-                                    <th></th>
-                                    <th></th>                                 
-                                    <th></th>
-                                    <th></th>
-                                    <th></th>
-                                    <th></th>
-                                    <th></th>                                                                
-                                    <th class="importe"></th>                                
-                                    <th class="importe"></th> 
-                                    <th class="importe"></th> 
-                                    <th class="importe"></th> 
-                                    <th class="importe"></th> 
-                                    <th></th>
-                                    <th></th>                                
-                                    <th></th>
-                                    <th></th>
-                                </tr>
-                            </tfoot>
-                            </table>
-                 
-                    
-            </div>
-        </div>
+                                        {% elif cpb.estado.pk < 3 %}
+                                        {% if cpb.cobranzas == 0 %}
+                                            <li><a href="#"
+                                            onClick="alerta= alertify.dialog('confirm').set({'labels':{ok:'Aceptar', cancel:'Cancelar'},'message': '¿DESEA ANULAR EL COMPROBANTE ACTUAL?',transition:'fade','onok': function(){ window.location.href = '{% url 'cpb_anular_reactivar' id=cpb.pk estado=3  %}'; },'oncancel': function(){ return true;} }); alerta.setting('modal', true); alerta.setHeader('ANULAR/REACTIVAR COMPROBANTE'); alerta.show(); return true;" ><i class="icon-dislike"></i>Anular</a></li>
+                                        {% endif %}
+                                        {% if cpb.cpb_tipo.facturable %}
+                                            {% if 'cpb_ventas_cae' in permisos_grupo %}
+                                                <li role="separator" class="divider"></li>
+                                                <li>
+                                                    <a href="#"  value="{{cpb.pk|safe}}" id="fact_{{cpb.pk|safe}}" name="btn_facturacion"><i class="icon-cloud-upload"></i>Obtener CAE/Factura Electrónica</a>
+                                                </li>
+                                                <li><a href="#"
+                                                    onClick="alerta= alertify.dialog('confirm').set({'labels':{ok:'Aceptar', cancel:'Cancelar'},'message': '¿DESEA MARCAR EL CPB COMO FACTURADO?',transition:'fade','onok': function(){
+                                                    alertify.prompt('FACTURAR COMPROBANTE AFIP','Ingrese el Número de CAE:',0000000000000,function(evt, value) {var nro = value;window.location.href = '/comprobantes/cpb_facturar/{{cpb.id|safe}}/'+nro;},function(){} ).set('labels', {ok:'Aceptar', cancel:'Cancelar'}).set('type', 'number');
+                                                },'oncancel': function(){ return true;} }); alerta.setting('modal', true); alerta.setHeader('FACTURAR COMPROBANTE'); alerta.show(); return true;" ><i class="icon-cloud-upload"></i>Marcar Facturado (CAE manual)</a></li>
+                                            {% endif %}
+                                        {% endif %}
+                                    {% endif %}
+                                    {% if cpb.cobranzas == 0 %}
+                                        <li><a href="#"
+                                        onClick="alerta= alertify.dialog('confirm').set({'labels':{ok:'Aceptar', cancel:'Cancelar'},'message': '¿DESEA ELIMINAR LA VENTA SELECCIONADA?',transition:'fade','onok': function(){ window.location.href = '{% url 'cpb_venta_eliminar' id=cpb.pk %}'; },'oncancel': function(){ return true;} }); alerta.setting('modal', true); alerta.setHeader('ELIMINAR COMPROBANTE'); alerta.show(); return true;"><i class="icon-trash"></i>Eliminar</a>
+                                    </li>
+                                {% endif %}
+                            {% endif %}
+                            
+                        {% endif %}
+                        
+                        
+                        {% if 'cpb_ventas_abm' in permisos_grupo %}
+                            <li role="separator" class="divider"></li>
+                            {% if cpb.cpb_tipo.tipo == 1 %}
+                                <li><a href="{% url 'cpb_venta_nc_nuevo' id=cpb.pk %}"  title="Nota de Crédito"><i class="icon-note"></i> Generar Nota de Crédito</a></li>
+                            {% endif %}
+                        {% endif %}
+                        {% if 'cpb_ventas_cobrar' in permisos_grupo %}
+                            {% if cpb.saldo > 0 and cpb.cpb_tipo.usa_forma_pago %}
+                                <li><a onclick="return abrir_modal('/ingresos/cobranza/comprobantes/?id_cpb={{cpb.id|safe}}');"><i class=" icon-wallet"></i> Recibo Cobranza</a></li>
+                            {% endif %}
+                        {% endif %}
+                        {% if 'cpb_remitos_abm' in permisos_grupo %}
+                            <li><a href="{% url 'cpb_remito_nuevo' id=cpb.pk %}"  title="Generar Remito" ><i class="fa  fa-truck"></i> Generar Remito</a></li>
+                            <li role="separator" class="divider"></li>
+                        {% endif %}
+                        <li><a href="{% url 'cpb_editar_seguimiento' id=cpb.pk %}"  class="modal-update" data-modal-head="EDITAR SEGUIMIENTO"  title="Editar Seguimiento" data-modal-target="#object-{{ item.pk }}" data-modal-callback="reload" ><i class="icon-speech"></i>Seguimiento</a></li>
+                        
+                    </ul>
+                </div>
+                {% if cpb.seguimiento %}  <i title="{{cpb.seguimiento}}" class="icon-speech icono_seguimiento"></i> {% endif %}
+                {% if cpb.anulacion_motivo %}  <i title="{{cpb.anulacion_motivo}}" class="glyphicon glyphicon-exclamation-sign text-danger"></i> {% endif %}
+                {% if cpb.fecha_envio_mail %}
+                    {% if cpb.fecha_recepcion_mail %}
+                        <i title="Email enviado el {{cpb.fecha_envio_mail|date:'d/m/Y'}}&#13;Email visto el {{cpb.fecha_recepcion_mail|date:'d/m/Y'}}" class="icon-envelope-open icono_seguimiento"></i>
+                    {% else %}
+                        <i title="Email enviado el {{cpb.fecha_envio_mail|date:'d/m/Y'}}" class="fa fa-envelope-o icono_seguimiento"></i>
+                    {% endif %}
+                {% endif %}
+            </td>
+            <td>
+                <input type="checkbox" class="tildado" id="chk_{{forloop.counter0}}" value="{{ cpb.pk|safe }}" aria-label="chk_{{forloop.counter0}}">
+            </td>
+            <td  class="listado_estado {{cpb.estado_color}}">{{cpb.estado}}</td>
+            <td {% if cpb.cae %}title="Nº CAE: {{cpb.cae}} Vencimiento: {{cpb.cae_vto|date:'d/m/Y'}}"{% endif %} class="text-center">{% if cpb.cae %}<a target="_blank" href="{% url 'imprimirFactura' id=cpb.pk %}"><strong><i class="glyphicon glyphicon-paperclip text-primary"></strong></a>{% endif %}</td>
+            <td class="text-center" title="Fecha Creación: {{cpb.fecha_creacion|date:'d/m/Y H:i'}}">{{cpb.fecha_cpb|date:'d/m/Y'}}</td>
+            <td class="text-center" title="{{ cpb.cpb_tipo|default_if_none:'' }}">{{ cpb.cpb_tipo.codigo|default_if_none:'' }}</td>
+            <td>{{cpb}}</td>
+            <td  title="{{ cpb.entidad}}" >{% include "entidades/cliente_ver.html" %}</td>
+            <td class="importe">${{cpb.get_saldo|default_if_none:0|floatformat:2}}</td>
+            <td class="importe">${{cpb.get_importe_total|default_if_none:0}}</td>
+            <td class="importe">${{cpb.get_importe_subtotal|default_if_none:0|floatformat:2}}<input class="hidden" value="{{ item.importe_total }}" id="importe_chk_{{forloop.counter0}}"/></td>
+            <td class="importe">${{cpb.get_importe_iva|default_if_none:0|floatformat:2}}</td>
+            <td class="importe">${{cpb.get_importe_perc_imp|default_if_none:0|floatformat:2}}</td>
+            <td {% if cpb.cae %}title="Vencimiento CAE: {{cpb.cae_vto|date:'d/m/Y'}}" class="listado_estado success"{% endif %}>{{ cpb.cae|default_if_none:'' }}</td>
+            <td  title="{{ cpb.observacion}}">{{ cpb.observacion|default_if_none:''|truncatechars:60 }}</td>
+            <td>{{ cpb.vendedor|default_if_none:''|truncatechars:60 }}</td>
+            <td>{{ cpb.id_cpb_padre|default_if_none:''}}</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+        <tfoot>
+            <tr>
+                <th></th>
+                <th></th>
+                <th></th>
+                <th></th>
+                <th></th>
+                <th></th>
+                <th></th>
+                <th></th>
+                <th></th>
+                <th class="importe"></th>
+                <th class="importe"></th>
+                <th class="importe"></th>
+                <th class="importe"></th>
+                <th class="importe"></th>
+                <th></th>
+                <th></th>
+                <th></th>
+                <th></th>
+            </tr>
+        </tfoot>
+    </table>
 
-<div id="popup" class="modal fade " role="dialog"  data-backdrop="static"  data-keyboard="false"></div>    
-<div id="popup_impresion" class="modal fade " role="dialog"  data-backdrop="static"  data-keyboard="false"></div>    
+
+</div>
+
+<div id="popup" class="modal fade " role="dialog"  data-backdrop="static"  data-keyboard="false"></div>
+<div id="popup_impresion" class="modal fade " role="dialog"  data-backdrop="static"  data-keyboard="false"></div>
 
 {% endblock main %}
 
