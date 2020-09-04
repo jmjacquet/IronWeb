@@ -45,6 +45,8 @@ urlpatterns = patterns('productos.views',
     url(r'^prod_stock_generar/$', prod_stock_generar,name="prod_stock_generar"),
     url(r'^generarCB/$', generarCB,name="generarCB"),    
 
+    url(r'^generarCBS/$', generarCBS,name="generarCBS"),
+
     url(r'^importar_productos/$', importar_productos,name="importar_productos"),
 
     )
