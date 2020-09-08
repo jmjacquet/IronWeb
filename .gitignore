@@ -7,4 +7,5 @@ static/*
 *.conf
 *.ini
 *.bat
-
+/node_modules
+/dist

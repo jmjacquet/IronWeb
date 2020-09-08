@@ -7,114 +7,110 @@
 
 {% block principal %}                                    
 <body class="page-header-fixed page-full-width">
+  
+  {% include "header.html" %}
+  <div class="clearfix"></div>
+  <div class="page-container">
+    <!-- BEGIN SIDEBAR -->
     
-    {% include "header.html" %}
-    <div class="clearfix"></div>
-
-    <div class="page-container">
-	          <!-- BEGIN SIDEBAR -->
-            
-            {% include "menues_mobile.html" %}   
-			
-			<!-- END SIDEBAR -->
-			<!-- BEGIN CONTENT -->
-			<div class="page-content-wrapper">
-				<div class="page-content ">
+    {% include "menues_mobile.html" %}
+    
+    <!-- END SIDEBAR -->
+    <!-- BEGIN CONTENT -->
+    <div class="page-content-wrapper">
+      <div class="page-content ">
         
-					{% block main %}   
+        {% block main %}
           
-						                      <div class="col-sm-10 cerca">                                                                              
-                                   {% if 'gral_barra_totales' in permisos_grupo and not sitio_mobile %}  
-                                      {% include "barra_totales.html" %}                                  
-                                  {% endif %}  
-                                    {% if tipo_usr == 0 or 'gral_ultimos_cpbs' in permisos_grupo %}
-                                    <div class="row">                           
-                                            <div class="col-sm-12 cerca">                                               
-                                              
-                                               {% include "ultimos_cpbs.html" %}                      
-                                                                
-                                            </div>
-                                            
-                                    </div>
-                                    {% endif %} 
-                                    
-                                    {% if tareas and 'gral_tareas' in permisos_grupo and not sitio_mobile %}
-                                      <div class="row">  
-                                          <div class="col-xs-12 cerca">
-                                             <div class="portlet box">
-                                                  <div class="portlet-title encabezado toolbar_blue">
-                                                      <div class="caption">
-                                                          <i class="icon-share"></i>
-                                                          <span class="caption-subject bold uppercase">TAREAS</span>
-                                                          <span class="caption-helper">Tareas asignadas...</span>
-                                                      </div>                                        
-                                                  </div>
-                                                  <div class="portlet-body">
-                                                     {% include "tareas.html" %}
-                                                  </div>
-                                              </div> 
-                                          </div>                            
-                                                                      
-                                      </div> 
-                                    {% endif %}
-                                    {% if tipo_usr == 0 or 'gral_panel_estadisticas' in permisos_grupo %}
-                                      {% include "graficos.html" %}                                          
-                                    {% endif %} 
-
-                            </div>
-                            {% if not sitio_mobile %}  
-                            <div class="col-sm-2 cerca">
-                              <div class="row cerca">
-                               <div class="col-sm-12"> 
-                                {% include "accesos_rapidos2.html" %}   
-                               </div>
-                             </div>     
-                            </div>
-                            {% endif %} 
-                                           
-                     
-           {% if empresa.pprincipal_aviso_tareas and tareas  %}
-            <div class="modal fade" id="modalTareas" role="dialog">
-              <div class="ancho-modal">
-              <div class="row">  
-                <div class="modal-dialog">
-
-                  <!-- Modal content-->
-                  <div class="modal-content mo">
-                    <div class="modal-header">
-                      <button type="button" class="close" data-dismiss="modal">&times;</button>
-                      TAREAS ASIGNADAS 
+          <div class="col-sm-10 cerca">
+            {% if 'gral_barra_totales' in permisos_grupo and not sitio_mobile %}
+              {% include "barra_totales.html" %}
+            {% endif %}
+            {% if tipo_usr == 0 or 'gral_ultimos_cpbs' in permisos_grupo %}
+              <div class="row">
+                <div class="col-sm-12 cerca">
+                  
+                  {% include "ultimos_cpbs.html" %}
+                  
+                </div>
+                
+              </div>
+            {% endif %}
+            
+            {% if tareas and 'gral_tareas' in permisos_grupo and not sitio_mobile %}
+              <div class="row">
+                <div class="col-xs-12 cerca">
+                  <div class="portlet box">
+                    <div class="portlet-title encabezado toolbar_blue">
+                      <div class="caption">
+                        <i class="icon-share"></i>
+                        <span class="caption-subject bold uppercase">TAREAS</span>
+                        <span class="caption-helper">Tareas asignadas...</span>
+                      </div>
                     </div>
-                    <div class="modal-body">
-                       {% include "tareas.html" %} 
-                    </div>
-                    <div class="modal-footer">
-                      <button data-dismiss="modal" class="btn pull-left btn-sm red-flamingo" type="button">
-                                      <i class="fa fa-times"></i>
-                                      {% trans 'Cancelar' %}
-                                  </button>     
+                    <div class="portlet-body">
+                      {% include "tareas.html" %}
                     </div>
                   </div>
-
+                </div>
+                
+              </div>
+            {% endif %}
+            {% if tipo_usr == 0 or 'gral_panel_estadisticas' in permisos_grupo %}
+              {% include "graficos.html" %}
+            {% endif %}
+          </div>
+          {% if not sitio_mobile %}
+            <div class="col-sm-2 cerca">
+              <div class="row cerca">
+                <div class="col-sm-12">
+                  {% include "accesos_rapidos2.html" %}
                 </div>
               </div>
             </div>
+          {% endif %}
+          
+          
+          {% if empresa.pprincipal_aviso_tareas and tareas  %}
+            <div class="modal fade" id="modalTareas" role="dialog">
+              <div class="ancho-modal">
+                <div class="row">
+                  <div class="modal-dialog">
+                    <!-- Modal content-->
+                    <div class="modal-content mo">
+                      <div class="modal-header">
+                        <button type="button" class="close" data-dismiss="modal">&times;</button>
+                        TAREAS ASIGNADAS
+                      </div>
+                      <div class="modal-body">
+                        {% include "tareas.html" %}
+                      </div>
+                      <div class="modal-footer">
+                        <button data-dismiss="modal" class="btn pull-left btn-sm red-flamingo" type="button">
+                        <i class="fa fa-times"></i>
+                        {% trans 'Cancelar' %}
+                        </button>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
             </div>
             <script type="text/javascript">
-             $('#modalTareas').modal('show');
+            $('#modalTareas').modal('show');
             </script>
-            {% endif %}              
-                           
-                        
-					{% endblock main %}
-                    <div id="popup" class="modal fade " role="dialog"  data-backdrop="static"  data-keyboard="false"></div>   
-  				</div>
-  			</div>
-  			<!-- END CONTENT -->
-    			
-    	</div>		       
-      
+          {% endif %}
+          
+          
+        {% endblock main %}
+        <div id="popup" class="modal fade " role="dialog"  data-backdrop="static"  data-keyboard="false"></div>
+      </div>
     </div>
+    <!-- END CONTENT -->
+    
+  </div>
+  
+</div>
 </body>
   
 

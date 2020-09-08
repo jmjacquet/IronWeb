@@ -4,8 +4,6 @@
     alertify.defaults.theme.input = "form-control";              
    
   
-    
-
     toastr.options = {
       "closeButton": true,
       "debug": false,

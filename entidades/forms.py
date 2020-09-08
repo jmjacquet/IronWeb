@@ -63,15 +63,12 @@ class EntidadesForm(forms.ModelForm):
 			except egr_entidad.DoesNotExist:
 			#because we didn't get a match
 				pass
-
 		if fact_categFiscal and tipo_doc:
 			if (int(fact_categFiscal)==1)and(int(tipo_doc)==80)and(not validar_cuit(fact_cuit)):
 				raise forms.ValidationError(u'Debe cargar un CUIT válido! Verifique.')
 
 			if (int(fact_categFiscal)==1)and(int(tipo_doc)!=80):
 				raise forms.ValidationError(u'Si es IVA R.I. debe seleccionar CUIT como tipo de Documento! Verifique.')				
-
-
 		return self.cleaned_data
 
 class EntidadesEditForm(forms.ModelForm):
@@ -102,12 +99,10 @@ class EntidadesEditForm(forms.ModelForm):
 			empresas = empresa_actual(request)  
 			self.fields['empresa'].queryset = empresas
 
-
 	def clean(self):				
 		fact_categFiscal = self.cleaned_data.get('fact_categFiscal')
 		tipo_doc = self.cleaned_data.get('tipo_doc')
-		fact_cuit = self.cleaned_data.get('fact_cuit')
-		
+		fact_cuit = self.cleaned_data.get('fact_cuit')		
 		if fact_categFiscal and tipo_doc:
 			if (int(fact_categFiscal)==1)and(int(tipo_doc)==80)and(not validar_cuit(fact_cuit)):
 				self._errors['fact_cuit'] = ''				
@@ -141,7 +136,6 @@ class VendedoresForm(forms.ModelForm):
 		except:
 			empresa = empresa_actual(request)  
 	
-
 class ImportarEntidadesForm(forms.Form):	
 	archivo = forms.FileField(label='Seleccione un archivo',required=True)  
 	sobreescribir = forms.ChoiceField(label=u'¿Sobreescribir Existentes?',choices=SINO,required=True,initial='S')

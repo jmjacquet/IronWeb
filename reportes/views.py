@@ -415,6 +415,8 @@ def generarCITI(cpbs,ventas_compras,tipo_archivo):
             linea += str(importe_impuestosInt).encode('utf-8').replace(".","").rjust(15, "0") #importe_impuestosInt                        
             linea += str('PES').encode('utf-8') #Moneda
             linea += str('0001000000').encode('utf-8')#tipo_cambio
+            cod_op = ' '
+            cant_alic = 0
             try:
                 cpb_iva = cpb_comprobante_tot_iva.objects.filter(cpb_comprobante=c)
                 cant_alic = len(cpb_iva)

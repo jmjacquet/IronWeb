@@ -717,10 +717,9 @@ def prod_precios_imprimirCBS(request):
             #     empresa = None 
             # precio = empresa.codbar_precio
             # detalle = empresa.codbar_detalle
-            precios = prod_producto_lprecios.objects.filter(id__in=lista)
+            precios = prod_producto_lprecios.objects.filter(id__in=lista).exclude(producto__codigo_barras__isnull=True).exclude(producto__codigo_barras__exact='')
             lista_precios = [{'codbar':p.get_codbar,'codigo_barras':p.producto.codigo_barras,'detalle':p.producto.__unicode__(),'precio':p.precio_venta} for p in precios]
             lista_precios = [x for x in lista_precios for i in range(cantidad)] 
-            print lista_precios
             context = {}
             context = getVariablesMixin(request)          
             context['precios'] = lista_precios        
@@ -1045,8 +1044,26 @@ def importar_productos(request):
 def generarCB(request):
     codigo = request.GET['codigo']
     try:
-        codigo = str(codigo).zfill(12)
+        codigo = str(codigo).zfill(15)
         codigo += str(digVerificador(codigo))                                               
     except:
         codigo=''    
     return HttpResponse(codigo)     
+
+
+@login_required
+def generarCBS(request):   
+    try:
+        prods = prod_productos.objects.all()
+        for p in prods:            
+            if (p.codigo_barras<>''):
+                if int(p.codigo_barras)<9999999:
+                    codigo = ''
+                    codigo = str(p.codigo).zfill(15)
+                    codigo += str(digVerificador(codigo))     
+                    p.codigo_barras=codigo
+                    p.save()
+        messages.success(request,u'Se generaron los CBs con éxito!')
+    except Exception as e:
+        messages.error(request,u'%s (%s)' % (e.message, type(e)))
+    return HttpResponseRedirect(reverse('principal'))
