@@ -718,7 +718,6 @@ def prod_precios_imprimirCBS(request):
             # precio = empresa.codbar_precio
             # detalle = empresa.codbar_detalle
             precios = prod_producto_lprecios.objects.filter(id__in=lista).exclude(producto__codigo_barras__isnull=True).exclude(producto__codigo_barras__exact='')
-            print precios.query
             lista_precios = [{'codbar':p.get_codbar,'codigo_barras':p.producto.codigo_barras,'detalle':p.producto.__unicode__(),'precio':p.precio_venta} for p in precios]
             lista_precios = [x for x in lista_precios for i in range(cantidad)] 
             context = {}
