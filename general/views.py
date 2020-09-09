@@ -278,7 +278,7 @@ class PrincipalView(VariablesMixin,TemplateView):
             else:
                 ventas_deuda.append(Decimal(0.00))
                 ventas_pagos.append(Decimal(0.00))
-            print compras
+            
             if compras:
                 compras_deuda.append(compras.first().get('pendiente',Decimal(0.00)))
                 compras_pagos.append(compras.first().get('saldado',Decimal(0.00)))            

@@ -50,7 +50,7 @@ class CPBSVentasList(VariablesMixin,ListView):
             empresa = None 
         form = ConsultaCpbs(self.request.POST or None,empresa=empresa,request=self.request)   
         comprobantes = cpb_comprobante.objects.filter(cpb_tipo__tipo__in=[1,2,3,9,14,21,22,23],cpb_tipo__compra_venta='V',estado__in=[1,2],empresa=empresa).filter(Q(pto_vta__in=pto_vta_habilitados_list(self.request)) | Q(cpb_tipo__tipo=14))
-        comprobantes = comprobantes.annotate(cobranzas=Count('cpb_cobranza_factura')).order_by('-fecha_cpb','-fecha_creacion','-id')
+        comprobantes = comprobantes.annotate(cobranzas=Count('cpb_cobranza_factura'))
         if form.is_valid():                                
             entidad = form.cleaned_data['entidad']                                                              
             fdesde = form.cleaned_data['fdesde']   
@@ -63,9 +63,9 @@ class CPBSVentasList(VariablesMixin,ListView):
 
             
             if int(estado) == 1:                
-                comprobantes = cpb_comprobante.objects.filter(cpb_tipo__compra_venta='V',estado__in=[1,2,3],empresa=empresa).order_by('-fecha_cpb','-fecha_creacion','-id')
+                comprobantes = cpb_comprobante.objects.filter(cpb_tipo__compra_venta='V',estado__in=[1,2,3],empresa=empresa)
             elif int(estado) == 2:
-                comprobantes = cpb_comprobante.objects.filter(cpb_tipo__compra_venta='V',estado__in=[3],empresa=empresa).order_by('-fecha_cpb','-fecha_creacion','-id')
+                comprobantes = cpb_comprobante.objects.filter(cpb_tipo__compra_venta='V',estado__in=[3],empresa=empresa)
 
             if int(cae)!=0:
                 no_tiene = (cae=='2')                
@@ -90,7 +90,7 @@ class CPBSVentasList(VariablesMixin,ListView):
             comprobantes=cpbs
 
         context['form'] = form
-        context['comprobantes'] = comprobantes.select_related('estado','cpb_tipo','entidad','vendedor','id_cpb_padre')
+        context['comprobantes'] = comprobantes.select_related('estado','cpb_tipo','entidad','vendedor','id_cpb_padre').order_by('-fecha_cpb','-fecha_creacion','-id')
         return context
     def post(self, *args, **kwargs):
         return self.get(*args, **kwargs)
