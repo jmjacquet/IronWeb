@@ -170,6 +170,7 @@ class cpb_comprobante(models.Model):
     cae_errores = models.TextField(max_length=1000, blank=True, null=True)
     class Meta:
         db_table = 'cpb_comprobante'
+        ordering = ['-fecha_cpb','-pto_vta','-letra','-id_cpb_padre__pk','-numero']
     
     def __unicode__(self):
         return u'%s-%s-%s' % ("{num:>05}".format(num=str(self.pto_vta)),self.letra,"{num:>08}".format(num=str(self.numero)))              
