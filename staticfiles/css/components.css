@@ -1027,11 +1027,7 @@ h1 .label, h2 .label, h3 .label, h4 .label, h5 .label, h6 .label{font-size:75%;}
 .note.note-danger{background-color:#f9f0f0;border-color:#e4b9c0;color:#a94442;}
 .note.note-danger.note-bordered{background-color:#f1dada;border-color:#dca7b0;}
 .note.note-danger.note-shadow{background-color:#f2dede;border-color:#dca7b0;box-shadow:5px 5px rgba(222, 171, 179, 0.2);}
-.pagination{margin:10px 0;}
-.pagination.pagination-circle > li:first-child > a{border-radius:25px 0 0 25px !important;}
-.pagination.pagination-circle > li:last-child > a{border-radius:0 25px 25px 0 !important;}
-.pagination .active > a,
-.pagination .active > a:hover{background:#eee;border-color:#dddddd;color:#333;}
+
 .panel{-webkit-box-shadow:none !important;-moz-box-shadow:none !important;box-shadow:none !important;}
 .panel-group .panel{overflow:visible;}
 .panel .panel-body{font-size:13px;}
@@ -3365,3 +3361,28 @@ name .popover .popover-content,
 .font-purple-soft{color:#8877a9 !important;}
 .progress-bar.purple-soft{background:#8877a9 !important;color:#FFFFFF !important;}
 .btn-transparent.btn{background:transparent;color:#888;}
+
+.pagination{margin:10px 0;border: 1px solid #b7aeae;background-color: #fff;}
+.pagination.pagination-circle > li:first-child > a{border-radius:25px 0 0 25px !important;}
+.pagination.pagination-circle > li:last-child > a{border-radius:0 25px 25px 0 !important;}
+.pagination .active > a,
+.pagination .active > a:hover{background:#eee;color:#333;}
+
+.pagination>li>a, .pagination>li>span {
+    position: relative;
+    float: left;
+    padding: 6px 12px;
+    margin-left: -1px;
+    line-height: 1.428571429;
+    text-decoration: none;
+    background-color: #fff;
+    border: 1px solid #b7aeae;
+    color: #000000;
+}
+
+.pagination>.disabled>span, .pagination>.disabled>span:hover, .pagination>.disabled>span:focus, .pagination>.disabled>a, .pagination>.disabled>a:hover, .pagination>.disabled>a:focus {
+    color: #999;
+    cursor: not-allowed;
+    background-color: #fff;   
+    border: 1px solid #b7aeae; 
+}

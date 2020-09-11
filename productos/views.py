@@ -711,18 +711,25 @@ def prod_precios_imprimirCBS(request):
     try:
         cantidad = int(request.GET.get('cantidad',0))
         if cantidad>0:
-            # try:
-            #     empresa = empresa_actual(request)
-            # except gral_empresa.DoesNotExist:
-            #     empresa = None 
-            # precio = empresa.codbar_precio
-            # detalle = empresa.codbar_detalle
-            precios = prod_producto_lprecios.objects.filter(id__in=lista).exclude(producto__codigo_barras__isnull=True).exclude(producto__codigo_barras__exact='')
+            mostrar_precio = False
+            mostrar_detalle = False
+            try:
+                empresa = empresa_actual(request)
+                mostrar_precio = empresa.codbar_precio
+                mostrar_detalle = empresa.codbar_detalle
+            except:
+                empresa = None 
+                mostrar_precio = False
+                mostrar_detalle = False
+            
+            precios = prod_producto_lprecios.objects.filter(id__in=lista).exclude(Q(producto__codigo_barras__isnull=True)|Q(producto__codigo_barras__exact=''))
             lista_precios = [{'codbar':p.get_codbar,'codigo_barras':p.producto.codigo_barras,'detalle':p.producto.__unicode__(),'precio':p.precio_venta} for p in precios]
             lista_precios = [x for x in lista_precios for i in range(cantidad)] 
             context = {}
             context = getVariablesMixin(request)          
             context['precios'] = lista_precios        
+            context['mostrar_precio'] = mostrar_precio        
+            context['mostrar_detalle'] = mostrar_detalle        
             fecha = datetime.now()
             context['fecha'] = fecha             
             template = 'productos/precios_codbars.html'                                    

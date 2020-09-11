@@ -1147,7 +1147,6 @@ def mandarEmail(request,id):
         messages.success(request, 'El comprobante fué enviado con éxito!')
         return HttpResponseRedirect(cpb.get_listado())
     except Exception as e:
-        print e
         messages.error(request, 'El comprobante no pudo ser enviado! (verifique la dirección de correo del destinatario)')  
         return HttpResponseRedirect(cpb.get_listado())
 

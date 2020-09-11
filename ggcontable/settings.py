@@ -48,7 +48,7 @@ TEMPLATE_DIRS = (
 
 STATICFILES_DIRS = (
     os.path.join(SITE_ROOT, "staticfiles"),   
-    os.path.join(SITE_ROOT, "dist"),  
+    # os.path.join(SITE_ROOT, "dist"),  
 )
 
 

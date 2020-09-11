@@ -73,6 +73,10 @@ class gral_empresa(models.Model):
     describe_impuestos = models.BooleanField(u'Impuestos en Detalle Factura',default=False)
     nombre_impuesto1 = models.CharField('Nombre Impuesto1',max_length=50,blank=True, null=True)   
     nombre_impuesto2 = models.CharField('Nombre Impuesto2',max_length=50,blank=True, null=True)   
+
+    codbar_precio = models.BooleanField(u'Precio en Etiquetas CB',default=False)
+    codbar_detalle = models.BooleanField(u'Detalle en Etiquetas CB',default=False)
+    
     class Meta:
         db_table = 'gral_empresa'
 
