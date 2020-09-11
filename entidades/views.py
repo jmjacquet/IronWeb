@@ -385,7 +385,6 @@ def importar_entidades(request):
                 campos = line[0].split(";")               
                 
                 cod = campos[0].strip().zfill(4)
-                print cod
                 if cod=='':
                     continue #Salta al siguiente                    
                 
