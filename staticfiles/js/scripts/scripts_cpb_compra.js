@@ -489,6 +489,19 @@ function recalcular(){
       calcularTotales();
     };
 
+
+function recarga_listado_detalle(j) {          
+  $.getJSON('/recargar_productos/2',{},
+  function (c) {                   
+      var idp =  $("[name='formDetalle-"+j+"-producto']").val();            
+      //console.log($("[name='formDetalle-"+j+"-producto']").find("option[value="+idp+"]").attr("selected","selected"));
+      $("[name='formDetalle-"+j+"-producto']").empty().append('<option value="">---</option>');            
+      $.each(c["productos"], function (idx, item) {
+          $("[name='formDetalle-"+j+"-producto']").append('<option value="' + item['id'] + '">' + item['detalle'] + '</option>');                
+      });                         
+      $("[name='formDetalle-"+j+"-producto']").val(idp).trigger("chosen:updated");             
+  });
+};
   
 $('.formDetalle').formset({
           addText: 'Agregar Detalle',
@@ -512,8 +525,9 @@ $('.formDetalle').formset({
                 search_contains: true,
             });
             $("[name='formDetalle-"+i1+"-producto']").focus();
-            $("#recargarProductos").trigger("click");
-            $("#id_letra").trigger("change");
+            
+            recarga_listado_detalle(i1);
+            
             $("[name='formDetalle-"+i1+"-producto']").trigger("change"); 
             recalcular(); 
            },

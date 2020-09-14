@@ -276,7 +276,8 @@ $('.formDetalle').formset({
             $("[name='formDetalle-"+i1+"-producto']").focus();
             cargarProd(i1);            
             recalcular(); 
-            $("#recargarProductos").trigger("click");
+            // $("#recargarProductos").trigger("click");
+            recarga_listado_detalle(i1);
            },
           removed: function (row) {      
             calcularTotales();               
@@ -318,6 +319,19 @@ $("#recargarProductos").click(function () {
           });           
         });
   });
+
+function recarga_listado_detalle(j) {          
+  $.getJSON('/recargar_productos/1',{},
+  function (c) {                   
+      var idp =  $("[name='formDetalle-"+j+"-producto']").val();            
+      //console.log($("[name='formDetalle-"+j+"-producto']").find("option[value="+idp+"]").attr("selected","selected"));
+      $("[name='formDetalle-"+j+"-producto']").empty().append('<option value="">---</option>');            
+      $.each(c["productos"], function (idx, item) {
+          $("[name='formDetalle-"+j+"-producto']").append('<option value="' + item['id'] + '">' + item['detalle'] + '</option>');                
+      });                         
+      $("[name='formDetalle-"+j+"-producto']").val(idp).trigger("chosen:updated");             
+  });
+};
 
 
 $( "#Guardar" ).click(function() {
