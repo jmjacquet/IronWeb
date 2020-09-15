@@ -573,7 +573,7 @@ $('.formDetalle').formset({
             // $("#recargarProductos").trigger("click");
             recarga_listado_detalle(i1);
             
-            //$("#id_letra").trigger("change");
+            $("#id_letra").trigger("change");
             calcularProd(i1);   
             recalcular();
             
