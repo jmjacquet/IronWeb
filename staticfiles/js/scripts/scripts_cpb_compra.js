@@ -528,8 +528,10 @@ $('.formDetalle').formset({
             
             recarga_listado_detalle(i1);
             
-            $("[name='formDetalle-"+i1+"-producto']").trigger("change"); 
-            recalcular(); 
+            //$("#id_letra").trigger("change");
+            calcularProd(i1);   
+            recalcular();
+            
            },
           removed: function (row) {      
             calcularTotales();               
