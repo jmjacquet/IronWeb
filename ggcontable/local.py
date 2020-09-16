@@ -13,7 +13,7 @@ DATABASES = {
             'NAME': os.environ.get('ENTIDAD_DB'),           # Or path to database file if using sqlite3.
             'USER':  'gg',    
             'PASSWORD':  'battlehome',            # Not used with sqlite3.
-            'HOST':  'localhost',                      # Set to empty string for localhost. Not used with sqlite3.
+            'HOST':  '127.0.0.1',                      # Set to empty string for localhost. Not used with sqlite3.
             'PORT': '',      
         },
     }
