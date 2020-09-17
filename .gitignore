@@ -9,3 +9,4 @@ static/*
 *.bat
 /node_modules
 /dist
+requirements.txt
