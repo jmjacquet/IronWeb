@@ -19,7 +19,7 @@ General Information:
  * Public Forum: http://groups.google.com/group/pyafipws (community support, no-charge "gratis" access)
 
 More information at [Python Argentina Magazine article](http://revista.python.org.ar/2/en/html/pyafip.html) (English) 
-and [JAIIO 2012 paper](http://www.41jaiio.org.ar/sites/default/files/15_JSL_2012.pdf) (Spanish)
+and [JAIIO 2012 paper](http://41jaiio.sadio.org.ar/sites/default/files/15_JSL_2012.pdf) (Spanish)
 
 Project Structure:
 ------------------
@@ -58,10 +58,12 @@ AFIP:
  * [WSLTV][17b]: agriculture (green tobacco - invoice)
  * [WSLUM][17c]: agriculture (milk - invoice)
  * [WSLSP][17d]: agriculture (cattle/livestock - invoice)
+ * [WSRemCarne][31]: agriculture (meat - shipping note)
  * [wDigDepFiel][18]: customs (faithful depositary)
  * [WSCOC][19]: currency exchange operations autorization
  * [WSCDC][22]: invoice verification
  * [Taxpayers' Registe][26]: database to check sellers and buyers register
+ * [WSFECred][32]: electronic credit invoice (FCE)
 
 ARBA:
 
@@ -206,3 +208,5 @@ For more information see the source code installation steps in the
  [28]: https://github.com/tryton-ar/account_invoice_ar
  [29]: http://www.sistemasagiles.com.ar/trac/wiki/ManualPyAfipWs#Certificados
  [30]: http://hg-git.github.io/
+ [31]: http://www.sistemasagiles.com.ar/trac/wiki/RemitoElectronicoCarnico
+ [32]: http://www.sistemasagiles.com.ar/trac/wiki/FacturaCreditoElectronica

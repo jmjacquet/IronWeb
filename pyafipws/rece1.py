@@ -15,7 +15,7 @@
 __author__ = "Mariano Reingart (reingart@gmail.com)"
 __copyright__ = "Copyright (C) 2010-2015 Mariano Reingart"
 __license__ = "GPL 3.0"
-__version__ = "1.37a"
+__version__ = "1.37d"
 
 import datetime
 import os
@@ -78,6 +78,7 @@ ENCABEZADO = [
     ('emision_tipo', 4, A),
     ('fecha_serv_desde', 8, A), # opcional solo conceptos 2 y 3
     ('fecha_serv_hasta', 8, A), # opcional solo conceptos 2 y 3
+    ('tipo_cbte', 3, N), ('punto_vta', 5, N),
     ]
                    
 #DETALLE = [
@@ -110,6 +111,8 @@ CMP_ASOC = [
     ('tipo_reg', 1, N), # 3: comprobante asociado
     ('tipo', 3, N), ('pto_vta', 4, N),
     ('nro', 8, N), 
+    ('fecha', 8, N),
+    ('cuit', 11, N),
     ]
 
 OPCIONAL = [
@@ -211,7 +214,7 @@ def autorizar(ws, entrada, salida, informar_caea=False):
         raise RuntimeError("No se pudieron leer los registros de la entrada")
 
     # ajusto datos para pruebas en depuración (nro de cbte. / fecha)
-    if '--testing' in sys.argv and DEBUG:
+    if '--testing' in sys.argv:
         encabezado['punto_vta'] = 9998
         cbte_nro = int(ws.CompUltimoAutorizado(encabezado['tipo_cbte'], 
                                                encabezado['punto_vta'])) + 1
@@ -268,6 +271,9 @@ def autorizar(ws, entrada, salida, informar_caea=False):
                 'motivos_obs': ws.Obs,
                 'err_code': str(ws.ErrCode),
                 'err_msg': ws.ErrMsg,
+                'cbt_desde': ws.CbtDesde,
+                'cbt_hasta': ws.CbtHasta,
+                'fecha_cbte': ws.FechaCbte,
                 'reproceso': ws.Reproceso,
                 'emision_tipo': ws.EmisionTipo,
                 })
@@ -326,13 +332,14 @@ def escribir_facturas(encabezados, archivo, agrega=False):
 
 
 def depurar_xml(client, ruta="."):
-    fecha = time.strftime("%Y%m%d%H%M%S")
-    f=open(os.path.join(ruta, "request-%s.xml" % fecha),"w")
-    f.write(client.xml_request)
-    f.close()
-    f=open(os.path.join(ruta, "response-%s.xml" % fecha),"w")
-    f.write(client.xml_response)
-    f.close()
+    if XML:
+        fecha = time.strftime("%Y%m%d%H%M%S")
+        f=open(os.path.join(ruta, "request-%s.xml" % fecha),"w")
+        f.write(client.xml_request)
+        f.close()
+        f=open(os.path.join(ruta, "response-%s.xml" % fecha),"w")
+        f.write(client.xml_response)
+        f.close()
 
 if __name__ == "__main__":
     if '/ayuda' in sys.argv:
@@ -364,8 +371,11 @@ if __name__ == "__main__":
         entrada = sys.argv[sys.argv.index("/entrada")+1]
     else:
         entrada = config.get('WSFEv1','ENTRADA')
-    salida = config.get('WSFEv1','SALIDA')
-    
+    if '/salida' in sys.argv:
+        salida = sys.argv[sys.argv.index("/salida")+1]
+    else:
+        salida = config.get('WSFEv1','SALIDA')
+
     if config.has_option('WSAA','URL') and not HOMO:
         wsaa_url = config.get('WSAA','URL')
     else:
@@ -468,7 +478,7 @@ if __name__ == "__main__":
                     
         if '/prueba' in sys.argv:
             # generar el archivo de prueba para la próxima factura
-            tipo_cbte = 1
+            tipo_cbte = 3
             punto_vta = 4002
             cbte_nro = ws.CompUltimoAutorizado(tipo_cbte, punto_vta)
             if not cbte_nro: cbte_nro=0
@@ -494,7 +504,9 @@ if __name__ == "__main__":
                 tipo = 1
                 pto_vta = 2
                 nro = 1234
-                ws.AgregarCmpAsoc(tipo, pto_vta, nro)
+                fecha = "20190601"
+                cuit = "20267565393"
+                ws.AgregarCmpAsoc(tipo, pto_vta, nro, cuit, fecha)
             
             if '--proyectos' in sys.argv:
                 ws.AgregarOpcional(2, "1234")  # identificador del proyecto

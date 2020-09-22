@@ -42,6 +42,7 @@ if 'py2exe' in sys.argv:
     #import wsbfev1, receb1
     #import wsmtx, recem
     #import wsct, recet
+    #import wsfecred
     #import ws_sr_padron
     #import pyfepdf
     #import pyemail
@@ -51,6 +52,7 @@ if 'py2exe' in sys.argv:
     #import wsltv
     #import wslum
     #import wslsp
+    #import wsremcarne
     #import wscoc
     #import wscdc
     #import cot
@@ -277,6 +279,18 @@ if 'py2exe' in sys.argv:
         __version__ += "+wsct_" + wsct.__version__
         HOMO &= wsct.HOMO
 
+    if 'wsfecred' in globals():
+        kwargs['com_server'] += [
+            Target(module=wsfecred, modules="wsfecred"),
+            ]
+        kwargs['console'] += [
+            Target(module=wsfecred, script='wsfecred.py', dest_base="wsfecred_cli"),
+            ]
+        data_files += [
+            ]
+        __version__ += "+wsfecred_" + wsfecred.__version__
+        HOMO &= wsfecred.HOMO
+
     if 'pyfepdf' in globals():
         kwargs['com_server'] += [
             Target(module=pyfepdf, modules="pyfepdf", create_exe=True, create_dll=True),
@@ -400,6 +414,19 @@ if 'py2exe' in sys.argv:
             ]
         __version__ += "+wslsp_" + wslsp.__version__
         HOMO &= wslsp.HOMO
+
+    if 'wsremcarne' in globals():
+        kwargs['com_server'] += [
+            Target(module=wsremcarne, modules="wsremcarne"),
+            ]
+        kwargs['console'] += [
+            Target(module=wsremcarne, script='wsremcarne.py', dest_base="wsremcarne_cli"),
+            ]
+        data_files += [
+            ("conf", ["conf/wsremcarne.ini"]),
+            ]
+        __version__ += "+wsremcarne_" + wsremcarne.__version__
+        HOMO &= wsremcarne.HOMO
 
     if 'wscoc' in globals():
         kwargs['com_server'] += [

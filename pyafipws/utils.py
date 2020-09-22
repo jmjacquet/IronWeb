@@ -52,8 +52,8 @@ try:
     import httplib2
     # corregir temas de negociacion de SSL en algunas versiones de ubuntu:
     import platform
-    dist, ver, nick = platform.linux_distribution() if sys.version > (2, 6) else ("", "", "")
-    release, ver, csd, ptype = platform.win32_ver() if sys.version > (2, 6) else ("", "", "", "")
+    dist, ver, nick = platform.linux_distribution() if sys.version_info > (2, 6) else ("", "", "")
+    release, ver, csd, ptype = platform.win32_ver() if sys.version_info > (2, 6) else ("", "", "", "")
     from pysimplesoap.client import SoapClient
     monkey_patch = httplib2._ssl_wrap_socket.__module__ != "httplib2"
     if dist:
@@ -433,11 +433,9 @@ class WebClient:
     def __init__(self, location, enctype="multipart/form-data", trace=False,
                        cacert=None, timeout=30):
         kwargs = {}
-        if httplib2.__version__ >= '0.3.0':
-                kwargs['timeout'] = timeout
-        if httplib2.__version__ >= '0.7.0':
-                kwargs['disable_ssl_certificate_validation'] = cacert is None
-                kwargs['ca_certs'] = cacert
+        kwargs['timeout'] = timeout
+        kwargs['disable_ssl_certificate_validation'] = cacert is None
+        kwargs['ca_certs'] = cacert
         self.http = httplib2.Http(**kwargs)
         self.trace = trace
         self.location = location
@@ -602,7 +600,10 @@ def leer(linea, formato, expandir_fechas=False):
                     valor = None
             else:
                 valor = valor.decode("ascii","ignore")
-            dic[clave] = valor
+            if not valor and clave in dic and len(linea) <= comienzo:
+                pass    # ignorar - compatibilidad hacia atrás (cambios tamaño)
+            else:
+                dic[clave] = valor
             comienzo += longitud
         except Exception, e:
             raise ValueError("Error al leer campo %s pos %s val '%s': %s" % (
