@@ -16,6 +16,7 @@ __author__ = "Mariano Reingart <reingart@gmail.com>"
 __copyright__ = "Copyright (C) 2013 Mariano Reingart"
 __license__ = "GPL 3.0"
 
+import csv
 import datetime
 import functools
 import inspect
@@ -247,9 +248,13 @@ class BaseWS:
             # deshabilitar verificación cert. servidor si es nulo falso vacio
             if not cacert:
                 cacert = None
-            elif cacert is True:
+            elif cacert is True or cacert.lower() == 'default':
                 # usar certificados predeterminados que vienen en la biblioteca
-                cacert = os.path.join(httplib2.__path__[0], 'cacerts.txt')
+                try:
+                    import certifi
+                    cacert = certifi.where()
+                except ImportError:
+                    cacert = os.path.join(httplib2.__path__[0], 'cacerts.txt')
             elif cacert.startswith("-----BEGIN CERTIFICATE-----"):
                 pass
             else:
@@ -263,7 +268,13 @@ class BaseWS:
                     raise RuntimeError("Error de configuracion CACERT ver DebugLog")
                     return False
                     
-            self.log("Conectando a wsdl=%s cache=%s proxy=%s" % (wsdl, cache, proxy_dict))
+            if cacert and not os.path.isabs(cacert):
+                self.log("Fixing CACERT: %s" % cacert)
+                cacert = os.path.abspath(cacert)
+                self.log("Fixed CACERT: %s" % cacert)
+
+            ## cacert = "/etc/ssl/certs/ca-certificates.crt"
+            self.log("Conectando a wsdl=%s cache=%s proxy=%s cacert=%s" % (wsdl, cache, proxy_dict, cacert))
             # analizar espacio de nombres (axis vs .net):
             ns = 'ser' if self.WSDL[-5:] == "?wsdl" else None
             self.client = SoapClient(
@@ -431,11 +442,19 @@ class WebClient:
     "Minimal webservice client to do POST request with multipart encoded FORM data"
 
     def __init__(self, location, enctype="multipart/form-data", trace=False,
-                       cacert=None, timeout=30):
+                       cacert=None, timeout=30, proxy=None):
         kwargs = {}
         kwargs['timeout'] = timeout
         kwargs['disable_ssl_certificate_validation'] = cacert is None
         kwargs['ca_certs'] = cacert
+        if proxy:
+            if isinstance(proxy, dict):
+                proxy_dict = proxy
+            else:
+                proxy_dict = parse_proxy(proxy)
+                print "using proxy", proxy_dict
+            import socks
+            kwargs['proxy_info'] = httplib2.ProxyInfo(proxy_type=socks.PROXY_TYPE_HTTP, **proxy_dict)
         self.http = httplib2.Http(**kwargs)
         self.trace = trace
         self.location = location
@@ -655,6 +674,76 @@ I = 'Importe'       # 4
 C = A               # 1 (caracter alfabetico)
 B = A               # 9 (blanco)
 
+# Funciones para manejo de archivos de texto de ancho fijo
+
+def formato_txt(formatos, registros):
+    print "Formato:"
+    for tipo_reg, estructura in sorted(registros.items()):
+        formato = formatos[estructura]
+        comienzo = 1
+        print "=== %s ===" % estructura
+        for fmt in formato:
+            clave, longitud, tipo = fmt[0:3]
+            dec = len(fmt)>3 and fmt[3] or (tipo=='I' and '2' or '')
+            f = ["Campo: %-20s" , "Posición: %3d", "Longitud: %4d", "Tipo: %s"]
+            v = [clave, comienzo, longitud, tipo]
+            if dec:
+                f.append("Decimales: %s")
+                v.append(dec)
+            if clave == "tipo_reg":
+                f.append("Valor: %s")
+                v.append(tipo_reg)
+            print " *", " ".join(f) % tuple(v)
+            comienzo += longitud
+
+def leer_txt(formatos, registros, nombre_archivo):
+    ret = []
+    with open(nombre_archivo, "r") as archivo:    
+        for linea in archivo:
+            tipo_reg = str(linea[0])
+            estructura = registros[tipo_reg]
+            formato = formatos[estructura]
+            d = leer(linea, formato)
+            if estructura == 'encabezado':
+                ret.append(d)
+                dic = d
+            else:
+                dic.setdefault(estructura, []).append(d)
+    return ret
+
+def grabar_txt(formatos, registros, nombre_archivo, dicts, agrega=False):
+    with open(nombre_archivo, agrega and "a" or "w") as archivo:
+        for dic in dicts:
+            encabezado = formatos['encabezado']
+            dic["tipo_reg"] = '0'
+            archivo.write(escribir(dic, encabezado))
+            for tipo_reg, estructura in sorted(registros.items()):
+                for d in dic.get(estructura, []):
+                    d["tipo_reg"] = tipo_reg
+                    archivo.write(escribir(d, formatos[estructura]))
+
+
+# Funciones para manejo de Panillas CSV y Tablas
+
+
+def generar_csv(filas, formato, fn="planilla.csv", delimiter=";"):
+    "Dado una lista de registros  escribe"
+    ext = os.path.splitext(fn)[1].lower()
+    if ext == '.csv':
+        with open(fn,"wb") as f:
+            fieldnames = [fmt[0] for fmt in formato]
+            csv_writer = csv.DictWriter(f, fieldnames, dialect='excel', delimiter=";")
+            csv_writer.writeheader()
+            for fila in filas:
+                csv_writer.writerow(fila)
+
+
+def tabular(filas, formato):
+    from tabulate import tabulate
+    columnas = [fmt[0] for fmt in formato if fmt[0] not in ("tipo_reg", )]
+    tabla = [[fila.get(col) for col in columnas] for fila in filas]
+    return tabulate(tabla, columnas, floatfmt=".2f")
+
 
 # Funciones para manejo de tablas en DBF
 
@@ -665,8 +754,9 @@ def guardar_dbf(formatos, agrega=False, conf_dbf=None):
 
     tablas = {}
     for nombre, formato, l in formatos:
-        campos = []
+        campos = {}
         claves = []
+        claves_map = {}
         filename = conf_dbf.get(nombre.lower(), "%s.dbf" % nombre[:8])
         if DEBUG: print "=== tabla %s (%s) ===" %  (nombre, filename)
         for fmt in formato:
@@ -690,14 +780,17 @@ def guardar_dbf(formatos, agrega=False, conf_dbf=None):
                 if longitud - 2 <= dec:
                     longitud += longitud - dec + 1      # ajusto long. decimales 
                 tipo = "N(%s,%s)" % (longitud, dec)
-            clave_dbf = dar_nombre_campo_dbf(clave, claves)
+            # unificar nombre de campos duplicados por compatibilidad hacia atrás:
+            clave_dbf = claves_map.get(clave, dar_nombre_campo_dbf(clave, claves))
+            if not clave in claves_map:
+                claves_map[clave] = clave_dbf
+                claves.append(clave_dbf)
             campo = "%s %s" % (clave_dbf, tipo)
             if DEBUG: print " * %s : %s" %  (campo, clave)
-            campos.append(campo)
-            claves.append(clave_dbf)
+            campos[clave_dbf] = campo
         if DEBUG: print "leyendo tabla", nombre, filename
         if agrega:
-            tabla = dbf.Table(filename, campos)
+            tabla = dbf.Table(filename, [campos[clave] for clave in claves])
         else:
             tabla = dbf.Table(filename)
 
@@ -708,6 +801,7 @@ def guardar_dbf(formatos, agrega=False, conf_dbf=None):
                 continue
             r = {}
             claves = []
+            claves_map = {}
             for fmt in formato:
                 clave, longitud, tipo = fmt[0:3]
                 if agrega or clave in d:
@@ -726,8 +820,11 @@ def guardar_dbf(formatos, agrega=False, conf_dbf=None):
                             v = str(v)
                         if len(v) > longitud:
                             v = v[:longitud]  # recorto el string para que quepa
-                    clave_dbf = dar_nombre_campo_dbf(clave, claves)
-                    claves.append(clave_dbf)
+                    # unificar nombre de campos duplicados por compatibilidad hacia atrás:
+                    clave_dbf = claves_map.get(clave, dar_nombre_campo_dbf(clave, claves))
+                    if not clave in claves_map:
+                        claves_map[clave] = clave_dbf
+                        claves.append(clave_dbf)
                     r[clave_dbf] = v
             # agregar si lo solicitaron o si la tabla no tiene registros:
             if agrega or not tabla:
@@ -761,6 +858,7 @@ def leer_dbf(formatos, conf_dbf):
         for reg in tabla:
             r = {}
             d = reg.scatter_fields() 
+            if DEBUG: print "scatter_fields", d
             claves = []
             for fmt in formato:
                 clave, longitud, tipo = fmt[0:3]
@@ -768,7 +866,9 @@ def leer_dbf(formatos, conf_dbf):
                 clave_dbf = dar_nombre_campo_dbf(clave, claves)
                 claves.append(clave_dbf)
                 v = d.get(clave_dbf)
-                r[clave] = v
+                if DEBUG: print "fmt", clave, clave_dbf, v
+                if r.get(clave) is None:
+                    r[clave] = v
             if isinstance(ld, dict):
                 ld.update(r)
             else:

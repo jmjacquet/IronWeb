@@ -15,7 +15,7 @@
 __author__ = "Mariano Reingart <reingart@gmail.com>"
 __copyright__ = "Copyright (C) 2011-2018 Mariano Reingart"
 __license__ = "GPL 3.0"
-__version__ = "1.09c"
+__version__ = "1.09d"
 
 DEBUG = False
 HOMO = False
@@ -120,9 +120,9 @@ class FEPDF:
         (1, 6, 11, 19, 51): u'Factura', 
         (2, 7, 12, 20, 52): u'Nota de Débito', 
         (3, 8, 13, 21, 53): u'Nota de Crédito',
-        (201, 206, 211): u'Factura de Crédito MiPyMEs', 
-        (202, 207, 212): u'Nota de Débito MiPyMEs', 
-        (203, 208, 213): u'Nota de Crédito MiPyMEs',
+        (201, 206, 211): u'Factura de Crédito electrónica MiPyMEs (FCE)', 
+        (202, 207, 212): u'Nota de Débito electrónica MiPyMEs (FCE)', 
+        (203, 208, 213): u'Nota de Crédito electrónica MiPyMEs (FCE)',
         (4, 9, 15, 54): u'Recibo', 
         (10, 5): u'Nota de Venta al contado', 
         (60, 61): u'Cuenta de Venta y Líquido producto',

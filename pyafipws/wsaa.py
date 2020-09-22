@@ -10,7 +10,7 @@
 # or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License
 # for more details.
 
-#"Módulo para obtener un ticket de autorización del web service WSAA de AFIP"
+"Módulo para obtener un ticket de autorización del web service WSAA de AFIP"
 
 # Basado en wsaa-client.php de Gerardo Fisanotti - DvSHyS/DiOPIN/AFIP - 13-apr-07
 # Definir WSDL, CERT, PRIVATEKEY, PASSPHRASE, SERVICE, WSAAURL
@@ -38,18 +38,15 @@ except ImportError:
     from base64 import b64encode
 
 # Constantes (si se usa el script de linea de comandos)
-#WSDL = "https://wsaahomo.afip.gov.ar/ws/services/LoginCms?wsdl"  # El WSDL correspondiente al WSAA 
-
-WSDL="https://servicios1.afip.gov.ar/wsfev1/service.asmx?WSDL"
-
-CERT = ""        # El certificado X.509 obtenido de Seg. Inf.
-PRIVATEKEY = ""  # La clave privada del certificado CERT
+WSDL = "https://wsaahomo.afip.gov.ar/ws/services/LoginCms?wsdl"  # El WSDL correspondiente al WSAA 
+CERT = "reingart.crt"        # El certificado X.509 obtenido de Seg. Inf.
+PRIVATEKEY = "reingart.key"  # La clave privada del certificado CERT
 PASSPHRASE = "xxxxxxx"  # La contraseña para firmar (si hay)
 SERVICE = "wsfe"        # El nombre del web service al que se le pide el TA
 
 # WSAAURL: la URL para acceder al WSAA, verificar http/https y wsaa/wsaahomo
-WSAAURL = "https://wsaa.afip.gov.ar/ws/services/LoginCms" # PRODUCCION!!!
-#WSAAURL = "https://wsaahomo.afip.gov.ar/ws/services/LoginCms" # homologacion (pruebas)
+#WSAAURL = "https://wsaa.afip.gov.ar/ws/services/LoginCms" # PRODUCCION!!!
+WSAAURL = "https://wsaahomo.afip.gov.ar/ws/services/LoginCms" # homologacion (pruebas)
 SOAP_ACTION = 'http://ar.gov.afip.dif.facturaelectronica/' # Revisar WSDL
 SOAP_NS = "http://wsaa.view.sua.dvadac.desein.afip.gov"     # Revisar WSDL 
 

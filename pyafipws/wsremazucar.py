@@ -10,21 +10,22 @@
 # or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License
 # for more details.
 
-"""Módulo para obtener Remito Electronico Carnico:
-del web service WSRemCarne versión 3.0 de AFIP (RG4256/18 y RG4303/18)
+"""Módulo para obtener Remito Electronico Azucar:
+del servicio web RemAzucarService versión 2.0.3 de AFIP (RG4519/19)
 """
 
 __author__ = "Mariano Reingart <reingart@gmail.com>"
 __copyright__ = "Copyright (C) 2018-2019 Mariano Reingart"
 __license__ = "LGPL 3.0"
-__version__ = "1.02c"
+__version__ = "1.03d"
 
 LICENCIA = """
-wsremcarne.py: Interfaz para generar Remito Electrónico Cárnico AFIP v3.0
-Remito de Carnes y subproductos derivados de la faena de bovinos y porcinos
-Resolución General 4256/18 y Resolución General 4303/18.
-Copyright (C) 2018-2019 Mariano Reingart reingart@gmail.com
-http://www.sistemasagiles.com.ar/trac/wiki/RemitoElectronicoCarnico
+wsremhairna.py: Interfaz para generar Remito Electrónico Azúcar AFIP v2.0.3
+remisiones de los productos obtenidos de la industrialización de la
+caña de azúcar (azúcar, alcohol, bagazo y melaza)
+Resolución General Conjunta 4519/2019
+Copyright (C) 2019 Mariano Reingart reingart@gmail.com
+http://www.sistemasagiles.com.ar/trac/wiki/RemitoElectronicoAzucar
 
 Este progarma es software libre, se entrega ABSOLUTAMENTE SIN GARANTIA
 y es bienvenido a redistribuirlo bajo la licencia GPLv3.
@@ -55,12 +56,12 @@ Opciones:
   --tipos_contingencia: tipo de contingencia que puede reportar
   --tipos_categoria_emisor: tipos de categorías de emisor
   --tipos_categoria_receptor: tipos de categorías de receptor
-  --tipos_estados: estados posibles en los que puede estar un remito cárnico
-  --grupos_carne' grupos de los distintos tipos de cortes de carne
-  --tipos_carne': tipos de corte de carne
+  --tipos_estados: estados posibles en los que puede estar un remito azucarero
+  --grupos_azucar' grupos de los distintos tipos de cortes de azucar
+  --tipos_azucar': tipos de corte de azucar
   --codigos_domicilio: codigos de depositos habilitados para el cuit
 
-Ver wsremcarne.ini para parámetros de configuración (URL, certificados, etc.)"
+Ver wsremazucar.ini para parámetros de configuración (URL, certificados, etc.)"
 """
 
 import os, sys, time, base64
@@ -75,26 +76,25 @@ from utils import json, BaseWS, inicializar_y_capturar_excepciones, get_install_
 
 # constantes de configuración (producción/homologación):
 
-WSDL = ["https://serviciosjava.afip.gob.ar/wsremcarne/RemCarneService?wsdl",
-        "https://fwshomo.afip.gov.ar/wsremcarne/RemCarneService?wsdl"]
+WSDL = ["https://serviciosjava.afip.gob.ar/wsremazucar/RemAzucarService?wsdl",
+        "https://fwshomo.afip.gov.ar/wsremazucar/RemAzucarService?wsdl"]
 
 DEBUG = False
 XML = False
-CONFIG_FILE = "wsremcarne.ini"
+CONFIG_FILE = "wsremazucar.ini"
 HOMO = False
 ENCABEZADO = []
 
 
-class WSRemCarne(BaseWS):
+class WSRemAzucar(BaseWS):
     "Interfaz para el WebService de Remito Electronico Carnico (Version 3)"
     _public_methods_ = ['Conectar', 'Dummy', 'SetTicketAcceso', 'DebugLog',
                         'GenerarRemito', 'EmitirRemito', 'AutorizarRemito', 'AnularRemito', 'ConsultarRemito',
                         'InformarContingencia', 'ModificarViaje', 'RegistrarRecepcion',  'ConsultarUltimoRemitoEmitido',
-                        'CrearRemito', 'AgregarViaje', 'AgregarVehiculo', 'AgregarMercaderia',
+                        'CrearRemito', 'AgregarViaje', 'AgregarVehiculo', 'AgregarMercaderia', 'AgregarReceptor', 
                         'AgregarDatosAutorizacion', 'AgregarContingencia',
-                        'ConsultarTiposCarne', 'ConsultarTiposCategoriaEmisor', 'ConsultarTiposCategoriaReceptor',
-                        'ConsultarTiposComprobante', 'ConsultarTiposContingencia', 'ConsultarTiposEstado',
-                        'ConsultarCodigosDomicilio', 'ConsultarGruposCarne', 'ConsultarPuntosEmision',
+                        'ConsultarTiposMercaderia', 'ConsultarTiposEmbalaje', 'ConsultarTiposUnidades', 'ConsultarTiposComprobante',
+                        'ConsultarTiposComprobante', 'ConsultarTiposContingencia', 'ConsultarCodigosDomicilio', 'ConsultarPaises',
                         'SetParametros', 'SetParametro', 'GetParametro', 'AnalizarXml', 'ObtenerTagXml', 'LoadTestXML',
                         ]
     _public_attrs_ = ['XmlRequest', 'XmlResponse', 'Version', 'Traceback', 'Excepcion', 'LanzarExcepciones',
@@ -103,8 +103,8 @@ class WSRemCarne(BaseWS):
                       'NroRemito', 'CodAutorizacion', 'FechaVencimiento', 'FechaEmision', 'Estado', 'Resultado', 'QR',
                       'ErrCode', 'ErrMsg', 'Errores', 'ErroresFormato', 'Observaciones', 'Obs', 'Evento', 'Eventos',
                      ]
-    _reg_progid_ = "WSRemCarne"
-    _reg_clsid_ = "{71DB0CB9-2ED7-4226-A1E6-C3FA7FB18F41}"
+    _reg_progid_ = "WSRemAzucar"
+    _reg_clsid_ = "{448F912A-C013-4E19-8D52-7FC88305590A}"
 
     # Variables globales para BaseWS:
     HOMO = HOMO
@@ -148,49 +148,107 @@ class WSRemCarne(BaseWS):
             self.Evento = "%(codigo)s: %(descripcion)s" % evt
 
     @inicializar_y_capturar_excepciones
-    def CrearRemito(self, tipo_comprobante, punto_emision, tipo_movimiento, categoria_emisor, cuit_titular_mercaderia, cod_dom_origen,
-                    tipo_receptor, categoria_receptor=None, cuit_receptor=None, cuit_depositario=None,
-                    cod_dom_destino=None, cod_rem_redestinar=None, cod_remito=None, estado=None,
+    def CrearRemito(self, tipo_comprobante, punto_emision,
+                    tipo_titular_mercaderia,
+                    cuit_titular_mercaderia=None, cuit_autorizado_retirar=None,
+                    cuit_productor_contrato=None, numero_maquila=None,
+                    cod_remito=None, estado=None,
                     **kwargs):
         "Inicializa internamente los datos de un remito para autorizar"
-        self.remito = {'tipoComprobante': tipo_comprobante, 'puntoEmision': punto_emision, 'categoriaEmisor': categoria_emisor,
-                       'cuitTitularMercaderia': cuit_titular_mercaderia, 'cuitDepositario': cuit_depositario,
-                       'tipoReceptor': tipo_receptor, 'categoriaReceptor': categoria_receptor, 'cuitReceptor': cuit_receptor,
-                       'codDomOrigen': cod_dom_origen, 'codDomDestino': cod_dom_destino, 'tipoMovimiento': tipo_movimiento, 
-                       'estado': estado, 'codRemito': cod_remito,
-                       'codRemRedestinado': cod_rem_redestinar,
+        self.remito = {'puntoEmision': punto_emision, 'tipoTitularMercaderia': tipo_titular_mercaderia,
+                       'cuitTitularMercaderia': cuit_titular_mercaderia,
+                       'cuitAutorizadoRetirar': cuit_autorizado_retirar,
+                       'cuitProductorContrato': cuit_productor_contrato,
+                       'numeroMaquila': numero_maquila,
+                       'codRemito': cod_remito,
                        'arrayMercaderias': [], 'arrayContingencias': [],
                       }
         return True
 
     @inicializar_y_capturar_excepciones
-    def AgregarViaje(self, cuit_transportista=None, cuit_conductor=None, fecha_inicio_viaje=None, distancia_km=None, **kwargs):
-        "Agrega la información referente al viaje del remito electrónico cárnico"
-        self.remito['viaje'] = {'cuitTransportista': cuit_transportista, 
-                                'cuitConductor': cuit_conductor,
-                                'fechaInicioViaje': fecha_inicio_viaje ,
-                                'distanciaKm': distancia_km,
-                                'vehiculo': {}
-                               }
+    def AgregarReceptor(self, cuit_pais_receptor,
+                        cuit_receptor=None, cod_dom_receptor=None,
+                        cuit_despachante=None, codigo_aduana=None, 
+                        denominacion_receptor=None, domicilio_receptor=None, **kwargs):
+        "Agrega la información referente al viaje del remito electrónico azucarero"
+        receptor = {'cuitPaisReceptor': cuit_pais_receptor}
+        if cuit_receptor:
+            receptor['receptorNacional'] = {'codDomReceptor': cod_dom_receptor,
+                                            'cuitReceptor':cuit_receptor}
+        else:
+            receptor['receptorExtranjero'] = {
+                                        'codigoAduana': codigo_aduana,
+                                        'cuitDespachante': cuit_despachante,
+                                        'denominacionReceptor': denominacion_receptor,
+                                        'domicilioReceptor': domicilio_receptor}
+        self.remito['receptor'] = receptor
+
+    @inicializar_y_capturar_excepciones
+    def AgregarViaje(self, fecha_inicio_viaje, distancia_km, cod_pais_transportista, ducto=None, **kwargs):
+        "Agrega la información referente al viaje del remito electrónico azucarero"
+        self.remito.update({
+            'viaje': {
+                'fechaInicioViaje': fecha_inicio_viaje ,
+                'kmDistancia': distancia_km,
+                'tramo': [{
+                }]
+            }})
+
+        if ducto:
+            transporte = self.remito['viaje']['tramo'][0]['ducto'] = ducto
+        else:
+            self.remito['viaje']['tramo'][0]['automotor'] = {
+                        'codPaisTransportista': cod_pais_transportista,
+                    }
         return True
 
     @inicializar_y_capturar_excepciones
-    def AgregarVehiculo(self, dominio_vehiculo=None, dominio_acoplado=None, **kwargs):
-        "Agrega la información referente al vehiculo usado en el viaje del remito electrónico cárnico"
-        self.remito['viaje']['vehiculo'] = {'dominioVehiculo': dominio_vehiculo, 'dominioAcoplado': dominio_acoplado}
+    def AgregarVehiculo(self, dominio_vehiculo, dominio_acoplado=None, 
+                        cuit_transportista=None, cuit_conductor=None, 
+                        apellido_conductor=None, cedula_conductor=None, denom_transportista=None,
+                        id_impositivo=None, nombre_conductor=None,
+                        **kwargs):
+        "Agrega la información referente al vehiculo usado en el viaje del remito electrónico azucarero"
+        transporte = self.remito['viaje']['tramo'][0]['automotor']
+        vehiculo = {
+                    'dominioVehiculo': dominio_vehiculo, 
+                    'dominioAcoplado': dominio_acoplado,
+                   }
+        transporte.update(vehiculo)
+
+        if cuit_transportista:
+            transporte['transporteNacional'] = {
+                'cuitTransportista': cuit_transportista, 
+                'cuitConductor': cuit_conductor,
+            }
+        else:
+            transporte['transporteExtranjero'] = {
+                'apellidoConductor': apellido_conductor,
+                'cedulaConductor': cedula_conductor,
+                'denomTransportista': denom_transportista,
+                'idImpositivo': id_impositivo,
+                'nombreConductor': nombre_conductor,
+            }
+
         return True
 
     @inicializar_y_capturar_excepciones
-    def AgregarMercaderia(self, orden=None, cod_tipo_prod=None, kilos=None, unidades=None, tropa=None, kilos_rec=None, unidades_rec=None, **kwargs):
-        "Agrega la información referente a la mercadería del remito electrónico cárnico"
-        mercaderia = dict(orden=orden, tropa=tropa, codTipoProd=cod_tipo_prod, kilos=kilos, unidades=unidades,
-                          kilosRec=kilos_rec, unidadesRec=unidades_rec)
+    def AgregarMercaderia(self, orden, cod_tipo_prod, cod_tipo_emb, cantidad_emb, cod_tipo_unidad, cant_unidad, 
+                          anio_safra, **kwargs):
+        "Agrega la información referente a la mercadería del remito electrónico azucarero"
+        mercaderia = dict(orden=orden,  
+                          tipoProducto=cod_tipo_prod,
+                          tipoEmbalaje=cod_tipo_emb,
+                          unidadMedida=cod_tipo_unidad,
+                          cantidad=cant_unidad,
+                          anioZafra=anio_safra,
+                         )
         self.remito['arrayMercaderias'].append(dict(mercaderia=mercaderia))
         return True
 
     @inicializar_y_capturar_excepciones
     def AgregarDatosAutorizacion(self, nro_remito=None, cod_autorizacion=None, fecha_emision=None, fecha_vencimiento=None, **kwargs):
-        "Agrega la información referente a los datos de autorización del remito electrónico cárnico"
+        "Agrega la información referente a los datos de autorización del remito electrónico azucarero"
         self.remito['datosEmision'] = dict(nroRemito=nro_remito, codAutorizacion=cod_autorizacion,
                                                 fechaEmision=fecha_emision, fechaVencimiento=fecha_vencimiento,
                                                )
@@ -206,12 +264,11 @@ class WSRemCarne(BaseWS):
     @inicializar_y_capturar_excepciones
     def GenerarRemito(self, id_req, archivo="qr.png"):
         "Informar los datos necesarios para la generación de un remito nuevo"
-        if not self.remito.get('arrayContingencias'):
-            if 'arrayContingencias' in self.remito: 
-                del self.remito['arrayContingencias']
+        if not self.remito['arrayContingencias']:
+            del self.remito['arrayContingencias']
         response = self.client.generarRemito(
                                 authRequest={'token': self.Token, 'sign': self.Sign, 'cuitRepresentada': self.Cuit},
-                                idReq=id_req, remito=self.remito) 
+                                idReqCliente=id_req, remito=self.remito) 
         ret = response.get("generarRemitoReturn")
         if ret:
             self.__analizar_errores(ret)
@@ -223,13 +280,12 @@ class WSRemCarne(BaseWS):
     def AnalizarRemito(self, ret, archivo=None):
         "Extrae el resultado del remito, si existen en la respuesta XML"
         if ret:
-            self.CodRemito = ret.get("codRemito")
-            self.TipoComprobante = ret.get("tipoComprobante")
-            self.PuntoEmision = ret.get("puntoEmision")
-            datos_aut = ret.get('datosEmision')
+            datos_aut = ret.get('remitoDatosAutorizacion')
             if datos_aut:
-                self.NroRemito = datos_aut.get('nroRemito')
-                self.CodAutorizacion = str(datos_aut.get('codAutorizacion'))
+                self.CodRemito = datos_aut.get("codigoRemito")
+                self.TipoComprobante = datos_aut.get("idTipoComprobante")
+                self.NroRemito = datos_aut.get('nroComprobante')
+                self.CodAutorizacion = datos_aut.get('codigoAutorizacion')
                 self.FechaEmision = datos_aut.get('fechaEmision')
                 self.FechaVencimiento = datos_aut.get('fechaVencimiento')
             self.Estado = ret.get('estado')
@@ -245,8 +301,10 @@ class WSRemCarne(BaseWS):
         "Emitir Remitos que se encuentren en estado Pendiente de Emitir."
         response = self.client.emitirRemito(
                                 authRequest={'token': self.Token, 'sign': self.Sign, 'cuitRepresentada': self.Cuit},
-                                codRemito=self.remito['codRemito'],
-                                viaje=self.remito.get('viaje'))
+                                emitirRemito=dict(
+                                    codigoRemito=self.remito['codRemito'],
+                                    )
+                                )
         ret = response.get("emitirRemitoReturn")
         if ret:
             self.__analizar_errores(ret)
@@ -302,13 +360,14 @@ class WSRemCarne(BaseWS):
 
     @inicializar_y_capturar_excepciones
     def ConsultarRemito(self, cod_remito=None, id_req=None,
-                        tipo_comprobante=None, punto_emision=None, nro_comprobante=None, cuit_emisor=None):
+                        tipo_comprobante=None, punto_emision=None, nro_comprobante=None):
         "Obtener los datos de un remito generado"
+        ##print(self.client.help("consultarRemito"))
         response = self.client.consultarRemito(
                                 authRequest={'token': self.Token, 'sign': self.Sign, 'cuitRepresentada': self.Cuit},
                                 codRemito=cod_remito,
+                                cuitEmisor=self.Cuit,
                                 idReq=id_req,
-                                cuitEmisor=cuit_emisor,
                                 tipoComprobante=tipo_comprobante,
                                 puntoEmision=punto_emision,
                                 nroComprobante=nro_comprobante)
@@ -343,82 +402,68 @@ class WSRemCarne(BaseWS):
         return [(u"%s {codigo} %s {descripcion} %s" % (sep, sep, sep)).format(**it) if sep else it for it in lista]
 
     @inicializar_y_capturar_excepciones
+    def ConsultarPaises(self, sep="||"):
+        "Obtener el código y descripción para los paises"
+        ret = self.client.consultarPaises(
+                            authRequest={
+                                'token': self.Token, 'sign': self.Sign,
+                                'cuitRepresentada': self.Cuit, },
+                                )['consultarCodigosPaisReturn']
+        self.__analizar_errores(ret)
+        array = ret.get('arrayPaises', [])
+        lista = [it['pais'] for it in array]
+        return [(u"%s {codigo} %s {cuit} %s {nombre} %s {tipoSujeto} %s" % (sep, sep, sep, sep, sep)).format(**it) if sep else it for it in lista]
+
+    @inicializar_y_capturar_excepciones
     def ConsultarTiposContingencia(self, sep="||"):
         "Obtener el código y descripción para cada tipo de contingencia que puede reportar"
         ret = self.client.consultarTiposContingencia(
                             authRequest={
                                 'token': self.Token, 'sign': self.Sign,
                                 'cuitRepresentada': self.Cuit, },
-                                )['consultarTiposContingenciaReturn']
+                                )['codigoDescripcionReturn']
         self.__analizar_errores(ret)
-        array = ret.get('arrayTiposContingencia', [])
+        array = ret.get('arrayCodigoDescripcion', [])
         lista = [it['codigoDescripcion'] for it in array]
         return [(u"%s {codigo} %s {descripcion} %s" % (sep, sep, sep)).format(**it) if sep else it for it in lista]
 
     @inicializar_y_capturar_excepciones
-    def ConsultarTiposCategoriaEmisor(self, sep="||"):
-        "Obtener el código y descripción para tipos de categorías de emisor"
-        ret = self.client.consultarTiposCategoriaEmisor(
+    def ConsultarTiposMercaderia(self, sep="||"):
+        "Obtener el código y descripción  códigos y la descripción para cada tipo de mercadería"
+        ret = self.client.consultarTiposMercaderia(
                             authRequest={
                                 'token': self.Token, 'sign': self.Sign,
                                 'cuitRepresentada': self.Cuit, },
-                                )['consultarCategoriasEmisorReturn']
+                                )['codigoDescripcionReturn']
         self.__analizar_errores(ret)
-        array = ret.get('arrayCategoriasEmisor', [])
-        lista = [it['codigoDescripcionString'] for it in array]
+        array = ret.get('arrayCodigoDescripcion', [])
+        lista = [it['codigoDescripcion'] for it in array]
         return [(u"%s {codigo} %s {descripcion} %s" % (sep, sep, sep)).format(**it) if sep else it for it in lista]
 
     @inicializar_y_capturar_excepciones
-    def ConsultarTiposCategoriaReceptor(self, sep="||"):
-        "Obtener el código y descripción para cada tipos de categorías de receptor"
-        ret = self.client.consultarTiposCategoriaReceptor(
+    def ConsultarTiposEmbalaje(self, sep="||"):
+        "Obtener el código y descripción  códigos y la descripción para cada tipo de embalaje"
+        ret = self.client.consultarTiposEmbalaje(
                             authRequest={
                                 'token': self.Token, 'sign': self.Sign,
                                 'cuitRepresentada': self.Cuit, },
-                                )['consultarCategoriasReceptorReturn']
+                                )['codigoDescripcionReturn']
         self.__analizar_errores(ret)
-        array = ret.get('arrayCategoriasReceptor', [])
-        lista = [it['codigoDescripcionString'] for it in array]
+        array = ret.get('arrayCodigoDescripcion', [])
+        lista = [it['codigoDescripcion'] for it in array]
         return [(u"%s {codigo} %s {descripcion} %s" % (sep, sep, sep)).format(**it) if sep else it for it in lista]
 
     @inicializar_y_capturar_excepciones
-    def ConsultarTiposEstado(self, sep="||"):
-        "Obtener el código y descripción para cada estado posibles en los que puede estar un remito cárnico"
-        ret = self.client.consultarTiposEstado(
+    def ConsultarTiposUnidades(self, sep="||"):
+        "Obtener el código y descripción  códigos y la descripción para cada tipo de unidades de venta"
+        ret = self.client.consultarUnidadesMedida(
                             authRequest={
                                 'token': self.Token, 'sign': self.Sign,
                                 'cuitRepresentada': self.Cuit, },
-                                )['consultarTiposEstadoReturn']
+                                )['codigoDescripcionReturn']
         self.__analizar_errores(ret)
-        array = ret.get('arrayTiposEstado', [])
-        lista = [it['codigoDescripcionString'] for it in array]
-        return [(u"%s {codigo} %s {descripcion} %s" % (sep, sep, sep)).format(**it) if sep else it for it in lista]
-
-    @inicializar_y_capturar_excepciones
-    def ConsultarGruposCarne(self, sep="||"):
-        "Obtener el código y descripción para los grupos de los distintos tipos de cortes de carne"
-        ret = self.client.consultarGruposCarne(
-                            authRequest={
-                                'token': self.Token, 'sign': self.Sign,
-                                'cuitRepresentada': self.Cuit, },
-                                )['consultarGruposCarneReturn']
-        self.__analizar_errores(ret)
-        array = ret.get('arrayGruposCarne', [])
-        lista = [it['codigoDescripcionString'] for it in array]
-        return [(u"%s {codigo} %s {descripcion} %s" % (sep, sep, sep)).format(**it) if sep else it for it in lista]
-
-    @inicializar_y_capturar_excepciones
-    def ConsultarTiposCarne(self, cod_grupo_carne=1, sep="||"):
-        "Obtener el código y descripción para tipos de corte de carne"
-        ret = self.client.consultarTiposCarne(
-                            authRequest={
-                                'token': self.Token, 'sign': self.Sign,
-                                'cuitRepresentada': self.Cuit, },
-                            codGrupoCarne=cod_grupo_carne,
-                            )['consultarTiposCarneReturn']
-        self.__analizar_errores(ret)
-        array = ret.get('arrayTiposCarne', [])
-        lista = [it['codigoDescripcionString'] for it in array]
+        array = ret.get('arrayCodigoDescripcion', [])
+        lista = [it['codigoDescripcion'] for it in array]
         return [(u"%s {codigo} %s {descripcion} %s" % (sep, sep, sep)).format(**it) if sep else it for it in lista]
 
     @inicializar_y_capturar_excepciones
@@ -445,7 +490,7 @@ elif sys.frozen=='dll':
     basepath = win32api.GetModuleFileName(sys.frozendllhandle)
 else:
     basepath = sys.executable
-INSTALL_DIR = WSRemCarne.InstallDir = get_install_dir()
+INSTALL_DIR = WSRemAzucar.InstallDir = get_install_dir()
 
 
 if __name__ == '__main__':
@@ -456,7 +501,7 @@ if __name__ == '__main__':
 
     if "--register" in sys.argv or "--unregister" in sys.argv:
         import win32com.server.register
-        win32com.server.register.UseCommandLine(WSRemCarne)
+        win32com.server.register.UseCommandLine(WSRemAzucar)
         sys.exit(0)
 
     from ConfigParser import SafeConfigParser
@@ -476,18 +521,18 @@ if __name__ == '__main__':
         config.read(CONFIG_FILE)
         CERT = config.get('WSAA','CERT')
         PRIVATEKEY = config.get('WSAA','PRIVATEKEY')
-        CUIT = config.get('WSRemCarne','CUIT')
-        ENTRADA = config.get('WSRemCarne','ENTRADA')
-        SALIDA = config.get('WSRemCarne','SALIDA')
+        CUIT = config.get('WSRemAzucar','CUIT')
+        ENTRADA = config.get('WSRemAzucar','ENTRADA')
+        SALIDA = config.get('WSRemAzucar','SALIDA')
         
         if config.has_option('WSAA','URL') and not HOMO:
             wsaa_url = config.get('WSAA','URL')
         else:
             wsaa_url = None
-        if config.has_option('WSRemCarne','URL') and not HOMO:
-            wsremcarne_url = config.get('WSRemCarne','URL')
+        if config.has_option('WSRemAzucar','URL') and not HOMO:
+            wsremazucar_url = config.get('WSRemAzucar','URL')
         else:
-            wsremcarne_url = WSDL[HOMO]
+            wsremazucar_url = WSDL[HOMO]
 
         if config.has_section('DBF'):
             conf_dbf = dict(config.items('DBF'))
@@ -501,27 +546,27 @@ if __name__ == '__main__':
         if DEBUG:
             print "Usando Configuración:"
             print "wsaa_url:", wsaa_url
-            print "wsremcarne_url:", wsremcarne_url
+            print "wsremazucar_url:", wsremazucar_url
 
         # obteniendo el TA
         from wsaa import WSAA
         wsaa = WSAA()
-        ta = wsaa.Autenticar("wsremcarne", CERT, PRIVATEKEY, wsaa_url, debug=DEBUG)
+        ta = wsaa.Autenticar("wsremazucar", CERT, PRIVATEKEY, wsaa_url, debug=DEBUG)
         if not ta:
             sys.exit("Imposible autenticar con WSAA: %s" % wsaa.Excepcion)
 
         # cliente soap del web service
-        wsremcarne = WSRemCarne()
-        wsremcarne.Conectar(wsdl=wsremcarne_url)
-        wsremcarne.SetTicketAcceso(ta)
-        wsremcarne.Cuit = CUIT
+        wsremazucar = WSRemAzucar()
+        wsremazucar.Conectar(wsdl=wsremazucar_url)
+        wsremazucar.SetTicketAcceso(ta)
+        wsremazucar.Cuit = CUIT
         ok = None
-
+        
         if '--dummy' in sys.argv:
-            ret = wsremcarne.Dummy()
-            print "AppServerStatus", wsremcarne.AppServerStatus
-            print "DbServerStatus", wsremcarne.DbServerStatus
-            print "AuthServerStatus", wsremcarne.AuthServerStatus
+            ret = wsremazucar.Dummy()
+            print "AppServerStatus", wsremazucar.AppServerStatus
+            print "DbServerStatus", wsremazucar.DbServerStatus
+            print "AuthServerStatus", wsremazucar.AuthServerStatus
             sys.exit(0)
 
         if '--ult' in sys.argv:
@@ -535,46 +580,62 @@ if __name__ == '__main__':
                 tipo_comprobante = 995
             rec = {}
             print "Consultando ultimo remito pto_emision=%s tipo_comprobante=%s" % (pto_emision, tipo_comprobante)
-            ok = wsremcarne.ConsultarUltimoRemitoEmitido(tipo_comprobante, pto_emision)
-            if wsremcarne.Excepcion:
-                print >> sys.stderr, "EXCEPCION:", wsremcarne.Excepcion
-                if DEBUG: print >> sys.stderr, wsremcarne.Traceback
-            print "Ultimo Nro de Remito", wsremcarne.NroRemito
-            print "Errores:", wsremcarne.Errores
+            ok = wsremazucar.ConsultarUltimoRemitoEmitido(tipo_comprobante, pto_emision)
+            if wsremazucar.Excepcion:
+                print >> sys.stderr, "EXCEPCION:", wsremazucar.Excepcion
+                if DEBUG: print >> sys.stderr, wsremazucar.Traceback
+            print "Ultimo Nro de Remito", wsremazucar.NroRemito
+            print "Errores:", wsremazucar.Errores
 
         if '--consultar' in sys.argv:
+            rec = {}
             try:
                 cod_remito = sys.argv[sys.argv.index("--consultar") + 1]
+                print "Consultando remito cod_remito=%s" % (cod_remito, )
+                ok = wsremazucar.ConsultarRemito(cod_remito=cod_remito)
             except IndexError, ValueError:
-                cod_remito = None
-            rec = {}
-            print "Consultando remito cod_remito=%s" % (cod_remito, )
-            ok = wsremcarne.ConsultarRemito(cod_remito)
-            if wsremcarne.Excepcion:
-                print >> sys.stderr, "EXCEPCION:", wsremcarne.Excepcion
-                if DEBUG: print >> sys.stderr, wsremcarne.Traceback
-            print "Ultimo Nro de Remito", wsremcarne.NroRemito
-            print "Errores:", wsremcarne.Errores
+                pto_emision = raw_input("Punto de emision [1]:") or 1
+                tipo_cbte = raw_input("Tipo de comprobante [995]:") or 995
+                nro_comprobante = raw_input("Nro de comprobante:") or 1
+                ok = wsremazucar.ConsultarRemito(tipo_comprobante=tipo_cbte,
+                                                 punto_emision=pto_emision,
+                                                 nro_comprobante=nro_comprobante)
+            if wsremazucar.Excepcion:
+                print >> sys.stderr, "EXCEPCION:", wsremazucar.Excepcion
+                if DEBUG: print >> sys.stderr, wsremazucar.Traceback
+            print "Ultimo Nro de Remito", wsremazucar.NroRemito
+            print "Errores:", wsremazucar.Errores
             if DEBUG:
                 import pprint
-                pprint.pprint(wsremcarne.remito)
+                pprint.pprint(wsremazucar.remito)
 
+        ##wsremazucar.client.help("generarRemito")
         if '--prueba' in sys.argv:
-            rec = dict(tipo_comprobante=995, punto_emision=1, categoria_emisor=1,
-                          tipo_movimiento='ENV',  # ENV: Envio Normal, PLA: Retiro en planta, REP: Reparto, RED: Redestino
-                          cuit_titular_mercaderia='20222222223', cod_dom_origen=1,
-                          tipo_receptor='EM',  # 'EM': DEPOSITO EMISOR, 'MI': MERCADO INTERNO, 'RP': REPARTO
-                          categoria_receptor=1, id_req=int(time.time()),
-                          cuit_receptor='20111111112', cuit_depositario=None,
-                          cod_dom_destino=1, cod_rem_redestinar=None,
-                          cod_remito=30,
-                        )
+            rec = dict(
+                    tipo_comprobante=997, punto_emision=1,
+                    tipo_titular_mercaderia=1,
+                    cuit_titular_mercaderia='20222222223',
+                    cuit_autorizado_retirar='20111111112',
+                    cuit_productor_contrato=None, 
+                    numero_maquila=9999,
+                    cod_remito=None, estado=None,
+                    id_req=int(time.time()),
+                )
             if "--autorizar" in sys.argv:
                 rec["estado"] = 'A'  # 'A': Autorizar, 'D': Denegar
-            rec['viaje'] = dict(cuit_transportista='20333333334', cuit_conductor='20333333334',
-                                   fecha_inicio_viaje='2018-10-01', distancia_km=999)
-            rec['viaje']['vehiculo'] = dict(dominio_vehiculo='AAA000', dominio_acoplado='ZZZ000')
-            rec['mercaderias'] = [dict(orden=1, tropa=1, cod_tipo_prod='2.13', kilos=10, unidades=1)]
+            rec['receptor'] = dict(
+                    cuit_pais_receptor='50000000016',
+                    cuit_receptor='20111111112', cod_dom_receptor=1,
+                    cuit_despachante=None, codigo_aduana=None, 
+                    denominacion_receptor=None, domicilio_receptor=None)
+            rec['viaje'] = dict(fecha_inicio_viaje='2020-04-01', distancia_km=999, cod_pais_transportista=200, ducto="S")
+            rec['viaje']['vehiculo'] = dict(
+                    dominio_vehiculo='AAA000', dominio_acoplado='ZZZ000', 
+                    cuit_transportista='20333333334', cuit_conductor='20333333334',  
+                    apellido_conductor=None, cedula_conductor=None, denom_transportista=None,
+                    id_impositivo=None, nombre_conductor=None)
+            rec['mercaderias'] = [dict(orden=1, cod_tipo_prod=1, cod_tipo_emb=1, cantidad_emb=1, cod_tipo_unidad=1, cant_unidad=1,
+                                       anio_safra=2019 )]
             rec['datos_autorizacion'] = None # dict(nro_remito=None, cod_autorizacion=None, fecha_emision=None, fecha_vencimiento=None)
             rec['contingencias'] = [dict(tipo=1, observacion="anulacion")]
             with open(ENTRADA, "w") as archivo:
@@ -583,55 +644,57 @@ if __name__ == '__main__':
         if '--cargar' in sys.argv:
             with open(ENTRADA, "r") as archivo:
                 rec = json.load(archivo)
-            wsremcarne.CrearRemito(**rec)
-            wsremcarne.AgregarViaje(**rec['viaje'])
-            wsremcarne.AgregarVehiculo(**rec['viaje']['vehiculo'])
-            for mercaderia in rec['mercaderias']:
-                wsremcarne.AgregarMercaderia(**mercaderia)
-            datos_aut = rec['datos_autorizacion']
+            wsremazucar.CrearRemito(**rec)
+            if 'receptor' in rec:
+                wsremazucar.AgregarReceptor(**rec['receptor'])
+            if 'viaje' in rec:
+                wsremazucar.AgregarViaje(**rec['viaje'])
+                if not rec["viaje"].get("ducto"):
+                    wsremazucar.AgregarVehiculo(**rec['viaje']['vehiculo'])
+            for mercaderia in rec.get('mercaderias', []):
+                wsremazucar.AgregarMercaderia(**mercaderia)
+            datos_aut = rec.get('datos_autorizacion')
             if datos_aut:
-                wsremcarne.AgregarDatosAutorizacion(**datos_aut)
-            for contingencia in rec['contingencias']:
-                wsremcarne.AgregarContingencias(**contingencia)
+                wsremazucar.AgregarDatosAutorizacion(**datos_aut)
+            for contingencia in rec.get('contingencias', []):
+                wsremazucar.AgregarContingencias(**contingencia)
 
         if '--generar' in sys.argv:
             if '--testing' in sys.argv:
-                wsremcarne.LoadTestXML("tests/xml/wsremcarne.xml")  # cargo respuesta
+                wsremazucar.LoadTestXML("tests/xml/wsremazucar.xml")  # cargo respuesta
 
-            ok = wsremcarne.GenerarRemito(id_req=rec['id_req'], archivo="qr.jpg")
+            ok = wsremazucar.GenerarRemito(id_req=rec['id_req'], archivo="qr.jpg")
 
         if '--emitir' in sys.argv:
-            ok = wsremcarne.EmitirRemito()
+            ok = wsremazucar.EmitirRemito()
 
         if '--autorizar' in sys.argv:
-            ok = wsremcarne.AutorizarRemito()
+            ok = wsremazucar.AutorizarRemito()
 
         if '--anular' in sys.argv:
-            ok = wsremcarne.AnularRemito()
+            ok = wsremazucar.AnularRemito()
 
         if ok is not None:
-            print "Resultado: ", wsremcarne.Resultado
-            print "Cod Remito: ", wsremcarne.CodRemito
-            if wsremcarne.CodAutorizacion:
-                print "Numero Remito: ", wsremcarne.NroRemito
-                print "Cod Autorizacion: ", wsremcarne.CodAutorizacion
-                print "Fecha Emision", wsremcarne.FechaEmision
-                print "Fecha Vencimiento", wsremcarne.FechaVencimiento
-            print "Estado: ", wsremcarne.Estado
-            print "Observaciones: ", wsremcarne.Observaciones
-            print "Errores:", wsremcarne.Errores
-            print "Errores Formato:", wsremcarne.ErroresFormato
-            print "Evento:", wsremcarne.Evento
-            rec['nro_remito'] = wsremcarne.NroRemito
-            rec['cod_autorizacion'] = wsremcarne.CodAutorizacion
-            rec['cod_remito'] = wsremcarne.CodRemito
-            rec['resultado'] = wsremcarne.Resultado
-            rec['observaciones'] = wsremcarne.Observaciones
-            rec['fecha_emision'] = wsremcarne.FechaEmision
-            rec['fecha_vencimiento'] = wsremcarne.FechaVencimiento
-            rec['errores'] = wsremcarne.Errores
-            rec['errores_formato'] = wsremcarne.ErroresFormato
-            rec['evento'] = wsremcarne.Evento
+            print "Resultado: ", wsremazucar.Resultado
+            print "Cod Remito: ", wsremazucar.CodRemito
+            if wsremazucar.CodAutorizacion:
+                print "Numero Remito: ", wsremazucar.NroRemito
+                print "Cod Autorizacion: ", wsremazucar.CodAutorizacion
+                print "Fecha Emision", wsremazucar.FechaEmision
+                print "Fecha Vencimiento", wsremazucar.FechaVencimiento
+            print "Estado: ", wsremazucar.Estado
+            print "Observaciones: ", wsremazucar.Observaciones
+            print "Errores:", wsremazucar.Errores
+            print "Errores Formato:", wsremazucar.ErroresFormato
+            print "Evento:", wsremazucar.Evento
+            rec['cod_remito'] = wsremazucar.CodRemito
+            rec['resultado'] = wsremazucar.Resultado
+            rec['observaciones'] = wsremazucar.Observaciones
+            rec['fecha_emision'] = wsremazucar.FechaEmision
+            rec['fecha_vencimiento'] = wsremazucar.FechaVencimiento
+            rec['errores'] = wsremazucar.Errores
+            rec['errores_formato'] = wsremazucar.ErroresFormato
+            rec['evento'] = wsremazucar.Evento
 
         if '--grabar' in sys.argv:
             with open(SALIDA, "w") as archivo:
@@ -640,41 +703,57 @@ if __name__ == '__main__':
         # Recuperar parámetros:
 
         if '--tipos_comprobante' in sys.argv:
-            ret = wsremcarne.ConsultarTiposComprobante()
+            ret = wsremazucar.ConsultarTiposComprobante()
             print "\n".join(ret)
 
         if '--tipos_contingencia' in sys.argv:
-            ret = wsremcarne.ConsultarTiposContingencia()
+            ret = wsremazucar.ConsultarTiposContingencia()
+            print "\n".join(ret)
+
+        if '--tipos_mercaderia' in sys.argv:
+            ret = wsremazucar.ConsultarTiposMercaderia()
+            print "\n".join(ret)
+
+        if '--tipos_embalaje' in sys.argv:
+            ret = wsremazucar.ConsultarTiposEmbalaje()
+            print "\n".join(ret)
+
+        if '--tipos_unidades' in sys.argv:
+            ret = wsremazucar.ConsultarTiposUnidades()
             print "\n".join(ret)
 
         if '--tipos_categoria_emisor' in sys.argv:
-            ret = wsremcarne.ConsultarTiposCategoriaEmisor()
+            ret = wsremazucar.ConsultarTiposCategoriaEmisor()
             print "\n".join(ret)
 
         if '--tipos_categoria_receptor' in sys.argv:
-            ret = wsremcarne.ConsultarTiposCategoriaReceptor()
+            ret = wsremazucar.ConsultarTiposCategoriaReceptor()
             print "\n".join(ret)
 
         if '--tipos_estados' in sys.argv:
-            ret = wsremcarne.ConsultarTiposEstado()
+            ret = wsremazucar.ConsultarTiposEstado()
             print "\n".join(ret)
 
-        if '--grupos_carne' in sys.argv:
-            ret = wsremcarne.ConsultarGruposCarne()
+        if '--paises' in sys.argv:
+            ret = wsremazucar.ConsultarPaises()
             print "\n".join(ret)
 
-        if '--tipos_carne' in sys.argv:
-            for grupo_carne in wsremcarne.ConsultarGruposCarne(sep=None):
-                ret = wsremcarne.ConsultarTiposCarne(grupo_carne['codigo'])
+        if '--grupos_azucar' in sys.argv:
+            ret = wsremazucar.ConsultarGruposAzucar()
+            print "\n".join(ret)
+
+        if '--tipos_azucar' in sys.argv:
+            for grupo_azucar in wsremazucar.ConsultarGruposAzucar(sep=None):
+                ret = wsremazucar.ConsultarTiposAzucar(grupo_azucar['codigo'])
                 print "\n".join(ret)
 
         if '--codigos_domicilio' in sys.argv:
             cuit = raw_input("Cuit Titular Domicilio: ")
-            ret = wsremcarne.ConsultarCodigosDomicilio(cuit)
-            print "\n".join(ret)
+            ret = wsremazucar.ConsultarCodigosDomicilio(cuit)
+            print "\n".join(utils.norm(ret))
 
-        if wsremcarne.Errores or wsremcarne.ErroresFormato:
-            print "Errores:", wsremcarne.Errores, wsremcarne.ErroresFormato
+        if wsremazucar.Errores or wsremazucar.ErroresFormato:
+            print "Errores:", wsremazucar.Errores, wsremazucar.ErroresFormato
 
         print "hecho."
         

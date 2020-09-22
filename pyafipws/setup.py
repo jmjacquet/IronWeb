@@ -18,7 +18,7 @@ import warnings
 import sys
 
 try:  
-    rev = subprocess.check_output(['hg', 'tip', '--template', '{rev}'], 
+    rev = subprocess.check_output(['git', 'rev-list', '--count', '--all'],
                                   stderr=subprocess.PIPE).strip()
 except:
     rev = 0
@@ -44,15 +44,18 @@ if 'py2exe' in sys.argv:
     #import wsct, recet
     #import wsfecred
     #import ws_sr_padron
-    #import pyfepdf
+    import pyfepdf
     #import pyemail
     #import pyi25
+    #import ws_sire
     #import wsctg
     #import wslpg
     #import wsltv
     #import wslum
     #import wslsp
     #import wsremcarne
+    #import wsremharina
+    #import wsremazucar
     #import wscoc
     #import wscdc
     #import cot
@@ -291,6 +294,18 @@ if 'py2exe' in sys.argv:
         __version__ += "+wsfecred_" + wsfecred.__version__
         HOMO &= wsfecred.HOMO
 
+    if 'ws_sire' in globals():
+        kwargs['com_server'] += [
+            Target(module=ws_sire, modules="ws_sire"),
+            ]
+        kwargs['console'] += [
+            Target(module=ws_sire, script='ws_sire.py', dest_base="ws_sire_cli"),
+            ]
+        data_files += [
+            ]
+        __version__ += "+sire_" + ws_sire.__version__
+        HOMO &= ws_sire.HOMO
+
     if 'pyfepdf' in globals():
         kwargs['com_server'] += [
             Target(module=pyfepdf, modules="pyfepdf", create_exe=True, create_dll=True),
@@ -427,6 +442,32 @@ if 'py2exe' in sys.argv:
             ]
         __version__ += "+wsremcarne_" + wsremcarne.__version__
         HOMO &= wsremcarne.HOMO
+
+    if 'wsremharina' in globals():
+        kwargs['com_server'] += [
+            Target(module=wsremharina, modules="wsremharina"),
+            ]
+        kwargs['console'] += [
+            Target(module=wsremharina, script='wsremharina.py', dest_base="wsremharina_cli"),
+            ]
+        data_files += [
+            ("conf", ["conf/wsremharina.ini"]),
+            ]
+        __version__ += "+wsremharina_" + wsremharina.__version__
+        HOMO &= wsremharina.HOMO
+
+    if 'wsremazucar' in globals():
+        kwargs['com_server'] += [
+            Target(module=wsremazucar, modules="wsremazucar"),
+            ]
+        kwargs['console'] += [
+            Target(module=wsremazucar, script='wsremazucar.py', dest_base="wsremazucar_cli"),
+            ]
+        data_files += [
+            ("conf", ["conf/wsremazucar.ini"]),
+            ]
+        __version__ += "+wsremazucar_" + wsremazucar.__version__
+        HOMO &= wsremazucar.HOMO
 
     if 'wscoc' in globals():
         kwargs['com_server'] += [
@@ -577,6 +618,13 @@ if 'py2exe' in sys.argv:
         if httplib2.__version__ >= "0.9":
             data_files += [("httplib2", 
                 [os.path.join(os.path.dirname(httplib2.__file__), "cacerts.txt")])]
+    except ImportError:
+        pass
+
+    # add certification authorities (newer versions of httplib2)
+    try:
+        import certifi
+        data_files += [("certifi", [certifi.where()])]
     except ImportError:
         pass
 

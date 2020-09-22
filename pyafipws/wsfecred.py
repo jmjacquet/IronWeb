@@ -17,7 +17,7 @@ Crédito del servicio web FECredService versión 1.0.1-rc1 (RG4367/18)
 __author__ = "Mariano Reingart <reingart@gmail.com>"
 __copyright__ = "Copyright (C) 2018-2019 Mariano Reingart"
 __license__ = "LGPL 3.0"
-__version__ = "1.02a"
+__version__ = "1.07a"
 
 LICENCIA = """
 wsfecred.py: Interfaz para REGISTRO DE FACTURAS de CRÉDITO ELECTRÓNICA MiPyMEs
@@ -44,6 +44,12 @@ Opciones:
 
   --obligado: consultar monto obligado a recepcion (según CUIT)
   --ctasctes: consultar cuentas corrientes generadas a partir de facturación
+  --ctacte: consultar detalle de cuenta corriente de una FCE
+
+  --aceptar: Aceptar el saldo actual de la Cta. Cte. de una Factura de Crédito
+  --rechazar: Rechazar la Cta. Cte. de una Factura Electrónica de Crédito
+  --rechazar-ndc: Rechaza N/C o N/D (asociada a Factura Electrónica de Crédito)
+  --informar-cancelacion-total: informa la cancelación total (pago) de una FEC
 
   --tipos_ajuste: tabla de parametros para tipo de ajuste
   --tipos_cancelacion: tabla de parametros para formas cancelacion
@@ -63,6 +69,8 @@ import utils
 
 # importo funciones compartidas:
 from utils import json, BaseWS, inicializar_y_capturar_excepciones, get_install_dir, json_serializer
+from utils import leer, escribir, leer_dbf, guardar_dbf, N, A, I, abrir_conf, leer_txt, grabar_txt, formato_txt, \
+                  generar_csv, tabular
 
 
 # constantes de configuración (producción/homologación):
@@ -74,15 +82,16 @@ DEBUG = False
 XML = False
 CONFIG_FILE = "rece.ini"
 HOMO = False
-ENCABEZADO = []
 
 
 class WSFECred(BaseWS):
     "Interfaz para el WebService de Factura de Crédito Electronica"
     _public_methods_ = ['Conectar', 'Dummy', 'SetTicketAcceso', 'DebugLog',
                         'CrearFECred',  'AgregarFormasCancelacion', 'AgregarAjustesOperacion', 'AgregarRetenciones',
-                        'AgregarConfirmarNotasDC',
-                        'ConsultarCtasCtes', 'LeerCtaCte',
+                        'AgregarConfirmarNotasDC', 'AgregarMotivoRechazo',
+                        'AceptarFECred', 'RechazarFECred', 'RechazarNotaDC', 'InformarCancelacionTotalFECred',
+                        'ConsultarCtasCtes', 'ConsultarCtaCte', 'LeerCtaCte', 'LeerCampoCtaCte',
+                        'ConsultarComprobantes', 'LeerCampoComprobante',
                         'ConsultarTiposAjustesOperacion', 'ConsultarTiposFormasCancelacion',
                         'ConsultarTiposMotivosRechazo', 'ConsultarTiposRetenciones',
                         'ConsultarMontoObligadoRecepcion',
@@ -99,7 +108,7 @@ class WSFECred(BaseWS):
 
     # Variables globales para BaseWS:
     HOMO = HOMO
-    WSDL = WSDL[HOMO]
+    WSDL = WSDL[1]
     LanzarExcepciones = False
     Version = "%s %s" % (__version__, HOMO and 'Homologación' or '')
 
@@ -165,6 +174,7 @@ class WSFECred(BaseWS):
             'codMoneda': cod_moneda,
             'cotizacionMonedaUlt': ctz_moneda_ult,
             'importeCancelado': importe_cancelado,
+            'importeCancelacion': importe_cancelado,
             'importeEmbargoPesos': importe_embargo_pesos,
             'importeTotalRetPesos': importe_total_ret_pesos,
             'saldoAceptado': saldo_aceptado,
@@ -173,6 +183,7 @@ class WSFECred(BaseWS):
             'arrayFormasCancelacion': [],
             'arrayRetenciones': [],
             'arrayConfirmarNotasDC': [],
+            'arrayMotivosRechazo': [],
             }
         return True
 
@@ -212,17 +223,29 @@ class WSFECred(BaseWS):
         return True
 
     @inicializar_y_capturar_excepciones
-    def AgregarConfirmarNotasDC(self, cuit_emisor, tipo_cbte, punto_vta, nro_cbte, **kwargs):
+    def AgregarConfirmarNotasDC(self, cuit_emisor, tipo_cbte, punto_vta, nro_cbte, acepta='S', **kwargs):
         "Agrega la información referente al viaje del remito electrónico cárnico"
         self.factura['arrayConfirmarNotasDC'].append({
             'confirmarNota': {
-                'acepta': 'acepta',
+                'acepta': acepta,
                 'idNota': {
                     'CUITEmisor': cuit_emisor,
                     'codTipoCmp': tipo_cbte,
                     'ptoVta': punto_vta,
                     'nroCmp': nro_cbte,
                     }
+                }
+            })
+        return True
+
+    @inicializar_y_capturar_excepciones
+    def AgregarMotivoRechazo(self, cod_motivo, desc, justificacion, **kwargs):
+        "Agrega la información referente al motivo de rechazo de una FCE"
+        self.factura['arrayMotivosRechazo'].append({
+            'motivoRechazo': {
+                'codMotivo': cod_motivo,
+                'descMotivo': desc,
+                'justificacion': justificacion,
                 }
             })
         return True
@@ -249,6 +272,75 @@ class WSFECred(BaseWS):
         return True
 
     @inicializar_y_capturar_excepciones
+    def RechazarFECred(self):
+        "Rechazar la Cta. Cte. de una Factura Electrónica de Crédito"
+        # debiendo indicar el motivo del rechazo.
+        params = {
+            'authRequest': {
+                'cuitRepresentada': self.Cuit,
+                'sign': self.Sign,
+                'token': self.Token
+                },
+            }
+        params.update(self.factura)
+        response = self.client.rechazarFECred(**params)
+        ret = response.get("operacionFECredReturn")
+        if ret:
+            self.__analizar_errores(ret)
+            self.__analizar_observaciones(ret)
+            self.__analizar_evento(ret)
+            self.AnalizarFECred(ret)
+        return True
+
+    @inicializar_y_capturar_excepciones
+    def RechazarNotaDC(self):
+        """Rechazar Notas de Débito / Crédito mientras la Factura de Crédito no haya sido Aceptada o Rechazada
+
+        Al rechazarla no afectará a la Cta Cte. Debe indicar al menos un motivo de rechazo y justificarlo.        
+        """
+        params = {
+            'authRequest': {
+                'cuitRepresentada': self.Cuit,
+                'sign': self.Sign,
+                'token': self.Token
+                },
+            }
+        params['idComprobante'] = self.factura['idCtaCte']['idFactura']
+        params['arrayMotivosRechazo'] = self.factura['arrayMotivosRechazo']
+        response = self.client.rechazarNotaDC(**params)
+        ret = response.get("rechazarNotaDCReturn")
+        if ret:
+            self.__analizar_errores(ret)
+            self.__analizar_observaciones(ret)
+            self.__analizar_evento(ret)
+            self.AnalizarFECred(ret)
+        return True
+
+    @inicializar_y_capturar_excepciones
+    def InformarCancelacionTotalFECred(self):
+        """El Comprador informa que le ha cancelado (pagado) totalmente la deuda al vendedor
+
+        Debe indicar dentro los plazos establecidos, la forma de cancelación (habiendo aceptado previamente la FECRED).
+        """
+        params = {
+            'authRequest': {
+                'cuitRepresentada': self.Cuit,
+                'sign': self.Sign,
+                'token': self.Token
+                },
+            }
+        params.update(self.factura)
+        #params['idComprobante'] = self.factura['idCtaCte']['idFactura']
+        #params['arrayMotivosRechazo'] = self.factura['arrayMotivosRechazo']
+        response = self.client.informarCancelacionTotalFECred(**params)
+        ret = response.get("operacionFECredReturn")
+        if ret:
+            self.__analizar_errores(ret)
+            self.__analizar_observaciones(ret)
+            self.__analizar_evento(ret)
+            self.AnalizarFECred(ret)
+        return True
+
     def AnalizarFECred(self, ret, archivo=None):
         "Extrae el resultado de la Factura de Crédito Electrónica, si existen en la respuesta XML"
         if ret:
@@ -337,8 +429,8 @@ class WSFECred(BaseWS):
             self.__analizar_errores(ret)
             self.__analizar_observaciones(ret)
             self.__analizar_evento(ret)
-            self.Resultado = ret['obligado']
-            return ret['montoDesde']
+            self.Resultado = ret.get('obligado', '')
+            return ret.get('montoDesde', -1)
 
 
     @inicializar_y_capturar_excepciones
@@ -434,6 +526,252 @@ class WSFECred(BaseWS):
             d.Add(k, str(v))
         return d
 
+    @inicializar_y_capturar_excepciones
+    def LeerCampoCtaCte(self, pos=0, *campos):
+        """Leer un campo de la cta. cte. devuelto por ConsultarCtasCtes
+
+        Args:
+            pos (int): posición del comprobante (0 a n)
+            campos (int o str): clave string (dict) o una posición int (list)
+
+        Returns:
+            str: valor del campo del comprobante
+        """
+        ret = self.ctas_ctes[pos]
+        for campo in campos:
+            if isinstance(ret, dict) and isinstance(campo, basestring):
+                ret = ret.get(campo)
+            elif isinstance(ret, list) and len(ret) > campo:
+                ret = ret[campo]
+            else:
+                self.Excepcion = u"El campo %s solicitado no existe" % campo
+                ret = None
+            if ret is None:
+                break
+        return str(ret)
+
+
+    @inicializar_y_capturar_excepciones
+    def ConsultarCtaCte(self, cuit_emisor=None, tipo_cbte=None, punto_vta=None, nro_cbte=None, cod_cta_cte=None):
+        """Obtener el detalle y composición de una Cuenta Corriente de una Factura Electrónica de Crédito.
+
+        Args:
+            cuit_emisor (str): Cuit del emisor de la FCE
+            tipo_cbte (int): Tipo de comprobante de la FCE
+            punto_vta (int): Punto de Venta de la FCE
+            nro_cbte (int): Numero de comprobante de la FCE
+            cod_cta_cte (int): código que identifica la cta.cte. (alt)
+
+        Returns:
+            int: cantidad de cuentas corrientes
+        """
+        if cod_cta_cte:
+            id_cta_cte = {"codCtaCte": cod_cta_cte}
+        else:
+            id_cta_cte = {
+                "idFactura": {
+                    'CUITEmisor': cuit_emisor,
+                    'codTipoCmp': tipo_cbte,
+                    'ptoVta': punto_vta,
+                    'nroCmp': nro_cbte,
+                    }
+                }
+        response = self.client.consultarCtaCte(
+                            authRequest={
+                                'token': self.Token, 'sign': self.Sign,
+                                'cuitRepresentada': self.Cuit,
+                            },
+                           idCtaCte=id_cta_cte,
+                        )
+        ret = response.get('consultarCtaCteReturn')
+        self.ctas_ctes = []
+        if ret:
+            self.__analizar_errores(ret)
+            self.__analizar_observaciones(ret)
+            self.__analizar_evento(ret)
+            cc = ret.get('ctaCte')
+            if cc:
+                cta_cte = {
+                    'cod_cta_cte': cc.get('codCtaCte'),
+                    'estado_cta_cte': cc['estadoCtaCte']['estado'],
+                    'fecha_hora_estado': cc['estadoCtaCte']['fechaHoraEstado'],
+                    'cuit_emisor': cc['factura']['cuitEmisor'],
+                    'tipo_cbte': cc['factura']['codTipoCmp'],
+                    'nro_cbte': cc['factura']['nroCmp'],
+                    'punto_vta': cc['factura']['ptovta'],
+                    'importe_total_fc': cc['importeInicial'],
+                    'importe_total_ndc': cc.get('importeTotalNotasDC'),
+                    'importe_cancelado': cc.get('importeTotalCancelado'),
+                    'importe_tot_ret_pes': cc.get('importeTotalRetPesos'),
+                    'importe_embargo_pes': cc.get('importeEmbargoPesos'),
+                    'saldo': cc['saldo'],
+                    'saldo_aceptado': cc.get('saldoAceptado'),
+                    'cod_moneda': cc['codMoneda'],
+                    'ctz_moneda_ult': cc['cotizacionMonedaUlt'],
+                    }
+                self.ctas_ctes.append(cta_cte)
+        return len(self.ctas_ctes)
+
+
+    @inicializar_y_capturar_excepciones
+    def ConsultarComprobantes(self, cuit_contraparte=None, rol="Receptor",
+                          fecha_desde=None, fecha_hasta=None, fecha_tipo="Emision",
+                          cod_tipo_cmp=None, estado_cmp=None, cod_cta_cte=None, estado_cta_cte=None):
+        """Obtener información sobre los comprobantes Emitidos y Recibidos
+
+        Args:
+            cuit_contraparte (str): Cuit de la contraparte, que ocupa el rol opuesto (CUITContraparte)
+            rol (str): Identificar la CUIT Representada que origina la cuenta corriente (rolCUITRepresentada)
+                "Emisor" o "Receptor"
+            fecha_desde (str): Fecha Desde, si no se indica se usa "2019-01-01"
+            fecha_hasta (str): Fecha Hasta, si no se indica se usa la fecha de hoy
+            fecha_tipo (str): permite determinar sobre qué fecha vamos a hacer el filtro (TipoFechaSimpleType)
+                "Emision": Fecha de Emisión
+                "PuestaDispo": Fecha puesta a Disposición
+                "VenPago": Fecha vencimiento de pago
+                "VenAcep": Fecha vencimiento aceptación
+                "Acep": Fecha aceptación
+                "InfoAgDptoCltv": Fecha informada a Agente de Deposito
+            cod_tipo_cmp (int): Código del Tipo de comprobante
+            estado_cmp (str): Estado del comprobante
+                "PendienteRecepcion", "Recepcionado", "Aceptado", "Rechazado", "InformadaAgDpto"
+            cod_cta_cte (int): Código de la Cuenta Corriente
+            estado_cta_cte (str): Estado de la cuenta corriente a consultar
+                "Modificable", "Aceptada", "Rechazada", "CanceladaTotal", "InformadaAgDpto"        
+
+        Returns:
+            int: cantidad de comprobantes que coinciden con el filtro de búsqueda
+        """
+        if not fecha_desde:
+            fecha_desde = datetime.datetime.today().strftime("2019-01-01")
+        if not fecha_hasta:
+            fecha_hasta = datetime.datetime.today().strftime("%Y-%m-%d")
+        response = self.client.consultarComprobantes(
+                            authRequest={
+                                'token': self.Token, 'sign': self.Sign,
+                                'cuitRepresentada': self.Cuit,
+                            },
+                            CUITContraparte=cuit_contraparte,
+                            rolCUITRepresentada=rol,
+                            fecha={
+                                'desde': fecha_desde, 
+                                'hasta': fecha_hasta, 
+                                'tipo': fecha_tipo
+                            },
+                            codTipoCmp=cod_tipo_cmp,
+                            estadoCmp=estado_cmp,
+                            codCtaCte=cod_cta_cte,
+                            estadoCtaCte=estado_cta_cte,
+                        )
+        ret = response.get('consultarCmpReturn')
+        self.comprobantes = []
+        if ret:
+            self.__analizar_errores(ret)
+            self.__analizar_observaciones(ret)
+            self.__analizar_evento(ret)
+            #import dbg ; dbg.set_trace()
+            array = ret.get('arrayComprobantes', [])
+            for c in [it['comprobante'] for it in array]:
+                cbte = {
+                    'cod_cta_cte': c['codCtaCte'], 
+                    'tipo_cbte': c['codTipoCmp'], 
+                    'punto_vta': c['ptovta'], 
+                    'cbte_nro': c['nroCmp'],
+                    'cuit_emisor': c['cuitEmisor'], 
+                    'cuit_receptor': c['cuitReceptor'], 
+                    'razon_social_emi': c.get('razonSocialEmi'), 
+                    'razon_social_recep': c['razonSocialRecep'],
+                    'cbu_emisor': c.get('CBUEmisor'),
+                    'datos_comerciales': c.get('datosComerciales'),
+                    'cbu_pago': c.get('CBUdePago'),
+                    'alias_emisor': c.get('AliasEmisor'),
+                    'es_post_aceptacion': c.get('esPostAceptacion'), 
+                    'moneda_id': c.get('codMoneda'), 
+                    'moneda_ctz': c.get('cotizacionMoneda'), 
+                    'tipo_cod_auto': c.get('tipoCodAuto'), 
+                    'cod_autorizacion': c.get('codAutorizacion'), 
+                    'datos_generales': c.get('datos_generales'),
+                    'fecha_emision': c.get('fechaEmision'), 
+                    'fecha_hora_acep': c.get('fechaHoraAcep'), 
+                    'fecha_venc_acep': c.get('fechaVenAcep'),
+                    'id_pago_ag_dpto_cltv': c.get('idPagoAgDptoCltv'),
+                    'tipo_acep': c.get('tipoAcep'),
+                    'es_anulacion': c.get('esAnulacion'), 
+                    'fecha_venc_pago': c.get('fechaVenPago'), 
+                    'estado': c['estado']['estado'],
+                    'fecha_hora_estado': c['estado']['fechaHoraEstado'],  
+                    'fecha_puesta_dispo': c.get('fechaPuestaDispo'), 
+                    'referencias_comerciales': [ref['texto'] for ref in c.get('referenciasComerciales', [])], 
+                    'imp_total': c.get('importeTotal'), 
+                    'leyenda_comercial': c.get('leyendaComercial'), 
+                    'fecha_info_ag_dpto_cltv': c.get('fechaInfoAgDptoCltv'), 
+                    'info_ag_dtpo_cltv': c.get('infoAgDtpoCltv'),
+                    'motivos_rechazo': [{
+                        'desc': mot['descMotivo'], 
+                        'justificacion': mot['justificacion'],
+                        'cod_motivo': mot['codMotivo'],
+                        } for mot in [arr['motivoRechazo'] for arr in c.get('arrayMotivosRechazo', [])]], 
+                    'items': [{
+                        'orden': item.get('orden'), 
+                        'ds': item.get('descripcion'), 
+                        'codigo': item.get('codigo'), 
+                        'umed': item.get('codigoUnidadMedida'), 
+                        'cantidad': item.get('cantidad'), 
+                        'precio': item.get('precioUnitario'), 
+                        'importe': item.get('importeItem'), 
+                        'importe_bonif': item.get('importeBonificacion'), 
+                        'ncm': item.get('codNomMercosur'), 
+                        'iva_id': item.get('codigoCondicionIVA'), 
+                        'imp_iva': item.get('importeIVA'), 
+                        'u_mtx': item.get('unidadesMtx'), 
+                        'cod_mtx': item.get('codigoMtx'),
+                        } for item in [arr['item'] for arr in c.get('arrayItems', [])]],
+                    'subtotales_iva': [{
+                        'base_imp': iva['baseImponible'], 
+                        'iva_id': iva['codigo'], 
+                        'importe': iva['importe'],
+                        } for iva in [arr['subtotalIVA'] for arr in c.get('arraySubtotalesIVA', [])]],
+                    'tributos': [{
+                        'tributo_id': trib.get('codigo'), 
+                        'base_imp': trib.get('baseImponible'),
+                        'importe': trib.get('importe'),
+                        'detalle': trib.get('detalle'),
+                        } for trib in [arr['otroTributo'] for arr in c.get('arrayOtrosTributos', [])]],
+                    'cbtes_asoc': [{
+                        'cuit': cbte_asoc['CUITEmisor'],
+                        'tipo': cbte_asoc['codTipoCmp'], 
+                        'pto_vta': cbte_asoc['ptoVta'],
+                        'nro': cbte_asoc['nroCmp'],
+                        } for cbte_asoc in ([c['idComprobanteAsociado']] if 'idComprobanteAsociado' in c else [])],
+                }
+                self.comprobantes.append(cbte)
+        return len(self.comprobantes)
+
+
+    @inicializar_y_capturar_excepciones
+    def LeerCampoComprobante(self, pos=0, *campos):
+        """Leer un campo del comprobante devuelto por ConsultarComprobantes
+
+        Args:
+            pos (int): posición del comprobante (0 a n)
+            campos (int o str): clave string (dict) o una posición int (list)
+
+        Returns:
+            str: valor del campo del comprobante
+        """
+        ret = self.comprobantes[pos]
+        for campo in campos:
+            if isinstance(ret, dict) and isinstance(campo, basestring):
+                ret = ret.get(campo)
+            elif isinstance(ret, list) and len(ret) > campo:
+                ret = ret[campo]
+            else:
+                self.Excepcion = u"El campo %s solicitado no existe" % campo
+                ret = None
+            if ret is None:
+                break
+        return str(ret)
+
 
 # busco el directorio de instalación (global para que no cambie si usan otra dll)
 if not hasattr(sys, "frozen"): 
@@ -444,6 +782,171 @@ elif sys.frozen=='dll':
 else:
     basepath = sys.executable
 INSTALL_DIR = WSFECred.InstallDir = get_install_dir()
+
+
+FORMATOS = {
+    "encabezado": [
+        ('tipo_reg', 1, N),
+        ("cuit_emisor", 11, N),
+        ("tipo_cbte", 3, N),
+        ("punto_vta", 11, N),
+        ("nro_cbte", 8, N),
+        ("cod_moneda", 3, A),
+        ("ctz_moneda_ult", 18, I, 6),
+        ("importe_cancelado", 17, I, 2),
+        ("importe_embargo_pesos", 17, I, 2),
+        ("importe_total_ret_pesos", 17, I, 2),
+        ("saldo_aceptado", 17, I, 2),
+        ("tipo_cancelacion", 3, A),
+        ("resultado", 1, A),
+        ("cod_cta_cte", 17, N),
+        ('obs', 1000, A),
+        ('err_code', 6, A),
+        ('err_msg', 1000, A),
+        ],
+    "formas_cancelacion": [
+            ('tipo_reg', 1, N),
+            ("codigo", 5, N),
+            ("descripcion", 100, A),
+        ],
+    "retenciones": [
+            ('tipo_reg', 1, N),
+            ("cod_tipo", 5, N),
+            ("porcentaje", 5, I),
+            ("importe", 17, I),
+            ("desc_motivo", 250, A),
+        ],
+    "ajuste_operacion": [
+            ('tipo_reg', 1, N),
+            ("codigo", 5, N),
+            ("importe", 17, I),
+        ],
+    "confirmar_nota_dc": [
+            ('tipo_reg', 1, N),
+            ("cuit_emisor", 11, N),
+            ("tipo_cbte", 3, N),
+            ("punto_vta", 11, N),
+            ("nro_cbte", 8, N),
+            ("acepta", 1, A),               # S/N
+        ],
+    "motivo_rechazo": [
+            ('tipo_reg', 1, N),
+            ("cod_motivo", 5, N),
+            ("desc", 250, A),
+            ("justificacion", 250, A),
+        ],
+    "obligado": [
+            ('tipo_reg', 1, A),
+            ("resultado", 1, A),
+            ("monto_desde", 19, I),
+        ],
+    "cta_cte": [
+            ('tipo_reg', 1, A),
+            ("cod_cta_cte", 17, N),
+            ('estado_cta_cte', 20, A),
+            ('fecha_hora_estado', 19, A),
+            ("cuit_emisor", 11, N),
+            ("tipo_cbte", 3, N),
+            ("punto_vta", 11, N),
+            ("nro_cbte", 8, N),
+            ("importe_total_fc", 19, I, 2),
+            ("importe_cancelado", 19, I, 2),
+            ("importe_total_ndc", 19, I, 2),
+            ("importe_tot_ret_pes", 19, I, 2),
+            ("importe_embargo_pes", 19, I, 2),
+            ("saldo_aceptado", 19, I, 2),
+            ("saldo", 19, I, 2),
+            ("cod_moneda", 3, A),
+            ("ctz_moneda_ult", 18, I, 6),
+        ],
+    "comprobante": [
+            ('tipo_reg', 1, A),
+            ("cod_cta_cte", 17, N),
+            ('estado', 20, A),
+            ('fecha_hora_estado', 19, A),
+            ('fecha_emision', 19, A),
+            ("cuit_emisor", 11, N),
+            ("tipo_cbte", 3, N),
+            ("punto_vta", 11, N),
+            ("cbte_nro", 8, N),
+            ("imp_total", 19, I, 2),
+            ("moneda_id", 3, A),
+            ("moneda_ctz", 18, I, 6),
+            ("cod_autorizacion", 20, A),
+            ("es_anulacion", 1, A),
+            ("es_post_aceptacion", 1, A),
+            ("fecha_puesta_dispo", 19, A),
+            ("fecha_venc_acep", 19, A),
+            ("tipo_acep", 1, A),
+            ('fecha_venc_pago', 19, A),
+            ("cbu_pago", 22, A),
+            ("alias_emisor", 40, A),
+            ("datos_comerciales", 250, A),
+            ("datos_generales", 250, A),
+            ("leyenda_comercial", 250, A),
+            ("info_ag_dtpo_cltv", 1, A),
+            ("fecha_info_ag_dpto_cltv", 19, A),
+            ("razon_social_emi", 30, A),
+            ("razon_social_recep", 30, A),
+        ],
+    "subtotales_iva": [
+            ('tipo_reg', 1, A),
+            ('iva_id', 16, N),
+            ('base_imp', 15, I, 2),
+            ('importe', 15, I, 2),
+        ],
+    "cbtes_asoc": [
+            ('tipo_reg', 1, A),
+            ('tipo', 3, N), ('pto_vta', 4, N),
+            ('nro', 8, N),
+            ('fecha', 8, N),
+            ('cuit', 11, N),
+        ],
+    "tributos": [
+            ('tipo_reg', 1, A),
+            ('tributo_id', 16, N),
+            ('base_imp', 15, I, 2),
+            ('alic', 15, I, 2),
+            ('importe', 15, I, 2),
+            ('detalle', 100, A),
+        ],
+    "motivos_rechazo": [
+            ('tipo_reg', 1, A),
+            ('cod_motivo', 16, N),
+            ('desc', 100, A),
+            ('justificacion', 100, A),
+        ],
+    'items': [
+            ('tipo_reg', 1, A),
+            ('u_mtx', 10, N),
+            ('cod_mtx', 30, A),
+            ('codigo', 30, A),
+            ('qty', 15, I, 3),
+            ('umed', 3, N),
+            ('precio', 15, I, 3),
+            ('bonif', 15, I, 3),
+            ('iva_id', 3, N),
+            ('imp_iva', 15, I, 2),
+            ('imp_subtotal', 15, I, 2),
+            ('ds', 4000, A),
+        ],
+   }
+REGISTROS = {
+    "0": "encabezado",
+    "1": "formas_cancelacion",
+    "2": "retenciones",
+    "3": "ajuste_operacion",
+    "4": "confirmar_nota_dc",
+    "5": "motivo_rechazo",
+    "O": "obligado",
+    "C": "cta_cte",
+    "c": "comprobante",
+    "s": "subtotales_iva",
+    "a": "cbtes_asoc",
+    "t": "tributos",
+    "i": "items",
+    "m": "motivos_rechazo",
+    }
 
 
 if __name__ == '__main__':
@@ -485,7 +988,7 @@ if __name__ == '__main__':
         if config.has_option('WSFECred','URL') and not HOMO:
             wsfecred_url = config.get('WSFECred','URL')
         else:
-            wsfecred_url = WSDL[HOMO]
+            wsfecred_url = None
 
         if config.has_section('DBF'):
             conf_dbf = dict(config.items('DBF'))
@@ -530,34 +1033,154 @@ if __name__ == '__main__':
             ret = wsfecred.ConsultarMontoObligadoRecepcion(cuit_consultar)
             print "Obligado:", wsfecred.Resultado
             print "Monto Desde:", ret
+            reg = {"obligado": [{"resultado": wsfecred.Resultado, "monto_desde": ret}]}
+            grabar_txt(FORMATOS, REGISTROS, SALIDA, [reg])
 
         if '--ctasctes' in sys.argv:
             try:
-                cuit_contraparte = int(sys.argv[sys.argv.index("--ctasctes") + 1])
-            except IndexError, ValueError:
-                cuit_contraparte = None
-            ret = wsfecred.ConsultarCtasCtes(cuit_contraparte, rol="Emisor")
+                argv = dict(enumerate(sys.argv[sys.argv.index("--ctasctes"):]))
+                cuit_contraparte = argv.get(1)
+                rol = argv.get(2, "Emisor")
+                fecha_desde = argv.get(3)
+                fecha_hasta = argv.get(4)
+                fecha_tipo= argv.get(5, "Emision")
+            except (IndexError, ValueError) as ex:
+                raise RuntimeError("Revise los parámetros: %s" % ex)
+            ret = wsfecred.ConsultarCtasCtes(cuit_contraparte, rol, fecha_desde, fecha_hasta, fecha_tipo)
             print "Observaciones:", wsfecred.Obs
-            import pprint
-            for cc in ret:
-                pprint.pprint(cc)
+            formato = FORMATOS["cta_cte"]
+            print tabular(wsfecred.ctas_ctes, formato)
+            regs = {"cta_cte": [cta_cte for cta_cte in wsfecred.ctas_ctes]}
+            grabar_txt(FORMATOS, REGISTROS, SALIDA, [regs])
+            generar_csv(wsfecred.ctas_ctes, formato)
+            if ret:
+                assert wsfecred.LeerCampoCtaCte(0, 'cod_cta_cte')
+
+        if '--ctacte' in sys.argv:
+            try:
+                argv = dict(enumerate(sys.argv[sys.argv.index("--ctacte"):]))
+                if len(argv) == 2:
+                    cod_cta_cte = argv.get(1)
+                    cuit_emisor = tipo_cbte = punto_vta = nro_cbte = None
+                else:
+                    cod_cta_cte = None
+                    cuit_emisor = argv.get(1)
+                    tipo_cbte = argv.get(2)
+                    punto_vta = argv.get(3)
+                    nro_cbte = argv.get(4)
+            except (IndexError, ValueError) as ex:
+                raise RuntimeError("Revise los parámetros: %s" % ex)
+            ret = wsfecred.ConsultarCtaCte(cuit_emisor, tipo_cbte, punto_vta, nro_cbte, cod_cta_cte)
+            print "Observaciones:", wsfecred.Obs
+            formato = FORMATOS["cta_cte"]
+            print tabular(wsfecred.ctas_ctes, formato)
+            regs = {"cta_cte": [cta_cte for cta_cte in wsfecred.ctas_ctes]}
+            grabar_txt(FORMATOS, REGISTROS, SALIDA, [regs])
+            generar_csv(wsfecred.ctas_ctes, formato)
+            if ret:
+                assert wsfecred.LeerCampoCtaCte(0, 'cod_cta_cte')
+
+        if '--comprobantes' in sys.argv:
+            cuit_contraparte = None
+            desde = "2020-01-01"
+            hasta = "2020-03-31"
+            rol = "Emisor"
+            try:
+                rol = sys.argv[sys.argv.index("--comprobantes") + 1]
+                desde = sys.argv[sys.argv.index("--comprobantes") + 2]
+                hasta = sys.argv[sys.argv.index("--comprobantes") + 3]
+                cuit_contraparte = int(sys.argv[sys.argv.index("--comprobantes") + 4])
+            except IndexError, ValueError:
+                pass
+            ret = wsfecred.ConsultarComprobantes(cuit_contraparte, fecha_desde=desde, fecha_hasta=hasta, rol=rol)
+            print "Observaciones:", wsfecred.Obs
+            formato = FORMATOS["comprobante"]
+            claves = [fmt[0] for fmt in formato]
+            print tabular(wsfecred.comprobantes, formato)
+            regs = []
+            for cbte in wsfecred.comprobantes:
+                r = {}
+                regs.append({"comprobante": [r]})
+                for k in cbte:
+                    if k in claves:
+                        r[k] = cbte[k]
+                    if k in FORMATOS:
+                        regs[-1][k] = cbte[k]
+            if DEBUG:
+                import pprint
+                pprint.pprint(regs)
+            grabar_txt(FORMATOS, REGISTROS, SALIDA, regs)
+            generar_csv([r["comprobante"][0] for r in regs], formato)
+            if "--json" in sys.argv:
+                with open("wsfecred.json", "w") as f:
+                    json.dump(wsfecred.comprobantes, f, indent=4, default=str)
+            ## for cc in wsfecred.comprobantes:
+            ##    print cc
+            ##    print wsfecred.LeerCampoComprobante(0, 'cod_cta_cte')
 
         if '--prueba' in sys.argv:
             fec = dict(
-                cuit_emisor=30999999999,
-                tipo_cbte=201, punto_vta=99, nro_cbte=22,
+                cuit_emisor=20267565393,
+                tipo_cbte=201, punto_vta=4002, nro_cbte=27,
                 cod_moneda="PES", ctz_moneda_ult=1,
-                importe_cancelado=1000.00, importe_embargo_pesos=0.00, importe_total_ret_pesos=0.00,
+                importe_cancelado=1000.00, importe_embargo_pesos=0.00, importe_total_ret_pesos=1000.00,
                 saldo_aceptado=1000.00, tipo_cancelacion="TOT",
-                )
+                )    
+            fec['formas_cancelacion'] = [dict(codigo=2, descripcion="Transferencia Bancaria")]
+            fec['retenciones'] = [dict(cod_tipo=1, desc_motivo="Ret Prueba", importe=1000, porcentaje=1.00)]
+            fec['ajuste_operacion'] = [dict(codigo=1, importe=57.00)]
+            fec['confirmar_nota_dc'] = [dict(cuit_emisor=30999999999, tipo_cbte=202, punto_vta=99, nro_cbte=1, acepta="S")]
+            fec['motivo_rechazo'] = [dict(cod_motivo="6", desc="Falta de entrega", justificacion="prueba")]
+            grabar_txt(FORMATOS, REGISTROS, ENTRADA, [fec])
+            if "--json" in sys.argv:
+                with open("wsfecred.json", "w") as f:
+                    json.dump([fec], f, indent=4)
 
+        if '--cargar' in sys.argv:
+            fecs = leer_txt(FORMATOS, REGISTROS, ENTRADA)
+            fec = fecs[0]
             wsfecred.CrearFECred(**fec)
-            wsfecred.AgregarFormasCancelacion(codigo=2, descripcion="Transferencia Bancaria")
-            wsfecred.AceptarFECred()
+            for it in fec.get('formas_cancelacion', []):
+                wsfecred.AgregarFormasCancelacion(**it)
+            for it in fec.get('retenciones', []):
+                wsfecred.AgregarRetenciones(**it)
+            for it in fec.get('ajuste_operacion', []):
+                wsfecred.AgregarAjustesOperacion(**it)
+            for it in fec.get('confirmar_nota_dc', []):
+                wsfecred.AgregarConfirmarNotasDC(**it)
+            for it in fec.get('motivo_rechazo', []):
+                wsfecred.AgregarMotivoRechazo(**it)
 
+        if '--aceptar' in sys.argv:
+            wsfecred.AceptarFECred()
             print "Resultado", wsfecred.Resultado
             print "CodCtaCte", wsfecred.CodCtaCte
 
+        if '--rechazar' in sys.argv:
+            wsfecred.RechazarFECred()
+            print "Resultado", wsfecred.Resultado
+            print "CodCtaCte", wsfecred.CodCtaCte
+
+        if '--rechazar-ndc' in sys.argv:
+            wsfecred.RechazarNotaDC()
+            print "Resultado", wsfecred.Resultado
+            print "CodCtaCte", wsfecred.CodCtaCte
+
+        if '--informar-cancelacion-total' in sys.argv:
+            wsfecred.InformarCancelacionTotalFECred()
+            print "Resultado", wsfecred.Resultado
+            print "CodCtaCte", wsfecred.CodCtaCte
+
+        if '--grabar' in sys.argv:
+            fec['resultado'] = wsfecred.Resultado
+            fec['cod_cta_cte'] = wsfecred.CodCtaCte
+            fec['obs'] = wsfecred.Obs
+            fec['err_code'] = wsfecred.ErrCode
+            fec['err_msg'] = wsfecred.ErrMsg
+            grabar_txt(FORMATOS, REGISTROS, SALIDA, [fec])
+
+        if '--formato' in sys.argv:
+            formato_txt(FORMATOS, REGISTROS)
 
         # Recuperar parámetros:
 
