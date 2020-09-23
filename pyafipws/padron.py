@@ -18,7 +18,7 @@
 __author__ = "Mariano Reingart <reingart@gmail.com>"
 __copyright__ = "Copyright (C) 2014-2016 Mariano Reingart"
 __license__ = "GPL 3.0"
-__version__ = "1.08a"
+__version__ = "1.07e"
 
 
 import csv
@@ -75,7 +75,7 @@ class PadronAFIP():
 
     _public_methods_ = ['Buscar', 'Descargar', 'Procesar', 'Guardar',
                         'ConsultarDomicilios', 'Consultar', 'Conectar',
-                        'DescargarConstancia', 'MostrarPDF', 'BuscarCUIT', 
+                        'DescargarConstancia', 'MostrarPDF', 
                         "ObtenerTablaParametros",
                         ]
     _public_attrs_ = ['InstallDir', 'Traceback', 'Excepcion', 'Version',
@@ -286,37 +286,16 @@ class PadronAFIP():
         return len(filas)
 
     @inicializar_y_capturar_excepciones_simple
-    def BuscarCUIT(self, denominacion, limite=10):
-        "Busca por nombre, devuelve una lista con tipo y nro de documento"
-        sql = ("SELECT tipo_doc, nro_doc, denominacion "
-                            "FROM padron_fts WHERE denominacion MATCH ? "
-                            "LIMIT ?")
-        denominacion = denominacion.replace(" ", "*")
-        self.cursor.execute(sql, ["*{}*".format(denominacion), limite])
-        filas = self.cursor.fetchall()
-        return [dict(fila) for fila in filas]
-
-    @inicializar_y_capturar_excepciones_simple
-    def Guardar(self, tipo_doc, nro_doc, denominacion, cat_iva, direccion, 
-               email, imp_ganancias='NI', imp_iva='NI', monotributo='NI', 
-               integrante_soc='N', empleador='N'):
+    def Guardar(self, tipo_doc, nro_doc, denominacion, cat_iva, direccion, email):
         "Agregar o actualizar los datos del cliente"
         if self.Buscar(nro_doc, tipo_doc):
-            sql = ("UPDATE padron SET denominacion=?, cat_iva=?, email=?, "
-                    "imp_ganancias=?, imp_iva=?, monotributo=?, "
-                    "integrante_soc=?, empleador=? "
+            sql = ("UPDATE padron SET denominacion=?, cat_iva=?, email=? "
                     "WHERE tipo_doc=? AND nro_doc=?")
-            params = [denominacion, cat_iva, email, imp_ganancias, 
-                      imp_iva, monotributo, integrante_soc, empleador,
-                     tipo_doc, nro_doc]
+            params = [denominacion, cat_iva, email, tipo_doc, nro_doc]
         else:
             sql = ("INSERT INTO padron (tipo_doc, nro_doc, denominacion, "
-                    "cat_iva, email, imp_ganancias, imp_iva, monotributo, "
-                    "integrante_soc, empleador) "
-                    "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)")
-            params = [tipo_doc, nro_doc, denominacion, cat_iva, email,
-                      imp_ganancias, imp_iva, monotributo, 
-                      integrante_soc, empleador]
+                    "cat_iva, email) VALUES (?, ?, ?, ?, ?)")
+            params = [tipo_doc, nro_doc, denominacion, cat_iva, email]
         self.cursor.execute(sql, params)
         # agregar el domicilio solo si no existe:
         if direccion:

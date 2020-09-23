@@ -87,7 +87,6 @@ ENCABEZADO = [
     ('emision_tipo', 4, A),
     ('imp_subtotal', (15,3), I), 
     ('cat_iva', 2, N),
-    ('tipo_cbte', 3, N), ('punto_vta', 5, N),   # FCE
     ]
 
 DETALLE = [
@@ -139,12 +138,6 @@ TRIBUTO = [
     ('base_imp', (15, 3), I), 
     ('alic', 15, I), 
     ('importe', (15, 3), I), 
-    ]
-
-OPCIONAL = [
-    ('tipo_reg', 1, N), # 6: datos opcionales
-    ('opcional_id', 4, A),
-    ('valor', 250, A),
     ]
 
 DATO = [
@@ -247,7 +240,6 @@ def leer(fn="entrada.txt"):
                     'ivas': [],
                     'permisos': [],
                     'detalles': [],
-                    'opcionales': [],
                     'datos': [],
                 })
                 regs.append(reg)
@@ -271,10 +263,6 @@ def leer(fn="entrada.txt"):
                 tributo = leer_linea_txt(linea, TRIBUTO)
                 tributo['id'] = encabezado['id']
                 reg['tributos'].append(tributo)
-            elif str(linea[0])=='6':
-                opcional = leer_linea_txt(linea, OPCIONAL)
-                opcional['id'] = encabezado['id']
-                reg['opcionales'].append(opcional)
             elif str(linea[0])=='9':
                 dato = leer_linea_txt(linea, DATO)
                 dato['id'] = encabezado['id']
@@ -312,9 +300,6 @@ def escribir(regs, archivo):
         for it in reg.get('tributos', []):
             it['tipo_reg'] = 5
             f_salida.write(escribir_linea_txt(it, TRIBUTO))
-        for it in reg.get('opcionales', []):
-            it['tipo_reg'] = 6
-            f_salida.write(escribir_linea_txt(it, OPCIONAL))
         for it in reg.get('datos', []):
             it['tipo_reg'] = 9
             f_salida.write(escribir_linea_txt(it, DATO))

@@ -15,7 +15,7 @@
 __author__ = "Mariano Reingart (reingart@gmail.com)"
 __copyright__ = "Copyright (C) 2010-2015 Mariano Reingart"
 __license__ = "GPL 3.0"
-__version__ = "1.37e"
+__version__ = "1.37a"
 
 import datetime
 import os
@@ -78,7 +78,6 @@ ENCABEZADO = [
     ('emision_tipo', 4, A),
     ('fecha_serv_desde', 8, A), # opcional solo conceptos 2 y 3
     ('fecha_serv_hasta', 8, A), # opcional solo conceptos 2 y 3
-    ('tipo_cbte', 3, N), ('punto_vta', 5, N),
     ]
                    
 #DETALLE = [
@@ -111,8 +110,6 @@ CMP_ASOC = [
     ('tipo_reg', 1, N), # 3: comprobante asociado
     ('tipo', 3, N), ('pto_vta', 4, N),
     ('nro', 8, N), 
-    ('fecha', 8, N),
-    ('cuit', 11, N),
     ]
 
 OPCIONAL = [
@@ -214,7 +211,7 @@ def autorizar(ws, entrada, salida, informar_caea=False):
         raise RuntimeError("No se pudieron leer los registros de la entrada")
 
     # ajusto datos para pruebas en depuración (nro de cbte. / fecha)
-    if '--testing' in sys.argv:
+    if '--testing' in sys.argv and DEBUG:
         encabezado['punto_vta'] = 9998
         cbte_nro = int(ws.CompUltimoAutorizado(encabezado['tipo_cbte'], 
                                                encabezado['punto_vta'])) + 1
@@ -271,9 +268,6 @@ def autorizar(ws, entrada, salida, informar_caea=False):
                 'motivos_obs': ws.Obs,
                 'err_code': str(ws.ErrCode),
                 'err_msg': ws.ErrMsg,
-                'cbt_desde': ws.CbtDesde,
-                'cbt_hasta': ws.CbtHasta,
-                'fecha_cbte': ws.FechaCbte,
                 'reproceso': ws.Reproceso,
                 'emision_tipo': ws.EmisionTipo,
                 })
@@ -332,14 +326,13 @@ def escribir_facturas(encabezados, archivo, agrega=False):
 
 
 def depurar_xml(client, ruta="."):
-    if XML:
-        fecha = time.strftime("%Y%m%d%H%M%S")
-        f=open(os.path.join(ruta, "request-%s.xml" % fecha),"w")
-        f.write(client.xml_request)
-        f.close()
-        f=open(os.path.join(ruta, "response-%s.xml" % fecha),"w")
-        f.write(client.xml_response)
-        f.close()
+    fecha = time.strftime("%Y%m%d%H%M%S")
+    f=open(os.path.join(ruta, "request-%s.xml" % fecha),"w")
+    f.write(client.xml_request)
+    f.close()
+    f=open(os.path.join(ruta, "response-%s.xml" % fecha),"w")
+    f.write(client.xml_response)
+    f.close()
 
 if __name__ == "__main__":
     if '/ayuda' in sys.argv:
@@ -360,7 +353,7 @@ if __name__ == "__main__":
         sys.exit(0)
 
     if '/debug'in sys.argv:
-        DEBUG = True        
+        DEBUG = True
         print "VERSION", __version__, "HOMO", HOMO
 
     config = abrir_conf(CONFIG_FILE, DEBUG)
@@ -371,11 +364,8 @@ if __name__ == "__main__":
         entrada = sys.argv[sys.argv.index("/entrada")+1]
     else:
         entrada = config.get('WSFEv1','ENTRADA')
-    if '/salida' in sys.argv:
-        salida = sys.argv[sys.argv.index("/salida")+1]
-    else:
-        salida = config.get('WSFEv1','SALIDA')
-
+    salida = config.get('WSFEv1','SALIDA')
+    
     if config.has_option('WSAA','URL') and not HOMO:
         wsaa_url = config.get('WSAA','URL')
     else:
@@ -472,35 +462,26 @@ if __name__ == "__main__":
         from wsaa import WSAA
         wsaa = WSAA()
         ta = wsaa.Autenticar("wsfe", cert, privatekey, wsaa_url, proxy=proxy_dict, cacert=CACERT, wrapper=WRAPPER)
-        if DEBUG:
-            print(wsaa.DebugLog())
         if not ta:
             sys.exit("Imposible autenticar con WSAA: %s" % wsaa.Excepcion)
         ws.SetTicketAcceso(ta)
-        if DEBUG:
-            print "Ticket Acceso:", ta
-            print "Token:", ws.Token
-            print "Sign:", ws.Sign
                     
         if '/prueba' in sys.argv:
             # generar el archivo de prueba para la próxima factura
-            if '--fce' in sys.argv:
-                tipo_cbte = 201
-            else:
-                tipo_cbte = 1
+            tipo_cbte = 1
             punto_vta = 4002
             cbte_nro = ws.CompUltimoAutorizado(tipo_cbte, punto_vta)
             if not cbte_nro: cbte_nro=0
             cbte_nro=int(cbte_nro)
             fecha = datetime.datetime.now().strftime("%Y%m%d")
-            concepto = 3
-            tipo_doc = 80; nro_doc = "30500010912" if "--fce" in sys.argv else "50000000016"
+            concepto = 1
+            tipo_doc = 80; nro_doc = "30500010912"
             cbt_desde = cbte_nro + 1; cbt_hasta = cbte_nro + 1
-            imp_total = "1220000.00"; imp_tot_conc = "0.00"; imp_neto = "1000000.00"
-            imp_iva = "210000.00"; imp_trib = "10000.00"; imp_op_ex = "0.00"
-            fecha_cbte = fecha; fecha_venc_pago = fecha
+            imp_total = "122.00"; imp_tot_conc = "0.00"; imp_neto = "100.00"
+            imp_iva = "21.00"; imp_trib = "1.00"; imp_op_ex = "0.00"
+            fecha_cbte = fecha; fecha_venc_pago = None # fecha
             # Fechas del período del servicio facturado (solo si concepto = 1?)
-            fecha_serv_desde = fecha; fecha_serv_hasta = fecha
+            fecha_serv_desde = ""; fecha_serv_hasta = ""
             moneda_id = 'PES'; moneda_ctz = '1.000'
 
             ws.CrearFactura(concepto, tipo_doc, nro_doc, tipo_cbte, punto_vta,
@@ -509,13 +490,11 @@ if __name__ == "__main__":
                 fecha_serv_desde, fecha_serv_hasta, #--
                 moneda_id, moneda_ctz)
             
-            if tipo_cbte not in (1, 2, 6, 7, 201, 206, 211):
+            if tipo_cbte not in (1, 2, 6, 7):
                 tipo = 1
                 pto_vta = 2
                 nro = 1234
-                fecha = "20190601"
-                cuit = "20267565393"
-                ws.AgregarCmpAsoc(tipo, pto_vta, nro, cuit, fecha)
+                ws.AgregarCmpAsoc(tipo, pto_vta, nro)
             
             if '--proyectos' in sys.argv:
                 ws.AgregarOpcional(2, "1234")  # identificador del proyecto
@@ -538,20 +517,16 @@ if __name__ == "__main__":
                 ws.AgregarComprador(80, "30500010912", 99.99)
                 ws.AgregarComprador(80, "30999032083", 0.01)
 
-            # datos de compradores RG 4109-E bienes muebles registrables (%)
-            if '--fce' in sys.argv:
-                ws.AgregarOpcional(2101, "2850590940090418135201")
-
             tributo_id = 99
             desc = 'Impuesto Municipal Matanza'
             base_imp = 100
             alic = 1
-            importe = 10000
+            importe = 1
             ws.AgregarTributo(tributo_id, desc, base_imp, alic, importe)
 
             iva_id = 5 # 21%
-            base_imp = 1000000
-            importe = 210000
+            base_imp = 100
+            importe = 21
             ws.AgregarIva(iva_id, base_imp, importe) 
                         
             f_entrada = open(entrada,"w")
@@ -766,6 +741,3 @@ if __name__ == "__main__":
         if DEBUG:
             raise
         sys.exit(5)
-    finally:
-        if DEBUG:
-            print(ws.DebugLog())

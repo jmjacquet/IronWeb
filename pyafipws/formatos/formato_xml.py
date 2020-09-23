@@ -127,18 +127,9 @@ XML_FORMAT = {
                     'tipoasoc': int,
                     'ptovtaasoc': int,
                     'nroasoc': int,
-                    'cuit': int,
-                    'fecha': int,
                     },
                 }],
-
-            'opcionales': [{
-                'opcional': {
-                    'id': str,
-                    'valor': str,
-                    },
-                }],
-
+                
             'otrosdatosgenerales': str,
 
             'fechaservdesde': str,
@@ -243,21 +234,6 @@ MAP_TRIB = {
     'importe': 'importe',
     }
 
-# Mapeo de nombres ws vs facturador-plus (datos opcionales)
-MAP_OPCIONAL = {
-    'opcional_id': 'id',
-    'valor': 'valor',
-    }
-
-# Mapeo de nombres ws vs facturador-plus (comprobantes asociados)
-MAP_CBTE_ASOC = {
-    'cbte_tipo': 'tipoasoc',
-    'cbte_punto_vta': 'ptovtaasoc',
-    'cbte_nro': 'nroasoc',
-    'cbte_cuit': 'cuit',
-    'cbte_fecha': 'fecha',
-    }
-
 
 # Esqueleto XML básico simil facturador-plus
 XML_BASE = """\
@@ -295,12 +271,12 @@ def desserializar(xml):
             'ivas': [],
             'tributos': [],
             'permisos': [],
-            'cbtes_asoc': [],
-            'opcionales': [],
+            'cmps_asocs': [],
             }
         comp = dic_comprobante['comprobante']
         mapear(reg, comp, MAP_ENC)
         reg['forma_pago']= ''.join([d['formapago']['descripcion'] for d in comp['formaspago']])
+
 
         for detalles in comp['detalles']:
             det = detalles['detalle']
@@ -310,17 +286,9 @@ def desserializar(xml):
             iva = ivas['iva']
             reg['ivas'].append(mapear({}, iva, MAP_IVA))
 
-        for tributos in comp.get('tributos', []):
+        for tributos in comp['tributos']:
             tributo = tributos['tributo']
             reg['tributos'].append(mapear({}, tributo, MAP_TRIB))
-
-        for cbte_asocs in comp.get('cmpasociados', []):
-            cbte_asoc = cbte_asocs['cmpasociado']
-            reg['cbtes_asoc'].append(mapear({}, cbte_asoc, MAP_CBTE_ASOC))
-
-        for opcionales in comp.get('opcionales', []):
-            opcional = opcionales['opcional']
-            reg['opcionales'].append(mapear({}, opcional, MAP_OPCIONAL))
 
         regs.append(reg)
     return regs
@@ -348,12 +316,6 @@ def serializar(regs):
                 'tributos': [{
                     'tributo': mapear({}, trib, MAP_TRIB, swap=True),
                     } for trib in reg['tributos']],
-                'cmpasociados': [{
-                    'cmpasociado': mapear({}, iva, MAP_CBTE_ASOC, swap=True),
-                    } for iva in reg['cbtes_asoc']],
-                'opcionales': [{
-                    'opcional': mapear({}, iva, MAP_OPCIONAL, swap=True),
-                    } for iva in reg['opcionales']],
                 'ivas': [{
                     'iva': mapear({}, iva, MAP_IVA, swap=True),
                     } for iva in reg['ivas']],

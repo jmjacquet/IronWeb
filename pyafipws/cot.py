@@ -18,7 +18,7 @@
 __author__ = "Mariano Reingart (reingart@gmail.com)"
 __copyright__ = "Copyright (C) 2010 Mariano Reingart"
 __license__ = "LGPL 3.0"
-__version__ = "1.03a"
+__version__ = "1.02h"
 
 import os, sys, traceback
 from pysimplesoap.simplexml import SimpleXMLElement
@@ -43,7 +43,7 @@ class COT:
         'Version', 'Excepcion', 'Traceback', 'InstallDir',
         'CuitEmpresa', 'NumeroComprobante', 'CodigoIntegridad', 'NombreArchivo',
         'TipoError', 'CodigoError', 'MensajeError',
-        'NumeroUnico', 'Procesado', 'COT',
+        'NumeroUnico', 'Procesado',
         ]
         
     _reg_progid_ = "COT"
@@ -68,12 +68,12 @@ class COT:
         self.TipoError = self.CodigoError = self.MensajeError = ""
         self.CuitEmpresa = self.NumeroComprobante = ""
         self.NombreArchivo = self.CodigoIntegridad  = ""
-        self.COT = self.NumeroUnico = self.Procesado = ""
+        self.NumeroUnico = self.Procesado = ""
 
     def Conectar(self, url=None, proxy="", wrapper=None, cacert=None, trace=False):
         if HOMO or not url:
             url = URL
-        self.client = WebClient(location=url, trace=trace, cacert=cacert, proxy=proxy)
+        self.client = WebClient(location=url, trace=trace, cacert=cacert)
 
     def PresentarRemito(self, filename, testing=""):
         self.limpiar()
@@ -101,13 +101,8 @@ class COT:
                 self.CodigoIntegridad  = str(self.xml.codigoIntegridad)
                 if 'validacionesRemitos' in self.xml:
                     for remito in self.xml.validacionesRemitos.remito:
-                        try:
-                            cot = remito.cot
-                        except AttributeError:
-                            cot = ""
                         d = {
                             'NumeroUnico': str(remito.numeroUnico),
-                            'COT': str(cot),
                             'Procesado': str(remito.procesado),
                             'Errores': [],
                             }
@@ -139,7 +134,6 @@ class COT:
                 del self.remitos[0]
             self.NumeroUnico = remito['NumeroUnico']
             self.Procesado = remito['Procesado']
-            self.COT = remito['COT']
             self.errores = remito['Errores']
             return True
         else:
@@ -214,10 +208,9 @@ if __name__=="__main__":
     cot.Password = sys.argv[3]  # 23456
 
     if '--testing' in sys.argv:
-        #test_response = "cot_response_multiple_errores.xml"
+        test_response = "cot_response_multiple_errores.xml"
         #test_response = "cot_response_2_errores.xml"
         #test_response = "cot_response_3_sinerrores.xml"
-        test_response = "cot_respuesta_2019.xml"
     else:
         test_response = ""
 
@@ -232,10 +225,8 @@ if __name__=="__main__":
                 URL = arg
                 print "Usando URL:", URL
                 break
-
-    proxy = None if not "--proxy" in sys.argv else "user:pass@host:1234"
-
-    cot.Conectar(URL, trace='--trace' in sys.argv, cacert=CACERT, proxy=proxy)
+        
+    cot.Conectar(URL, trace='--trace' in sys.argv, cacert=CACERT)
     cot.PresentarRemito(filename, testing=test_response)
     
     if cot.Excepcion:
@@ -254,7 +245,6 @@ if __name__=="__main__":
     while cot.LeerValidacionRemito():
         print "Numero Unico:", cot.NumeroUnico
         print "Procesado:", cot.Procesado
-        print "COT:", cot.COT
         while cot.LeerErrorValidacion():
             print "Error Validacion:", "|", cot.CodigoError, "|", cot.MensajeError
 

@@ -19,7 +19,7 @@ http://www.sistemasagiles.com.ar/trac/wiki/FacturaElectronicaExportacion
 __author__ = "Mariano Reingart (reingart@gmail.com)"
 __copyright__ = "Copyright (C) 2011-2015 Mariano Reingart"
 __license__ = "GPL 3.0"
-__version__ = "1.10a"
+__version__ = "1.08f"
 
 import datetime
 import decimal
@@ -39,7 +39,6 @@ class WSFEXv1(BaseWS):
                         'GetParamIdiomas', 'GetParamUMed', 'GetParamIncoterms', 
                         'GetParamDstPais','GetParamDstCUIT', 'GetParamIdiomas',
                         'GetParamIncoterms', 'GetParamDstCUIT',
-                        'GetParamMonConCotizacion',
                         'GetParamPtosVenta', 'GetParamCtz', 'LoadTestXML',
                         'AnalizarXml', 'ObtenerTagXml', 'DebugLog', 
                         'SetParametros', 'SetTicketAcceso', 'GetParametro',
@@ -91,7 +90,7 @@ class WSFEXv1(BaseWS):
             nombre_cliente="", cuit_pais_cliente="", domicilio_cliente="",
             id_impositivo="", moneda_id="PES", moneda_ctz=1.0,
             obs_comerciales="", obs_generales="", forma_pago="", incoterms="", 
-            idioma_cbte=7, incoterms_ds=None, fecha_pago=None, **kwargs):
+            idioma_cbte=7, incoterms_ds=None, **kwargs):
         "Creo un objeto factura (interna)"
         # Creo una factura electronica de exportación 
 
@@ -108,7 +107,6 @@ class WSFEXv1(BaseWS):
                 'obs_comerciales': obs_comerciales,
                 'obs_generales': obs_generales,
                 'forma_pago': forma_pago,
-                'fecha_pago': fecha_pago, 
                 'incoterms': incoterms,
                 'incoterms_ds': incoterms_ds,
                 'tipo_expo': tipo_expo,
@@ -187,7 +185,6 @@ class WSFEXv1(BaseWS):
                         'Cbte_cuit': c['cbte_cuit'],
                     }} for c in f['cbtes_asoc']] or None,
                 'Forma_pago': f['forma_pago'],
-                'Fecha_pago': f['fecha_pago'],
                 'Incoterms': f['incoterms'],
                 'Incoterms_Ds': f['incoterms_ds'],
                 'Idioma_cbte':  f['idioma_cbte'],
@@ -506,37 +503,7 @@ class WSFEXv1(BaseWS):
         return ctz
     
     @inicializar_y_capturar_excepciones
-    def GetParamMonConCotizacion(self, fecha=None, sep="|"):
-        "Recupera el listado de monedas que tengan cotizacion de ADUANA"
-        if not fecha:
-            fecha = datetime.date.today().strftime("%Y%m%d")
-
-        ret = self.client.FEXGetPARAM_MON_CON_COTIZACION(
-            Auth={'Token': self.Token, 'Sign': self.Sign, 'Cuit': self.Cuit},
-            Fecha_CTZ=fecha)
-        result = ret['FEXGetPARAM_MON_CON_COTIZACIONResult']
-        self.__analizar_errores(result)
-     
-        mons = [] # monedas
-        for u in result['FEXResultGet']:
-            u = u['ClsFEXResponse_Mon_CON_Cotizacion']
-            try:
-                mon = {'id': u.get('Mon_Id'), 'ctz': u.get('Mon_ctz'), 
-                       'fecha': u.get('Fecha_ctz')}
-            except Exception, e:
-                print e
-                if u is None:
-                    # <ClsFEXResponse_UMed xsi:nil="true"/> WTF!
-                    mon = {'id':'', 'ctz':'','fecha':''}
-            mons.append(mon)
-        if sep:
-            return [("\t%(id)s\t%(ctz)s\t%(fecha)s\t"
-                      % it).replace("\t", sep) for it in mons]
-        else:
-            return mons
-
-    @inicializar_y_capturar_excepciones
-    def GetParamPtosVenta(self, sep="|"):
+    def GetParamPtosVenta(self):
         "Recupera el listado de los puntos de venta para exportacion y estado"
         ret = self.client.FEXGetPARAM_PtoVenta(
             Auth={'Token': self.Token, 'Sign': self.Sign, 'Cuit': self.Cuit},
@@ -547,8 +514,8 @@ class WSFEXv1(BaseWS):
         for pu in res:
             p = pu['ClsFEXResponse_PtoVenta']
             try:
-                r = {'nro': p.get('Pve_Nro'), 'baja': p.get('Pve_FchBaj'),
-                     'bloqueado': p.get('Pve_Bloqueado'), }
+                r = {'nro': u.get('Pve_Nro'), 'baja': u.get('Pve_FchBaj'),
+                     'bloqueado': u.get('Pve_Bloqueado'), }
             except Exception, e:
                 print e
             ret.append(r)
@@ -637,8 +604,8 @@ if __name__ == "__main__":
                 # Obtengo el último número de comprobante y le agrego 1
                 cbte_nro = int(wsfexv1.GetLastCMP(tipo_cbte, punto_vta)) + 1
                 fecha_cbte = datetime.datetime.now().strftime("%Y%m%d")
-                tipo_expo = 2 # tipo de exportación (ver tabla de parámetros)
-                permiso_existente = (tipo_cbte not in (20, 21) and tipo_expo==1) and "S" or ""
+                tipo_expo = 1 # tipo de exportación (ver tabla de parámetros)
+                permiso_existente = (tipo_cbte not in (20, 21) or tipo_expo!=1) and "S" or ""
                 print "permiso_existente", permiso_existente
                 dst_cmp = 203 # país destino
                 cliente = "Joao Da Silva"
@@ -646,11 +613,10 @@ if __name__ == "__main__":
                 domicilio_cliente = u"Rúa Ñ°76 km 34.5 Alagoas"
                 id_impositivo = "PJ54482221-l"
                 moneda_id = "DOL" # para reales, "DOL" o "PES" (ver tabla de parámetros)
-                moneda_ctz = "60.2980" # wsfexv1.GetParamCtz('DOL') <- no funciona
+                moneda_ctz = "8.00" # wsfexv1.GetParamCtz('DOL') <- no funciona
                 obs_comerciales = "Observaciones comerciales"
                 obs = "Sin observaciones"
                 forma_pago = "30 dias"
-                fecha_pago = fecha_cbte
                 incoterms = "FOB" # (ver tabla de parámetros)
                 incoterms_ds = "Flete a Bordo" 
                 idioma_cbte = 1 # (ver tabla de parámetros)
@@ -662,7 +628,7 @@ if __name__ == "__main__":
                         cliente, cuit_pais_cliente, domicilio_cliente, 
                         id_impositivo, moneda_id, moneda_ctz, 
                         obs_comerciales, obs, forma_pago, incoterms, 
-                        idioma_cbte, incoterms_ds, fecha_pago)
+                        idioma_cbte, incoterms_ds)
                 
                 # Agrego un item:
                 codigo = "PRO1"
@@ -791,9 +757,6 @@ if __name__ == "__main__":
             
         if "--ctz" in sys.argv:
             print wsfexv1.GetParamCtz('DOL')
-            
-        if "--monctz" in sys.argv:
-            print wsfexv1.GetParamMonConCotizacion()
             
         if "--ptosventa" in sys.argv:
             print wsfexv1.GetParamPtosVenta()

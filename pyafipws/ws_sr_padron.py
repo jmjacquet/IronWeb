@@ -18,16 +18,15 @@ Consulta de Padrón Constancia Inscripción Alcance 5 version 2.0
 __author__ = "Mariano Reingart <reingart@gmail.com>"
 __copyright__ = "Copyright (C) 2017 Mariano Reingart"
 __license__ = "GPL 3.0"
-__version__ = "1.03e"
+__version__ = "1.03b"
 
-import csv
 import datetime
 import decimal
 import json
 import os
 import sys
 
-from utils import inicializar_y_capturar_excepciones, BaseWS, get_install_dir, json_serializer, abrir_conf, norm, SoapFault
+from utils import inicializar_y_capturar_excepciones, BaseWS, get_install_dir, json_serializer, abrir_conf
 from ConfigParser import SafeConfigParser
 from padron import TIPO_CLAVE, PROVINCIAS
 
@@ -151,7 +150,6 @@ class WSSrPadronA4(BaseWS):
               if cat["idImpuesto"] in (20, 21) and cat["estado"] == "ACTIVO"]
         mt.sort(key=lambda cat: cat["idImpuesto"])
         self.analizar_datos(mt[0] if mt else {})
-        return True
 
     def analizar_datos(self, cat_mt):
         # intenta determinar situación de IVA:
@@ -295,35 +293,6 @@ def main():
         print "AppServerStatus", wssrpadron4.AppServerStatus
         print "DbServerStatus", wssrpadron4.DbServerStatus
         print "AuthServerStatus", wssrpadron4.AuthServerStatus
-
-    if '--csv' in sys.argv:
-        csv_reader = csv.reader(open("entrada.csv", "rU"), 
-                                dialect='excel', delimiter=",")
-        csv_writer = csv.writer(open("salida.csv", "w"), 
-                                dialect='excel', delimiter=",")
-        encabezado = next(csv_reader)
-        columnas = ["cuit", "denominacion", "estado", "direccion",
-                    "localidad", "provincia", "cod_postal",
-                    "impuestos", "actividades", "imp_iva", 
-                    "monotributo", "actividad_monotributo", 
-                    "empleador", "imp_ganancias", "integrante_soc"]
-        csv_writer.writerow(columnas)
-        
-        for fila in csv_reader:
-            cuit = (fila[0] if fila else "").replace("-", "")
-            if cuit.isdigit():
-                print "Consultando AFIP online...", cuit,
-                try:
-                    ok = padron.Consultar(cuit)
-                except SoapFault as e:
-                    ok = None
-                    if e.faultstring != "No existe persona con ese Id":
-                        raise
-                print 'ok' if ok else "error", padron.Excepcion
-                # domicilio posiblemente esté en Latin1, normalizar
-                csv_writer.writerow([norm(getattr(padron, campo, ""))
-                                     for campo in columnas])
-        sys.exit(0)
 
     try:
 

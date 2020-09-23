@@ -15,7 +15,7 @@
 __author__ = "Mariano Reingart (reingart@gmail.com)"
 __copyright__ = "Copyright (C) 2011 Mariano Reingart"
 __license__ = "GPL 3.0"
-__version__ = "1.28a"
+__version__ = "1.27d"
 
 import datetime
 import os
@@ -32,7 +32,6 @@ from utils import leer, escribir, leer_dbf, guardar_dbf, N, A, I, abrir_conf
 HOMO = wsfexv1.HOMO
 DEBUG = False
 XML = False
-TIMEOUT = 30
 CONFIG_FILE = "rece.ini"
 
 LICENCIA = """
@@ -81,7 +80,6 @@ if not '--pyfepdf' in sys.argv:
         ('excepcion', 100, A),
         ('err_code', 100, A),
         ('err_msg', 1000, A),
-        ('fecha_pago', 8, A),
         ]
 
     DETALLE = [
@@ -212,10 +210,6 @@ def escribir_factura(dic, archivo, agrega=False):
         for it in dic['permisos']:
             it['tipo_reg'] = TIPOS_REG[2]
             archivo.write(escribir(it, PERMISO))
-    if 'cbtes_asoc' in dic:    
-        for it in dic['cbtes_asoc']:
-            it['tipo_reg'] = TIPOS_REG[3]
-            archivo.write(escribir(it, CMP_ASOC))
 
     if '/dbf' in sys.argv:
         formatos = [('Encabezado', ENCABEZADO, [dic]), ('Permisos', PERMISO, dic.get('permisos', [])), ('Comprobante Asociado', CMP_ASOC, dic.get('cbtes_asoc', [])), ('Detalles', DETALLE, dic.get('detalles', []))]
@@ -268,9 +262,6 @@ if __name__ == "__main__":
     CACERT = config.has_option('WSFEXv1', 'CACERT') and config.get('WSFEXv1', 'CACERT') or None
     WRAPPER = config.has_option('WSFEXv1', 'WRAPPER') and config.get('WSFEXv1', 'WRAPPER') or None
 
-    if config.has_option('WSFEXv1', 'TIMEOUT'):
-        TIMEOUT = int(config.get('WSFEXv1', 'TIMEOUT'))
-
     if config.has_section('PROXY') and not HOMO:
         proxy_dict = dict(("proxy_%s" % k,v) for k,v in config.items('PROXY'))
         proxy_dict['proxy_port'] = int(proxy_dict['proxy_port'])
@@ -291,15 +282,13 @@ if __name__ == "__main__":
 
     if DEBUG:
         print "wsaa_url %s\nwsfexv1_url %s" % (wsaa_url, wsfexv1_url)
-        if proxy_dict: print "proxy_dict=",proxy_dict
-        print "timeout:", TIMEOUT
         print "Config_file:", CONFIG_FILE
         print "Entrada: ", entrada
         print "Salida:", salida
     
     try:
         ws = wsfexv1.WSFEXv1()
-        ws.Conectar("", wsfexv1_url, proxy=proxy_dict, cacert=CACERT, wrapper=WRAPPER, timeout=TIMEOUT)
+        ws.Conectar("", wsfexv1_url, cacert=CACERT, wrapper=WRAPPER)
         ws.Cuit = cuit
 
         if '/dummy' in sys.argv:
@@ -344,7 +333,7 @@ if __name__ == "__main__":
             # generar el archivo de prueba para la próxima factura
             f_entrada = open(entrada,"w")
 
-            tipo_cbte = 21 # FC Expo (ver tabla de parámetros)
+            tipo_cbte = 19 # FC Expo (ver tabla de parámetros)
             punto_vta = 7
             # Obtengo el último número de comprobante y le agrego 1
             cbte_nro = int(ws.GetLastCMP(tipo_cbte, punto_vta)) + 1
@@ -357,7 +346,7 @@ if __name__ == "__main__":
             domicilio_cliente = "Rua 76 km 34.5 Alagoas"
             id_impositivo = "PJ54482221-l"
             moneda_id = "DOL" # para reales, "DOL" o "PES" (ver tabla de parámetros)
-            moneda_ctz = 19.80
+            moneda_ctz = 8.02
             obs_comerciales = "Observaciones comerciales"
             obs = "Sin observaciones"
             forma_pago = "30 dias"
@@ -464,17 +453,6 @@ if __name__ == "__main__":
                moneda_id = raw_input("Id de moneda (DOL): ") or 'DOL'
             ctz = ws.GetParamCtz(moneda_id)
             print "Cotizacion: ", ctz
-            print ws.ErrMsg
-            sys.exit(0)
-
-        if '/monctz' in sys.argv:
-            i = sys.argv.index("/monctz")
-            if i+1<len(sys.argv):
-               fecha = sys.argv[i+1]
-            else:
-               fecha = raw_input("Fecha (AAAAMMDD): ") or None
-            ctz = ws.GetParamMonConCotizacion(fecha)
-            print "\n".join(ctz)
             print ws.ErrMsg
             sys.exit(0)
 
