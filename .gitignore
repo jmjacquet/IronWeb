@@ -2,7 +2,6 @@
 *.pyc
 *.log
 !generarI25.pyc
-errores.log
 static/*
 *.conf
 *.ini
@@ -10,3 +9,5 @@ static/*
 /node_modules
 /dist
 requirements.txt
+
+*.bkp
