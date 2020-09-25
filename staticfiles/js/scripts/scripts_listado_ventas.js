@@ -499,9 +499,14 @@ var tabla = $('#dataTables-cpb_venta').DataTable({
                             var email = value;
                             window.location.href = '/comprobantes/mandarEmail/'+id+'/?email='+email;
                         },
-                        function(){} ).set('labels', {ok:'Aceptar', cancel:'Cancelar'}).set('type', 'email');
+                        function() { alertify.errorAlert("¡Verifique la dirección de Email ingresada!") }
+                    ).set('labels', {ok:'Aceptar', cancel:'Cancelar'}).set('type', 'email');
                 }
-            }
+            },
+            error : function(message) {
+                     alertify.errorAlert("¡No se pudo validar la dirección de Email!");
+                     console.log(message);
+                  }
         });
         });
    

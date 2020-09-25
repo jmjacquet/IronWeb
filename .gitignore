@@ -10,3 +10,5 @@ static/*
 /node_modules
 /dist
 requirements.txt
+
+*.bkp
