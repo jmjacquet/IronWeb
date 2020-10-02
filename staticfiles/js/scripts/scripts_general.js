@@ -14,6 +14,11 @@ $(document).ready(function() {
    
      return abrir_modal('/usuarios/cambiar_password');
 });   
+
+ $('#prod_buscar_datos').click(function(){
+   
+     return abrir_modal('/productos/prod_buscar_datos');
+});   
     
   
 });
