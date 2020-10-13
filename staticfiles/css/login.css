@@ -74,3 +74,16 @@ body{
 .login .checkbox{font-size:13px;}
 
 }
+
+.input-group-addon {
+    padding: 4px 6px;
+    font-size: 12px;
+    font-weight: normal;
+    height: 25px;
+    text-align: center;
+    color: #fff;
+    background: #555555;
+    border-radius: 0px;
+    cursor: pointer;
+    border: 1px solid #cfcfd0;
+}
