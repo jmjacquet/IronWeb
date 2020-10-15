@@ -1074,3 +1074,10 @@ def generarCBS(request):
     except Exception as e:
         messages.error(request,u'%s (%s)' % (e.message, type(e)))
     return HttpResponseRedirect(reverse('principal'))
+
+
+@login_required 
+def prod_buscar_datos(request):           
+    form = BuscarProdDatos(None,request=request)          
+    variables = RequestContext(request, {'form':form})        
+    return render_to_response("productos/producto_datos.html", variables)        

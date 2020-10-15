@@ -333,3 +333,13 @@ class ImportarProductosForm(forms.Form):
 			if archivo.multiple_chunks():
 				self.add_error("archivo",u"El archivo es demasiado grande (%.2f MB)." % (archivo.size/(1000*1000),))
 		return self.cleaned_data
+
+from ingresos.forms import ProductoModelChoiceField
+class BuscarProdDatos(forms.Form):
+	productos_datos = ProductoModelChoiceField(queryset=prod_productos.objects.filter(baja=False),empty_label=None,required=False)	
+	def __init__(self, *args, **kwargs):
+		request = kwargs.pop('request', None)
+		super(BuscarProdDatos, self).__init__(*args, **kwargs)				
+		self.fields['productos_datos'].queryset = prod_productos.objects.filter(baja=False,empresa__id__in=empresas_habilitadas(request)).order_by('nombre')
+
+		

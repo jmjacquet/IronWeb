@@ -422,50 +422,30 @@ class PrePendWidgetBoton(Widget):
             u'</div>'
         ) % {'field': field, 'data': self.data,'tooltip':self.tooltip,'id': self.id})     
 
-# def digVerificador(num):
-#     lista = list(num)
-#     pares= lista[1::2]
-#     impares= lista[0::2]
+def digVerificador(num):
+    lista = list(num)
+    pares= lista[1::2]
+    impares= lista[0::2]
     
-#     totPares = 0
-#     totImpares = 0
+    totPares = 0
+    totImpares = 0
 
-#     for i in pares:
-#         totPares=totPares+int(i*3)
+    for i in pares:
+        totPares=totPares+int(i*3)
 
-#     for i in impares:
-#         totImpares=totImpares+int(i)
+    for i in impares:
+        totImpares=totImpares+int(i)
  
-#     final = totImpares+totPares
+    final = totImpares+totPares
 
-#     while (final > 9):
-#         cad=str(final)
-#         tot=0
-#         for i in cad:
-#             tot=tot+int(i)
-#         final=tot
+    while (final > 9):
+        cad=str(final)
+        tot=0
+        for i in cad:
+            tot=tot+int(i)
+        final=tot
 
-#     return final
-
-def digVerificador(codigo):
-        "Rutina para el cálculo del dígito verificador 'módulo 10'"
-        # http://www.consejo.org.ar/Bib_elect/diciembre04_CT/documentos/rafip1702.htm
-        # Etapa 1: comenzar desde la izquierda, sumar todos los caracteres ubicados en las posiciones impares.
-        codigo = codigo.strip()
-        if not codigo or not codigo.isdigit():
-            return ''
-        etapa1 = sum([int(c) for i,c in enumerate(codigo) if not i%2])
-        # Etapa 2: multiplicar la suma obtenida en la etapa 1 por el número 3
-        etapa2 = etapa1 * 3
-        # Etapa 3: comenzar desde la izquierda, sumar todos los caracteres que están ubicados en las posiciones pares.
-        etapa3 = sum([int(c) for i,c in enumerate(codigo) if i%2])
-        # Etapa 4: sumar los resultados obtenidos en las etapas 2 y 3.
-        etapa4 = etapa2 + etapa3
-        # Etapa 5: buscar el menor número que sumado al resultado obtenido en la etapa 4 dé un número múltiplo de 10. Este será el valor del dígito verificador del módulo 10.
-        digito = 10 - (etapa4 - (int(etapa4 / 10) * 10))
-        if digito == 10:
-            digito = 0
-        return str(digito)
+    return final
 
 
 def dictfetchall(cursor):

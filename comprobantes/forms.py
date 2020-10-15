@@ -185,6 +185,7 @@ class PtoVtaEditForm(forms.ModelForm):
 
 class DispoForm(forms.ModelForm):    
     tipo_forma_pago = forms.ModelChoiceField(label='FP x Defecto',queryset=cpb_tipo_forma_pago.objects.all(),empty_label='---')
+    tipo = forms.ChoiceField(label=u'Tipo Cuenta',required = True,choices=TIPO_CTA_DISPO)		
     class Meta:
             model = cpb_cuenta
             exclude = ['id','baja','empresa','modificable'] 

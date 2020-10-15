@@ -484,3 +484,10 @@ def chequear_email(request,id):
         return response
     except:
         HttpResponse('ERROR')
+
+
+def codbar(request):
+    cod = "272211991410600037040117046218920201016"
+    dv1= str(digVerificador(cod))   
+   
+    return HttpResponse(dv1)

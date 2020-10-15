@@ -248,11 +248,11 @@ function setear_FP(cta,fp,banco)
         if($("#id_importe_cpbs").val()){
         total_cpbs = parseFloat($("#id_importe_cpbs").val())};
 
-        if (total<=0){
-          alertify.errorAlert("¡El importe total debe ser mayor a cero!");
-           $("#GuardarRec").prop("disabled", false);
-           return false;
-        };
+        if (total==0){
+        alertify.errorAlert("¡El importe total debe ser distinto a cero!");
+         $("#GuardarRec").prop("disabled", false);
+         return false;
+      };
         if (total_cpbs>0){
           if (total!=total_cpbs){
             alertify.errorAlert("¡El importe total no coincide con los comprobantes seleccionados!");

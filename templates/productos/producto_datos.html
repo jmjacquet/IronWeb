@@ -1,0 +1,252 @@
+{% load static from staticfiles %}
+{% load bootstrap3 %}
+{% load i18n %}
+{% load humanize %}
+{% block extra_css %}
+  <link rel="stylesheet" href="{% static 'css/comprobantes.css'%}" type="text/css" >
+{% endblock %}
+<div class="modal-dialog modal-modal" style="width:500px;">
+  <div class="modal-content">
+    <div class="modal-wrapper">
+      <div data-dismiss="modal" class="close-modal"><button type="button" class="close" data-dismiss="modal" aria-hidden="true">x</button></div>
+      <div class="modal-head">BUSCAR DATOS PRODUCTOS</div>
+      <form method="post" class="login-form" accept-charset="UTF-8" role="form" id="cambio_pass">
+        <div class="modal-body">
+          <div class="col-xs-12">
+            {% csrf_token %}
+            <div class="row">
+              <div class="col-sm-12">{% bootstrap_field form.productos_datos show_label=False  %}</div>
+            </div>
+            
+              <div class="row">
+                <div class="col-xs-12">
+                  <table class="table table-user-information table-striped table-hover">
+                    <tbody>                      
+                      <tr>
+                        <td>Categoría:</td><td><strong>{{producto.categoria|default_if_none:'' }}</strong></td><td></td><td></td>
+                      </tr>
+                      <tr>
+                        <td>Tipo Producto:</td><td><strong>{{producto.get_tipo_producto_display|default_if_none:'' }}</strong></td><td>Mostrar en:</td><td><strong>{{ producto.get_mostrar_en_display|default_if_none:'' }}</strong></td>
+                      </tr>
+                      <tr>
+                        <td>Tasa IVA:</td><td><strong>{{ producto.tasa_iva|default_if_none:'' }}</strong></td><td>Unidad:</td><td><strong>{{ producto.get_unidad_display|default_if_none:'' }}</strong></td>
+                      </tr>
+                      <tr>
+                        <td>Llevar Stock:</td><td><strong><i class="fa {% if producto.llevar_stock %}fa-check text-success{% else %}fa-close text-danger{% endif %}"></i></strong></td>
+                        <td>Stock Negativo:</td><td><strong><i class="fa {% if producto.stock_negativo %}fa-check text-success{% else %}fa-close text-danger{% endif %}"></i></strong></td>
+                      </tr>
+                      <tr>
+                        <td>Descripción:</td><td colspan="3"><strong>{{producto.descripcion|default_if_none:'' }}</strong></td>
+                      </tr>
+                    </tbody>
+                  </table>
+                </div>
+              </div>
+              <div class="row">
+                <div class="col-xs-12 col-sm-5">
+                  <div class="titulo_detalle">Detalle Stock Disponible</div>
+                  <table id="dataTables-cpb_venta" class="table table-striped  table-hover table-no-bordered tabla_nueva nowrap ">
+                    <thead>
+                      <tr>
+                        <th class="text-center">Ubicación</th>
+                        <th class="text-right">P.Pedido</th>
+                        <th class="text-right">Stock</th>
+                        <th class="text-left">Unidad</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      {% for ps in prod_stock %}
+                        <tr>
+                          <td class="text-center texto_detalle">{{ ps.ubicacion}}</td>
+                          <td class="importe texto_detalle">{{ps.punto_pedido|default_if_none:0|floatformat:2}}</td>
+                          <td class="importe_total texto_detalle">{{ps.get_stock|default_if_none:0|floatformat:2}}</td>
+                          <td class="text-left texto_detalle">[{{ps.producto.get_unidad_display|default_if_none:''}}]</td>
+                        </tr>
+                      {% endfor %}
+                    </tbody>
+                  </table>
+                </div>
+                
+                <div class="col-xs-12 col-sm-7">
+                  <div class="titulo_detalle">Detalle Precios</div>
+                  <table id="dataTables-cpb_venta" class="table table-striped  table-hover table-no-bordered tabla_nueva nowrap ">
+                    <thead>
+                      <tr>
+                        <th class="text-center">Lista de Precio</th>
+                        <th class="text-right">P.Costo</th>
+                        <th class="text-right">P.CostoImp.</th>
+                        <th class="text-right">Coef.Gan.</th>
+                        <th class="text-right">P.Venta</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      {% for pp in prod_precios %}
+                        <tr>
+                          <td class="text-center texto_detalle">{{pp.lista_precios}}</td>
+                          <td class="importe texto_detalle">${{pp.precio_costo|default_if_none:0|floatformat:2}}</td>
+                          <td class="importe texto_detalle">${{pp.precio_cimp|default_if_none:0|floatformat:2}}</td>
+                          <td class="importe texto_detalle">{{pp.get_porc_gan|default_if_none:0|floatformat:2}}%</td>
+                          <td class="importe_total texto_detalle">${{pp.precio_venta|default_if_none:0|floatformat:2}}</td>
+                        </tr>
+                      {% endfor %}
+                    </tbody>
+                  </table>
+                </div>
+              </div>
+            
+            
+          </div>
+          
+        </div>
+        <div class="modal-buttons">
+          <div class="col-xs-12">
+            <div class="row">
+              <div class="col-xs-6">
+                <button data-dismiss="modal" class="btn pull-left btn-sm red-flamingo" type="button">
+                <i class="fa fa-times"></i>
+                Cerrar
+                </button>
+                
+                
+              </div>
+            </div>
+          </div>
+        </form>
+        
+      </div>
+  </div>
+
+<script type="text/javascript">
+  $("#id_productos_datos").chosen({
+      no_results_text: "Producto inexistente...",
+      placeholder_text_single:"Seleccione un Producto",
+      allow_single_deselect: true,
+      search_contains: true,
+      width:"100%",
+  });
+  $("#id_productos_datos").trigger("chosen:activate");
+
+  $("#id_productos_datos").change(function(){
+  var id =  $("#id_productos_datos").val();
+  if (id!='')
+    {
+          $.ajax({
+                data: {'id': id},
+                url: '/buscarDatosProd/',
+                type: 'get',
+                cache: true,          
+                beforeSend: function(){
+                $('#cargando').show();
+                },
+                complete: function(){
+                    $('#cargando').hide();
+                },
+                success : function(data) {
+                     
+                     if (data!='')
+                        {
+                          $("#apellido_y_nombre").text(data['apellido_y_nombre']); 
+                          $("#nro_doc").text(data['nro_doc']); 
+                          if (data['fecha_nac']==null){
+                            $("#fecha_nac").text(''); }
+                            else{
+                          $("#fecha_nac").text(moment(data['fecha_nac']).format("DD/MM/YYYY")); 
+                          }
+                          $("#legajo").text(data['legajo']); 
+                          $("#edad").text(data['edad']+' años'); 
+                          $("#telcel").text((data['telefono']||'')+' / '+(data['celular']||'')); 
+                          $("#email").text(data['email']); 
+                          $("#cod_postal").text(data['cod_postal']);
+                          $("#domicilio").text(data['domicilio']);
+                          $("#provincia").text(data['provincia']);
+                          $("#localidad").text(data['localidad']);
+                          $("#art").text(data['art']); 
+                          
+                          $("#empresa").text(data['empresa']); 
+                          if (data['empr_fingreso']==null){
+                            $("#empr_fingreso").text(''); 
+                          }else{
+                            $("#empr_fingreso").text(moment(data['empr_fingreso']).format("DD/MM/YYYY")); };
+                          $("#trab_cargo").text(data['trab_cargo']); 
+                          if (data['trab_fingreso']==null){
+                            $("#trab_fingreso").text(''); 
+                          }else{
+                          $("#trab_fingreso").text(moment(data['trab_fingreso']).format("DD/MM/YYYY")); };
+                          if (data['trab_fbaja']==null){
+                            $("#trab_fbaja").text(''); 
+                          }else{
+                          $("#trab_fbaja").text(moment(data['trab_fbaja']).format("DD/MM/YYYY"));}; 
+                          $("#trab_armas").text(data['trab_armas']); 
+                          $("#trab_tareas_dif").text(data['trab_tareas_dif']); 
+                          $("#trab_preocupac").text(data['trab_preocupac']); 
+                          if (data['trab_preocup_fecha']==null){
+                            $("#trab_preocup_fecha").text(''); 
+                          }else{
+                          $("#trab_preocup_fecha").text(moment(data['trab_preocup_fecha']).format("DD/MM/YYYY")); };
+                          $("#antig_empresa").text(data['antig_empresa']+' años'); 
+                          $("#antig_trabajo").text(data['antig_trabajo']+' años'); 
+                          
+                        }
+                        else{                 
+                          $("#apellido_y_nombre").text(''); 
+                          $("#nro_doc").text(''); 
+                          $("#fecha_nac").text('');
+                          $("#legajo").text('');
+                          $("#edad").text('');
+                          $("#telcel").text('');
+                          $("#email").text('');
+                          $("#art").text('');
+                          $("#cod_postal").text('');
+                          $("#domicilio").text('');
+                          $("#provincia").text('');
+                          $("#localidad").text('');
+                          $("#empresa").text(''); 
+                          $("#empr_fingreso").text(''); 
+                          $("#trab_cargo").text('');
+                          $("#trab_fingreso").text('');
+                          $("#trab_fbaja").text('');
+                          $("#trab_preocupac").text('');
+                          $("#trab_armas").text('');
+                          $("#trab_tareas_dif").text('');
+                          $("#trab_preocup_fecha").text('');
+                          $("#antig_empresa").text('');
+                          $("#antig_trabajo").text('');
+                        };
+
+                        
+                },
+                error : function(message) {
+                     /*alertify.alert('Búsqueda por CUIT','No se encontró el Proveedor.');*/
+                     console.log(message);
+                  }
+              });
+     
+    }else{                 
+            $("#apellido_y_nombre").text(''); 
+            $("#nro_doc").text(''); 
+            $("#fecha_nac").text('');
+            $("#legajo").text('');
+            $("#edad").text('');
+            $("#telcel").text('');
+            $("#email").text('');
+            $("#cod_postal").text('');
+            $("#domicilio").text('');
+            $("#provincia").text('');
+            $("#localidad").text('');
+            $("#art").text('');
+            $("#empresa").text(''); 
+            $("#empr_fingreso").text(''); 
+            $("#trab_cargo").text('');
+            $("#trab_fingreso").text('');
+            $("#trab_fbaja").text('');
+            $("#trab_armas").text('');
+            $("#trab_tareas_dif").text('');
+            $("#trab_preocup_fecha").text('');
+            $("#antig_empresa").text('');
+            $("#antig_trabajo").text('');
+            $("#trab_preocupac").text('');
+          };
+
+}); 
+</script>      
+</div>

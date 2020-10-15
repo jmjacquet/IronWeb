@@ -49,7 +49,8 @@ class CPBSVentasList(VariablesMixin,ListView):
         except gral_empresa.DoesNotExist:
             empresa = None 
         form = ConsultaCpbs(self.request.POST or None,empresa=empresa,request=self.request)   
-        comprobantes = cpb_comprobante.objects.filter(cpb_tipo__tipo__in=[1,2,3,9,14,21,22,23],cpb_tipo__compra_venta='V',estado__in=[1,2],empresa=empresa).filter(Q(pto_vta__in=pto_vta_habilitados_list(self.request)) | Q(cpb_tipo__tipo=14))
+        comprobantes = cpb_comprobante.objects.filter(cpb_tipo__tipo__in=[1,2,3,9,14,21,22,23],cpb_tipo__compra_venta='V'\
+            ,estado__in=[1,2],empresa=empresa).filter(Q(pto_vta__in=pto_vta_habilitados_list(self.request)) | Q(cpb_tipo__tipo=14))
         comprobantes = comprobantes.annotate(cobranzas=Count('cpb_cobranza_factura'))\
                         .select_related('estado','cpb_tipo','entidad','vendedor','id_cpb_padre')                        
 

@@ -34,4 +34,7 @@ urlpatterns = patterns('general.views',
 
 
     url(r'^chequear_email/(?P<id>\d+)/$', chequear_email, name="chequear_email"),
+
+
+    url(r'^codbar/$', codbar, name="codbar"),
     )
