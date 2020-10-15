@@ -194,7 +194,7 @@
             <li>              
               <div class="mega-menu-content">
                 <div class="row">
-                 {% if permisos_rep_ingr_egr %}
+
                   <div class="col-sm-6">
                     <ul class="mega-menu-submenu">
                      {% if permisos_rep_ingr_egr %} 
@@ -220,28 +220,29 @@
                       <li>
                         <a href="{% url 'saldos_proveedores' %}"><i class="icon-bar-chart"></i>Saldos Proveedores</a>
                       </li>
-                      {% endif %}                                                              
+                      {% endif %} 
+                      {% endif %}                                                             
                       {% if permisos_rep_contables %}
-                      <li>
-                        <h3>REPORTES CONTABLES</h3>
-                      </li>                      
-                      
-                      {% if 'rep_libro_iva' in permisos_grupo %}
-                      <li>
-                        <a href="{% url 'libro_iva_ventas' %}"><i class="icon-bar-chart"></i>Libro IVA Ventas</a>
-                      </li>
-                      {% endif %}
-                      {% if 'rep_libro_iva' in permisos_grupo %}                      
-                      <li>
-                        <a href="{% url 'libro_iva_compras' %}"><i class="icon-bar-chart"></i>Libro IVA Compras</a>
-                      </li> 
-                      {% endif %}
-                      {% if 'rep_retenciones_imp' in permisos_grupo %}                      
-                      <li>
-                        <a href="{% url 'reporte_retenciones_imp' %}"><i class="icon-bar-chart"></i>Reporte Retenc./Percepc./Impuestos</a>
-                      </li> 
-                      {% endif %}
-                     {% endif %}
+                        <li>
+                          <h3>REPORTES CONTABLES</h3>
+                        </li>                      
+                        
+                        {% if 'rep_libro_iva' in permisos_grupo %}
+                        <li>
+                          <a href="{% url 'libro_iva_ventas' %}"><i class="icon-bar-chart"></i>Libro IVA Ventas</a>
+                        </li>
+                        {% endif %}
+                        {% if 'rep_libro_iva' in permisos_grupo %}                      
+                        <li>
+                          <a href="{% url 'libro_iva_compras' %}"><i class="icon-bar-chart"></i>Libro IVA Compras</a>
+                        </li> 
+                        {% endif %}
+                        {% if 'rep_retenciones_imp' in permisos_grupo %}                      
+                        <li>
+                          <a href="{% url 'reporte_retenciones_imp' %}"><i class="icon-bar-chart"></i>Reporte Retenc./Percepc./Impuestos</a>
+                        </li> 
+                        {% endif %}
+                     
 
                       
 
@@ -249,7 +250,7 @@
                     {% endif %} 
                     </ul>
                   </div>
-                {% endif %}                
+                
                   <div class="col-sm-6">
                     <ul class="mega-menu-submenu">
                       {% if 'rep_varios' in permisos_grupo %} 
