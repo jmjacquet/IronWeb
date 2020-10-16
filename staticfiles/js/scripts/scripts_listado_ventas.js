@@ -466,7 +466,7 @@ var tabla = $('#dataTables-cpb_venta').DataTable({
                         $("#facturando").hide();
                     },
                      error : function(message) {
-                     alertify.errorAlert("¡No se pudo facturar!"+ '<br>'+observaciones);
+                     alertify.errorAlert("¡No se pudo comunicar con los servidores de AFIP!"+ '<br> (Pruebe nuevamente en unos minutos)');
                      console.log(message);                    
                      $("#facturando").hide();
                   }
