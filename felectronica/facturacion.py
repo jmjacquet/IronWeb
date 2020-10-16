@@ -738,4 +738,100 @@ def facturarAFIP(request,idCpb):
             
     return data
 
+def facturarAFIP_simulac(request,idCpb):        
+    
+    token = ''
+    sign = ''
+    cae = ''
+    fecha_vencimiento = ''
+    cpb_nro = ''
+    resultado = ''
+    motivo = ''
+    reproceso = ''
+    observaciones = ''
+    concepto = ''
+    tipo_cpb = ''
+    pto_vta = ''
+    fecha_cbte = ''
+    imp_total = ''
+    imp_tot_conc = ''
+    imp_neto = ''
+    imp_op_ex = ''
+    imp_trib = ''
+    imp_iva = ''
+    moneda_id = ''
+    moneda_ctz = ''
+    detalle = ''
+    ult_nro = ''
+    errores = ''
+        
+    data = {            
+        'token':token,
+        'sign':sign,
+        'cae': cae,
+        'fecha_vencimiento': fecha_vencimiento,
+        'cpb_nro':cpb_nro,
+        'resultado':resultado,
+        'motivo':motivo,
+        'reproceso':reproceso,
+        'observaciones' : observaciones,
+        'concepto':concepto,
+        'tipo_cbte': tipo_cpb,
+        'punto_vta':pto_vta,   
+        'fecha_cbte': fecha_cbte,
+        'imp_total': imp_total,
+        'imp_tot_conc': imp_tot_conc,
+        'imp_neto': imp_neto,
+        'imp_op_ex': imp_op_ex,
+        'imp_trib': imp_trib,
+        'imp_iva': imp_iva,    
+        'moneda_id': moneda_id,
+        'moneda_ctz': moneda_ctz,    
+        'detalle':detalle,
+        'ult_nro':ult_nro,
+        'excepcion':'',     
+        'traceback':'',
+        'XmlRequest':'',
+        'XmlResponse':'',
+        'appserver_status':'',
+        'dbserver_status':'',
+        'authserver_status':'',
+        'errores':errores,
+        }   
+    try:
+        cpb=cpb_comprobante.objects.get(pk=idCpb)
+    except:
+        cpb = None
 
+    if not cpb:
+        data['errores']=u'¡El comprobante no es válido!'
+        return data
+
+    resultado=validarAFIP(idCpb)
+    if resultado!='':
+        data['errores']=resultado
+        return data        
+      
+    cpb_nafip = cpb.get_nro_afip()
+    #Traigo el comprobante
+    try:
+        cpb_nafip = cpb.get_nro_afip()    
+        tipo_cpb = cpb_nafip     
+        pto_vta = int(cpb.pto_vta)
+        nro_cpb = int(cpb.numero)
+    except:
+        data['errores']=u'¡El comprobante no es válido!'
+        return data
+    
+    #Si el pto_vta no admite factura electrónica
+    if not cpb.get_pto_vta().fe_electronica:
+        data['errores']=u'¡El Punto de Venta seleccionado no admite factura electrónica!'
+        return data         
+
+    appserver_status = ''
+    dbserver_status = ''
+    authserver_status = ''
+    import time
+    time.sleep(25)
+    print data
+    return data

@@ -11,6 +11,7 @@ function abrir_modal(url) {
 $(document).ready(function() { 
 
 $("#facturando").hide();  
+
 $.fn.datepicker.dates['es'] = {
     days: ["Domingo", "Lunes", "Martes", "Miércoles", "Jueves", "Viernes", "Sábado", "Domingo"],
     daysShort: ["Dom", "Lun", "Mar", "Mié", "Jue", "Vie", "Sáb", "Dom"],
@@ -425,6 +426,7 @@ var tabla = $('#dataTables-cpb_venta').DataTable({
             'message': '¿Desea generar la Factura Electrónica (AFIP) del comprobante seleccionado?',
             transition: 'fade',
             'onok': function() {
+                $("#facturando").show();
                 $.ajax({
                     url: "/comprobantes/cpb_facturar_afip/",
                     type: 'get',
@@ -461,10 +463,12 @@ var tabla = $('#dataTables-cpb_venta').DataTable({
                         } else {
                             alertify.errorAlert("¡No se pudo facturar!"+ '<br>'+observaciones);
                         }
+                        $("#facturando").hide();
                     },
                      error : function(message) {
                      alertify.errorAlert("¡No se pudo facturar!"+ '<br>'+observaciones);
                      console.log(message);                    
+                     $("#facturando").hide();
                   }
                 });
             },
@@ -480,25 +484,7 @@ var tabla = $('#dataTables-cpb_venta').DataTable({
     
     $("a[name='btn_facturacion']", tabla.rows().nodes()).click(function() {
         var id = $(this).attr('value');
-        facturar(id);
-         // $("#facturando").show();
-         // $.ajax({
-         //            url: "/comprobantes/respuesta/",
-         //            type: 'get',
-         //            timeout: 10000,
-         //            dataType: 'json',                    
-         //            success: function(data) {
-         //              $("#facturando").hide();  
-         //              alertify.successAlert("¡Se facturó correctamente!", function() {
-         //                            location.reload();
-         //                        });
-         //            },
-         //             error : function(message) {
-         //             alertify.errorAlert("¡No se pudo facturar!");
-         //             console.log(message);
-         //             $("#facturando").hide();  
-         //          }
-         //        });
+        facturar(id);        
     });
 
 

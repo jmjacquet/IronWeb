@@ -520,7 +520,7 @@ def cpb_facturar(request,id,nro):
         return HttpResponseRedirect(cpb.get_listado())
     return HttpResponseRedirect(reverse('cpb_venta_listado'))
 
-from felectronica.facturacion import facturarAFIP,consultar_cae
+from felectronica.facturacion import facturarAFIP,consultar_cae,facturarAFIP_simulac
 
 @login_required 
 def cpb_facturar_afip(request):
@@ -531,6 +531,7 @@ def cpb_facturar_afip(request):
     except:
         cpb=None
     if cpb:
+        # respuesta = facturarAFIP_simulac(request,id)
         respuesta = facturarAFIP(request,id)
         estado = respuesta.get('resultado','')
         cae = respuesta.get('cae','')
