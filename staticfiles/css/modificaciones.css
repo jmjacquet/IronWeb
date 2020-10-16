@@ -151,7 +151,11 @@ textarea.form-control{height:auto}
 
 .cargando{position:absolute;left:0;top:0;bottom:0;right:0;background:#000;opacity:0.6;filter:alpha(opacity=80);z-index:1099;}
 .cargando-img{width:64px;height:64px;position:absolute;top:40%;left:45%;margin:-32px 0 0 -32px;}
-.cargando-txt{position:absolute;top:40%;left:50%;margin:-10px 0 0 -30px;color: white;font-weight: bold;}
+.cargando-txt{position:absolute;top:40%;left:50%;margin:-10px 0 0 -10px;color: white;font-weight: bold;}
+
+.facturando{position:absolute;left:0;top:0;bottom:0;right:0;background:#000;opacity:0.6;filter:alpha(opacity=80);z-index:1089;}
+.facturando-img{width:64px;height:64px;position:absolute;top:40%;left:45%;margin:-32px 0 0 -32px;}
+.facturando-txt{position:absolute;top:40%;left:50%;margin:-10px 0 0 -10px;color: white;font-weight: bold;}
 
 .logo a{
     margin: 0!important;

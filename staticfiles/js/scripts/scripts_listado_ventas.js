@@ -10,6 +10,8 @@ function abrir_modal(url) {
     }
 $(document).ready(function() { 
 
+$("#facturando").hide();  
+
 $.fn.datepicker.dates['es'] = {
     days: ["Domingo", "Lunes", "Martes", "Miércoles", "Jueves", "Viernes", "Sábado", "Domingo"],
     daysShort: ["Dom", "Lun", "Mar", "Mié", "Jue", "Vie", "Sáb", "Dom"],
@@ -424,9 +426,11 @@ var tabla = $('#dataTables-cpb_venta').DataTable({
             'message': '¿Desea generar la Factura Electrónica (AFIP) del comprobante seleccionado?',
             transition: 'fade',
             'onok': function() {
+                $("#facturando").show();
                 $.ajax({
                     url: "/comprobantes/cpb_facturar_afip/",
                     type: 'get',
+                    timeout: 30000,
                     dataType: 'json',
                     data: {
                         'id': id
@@ -457,9 +461,15 @@ var tabla = $('#dataTables-cpb_venta').DataTable({
                             }
                             ;
                         } else {
-                            alertify.errorAlert("¡No se pudo facturar!");
+                            alertify.errorAlert("¡No se pudo facturar!"+ '<br>'+observaciones);
                         }
-                    }
+                        $("#facturando").hide();
+                    },
+                     error : function(message) {
+                     alertify.errorAlert("¡No se pudo facturar!"+ '<br>'+observaciones);
+                     console.log(message);                    
+                     $("#facturando").hide();
+                  }
                 });
             },
             'oncancel': function() {
@@ -471,12 +481,11 @@ var tabla = $('#dataTables-cpb_venta').DataTable({
         alerta.show();
         return true;
     }    
+    
     $("a[name='btn_facturacion']", tabla.rows().nodes()).click(function() {
         var id = $(this).attr('value');
-        facturar(id);
+        facturar(id);        
     });
-
-
 
 
     $("a[name='mandarEmail']").click(function() {
