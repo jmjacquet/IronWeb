@@ -2205,23 +2205,31 @@ def verificar_existencia_cae(request):
             #Fecha Tipo  Punto de Venta  Número Desde  Número Hasta  Cód. Autorización Tipo Doc. Receptor  Nro. Doc. Receptor  
             # Denominación Receptor Tipo Cambio Moneda  Imp. Neto Gravado Imp. Neto No Gravado  Imp. Op. Exentas  IVA Imp. Total
 
-            next(reader) #Omito el Encabezado                            
+            next(reader) #Omito el Encabezado Gral                            
+            next(reader) #Omito el Encabezado de las columnas                           
             for index,line in enumerate(reader):                      
                 campos = line[0].split(";")               
+                fecha=campos[0].strip()
+                if fecha=='':
+                    fecha=None
+                else:
+                    fecha = datetime.strptime(fecha, "%d/%m/%Y").date()   #fecha_nacim             
+                tipo = campos[1].strip()
                 pv = campos[2].strip()
                 nro = campos[3].strip()
                 cae = campos[5].strip()
+                tdoc = campos[6].strip()
+                nrodoc = campos[7].strip()
+                receptor = campos[8].strip()
                 if nro=='':
                     continue #Salta al siguiente                    
                 
                 if cae not in listado_cae_sistema:
-                  listado_cae_faltantes.append(dict(cae=cae,pv=pv,nro=nro))
-
-                
+                  listado_cae_faltantes.append(dict(fecha=fecha,tipo=tipo,cae=cae,pv=pv,nro=nro,tdoc=tdoc,nrodoc=nrodoc,receptor=receptor))
                 
                 cant+=1                       
-            print listado_cae_faltantes
-            messages.success(request, u'Se importó el archivo con éxito!<br>(%s Comprobantes verificados)'% cant )            
+
+            messages.success(request, u'Se importó el archivo con éxito! (%s Comprobantes verificados)'% cant )            
             resultado = listado_cae_faltantes
     else:
         form = ImportarCPBSForm(None,None,request=request)

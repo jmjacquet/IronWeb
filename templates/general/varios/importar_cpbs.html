@@ -17,49 +17,57 @@
 {% endblock cargando %}
 {% block main %}                            
 <br>
-<div class="panel panel-primary panel_centrado">
-	<div class="panel-heading">
-           VERIFICAR CPBS INEXISTENTES segun CAE
-        </div>
-	<div class="panel-body ">
-	<div class="row">	
-	 	<div class="col-xs-12 ">
-		<fieldset>		
-			<form method="post" class="form abm" enctype="multipart/form-data" id="importador">
-			{% csrf_token %}
-			<div class="row">
-				<div class="col-xs-12">
-					{{ form.empresa|as_crispy_field }}
-				</div>
-			</div>
-			<div class="row">
-				<div class="col-xs-12 ">
-					<div class="col-sm-6">{{ form.archivo|as_crispy_field }}</div>										
-					<div class="col-sm-6"><button class="btn pull-right btn-primary" id="Procesar" type="button"><i class="fa fa-check"></i> Importar</button></div>
-				</div>
-			</div>
-		</fieldset>
-	 </div>
-	</div> 
+<div class="panel panel-primary">
+	<div class="portlet box toolbar_blue">
+        <div class="portlet-title">
+            <div class="caption bold"><i class="fa fa-print"></i>VERIFICAR CPBS INEXISTENTES segun CAE</div></div> 
+        </div> 
+    	 <div class="col-xs-12 ">
+    		<fieldset>		
+    			<form method="post" class="form abm" enctype="multipart/form-data" id="importador">
+    			{% csrf_token %}
+    			<div class="row">
+    				<div class="col-sm-3">
+    					{{ form.empresa|as_crispy_field }}
+    				</div>			
+    				<div class="col-sm-7 ">
+    					{{ form.archivo|as_crispy_field }}					
+    				</div>
+                    <div class="col-sm-2"><button class="btn btn-sm pull-right blue-steel" id="Procesar" type="button"><i class="fa fa-check"></i> Procesar</button></div>
+    			</div>
+    		</fieldset>
+    	 </div>
+     <br>
 	{% if resultado %} 
-	<br>
-	<div class="row">	
-	 	<div class="col-xs-12 ">
-			<table width="100%" id="dataTables-primary" class="table table-striped table-hover table-condensed table-no-bordered tabla_nueva">         
+	  <div class="col-sm-12 ">
+		<div class="btn-group btnAccion" style="float:left;margin-right:10px;margin-bottom:10px;">         
+            <a class="btn btn-sm blue-steel"  style="margin-right:10px;" href='#'>Generar Faltantes</a>                    
+        </div>   
+        <table width="100%" id="dataTables-primary" class="table table-striped table-hover table-condensed table-no-bordered tabla_nueva">         
             <thead>
                 <tr>
-                    <th width="15%">PV</th>
-                    <th width="15%">NRO</th>
-                    <th class="imprimir">CAE</th>               
+                    <th class="text-center" width="5%">Fecha</th>
+                    <th class="text-center" width="15%">Tipo CPB</th>
+                    <th class="text-center" width="5%">PV</th>
+                    <th class="text-center" width="5%">Nº</th>
+                    <th class="imprimir">CAE</th>              
+                    <th class="text-center" width="15%">TDoc</th> 
+                    <th class="text-center" width="15%">NºDoc</th>
+                    <th class="text-center" width="15%">Receptor</th>
                 </tr>
             </thead>
             <tbody>
                 {% for r in resultado %}
                 <tr>
                     
-                    <td>{{ r.pv|default_if_none:'' }}</td>                                
-                    <td>{{ r.nro|default_if_none:'' }}</td>                                
+                    <td class="text-center">{{ r.fecha|date:'d/m/Y' }}</td>                                
+                    <td class="text-center">{{ r.tipo|default_if_none:'' }}</td>                                
+                    <td class="text-center">{{ r.pv|default_if_none:'' }}</td>                                
+                    <td class="text-center">{{ r.nro|default_if_none:'' }}</td>                                
                     <td>{{ r.cae|default_if_none:'' }}</td>                                
+                    <td class="text-center">{{ r.tdoc|default_if_none:'' }}</td>                                
+                    <td class="text-center">{{ r.nrodoc|default_if_none:'' }}</td>                                
+                    <td class="text-center">{{ r.receptor|default_if_none:'' }}</td>                                
                 </tr>
                 {% endfor %}
             </tbody>
@@ -68,15 +76,19 @@
                     <th></th> 
                     <th></th>                                
                     <th></th>        
+                    <th></th> 
+                    <th></th>                                
+                    <th></th> 
+                    <th></th>                                
+                    <th></th> 
                 </tr>
             </tfoot>
         </table>                   
-	 	</div>
-	</div> 
+      </div>  
 	{% else %} 
 	<div class="row">	
 	 	<div class="col-xs-12 ">
-		<fieldset>	NO HAY COMPROBANTES EN LA PLANILLA INEXISTENTES EN EL SISTEMA
+		<fieldset><h3 class="text-center">	NO HAY COMPROBANTES EN LA PLANILLA INEXISTENTES EN EL SISTEMA</h3>
 		</fieldset>
 		</div>
 	</div>	
