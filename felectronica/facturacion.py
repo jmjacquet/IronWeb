@@ -453,9 +453,11 @@ def facturarAFIP(request,idCpb):
     dbserver_status = ''
     authserver_status = ''
     try:
+        
         fecha = datetime.now().strftime("%Y%m%d")
         wsfev1 = WSFEv1()
-        wsfev1.Conectar(wsdl=WSDL)
+        wsfev1.Conectar(wsdl=WSDL)        
+
         f = cpb
         cuit = cpb.get_pto_vta().cuit
 
@@ -485,13 +487,12 @@ def facturarAFIP(request,idCpb):
         token=wsfev1.Token
         sign=wsfev1.Sign
 
-        cbte_nro = long(wsfev1.CompUltimoAutorizado(tipo_cpb, pto_vta) or 0)      
-
-
         wsfev1.Dummy()
         appserver_status = wsfev1.AppServerStatus
         dbserver_status = wsfev1.DbServerStatus
         authserver_status = wsfev1.AuthServerStatus
+
+        cbte_nro = long(wsfev1.CompUltimoAutorizado(tipo_cpb, pto_vta) or 0)            
         
     except:
         data['excepcion']=wsfev1.Excepcion
@@ -562,10 +563,24 @@ def facturarAFIP(request,idCpb):
         moneda_id = 'PES'; moneda_ctz = '1.000'
 
         # Inicializo la factura interna con los datos de la cabecera
-        wsfev1.CrearFactura(concepto, tipo_doc, nro_doc, tipo_cpb, pto_vta,
+        ok = wsfev1.CrearFactura(concepto, tipo_doc, nro_doc, tipo_cpb, pto_vta,
             cbt_desde, cbt_hasta, imp_total, imp_tot_conc, imp_neto,
             imp_iva, imp_trib, imp_op_ex, fecha_cbte, fecha_venc_pago, 
             fecha_serv_desde, fecha_serv_hasta,moneda_id, moneda_ctz)
+        #Si crea el cpb ya se lo guardo
+        if ok:
+            cpb.numero = int(nro_cpb)
+            cpb.save()
+        else:
+            data['errores']=u'¡No pudo crearse el CPB en AFIP!'
+            data['excepcion']=wsfev1.Excepcion
+            data['traceback']=wsfev1.Traceback
+            data['XmlRequest']=wsfev1.XmlRequest
+            data['XmlResponse']=wsfev1.XmlResponse
+            data['appserver_status']=appserver_status
+            data['dbserver_status']=dbserver_status
+            data['authserver_status']=authserver_status
+            return data 
         
         if f.letra != 'C':
             #Traigo los coeficientes de IVA
@@ -607,21 +622,8 @@ def facturarAFIP(request,idCpb):
             p_pv = int(p.pto_vta)
             p_nro = int(p.numero)
             wsfev1.AgregarCmpAsoc(p_tipo, p_pv, p_nro)                   
-            
-    except:        
-        data['excepcion']=wsfev1.Excepcion
-        data['traceback']=wsfev1.Traceback
-        data['XmlRequest']=wsfev1.XmlRequest
-        data['XmlResponse']=wsfev1.XmlResponse
-        data['appserver_status']=appserver_status
-        data['dbserver_status']=dbserver_status
-        data['authserver_status']=authserver_status
-        data['errores']=u'¡El comprobante no es válido!'  
-        
-        return data
+                
 
-
-    try:
         #http://www.sistemasagiles.com.ar/trac/wiki/ManualPyAfipWs#M%C3%A9todosprincipalesdeWSFEv1
         wsfev1.CAESolicitar()
         
@@ -651,8 +653,7 @@ def facturarAFIP(request,idCpb):
             fecha_cbte =datetime.strptime(wsfev1.FechaCbte,'%Y%m%d')        
 
         reproceso = wsfev1.Reproceso
-        imp_total = wsfev1.ImpTotal
-        cae = wsfev1.CAE       
+        imp_total = wsfev1.ImpTotal    
         concepto = wsfev1.ObtenerCampoFactura('concepto')    
         imp_tot_conc = wsfev1.ObtenerCampoFactura('imp_tot_conc')
         imp_neto = wsfev1.ImpNeto
@@ -699,6 +700,7 @@ def facturarAFIP(request,idCpb):
             }                
 
     except:
+
         if wsfev1:
             data = {
             'token':token,

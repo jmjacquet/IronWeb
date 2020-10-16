@@ -560,6 +560,15 @@ def cpb_facturar_afip(request):
     return HttpResponse(json.dumps(respuesta,cls=DjangoJSONEncoder), content_type = "application/json")
 
 @login_required 
+def respuesta(request):
+    respuesta = ['holaaa']    
+    print 'holaaa'
+    import time
+    time.sleep(5)
+    print 'chau'
+    return HttpResponse(json.dumps(respuesta,cls=DjangoJSONEncoder), content_type = "application/json")
+
+@login_required 
 def cpb_facturar_afip_id(request,id):
     respuesta = []
     try:
@@ -2148,3 +2157,73 @@ def SaldoInicialDeleteView(request, id):
     except:
         messages.error(request, u'¡Los datos no pudieron eliminarse!')
     return redirect('caja_diaria')       
+
+
+import csv, io
+import random
+def unicode_csv_reader(unicode_csv_data, dialect=csv.excel, **kwargs):
+    # csv.py doesn't do Unicode; encode temporarily as UTF-8:
+    csv_reader = csv.reader(utf_8_encoder(unicode_csv_data),
+                            dialect=dialect, **kwargs)
+    for row in csv_reader:
+        # decode UTF-8 back to Unicode, cell by cell:
+        yield [unicode(cell, 'utf-8') for cell in row]
+
+def utf_8_encoder(unicode_csv_data):
+    for line in unicode_csv_data:
+        yield line.encode('utf-8')
+@login_required 
+def verificar_existencia_cae(request):               
+    from .forms import ImportarCPBSForm
+    context = {}
+    context = getVariablesMixin(request) 
+    resultado = []
+    if request.method == 'POST':
+        form = ImportarCPBSForm(request.POST,request.FILES,request=request)
+        if form.is_valid(): 
+            csv_file = form.cleaned_data['archivo']
+            empresa = form.cleaned_data['empresa']
+           
+            if not csv_file.name.endswith('.csv'):
+                messages.error(request,'¡El archivo debe tener extensión .CSV!')
+                return HttpResponseRedirect(reverse("verificar_existencia_cae"))
+            
+            if csv_file.multiple_chunks():
+                messages.error(request,"El archivo es demasiado grande (%.2f MB)." % (csv_file.size/(1000*1000),))
+                return HttpResponseRedirect(reverse("verificar_existencia_cae"))
+
+            decoded_file = csv_file.read().decode("latin1").replace(",", "").replace("'", "")
+            io_string = io.StringIO(decoded_file)
+            reader = unicode_csv_reader(io_string)                
+            
+            comprobantes = cpb_comprobante.objects.filter(cpb_tipo__compra_venta='V',empresa=empresa)
+
+            listado_cae_sistema = [c.cae for c in comprobantes]
+            listado_cae_faltantes = []
+            cant=0
+            #Fecha Tipo  Punto de Venta  Número Desde  Número Hasta  Cód. Autorización Tipo Doc. Receptor  Nro. Doc. Receptor  
+            # Denominación Receptor Tipo Cambio Moneda  Imp. Neto Gravado Imp. Neto No Gravado  Imp. Op. Exentas  IVA Imp. Total
+
+            next(reader) #Omito el Encabezado                            
+            for index,line in enumerate(reader):                      
+                campos = line[0].split(";")               
+                pv = campos[2].strip()
+                nro = campos[3].strip()
+                cae = campos[5].strip()
+                if nro=='':
+                    continue #Salta al siguiente                    
+                
+                if cae not in listado_cae_sistema:
+                  listado_cae_faltantes.append(dict(cae=cae,pv=pv,nro=nro))
+
+                
+                
+                cant+=1                       
+            print listado_cae_faltantes
+            messages.success(request, u'Se importó el archivo con éxito!<br>(%s Comprobantes verificados)'% cant )            
+            resultado = listado_cae_faltantes
+    else:
+        form = ImportarCPBSForm(None,None,request=request)
+    context['form'] = form    
+    context['resultado'] = resultado 
+    return render(request, 'general/varios/importar_cpbs.html',context)                
