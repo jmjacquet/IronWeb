@@ -3,7 +3,7 @@
 *.log
 !generarI25.pyc
 errores.log
-static/*
+/static
 *.conf
 *.ini
 *.bat
