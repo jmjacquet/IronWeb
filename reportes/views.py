@@ -592,8 +592,8 @@ def libro_iva_ventas(request):
             .exclude(letra='X').filter(Q(pto_vta__in=pto_vta_habilitados_list(request)) | Q(cpb_tipo__tipo=14)).select_related('cpb_tipo','entidad')\
             .only('id','pto_vta','letra','numero','fecha_imputacion','cpb_tipo__codigo','cpb_tipo__nombre','cpb_tipo__tipo','cpb_tipo__signo_ctacte','cae_vto','cae',\
             'entidad__id','entidad__apellido_y_nombre','entidad__tipo_entidad','entidad__codigo','entidad__fact_cuit','entidad__nro_doc','entidad__fact_categFiscal',\
-            'importe_gravado','importe_iva','importe_perc_imp','importe_no_gravado','importe_exento','importe_total')\
-            .order_by('-fecha_imputacion','-id','entidad__codigo','entidad__apellido_y_nombre','cpb_tipo__tipo')            
+            'importe_gravado','importe_iva','importe_perc_imp','importe_no_gravado','importe_exento','importe_total')
+            
             
         
         if int(estado) == 0:                
@@ -663,8 +663,8 @@ def libro_iva_compras(request):
             .select_related('cpb_tipo','entidad')\
             .only('id','pto_vta','letra','numero','fecha_imputacion','cpb_tipo__codigo','cpb_tipo__nombre','cpb_tipo__tipo','cpb_tipo__signo_ctacte','cae_vto','cae',\
             'entidad__id','entidad__apellido_y_nombre','entidad__tipo_entidad','entidad__codigo','entidad__fact_cuit','entidad__nro_doc','entidad__fact_categFiscal',\
-            'importe_gravado','importe_iva','importe_perc_imp','importe_no_gravado','importe_exento','importe_total')\
-            .order_by('-fecha_imputacion','-id','entidad__codigo','entidad__apellido_y_nombre','cpb_tipo__tipo')
+            'importe_gravado','importe_iva','importe_perc_imp','importe_no_gravado','importe_exento','importe_total')
+            
         
         if int(estado) == 0:                
             cpbs=cpbs.filter(estado__in=[1,2])                

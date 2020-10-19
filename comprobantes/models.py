@@ -840,8 +840,8 @@ def actualizar_ultimo_nro(sender, instance,created, **kwargs):
            pventa_tipoCpb.save()     
        else:     
            if not tipo.facturable:           
-            tipo.ultimo_nro = numero           
-            tipo.save()
+               tipo.ultimo_nro = numero           
+               tipo.save()
 
 @receiver(post_save, sender=cpb_cobranza,dispatch_uid="actualizar_cobranza")
 @receiver(post_delete, sender=cpb_cobranza,dispatch_uid="actualizar_cobranza")
