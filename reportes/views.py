@@ -351,7 +351,7 @@ class saldos_proveedores(VariablesMixin,ListView):
 ################################################################
 import unicodedata
 import StringIO
-def generarCITI(cpbs,ventas_compras,tipo_archivo):    
+def generarCITI(cpbs,ventas_compras,tipo_archivo,libro_iva_dig=False):    
     nombre= ''
     archivo = StringIO.StringIO()
     nafip = None
@@ -434,6 +434,10 @@ def generarCITI(cpbs,ventas_compras,tipo_archivo):
             linea += str(cod_op).encode('utf-8')#cod_operacion
             linea += str(0).replace(".","").rjust(15, "0") #otrosTributos            
             linea += str(0).encode('utf-8').rjust(8, "0") #FECHA_VTO
+
+            if libro_iva_dig:
+                linea += str(0).replace(".","").rjust(15, "0") #Importe Reintegro Decreto 1043/2016
+
             
             archivo.write(linea+'\r\n')
 
@@ -511,6 +515,8 @@ def generarCITI(cpbs,ventas_compras,tipo_archivo):
             
             linea += str('PES').encode('utf-8') #Moneda
             linea += str('0001000000').encode('utf-8')#tipo_cambio            
+            cod_op = ' '
+            cant_alic = 0
             try:
                 cpb_iva = cpb_comprobante_tot_iva.objects.filter(cpb_comprobante=c)
                 cant_alic = len(cpb_iva)
@@ -628,6 +634,14 @@ def libro_iva_ventas(request):
             return response 
         elif ('alicuotas' in request.POST)and(cpbs):
             response = HttpResponse(generarCITI(cpbs,'V','alicuotas'),content_type='text/plain')
+            response['Content-Disposition'] = 'attachment;filename="CITI_VENTAS_ALICUOTAS.txt"'
+            return response 
+        elif ('cpbs_iva_dig' in request.POST)and(cpbs):                
+            response = HttpResponse(generarCITI(cpbs,'V','cpbs',True),content_type='text/plain')
+            response['Content-Disposition'] = 'attachment;filename="CITI_VENTAS_CBTE.txt"'
+            return response 
+        elif ('alic_iva_dig' in request.POST)and(cpbs):
+            response = HttpResponse(generarCITI(cpbs,'V','alicuotas',True),content_type='text/plain')
             response['Content-Disposition'] = 'attachment;filename="CITI_VENTAS_ALICUOTAS.txt"'
             return response 
         
