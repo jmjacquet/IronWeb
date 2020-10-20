@@ -7,7 +7,7 @@ import sys
 host = "web594.webfaction.com"
 user = "gg"
 passwd = "battlehome"
-UPDATE_DELETE = False
+UPDATE_DELETE = True
 # BASES_EXCEPTUADAS = ('gg_gestion','gg_configuracion','gg_multeo')
 # LISTA_BASES = "SELECT SCHEMA_NAME FROM `SCHEMATA` WHERE (SCHEMA_NAME LIKE 'gg_%') AND (SCHEMA_NAME NOT IN "+str(BASES_EXCEPTUADAS)+");"
 
@@ -30,7 +30,7 @@ lista_dbs = ['ironweb_410','ironweb_411','ironweb_412','ironweb_413','ironweb_41
 #SCRIPT_EJECUCION = "INSERT INTO `configuracion_vars` VALUES(5, 'dri_cartel_inicio', 'Cartel que aparece al Liquidar DReI', NULL, NULL, NULL);"
 #SCRIPT_EJECUCION = "DELETE FROM `django_session`;"
 #SCRIPT_EJECUCION = "ALTER TABLE tributo ADD COLUMN CORRER_VENC_FDESDE DATE NULL;"
-SCRIPT_EJECUCION = "ALTER TABLE tributo ADD COLUMN CORRER_VENC_FHASTA DATE NULL;"
+SCRIPT_EJECUCION = "ALTER TABLE `gral_empresa` ADD `cbu` VARCHAR(100) NULL;"
 
 print "##############################################"
 print SCRIPT_EJECUCION
@@ -39,7 +39,7 @@ total_bases = len(lista_dbs)
 bases_ok = 0
 
 for r in lista_dbs:
-	nombre_base = r[0] 
+	nombre_base = r 
 	db = MySQLdb.connect (host = host, user = user, passwd = passwd, db =nombre_base)
 	cursor = db.cursor ()
 	try:

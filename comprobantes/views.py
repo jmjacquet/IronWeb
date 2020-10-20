@@ -2197,7 +2197,7 @@ def verificar_existencia_cae(request):
                 messages.error(request,"El archivo es demasiado grande (%.2f MB)." % (csv_file.size/(1000*1000),))
                 return HttpResponseRedirect(reverse("verificar_existencia_cae"))
 
-            decoded_file = csv_file.read().decode("latin1").replace(",", "").replace("'", "")
+            decoded_file = csv_file.read().decode("latin1").replace(",", ".").replace("'", "")
             io_string = io.StringIO(decoded_file)
             reader = unicode_csv_reader(io_string)                
             
@@ -2221,21 +2221,21 @@ def verificar_existencia_cae(request):
                 tipo = campos[1].strip()
                 pv = int(campos[2].strip())
                 nro = int(campos[3].strip())
-                cae = campos[5].strip()
-                tdoc = campos[6].strip()
-                nrodoc = campos[7].strip()
-                receptor = campos[8].strip()
-
-                imp_neto_g = campos[11].strip()
-                imp_neto_nograv = campos[12].strip()
-                imp_exento = campos[13].strip()
-                imp_iva = campos[14].strip()
-                imp_total = campos[15].strip()
+                cae = campos[5].strip()                
 
                 if nro=='':
                     continue #Salta al siguiente                    
                 
                 if cae not in listado_cae_sistema:
+                  tdoc = campos[6].strip()
+                  nrodoc = campos[7].strip()
+                  receptor = campos[8].strip()
+
+                  imp_neto_g = campos[11].strip()
+                  imp_neto_nograv = campos[12].strip()
+                  imp_exento = campos[13].strip()
+                  imp_iva = campos[14].strip()
+                  imp_total = campos[15].strip()
                   listado_cae_faltantes.append(dict(fecha=fecha,tipo=tipo,cae=cae,pv=pv,nro=nro,tdoc=tdoc,nrodoc=nrodoc,receptor=receptor,imp_neto_g=imp_neto_g,\
                                                     imp_neto_nograv=imp_neto_nograv,imp_exento=imp_exento,imp_iva=imp_iva,imp_total=imp_total))
                 
@@ -2248,31 +2248,35 @@ def verificar_existencia_cae(request):
                   nro_sig=nro+1
                   cae = l['cae']
                   pv=l['pv']
-                  imp_total = l['imp_total']                  
+                  imp_total = l['imp_total']
                   tipo_afip = int(l['tipo'].split('-')[0])
                   tipo_cpb_afip = cpb_nro_afip.objects.filter(numero_afip=tipo_afip).first()
                   letra,t = tipo_cpb_afip.letra,tipo_cpb_afip.cpb_tipo                  
                   cpb_sig = cpb_comprobante.objects.filter(numero=nro_sig,pto_vta=pv,importe_total=imp_total,letra=letra,cpb_tipo__tipo=t).first()
                   cpb_sig_det = cpb_comprobante_detalle.objects.filter(cpb_comprobante=cpb_sig)
-                  
-                  cpb_creado = deepcopy(cpb_sig)
-                  cpb_creado.id = None                  
-                  cpb_creado.numero = nro                  
-                  cpb_creado.cae = cae
-                  cpb_creado.save()
-                  
-                  for d in cpb_sig_det:
-                    d_new = deepcopy(d)
-                    d_new.id = None
-                    d_new.cantidad = 0
-                    d_new.cpb_comprobante = cpb_creado
-                    d_new.save()
-                  
-                  coeficientes=cpb_sig_det.filter(tasa_iva__id__gt=2).values('tasa_iva').annotate(importe_total=Sum('importe_iva'),importe_base=Sum('importe_subtotal'))
-                  for cc in coeficientes:
-                    tasa = gral_tipo_iva.objects.get(pk=cc['tasa_iva'])       
-                    cpb_ti = cpb_comprobante_tot_iva(cpb_comprobante=cpb_creado,tasa_iva=tasa,importe_total=cc['importe_total'],importe_base=cc['importe_base'])
-                    cpb_ti.save()
+                  #import pdb; pdb.set_trace()
+
+                  if cpb_sig:
+                    cpb_creado = deepcopy(cpb_sig)
+                    cpb_creado.id = None                  
+                    cpb_creado.numero = nro                  
+                    cpb_creado.cae = cae
+                    cpb_creado.saldo = 0
+                    cpb_creado.estado = cpb_estado.objects.get(pk=3)
+                    cpb_creado.save()
+                    
+                    for d in cpb_sig_det:
+                      d_new = deepcopy(d)
+                      d_new.id = None
+                      d_new.cantidad = 0
+                      d_new.cpb_comprobante = cpb_creado
+                      d_new.save()
+                    
+                    coeficientes=cpb_sig_det.filter(tasa_iva__id__gt=2).values('tasa_iva').annotate(importe_total=Sum('importe_iva'),importe_base=Sum('importe_subtotal'))
+                    for cc in coeficientes:
+                      tasa = gral_tipo_iva.objects.get(pk=cc['tasa_iva'])       
+                      cpb_ti = cpb_comprobante_tot_iva(cpb_comprobante=cpb_creado,tasa_iva=tasa,importe_total=cc['importe_total'],importe_base=cc['importe_base'])
+                      cpb_ti.save()
                     
                 except Exception as e:
                   print e

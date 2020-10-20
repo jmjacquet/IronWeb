@@ -73,11 +73,11 @@
                     <td class="text-center">{{ r.tdoc|default_if_none:'' }}</td>                                
                     <td class="text-center">{{ r.nrodoc|default_if_none:'' }}</td>                                
                     <td class="text-center">{{ r.receptor|default_if_none:'' }}</td>                                
-                    <td class="text-center">${{ r.imp_neto_g|default_if_none:'' }}</td>                                
-                    <td class="text-center">${{ r.imp_neto_nograv|default_if_none:'' }}</td>                                
-                    <td class="text-center">${{ r.imp_exento|default_if_none:'' }}</td>                                
-                    <td class="text-center">${{ r.imp_iva|default_if_none:'' }}</td>                                
-                    <td class="text-center">${{ r.imp_total|default_if_none:'' }}</td>                                
+                    <td class="text-center">${{ r.imp_neto_g|default_if_none:0|floatformat:2 }}</td>                                
+                    <td class="text-center">${{ r.imp_neto_nograv|default_if_none:0|floatformat:2 }}</td>                                
+                    <td class="text-center">${{ r.imp_exento|default_if_none:0|floatformat:2 }}</td>                                
+                    <td class="text-center">${{ r.imp_iva|default_if_none:0|floatformat:2 }}</td>                                
+                    <td class="text-center">${{ r.imp_total|default_if_none:0|floatformat:2 }}</td>                                
                 </tr>
                 {% endfor %}
             </tbody>
