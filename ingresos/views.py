@@ -66,9 +66,9 @@ class CPBSVentasList(VariablesMixin,ListView):
 
             
             if int(estado) == 1:                
-                comprobantes = cpb_comprobante.objects.filter(cpb_tipo__compra_venta='V',estado__in=[1,2,3],empresa=empresa)
+                comprobantes = comprobantes.filter(estado__in=[1,2,3])
             elif int(estado) == 2:
-                comprobantes = cpb_comprobante.objects.filter(cpb_tipo__compra_venta='V',estado__in=[3],empresa=empresa)
+                comprobantes = comprobantes.filter(estado__in=[3])
 
             if int(cae)!=0:
                 no_tiene = (cae=='2')                
@@ -916,7 +916,7 @@ def CPBVentaDeleteView(request, id):
         if not tiene_permiso(request,'cpb_ventas_abm'):
                 return redirect(reverse('principal'))
         if not puedeEliminarCPB(id):
-                messages.error(request, u'¡No puede editar un Comprobante Saldado/Facturado!')
+                messages.error(request, u'¡No puede eliminar un Comprobante Saldado/Facturado!')
                 return redirect(reverse('cpb_venta_listado'))
         cpb.delete()
         messages.success(request, u'Los datos se guardaron con éxito!')

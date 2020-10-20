@@ -615,13 +615,34 @@ def facturarAFIP(request,idCpb):
                     wsfev1.AgregarTributo(id, desc, base_imp, alic, importe)  
 
          # Agrego los comprobantes asociados (solo para notas de crédito y débito):
-        if (f.cpb_tipo.tipo in [2,3])and(f.id_cpb_padre):
+        if (f.cpb_tipo.tipo in [2,3,22,23])and(f.id_cpb_padre):
             p = f.id_cpb_padre
             p_nafip = cpb_nro_afip.objects.get(cpb_tipo=p.cpb_tipo.tipo,letra=p.letra).numero_afip     
             p_tipo = p_nafip
+            p_fecha = p.fecha_cpb.strftime("%Y%m%d")
             p_pv = int(p.pto_vta)
-            p_nro = int(p.numero)
-            wsfev1.AgregarCmpAsoc(p_tipo, p_pv, p_nro)                   
+            p_nro = int(p.numero)            
+            p_tipo_doc = p.entidad.tipo_doc           
+            
+            if p_tipo_doc == 99:
+                nro_doc = 0
+            elif tipo_doc == 96:
+                nro_doc = p.entidad.nro_doc
+            elif tipo_doc == 80:    
+                nro_doc = p.entidad.fact_cuit
+            else:
+                nro_doc = p.entidad.fact_cuit
+            
+            p_cuit = nro_doc
+            wsfev1.AgregarCmpAsoc(p_tipo, p_pv, p_nro,p_cuit,p_fecha)                   
+
+        #Si es FactCredElectr debo informar tb el CBU
+        if (f.cpb_tipo.tipo in [21,22, 23]):
+            wsfev1.AgregarOpcional(2101, f.empresa.cbu)  # CBU
+            wsfev1.AgregarOpcional(2102, f.empresa.nombre)                # alias
+            if f.cpb_tipo.tipo in [22, 23]:
+                wsfev1.AgregarOpcional(22, "S")    
+
                 
 
         #http://www.sistemasagiles.com.ar/trac/wiki/ManualPyAfipWs#M%C3%A9todosprincipalesdeWSFEv1

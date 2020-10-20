@@ -77,6 +77,7 @@ class gral_empresa(models.Model):
     codbar_precio = models.BooleanField(u'Precio en Etiquetas CB',default=False)
     codbar_detalle = models.BooleanField(u'Detalle en Etiquetas CB',default=False)
     
+    cbu = models.CharField('CBU',max_length=100, blank=True)
     class Meta:
         db_table = 'gral_empresa'
 

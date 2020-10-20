@@ -277,7 +277,7 @@ class SaldoInicialForm(forms.ModelForm):
 from general.models import gral_empresa
 class ImportarCPBSForm(forms.Form):		
 	archivo = forms.FileField(label='Seleccione un archivo',required=True)  
-	# sobreescribir = forms.ChoiceField(label=u'¿Sobreescribir Existentes?',choices=SINO,required=True,initial='S')
+	migra = forms.ChoiceField(label=u'¿Crear CPBs Faltantes?',choices=SINO,required=True,initial='N')
 	empresa = forms.ModelChoiceField(queryset=gral_empresa.objects.all(),empty_label=None,required=True)
 	# tipo_entidad = forms.ChoiceField(label=u'Tipo Entidad',choices=TIPO_ENTIDAD,required=True,initial=1)	
 	def __init__(self, *args, **kwargs):

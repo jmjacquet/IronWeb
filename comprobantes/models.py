@@ -836,12 +836,13 @@ def actualizar_ultimo_nro(sender, instance,created, **kwargs):
        if tipo.usa_pto_vta == True:
            pventa = cpb_pto_vta.objects.get(numero=instance.pto_vta,empresa=instance.empresa)              
            pventa_tipoCpb, created = cpb_pto_vta_numero.objects.get_or_create(cpb_tipo=tipo,letra=letra,cpb_pto_vta=pventa,empresa=instance.empresa)
-           pventa_tipoCpb.ultimo_nro+= 1
-           pventa_tipoCpb.save()     
+           if pventa_tipoCpb.ultimo_nro <= numero:
+            pventa_tipoCpb.ultimo_nro+= 1
+            pventa_tipoCpb.save()     
        else:     
            if not tipo.facturable:           
-            tipo.ultimo_nro = numero           
-            tipo.save()
+               tipo.ultimo_nro = numero           
+               tipo.save()
 
 @receiver(post_save, sender=cpb_cobranza,dispatch_uid="actualizar_cobranza")
 @receiver(post_delete, sender=cpb_cobranza,dispatch_uid="actualizar_cobranza")
