@@ -2262,7 +2262,7 @@ def verificar_existencia_cae(request):
                     cpb_creado.numero = nro                  
                     cpb_creado.cae = cae
                     cpb_creado.saldo = 0
-                    cpb_creado.estado = cpb_estado.objects.get(pk=3)
+                    cpb_creado.estado = cpb_estado.objects.get(pk=2)
                     cpb_creado.save()
                     
                     for d in cpb_sig_det:
