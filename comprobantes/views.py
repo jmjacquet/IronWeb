@@ -2201,9 +2201,9 @@ def verificar_existencia_cae(request):
             io_string = io.StringIO(decoded_file)
             reader = unicode_csv_reader(io_string)                
             
-            comprobantes = cpb_comprobante.objects.filter(cpb_tipo__compra_venta='V',empresa=empresa)
+            comprobantes = cpb_comprobante.objects.filter(cpb_tipo__compra_venta='V',empresa=empresa,cae__isnull=False)
 
-            listado_cae_sistema = [c.cae for c in comprobantes]
+            listado_cae_sistema = [c.cae.strip() for c in comprobantes]
             listado_cae_faltantes = []
             cant=0
             #Fecha Tipo  Punto de Venta  Número Desde  Número Hasta  Cód. Autorización Tipo Doc. Receptor  Nro. Doc. Receptor  
@@ -2264,6 +2264,7 @@ def verificar_existencia_cae(request):
                   for d in cpb_sig_det:
                     d_new = deepcopy(d)
                     d_new.id = None
+                    d_new.cantidad = 0
                     d_new.cpb_comprobante = cpb_creado
                     d_new.save()
                   
@@ -2277,8 +2278,8 @@ def verificar_existencia_cae(request):
                   print e
 
                   #if cpb_sig:
-
-              messages.success(request, u'Se crearon los CPBs faltantes con éxito! (%s Comprobantes verificados)'% cant )            
+              tot=len(listado_cae_faltantes)
+              messages.success(request, u'Se regeneraron %s CPBs faltantes con éxito! (%s Comprobantes verificados)'%(tot,cant))            
             else:
               messages.success(request, u'Se importó el archivo con éxito! (%s Comprobantes verificados)'% cant )            
             resultado = listado_cae_faltantes
