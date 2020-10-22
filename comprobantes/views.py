@@ -531,8 +531,8 @@ def cpb_facturar_afip(request):
     except:
         cpb=None
     if cpb:
-        # respuesta = facturarAFIP_simulac(request,id)
-        respuesta = facturarAFIP(request,id)
+        respuesta = facturarAFIP_simulac(request,id)
+        # respuesta = facturarAFIP(request,id)
         estado = respuesta.get('resultado','')
         cae = respuesta.get('cae','')
         vto_cae = respuesta.get('fecha_vencimiento',None)
@@ -2241,7 +2241,7 @@ def verificar_existencia_cae(request):
                 
                 cant+=1                       
 
-            if migra:
+            if migra=='S':
               for l in listado_cae_faltantes:
                 try:                  
                   nro = l['nro']

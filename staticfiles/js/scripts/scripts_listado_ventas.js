@@ -430,7 +430,7 @@ var tabla = $('#dataTables-cpb_venta').DataTable({
                 $.ajax({
                     url: "/comprobantes/cpb_facturar_afip/",
                     type: 'get',
-                    timeout: 30000,
+                    timeout: 60000,
                     dataType: 'json',
                     data: {
                         'id': id
