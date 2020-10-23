@@ -92,8 +92,96 @@ def _autenticar(request,crt,key,service="wsfe", ttl=60*60*10,cuit=None):
 from django.http import JsonResponse
 from pyafipws.wsfev1 import WSFEv1
 
-def recuperar_cpb_afip(request,wsfev1,tipo_cpb,pto_vta,nro_cpb):
-    try:
+def recuperar_cpb_afip(request,tipo_cpb,pto_vta,nro_cpb):
+    
+        empresa = empresa_actual(request)
+        HOMO = empresa.homologacion
+
+        if HOMO:
+            WSDL = "https://wswhomo.afip.gov.ar/wsfev1/service.asmx?WSDL"
+            WSAA_URL = "https://wsaahomo.afip.gov.ar/ws/services/LoginCms"
+        else:
+            WSDL="https://servicios1.afip.gov.ar/wsfev1/service.asmx?WSDL"    
+            WSAA_URL = "https://wsaa.afip.gov.ar/ws/services/LoginCms"    
+
+
+        #Traigo el comprobante
+        token = ''
+        sign = ''
+        cae = ''
+        fecha_vencimiento = ''
+        
+        resultado = ''
+        motivo = ''
+        reproceso = ''
+        observaciones = ''
+        concepto = ''
+        
+        
+        fecha_cbte = ''
+        imp_total = ''
+        imp_tot_conc = ''
+        imp_neto = ''
+        imp_op_ex = ''
+        imp_trib = ''
+        imp_iva = ''
+        moneda_id = ''
+        moneda_ctz = ''
+        detalle = ''
+        ult_nro = ''
+        errores = ''
+            
+        data = {                        
+            'cae': cae,
+            'fecha_vencimiento': fecha_vencimiento,
+            'cpb_nro':nro_cpb,
+            'resultado':resultado,
+            'motivo':motivo,
+            'reproceso':reproceso,
+            'observaciones' : observaciones,
+            'concepto':concepto,
+            'tipo_cbte': tipo_cpb,
+            'punto_vta':pto_vta,   
+            'fecha_cbte': fecha_cbte,
+            'imp_total': imp_total,
+            'imp_tot_conc': imp_tot_conc,
+            'imp_neto': imp_neto,
+            'imp_op_ex': imp_op_ex,
+            'imp_trib': imp_trib,
+            'imp_iva': imp_iva,    
+            'moneda_id': moneda_id,
+            'moneda_ctz': moneda_ctz,    
+            'detalle':detalle,
+            'ult_nro':ult_nro,
+            'errores':errores,
+            'factura':'',
+            }
+        
+
+                
+        appserver_status = ''
+        dbserver_status = ''
+        authserver_status = ''
+        #try:
+        fecha = datetime.now().strftime("%Y%m%d")
+        wsfev1 = WSFEv1()
+        
+        wsfev1.Conectar(wsdl=WSDL)
+        
+        cuit = empresa.cuit
+        # cuit = 30714843571
+        wsfev1.Cuit = cuit
+
+        crt = empresa.fe_crt
+        key= empresa.fe_key
+
+        wsfev1.Token, wsfev1.Sign = _autenticar(request,crt=crt,key=key,cuit=cuit)        
+
+        wsfev1.Dummy()
+        appserver_status = wsfev1.AppServerStatus
+        dbserver_status = wsfev1.DbServerStatus
+        authserver_status = wsfev1.AuthServerStatus
+        
         wsfev1.CompConsultar(tipo_cpb, pto_vta, nro_cpb) 
                 
         cpb_nro = wsfev1.CbteNro
@@ -161,35 +249,8 @@ def recuperar_cpb_afip(request,wsfev1,tipo_cpb,pto_vta,nro_cpb):
             'errores':errores,
             'factura':factura,
             }
-    except:        
-            data = {           
-            'cae': cae,
-            'fecha_vencimiento': fecha_vencimiento,
-            'cpb_nro':cpb_nro,
-            'resultado':resultado,
-            'motivo':motivo,
-            'reproceso':reproceso,
-            'observaciones' : observaciones,
-            'concepto':concepto,
-            'tipo_cbte': tipo_cpb,
-            'punto_vta':pto_vta,   
-            'fecha_cbte': fecha_cbte,
-            'imp_total': imp_total,
-            'imp_tot_conc': imp_tot_conc,
-            'imp_neto': imp_neto,
-            'imp_op_ex': imp_op_ex,
-            'imp_trib': imp_trib,
-            'imp_iva': imp_iva,    
-            'moneda_id': moneda_id,
-            'moneda_ctz': moneda_ctz,    
-            'detalle':detalle,
-            'ult_nro':ult_nro,
-            'errores':errores,
-            'factura':factura,
-            }
-
-
-    return data
+   
+        return data
 
 
 def consultar_cae(request,idcpb):               
@@ -551,6 +612,9 @@ def facturarAFIP(request,idCpb):
             data['dbserver_status']=dbserver_status
             data['authserver_status']=authserver_status
             
+            datos_cpb = recuperar_cpb_afip(request,tipo_cpb,pto_vta,ultimo_cbte_afip)
+            print datos_cpb
+
             return data      
 
         else:

@@ -1,7 +1,7 @@
 from django import forms
 
 # place form definition here
-from comprobantes.models import cpb_pto_vta,cpb_tipo_forma_pago,cpb_cuenta,cpb_tipo
+from comprobantes.models import cpb_pto_vta,cpb_tipo_forma_pago,cpb_cuenta,cpb_tipo,cpb_nro_afip
 from general.utilidades import *
 from general.forms import pto_vta_habilitados
 
@@ -18,3 +18,12 @@ class ConsultaCAE(forms.Form):
 		super(ConsultaCAE, self).__init__(*args, **kwargs)						
 		# self.fields['pto_vta'].queryset = pto_vta_habilitados(request)
 
+class ConsultaCPB(forms.Form):               
+	cpb_tipo = forms.ModelChoiceField(label='Tipo CPB',queryset=cpb_nro_afip.objects.all(),required = True,empty_label=None)
+	pto_vta = forms.IntegerField(label='Pto. Vta.',required = True)	
+	numero = forms.IntegerField(label=u'Numero CPB',required = True)	
+	def __init__(self, *args, **kwargs):		
+		empresa = kwargs.pop('empresa', None)  
+		request = kwargs.pop('request', None)  
+		super(ConsultaCPB, self).__init__(*args, **kwargs)						
+		# self.fields['pto_vta'].queryset = pto_vta_habilitados(request)

@@ -14,10 +14,10 @@ from django.contrib import messages
 import json
 import urllib
 from general.views import VariablesMixin
-from .facturacion import facturarAFIP,consultar_cae
+from .facturacion import facturarAFIP,consultar_cae,recuperar_cpb_afip
 from comprobantes.models import *
 from django.core.serializers.json import DjangoJSONEncoder
-from .forms import ConsultaCAE
+from .forms import ConsultaCAE,ConsultaCPB
 
 class CAEView(VariablesMixin,TemplateView):
     template_name = 'felectronica.html'
@@ -46,6 +46,36 @@ class CAEView(VariablesMixin,TemplateView):
                 cpb = None    
         context['facturacion'] =   facturacion        
         context['cpb'] =   cpb     
+        context['form'] = form
+        return context
+
+    def post(self, *args, **kwargs):
+        return self.get(*args, **kwargs)
+
+class CPBDatosView(VariablesMixin,TemplateView):
+    template_name = 'general/cpb_afip_consulta.html'
+    pk_url_kwarg = 'id'
+
+    @method_decorator(login_required)
+    def dispatch(self, *args, **kwargs):
+        return super(CPBDatosView, self).dispatch(*args, **kwargs)
+
+    def get_context_data(self, **kwargs):
+        context = super(CPBDatosView, self).get_context_data(**kwargs)        
+        try:
+            empresa = empresa_actual(self.request)
+        except gral_empresa.DoesNotExist:
+            empresa = None 
+        form = ConsultaCPB(self.request.POST or None,empresa=empresa,request=self.request)           
+        datos_cpb=None
+        cpb = None  
+        if form.is_valid():                                
+            cpb_tipo = form.cleaned_data['cpb_tipo']            
+            pto_vta = form.cleaned_data['pto_vta']            
+            numero = form.cleaned_data['numero']            
+            datos_cpb=recuperar_cpb_afip(self.request,cpb_tipo.numero_afip,pto_vta,numero)                    
+                        
+        context['datos_cpb'] =   datos_cpb        
         context['form'] = form
         return context
 
