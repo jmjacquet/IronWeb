@@ -96,8 +96,7 @@ urlpatterns = patterns('comprobantes.views',
     
     url(r'^saldo_inicial/nuevo/$', SaldoInicialCreateView.as_view(), name="saldo_inicial_nuevo"),
     url(r'^saldo_inicial/eliminar/(?P<id>[\w-]+)/$', SaldoInicialDeleteView, name="saldo_inicial_eliminar"),
-
-    url(r'^verificar_existencia_cae/$', verificar_existencia_cae,name="verificar_existencia_cae"),
+    
     url(r'^respuesta/$', respuesta,name="respuesta"),
 
     )

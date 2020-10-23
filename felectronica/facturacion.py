@@ -471,8 +471,8 @@ def facturarAFIP(request,idCpb):
         #wsfev1.Cuit = 30715026178
         
         if HOMO:
-            crt = "COPYFAST_PRUEBA.crt"
-            key= "COPYFAST_PRUEBA.key"
+            crt = empresa.fe_crt
+            key= empresa.fe_key
         else:
             try:
                 #crt = "COPYFAST_PRUEBA.crt"
@@ -499,7 +499,7 @@ def facturarAFIP(request,idCpb):
 
         cbte_nro = long(wsfev1.CompUltimoAutorizado(tipo_cpb, pto_vta) or 0)            
         
-    except:
+    except Exception as e:
         data['excepcion']=wsfev1.Excepcion
         data['traceback']=wsfev1.Traceback
         data['XmlRequest']=wsfev1.XmlRequest
@@ -507,7 +507,8 @@ def facturarAFIP(request,idCpb):
         data['appserver_status']=appserver_status
         data['dbserver_status']=dbserver_status
         data['authserver_status']=authserver_status
-        data['errores']=u'¡Falló la comunicación con los servidores de AFIP / Certificados NO VALIDOS!'
+        #data['errores']=u'¡Falló la comunicación con los servidores de AFIP / Certificados NO VALIDOS!'
+        data['errores']= str(e)
         return data         
 
     try:
@@ -885,8 +886,8 @@ def facturarAFIP_simulac(request,idCpb):
     #wsfev1.Cuit = 30715026178
     
     if HOMO:
-        crt = "COPYFAST_PRUEBA.crt"
-        key= "COPYFAST_PRUEBA.key"
+        crt = empresa.fe_crt
+        key= empresa.fe_key
     else:
         try:
             #crt = "COPYFAST_PRUEBA.crt"
