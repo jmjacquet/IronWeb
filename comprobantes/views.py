@@ -531,33 +531,39 @@ def cpb_facturar_afip(request):
     except:
         cpb=None
     if cpb:
-        respuesta = facturarAFIP_simulac(request,id)
-        #respuesta = facturarAFIP(request,id)
-        estado = respuesta.get('resultado','')
-        cae = respuesta.get('cae','')
-        vto_cae = respuesta.get('fecha_vencimiento',None)
-        detalle = respuesta.get('detalle','')        
-        nro_cpb = respuesta.get('cpb_nro','')
-        if (estado=='A')and(cae!=''):            
-            #cpb.estado=cpb_estado.objects.get(id=4)
-            cpb.cae = cae
-            cpb.cae_vto = vto_cae
-            cpb.cae_errores = None
-            if detalle!='':
-                cpb.cae_observaciones = cpb.cae_observaciones+' '+detalle
-            cpb.numero = int(nro_cpb)
+      
+        if cpb.cae is None:
+          respuesta = facturarAFIP(request,id)
+          
+          #respuesta = facturarAFIP_simulac(request,id)        
+          estado = respuesta.get('resultado','')
+          cae = respuesta.get('cae','')
+          vto_cae = respuesta.get('fecha_vencimiento',None)
+          detalle = respuesta.get('detalle','')        
+          nro_cpb = respuesta.get('cpb_nro','')
+          
+          if (estado=='A')and(cae!=''):            
+              #cpb.estado=cpb_estado.objects.get(id=4)
+              cpb.cae = cae
+              cpb.cae_vto = vto_cae
+              cpb.cae_errores = None
+              if detalle!='':
+                  cpb.cae_observaciones = cpb.cae_observaciones+' '+detalle
+              cpb.numero = int(nro_cpb)
+          else:
+              cpb.cae = None
+              cpb.cae_errores = respuesta.get('errores','')
+              cpb.cae_excepcion = respuesta.get('excepcion','')
+              cpb.cae_traceback = respuesta.get('traceback','')
+              
+          cpb.cae_xml_request = respuesta.get('XmlRequest','')   
+          cpb.cae_xml_response = respuesta.get('XmlResponse','')   
+
+          cpb.save()
+          messages.success(request, u'Los datos se guardaron con éxito!')
         else:
-            cpb.cae = None
-            cpb.cae_errores = respuesta.get('errores','')
-            cpb.cae_excepcion = respuesta.get('excepcion','')
-            cpb.cae_traceback = respuesta.get('traceback','')
-        
-        cpb.cae_xml_request = respuesta.get('XmlRequest','')   
-        cpb.cae_xml_response = respuesta.get('XmlResponse','')   
-
-        cpb.save()
-        messages.success(request, u'Los datos se guardaron con éxito!')
-
+          messages.error(request, u'El comprobante ya posée CAE!')
+          respuesta=dict(errores=u'El comprobante ya posée CAE!')
     return HttpResponse(json.dumps(respuesta,cls=DjangoJSONEncoder), content_type = "application/json")
 
 @login_required 
