@@ -1,0 +1,60 @@
+{% extends "index.html" %}
+{% load static from staticfiles %}
+{% load i18n %}
+{% load bootstrap3 %}
+{% load humanize %}
+{% block main %} 
+
+          <div class="col-md-12">               
+              <div class="row" id="barra_busqueda">
+                  <div class="col-md-12">
+                      <form class="form" accept-charset="UTF-8" role="form" action="" method="post">
+                      {% csrf_token %} 
+                      <div class="barra_busqueda  col-xs-12">                          
+                          <div class="col-sm-1 col-xs-1">{% bootstrap_field form.cpb_tipo  %}</div>                          
+                          <div class="col-sm-1 col-xs-1">{% bootstrap_field form.pto_vta  %}</div>                          
+                          <div class="col-sm-1 col-xs-1">{% bootstrap_field form.numero  %}</div>                          
+                          <div class="col-sm-1 col-xs-4"><button class="btn btn-sm color_barra" type="submit">Buscar</button></div>
+                      </div>     
+                      </form>                    
+                  </div>
+              </div>
+             <div class="row" id="barra_busqueda"> 
+                <div class="portlet box toolbar_blue">
+                    <div class="portlet-title">
+                        <div class="caption bold"><i class="icon-user"></i>RESPUESTA AFIP</div>
+                    </div> 
+                    <div class="portlet-body">
+                      <div class="col-md-12">                        
+                       
+                        <div class="row">  CAE Nº: <strong>{{datos_cpb.cae}}</strong></div>
+                        <div class="row">  Nº CPB: <strong>{{datos_cpb.cpb_nro}}</strong></div>
+                        <div class="row">  Nº PV:<strong> {{datos_cpb.punto_vta}}</strong></div>
+                        <div class="row">  Tipo CPB: <strong> {{datos_cpb.tipo_cbte}}</strong></div>
+                        <div class="row">  Importe Total: <strong>$ {{datos_cpb.imp_total}}</strong></div>
+                        <div class="row">  Importe Neto:<strong> $ {{datos_cpb.imp_neto}}</strong></div>
+                        <div class="row">  Importe IVA: <strong>$ {{datos_cpb.imp_iva}}</strong></div>
+                        <div class="row">  Ultimo Nª CPB:<strong> {{datos_cpb.ult_nro}}</strong></div>
+                        <div class="row">  Estado: <strong>{{datos_cpb.resultado}}</strong> </div>
+                        <div class="row">  Fecha CPB: <strong>{{datos_cpb.fecha_cbte|date:'d/m/Y'}}</strong></div>
+                        <div class="row">  Fecha Venc. CAE: <strong>{{datos_cpb.fecha_vencimiento|date:'d/m/Y'}}</strong></div>
+                        <div class="row">  Detalle: <strong>{{datos_cpb.detalle}}</strong></div>
+                        <div class="row">  Detalle Factura: <strong>{{datos_cpb.factura}}</strong></div>
+                       
+                          {{datos_cpb.errores}}
+                       
+                      </div>
+
+                    </div>     
+                </div> 
+               </div>
+
+                
+
+        </div>
+
+{% endblock main %}
+
+
+
+

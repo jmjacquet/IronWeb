@@ -66,7 +66,7 @@ class cpb_nro_afip(models.Model):
         db_table = 'cpb_nro_afip'
     
     def __unicode__(self):
-        return u'%s - %s --> %s' % (self.cpb_tipo,self.letra,self.numero_afip)  
+        return u' %s (%s %s)' % (self.numero_afip,self.get_cpb_tipo_display(),self.letra)
 
 class cpb_pto_vta(models.Model):
     id = models.IntegerField(u'Número',primary_key=True,db_index=True)
