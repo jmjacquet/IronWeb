@@ -225,6 +225,7 @@ def listar_cpbs_afip_faltantes(request):
     letra = request.GET.get('letra', '')
     inicio = int(request.GET.get('inicio', 1))
     fin = request.GET.get('fin', None)
+    lista_sistema = []
     if pv:
         try:
             cpbs = cpb_comprobante.objects.filter(cpb_tipo__compra_venta='V',letra=letra,pto_vta=pv,cae__isnull=False).order_by('-numero')
@@ -232,14 +233,16 @@ def listar_cpbs_afip_faltantes(request):
               fin = int(cpbs.first().numero)
             else:
               fin = int(fin)
-            cpbs.order_by('numero')
+            cpbs = list(set([int(x.numero) for x in cpbs]))
+            lista_optima = range(inicio,fin+1)        
+            lista_sistema = [int(x) for x in lista_optima if int(x) not in cpbs]
+            
         except:
             cpbs=None
-        lista_optima = range(inicio,fin+1)        
-        lista_sistema = [int(x.numero) for x in cpbs if int(x.numero) not in lista_optima]
-        print lista_optima,lista_sistema
-        return HttpResponse(lista_sistema) 
+        
+        # print lista_optima,lista_sistema
+        return HttpResponse(json.dumps(lista_sistema,cls=DjangoJSONEncoder), content_type='application/json' )  
         
 
     else:
-        return HttpResponse('No existe el PV!')     
+        return HttpResponse('No existe el PV!')      
