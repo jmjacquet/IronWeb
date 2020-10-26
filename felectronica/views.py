@@ -232,13 +232,14 @@ def listar_cpbs_afip_faltantes(request):
               fin = int(cpbs.first().numero)
             else:
               fin = int(fin)
-            cpbs.order_by('numero')
+            cpbs = list(set([int(x.numero) for x in cpbs]))
+            
         except:
             cpbs=None
         lista_optima = range(inicio,fin+1)        
-        lista_sistema = [int(x.numero) for x in cpbs if int(x.numero) not in lista_optima]
+        lista_sistema = [int(x) for x in lista_optima if int(x) not in cpbs]
         print lista_optima,lista_sistema
-        return HttpResponse(lista_sistema) 
+        return HttpResponse(json.dumps(lista_sistema,cls=DjangoJSONEncoder), content_type='application/json' )  
         
 
     else:
