@@ -16,5 +16,5 @@ urlpatterns = patterns('felectronica.views',
     url(r'^felectronica_cpb/$', CPBDatosView.as_view(),name="felectronica_cpb"),
     url(r'^felectronica_json/(?P<id>\d+)/$', felectronica_json,name="felectronica_json"),
     url(r'^verificar_existencia_cae/$', verificar_existencia_cae,name="verificar_existencia_cae"),
-    #url(r'^recuperar_cpbs_faltantes/$', recuperar_cpbs_faltantes,name="recuperar_cpbs_faltantes"),
+    url(r'^listar_cpbs_afip_faltantes/$', listar_cpbs_afip_faltantes,name="listar_cpbs_afip_faltantes"),
     )
