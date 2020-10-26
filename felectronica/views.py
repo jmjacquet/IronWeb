@@ -219,3 +219,27 @@ def verificar_existencia_cae(request):
     context['form'] = form    
     context['resultado'] = resultado 
     return render(request, 'general/varios/importar_cpbs.html',context)                
+
+def listar_cpbs_afip_faltantes(request):
+    pv = request.GET.get('pv', None)     
+    letra = request.GET.get('letra', '')
+    inicio = int(request.GET.get('inicio', 1))
+    fin = request.GET.get('fin', None)
+    if pv:
+        try:
+            cpbs = cpb_comprobante.objects.filter(cpb_tipo__compra_venta='V',letra=letra,pto_vta=pv,cae__isnull=False).order_by('-numero')
+            if not fin:
+              fin = int(cpbs.first().numero)
+            else:
+              fin = int(fin)
+            cpbs.order_by('numero')
+        except:
+            cpbs=None
+        lista_optima = range(inicio,fin+1)        
+        lista_sistema = [int(x.numero) for x in cpbs if int(x.numero) not in lista_optima]
+        print lista_optima,lista_sistema
+        return HttpResponse(lista_sistema) 
+        
+
+    else:
+        return HttpResponse('No existe el PV!')     

@@ -1149,3 +1149,10 @@ def facturarAFIP_simulac(request,idCpb):
     #       pass
             
     return data
+
+
+
+
+
+
+    
