@@ -17,40 +17,8 @@ from general.views import VariablesMixin
 from .facturacion import facturarAFIP,consultar_cae,recuperar_cpb_afip
 from comprobantes.models import *
 from django.core.serializers.json import DjangoJSONEncoder
-from .forms import ConsultaCAE,ConsultaCPB
+from .forms import RecuperarCPBS,ConsultaCPB
 
-class CAEView(VariablesMixin,TemplateView):
-    template_name = 'felectronica.html'
-    pk_url_kwarg = 'id'
-
-    @method_decorator(login_required)
-    def dispatch(self, *args, **kwargs):
-        return super(CAEView, self).dispatch(*args, **kwargs)
-
-    def get_context_data(self, **kwargs):
-        context = super(CAEView, self).get_context_data(**kwargs)        
-        try:
-            empresa = empresa_actual(self.request)
-        except gral_empresa.DoesNotExist:
-            empresa = None 
-        form = ConsultaCAE(self.request.POST or None,empresa=empresa,request=self.request)           
-        facturacion=None
-        cpb = None  
-        if form.is_valid():                                
-            idcpb = form.cleaned_data['idcpb']            
-            facturacion=consultar_cae(self.request,idcpb)                       
-            
-            try:
-                cpb=cpb_comprobante.objects.get(id=idcpb)       
-            except:
-                cpb = None    
-        context['facturacion'] =   facturacion        
-        context['cpb'] =   cpb     
-        context['form'] = form
-        return context
-
-    def post(self, *args, **kwargs):
-        return self.get(*args, **kwargs)
 
 class CPBDatosView(VariablesMixin,TemplateView):
     template_name = 'general/cpb_afip_consulta.html'
@@ -221,6 +189,7 @@ def verificar_existencia_cae(request):
     return render(request, 'general/varios/importar_cpbs.html',context)                
 
 def listar_cpbs_afip_faltantes(request):
+    
     pv = request.GET.get('pv', None)     
     letra = request.GET.get('letra', '')
     inicio = int(request.GET.get('inicio', 1))
@@ -236,7 +205,7 @@ def listar_cpbs_afip_faltantes(request):
             cpbs = list(set([int(x.numero) for x in cpbs]))
             lista_optima = range(inicio,fin+1)        
             lista_sistema = [int(x) for x in lista_optima if int(x) not in cpbs]
-            
+            lista_facturas = [recuperar_cpb_afip]
         except:
             cpbs=None
         
@@ -246,3 +215,76 @@ def listar_cpbs_afip_faltantes(request):
 
     else:
         return HttpResponse('No existe el PV!')      
+
+
+
+class recuperar_cpbs_afip(VariablesMixin,TemplateView):
+    template_name = 'general/varios/recuperar_cpbs_afip.html'
+    pk_url_kwarg = 'id'
+
+    @method_decorator(login_required)
+    def dispatch(self, *args, **kwargs):
+        return super(recuperar_cpbs_afip, self).dispatch(*args, **kwargs)
+
+    def get_context_data(self, **kwargs):
+        context = super(recuperar_cpbs_afip, self).get_context_data(**kwargs)        
+        try:
+            empresa = empresa_actual(self.request)
+        except gral_empresa.DoesNotExist:
+            empresa = None 
+        form = RecuperarCPBS(self.request.POST or None,empresa=empresa,request=self.request)           
+        resultado,lista_faltantes = [],[]
+        cpbs = None  
+        if form.is_valid():                                
+            cpb_tipo = form.cleaned_data['cpb_tipo']            
+            pto_vta = form.cleaned_data['pto_vta']                        
+            generar = form.cleaned_data['generar']            
+            
+            letra = cpb_tipo.letra
+            tipo = cpb_tipo.cpb_tipo
+            tipo_afip = cpb_tipo.numero_afip
+            cpbs = cpb_comprobante.objects.filter(cpb_tipo=tipo,letra=letra,pto_vta=pto_vta,cae__isnull=False)
+            id_cpbs = sorted(list(set([int(x.numero) for x in cpbs])))            
+            if id_cpbs:
+              lista_optima = range(id_cpbs[0],id_cpbs[-1]+1)        
+              lista_faltantes = [x for x in lista_optima if x not in id_cpbs]
+            # data = {                        
+            # 'cae': cae,
+            # 'fecha_vencimiento': fecha_vencimiento,
+            # 'cpb_nro':cpb_nro,
+            # 'resultado':resultado,
+            # 'motivo':motivo,
+            # 'reproceso':reproceso,
+            # 'observaciones' : observaciones,
+            # 'concepto':concepto,
+            # 'tipo_cbte': tipo_cpb,
+            # 'punto_vta':pto_vta,   
+            # 'fecha_cbte': fecha_cbte,
+            # 'imp_total': imp_total,
+            # 'imp_tot_conc': imp_tot_conc,
+            # 'imp_neto': imp_neto,
+            # 'imp_op_ex': imp_op_ex,
+            # 'imp_trib': imp_trib,
+            # 'imp_iva': imp_iva,    
+            # 'moneda_id': moneda_id,
+            # 'moneda_ctz': moneda_ctz,    
+            # 'detalle':detalle,
+            # 'ult_nro':ult_nro,
+            # 'errores':errores,
+            # 'factura':factura,
+            # }
+            if lista_faltantes:
+              for l in lista_faltantes:
+                datos=recuperar_cpb_afip(self.request,tipo_afip,pto_vta,l)
+                if datos:
+                  #busco el cpb relacionado superior
+                  cpb = cpbs.filter(numero=l+1).first()
+                  datos.update(cpb_sistema=cpb)
+                  resultado.append(datos)
+                        
+        context['resultado'] =   resultado        
+        context['form'] = form
+        return context
+
+    def post(self, *args, **kwargs):
+        return self.get(*args, **kwargs)
