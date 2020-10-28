@@ -92,6 +92,48 @@ def _autenticar(request,crt,key,service="wsfe", ttl=60*60*10,cuit=None):
 from django.http import JsonResponse
 from pyafipws.wsfev1 import WSFEv1
 
+def ultimo_cpb_afip(request,tipo_cpb,pto_vta):
+    
+        empresa = empresa_actual(request)
+        HOMO = empresa.homologacion
+
+        if HOMO:
+            WSDL = "https://wswhomo.afip.gov.ar/wsfev1/service.asmx?WSDL"
+            WSAA_URL = "https://wsaahomo.afip.gov.ar/ws/services/LoginCms"
+        else:
+            WSDL="https://servicios1.afip.gov.ar/wsfev1/service.asmx?WSDL"    
+            WSAA_URL = "https://wsaa.afip.gov.ar/ws/services/LoginCms"    
+
+               
+        appserver_status = ''
+        dbserver_status = ''
+        authserver_status = ''
+        #try:
+        fecha = datetime.now().strftime("%Y%m%d")
+        wsfev1 = WSFEv1()
+        
+        wsfev1.Conectar(wsdl=WSDL)
+        
+        cuit = empresa.cuit
+        # cuit = 30714843571
+        wsfev1.Cuit = cuit
+
+        crt = empresa.fe_crt
+        key= empresa.fe_key
+
+        wsfev1.Token, wsfev1.Sign = _autenticar(request,crt=crt,key=key,cuit=cuit)        
+
+        wsfev1.Dummy()
+        appserver_status = wsfev1.AppServerStatus
+        dbserver_status = wsfev1.DbServerStatus
+        authserver_status = wsfev1.AuthServerStatus
+       
+        
+        ult_nro = long(wsfev1.CompUltimoAutorizado(tipo_cpb, pto_vta) or 0)        
+   
+        return ult_nro
+
+
 def recuperar_cpb_afip(request,tipo_cpb,pto_vta,nro_cpb):
     
         empresa = empresa_actual(request)

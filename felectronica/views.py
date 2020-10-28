@@ -14,7 +14,7 @@ from django.contrib import messages
 import json
 import urllib
 from general.views import VariablesMixin
-from .facturacion import facturarAFIP,consultar_cae,recuperar_cpb_afip
+from .facturacion import facturarAFIP,consultar_cae,recuperar_cpb_afip,ultimo_cpb_afip
 from comprobantes.models import *
 from django.core.serializers.json import DjangoJSONEncoder
 from .forms import RecuperarCPBS,ConsultaCPB
@@ -248,7 +248,8 @@ class recuperar_cpbs_afip(VariablesMixin,TemplateView):
             cpbs = cpb_comprobante.objects.filter(cpb_tipo=tipo,letra=letra,pto_vta=pto_vta,cae__isnull=False)
             id_cpbs = sorted(list(set([int(x.numero) for x in cpbs])))            
             if id_cpbs:
-              lista_optima = range(id_cpbs[0],id_cpbs[-1]+1)        
+              utimo_cpb=int(ultimo_cpb_afip(self.request,tipo_afip,pto_vta))
+              lista_optima = range(id_cpbs[0],utimo_cpb)        
               lista_faltantes = [x for x in lista_optima if x not in id_cpbs]
             # data = {                        
             # 'cae': cae,
