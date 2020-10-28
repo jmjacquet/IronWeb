@@ -175,7 +175,7 @@ def verificar_existencia_cae(request):
                       cpb_ti.save()
                     
                 except Exception as e:
-                  print e
+                  pass
 
                   #if cpb_sig:
               tot=len(listado_cae_faltantes)
@@ -288,7 +288,6 @@ class recuperar_cpbs_afip(VariablesMixin,TemplateView):
                       cpb_sig = cpb
                       cpb_sig_det = cpb_comprobante_detalle.objects.filter(cpb_comprobante=cpb_sig)
                       #import pdb; pdb.set_trace()
-                      print cpb_sig
                       if cpb_sig:
                         cpb_creado = deepcopy(cpb_sig)
                         cpb_creado.id = None                  
@@ -312,7 +311,7 @@ class recuperar_cpbs_afip(VariablesMixin,TemplateView):
                           cpb_ti = cpb_comprobante_tot_iva(cpb_comprobante=cpb_creado,tasa_iva=tasa,importe_total=cc['importe_total'],importe_base=cc['importe_base'])
                           cpb_ti.save()
                     except Exception as e:
-                      print e
+                      pass
                         
         context['resultado'] =   resultado        
         context['form'] = form
