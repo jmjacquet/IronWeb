@@ -569,10 +569,8 @@ def cpb_facturar_afip(request):
 @login_required 
 def respuesta(request):
     respuesta = ['holaaa']    
-    print 'holaaa'
     import time
     time.sleep(5)
-    print 'chau'
     return HttpResponse(json.dumps(respuesta,cls=DjangoJSONEncoder), content_type = "application/json")
 
 @login_required 

@@ -52,12 +52,11 @@
                                 <th class="text-center" width="5%">CPB Siguiente Sistema</th>
                                 <th class="text-center" width="5%">Fecha</th>
                                 <th class="text-center" width="15%">Tipo CPB</th>
-                                <th class="text-center" width="5%">PV</th>
-                                <th class="text-center" width="5%">Letra</th>
+                                <th class="text-center" width="5%">PV</th>                                
                                 <th class="text-center" width="5%">Nº</th>
                                 <th class="imprimir">CAE</th>
-                                <th class="text-center" width="15%">TDoc</th>
-                                <th class="text-center" width="15%">NºDoc</th>
+                                <th class="text-center" width="15%">TipoDoc</th>
+                                <th class="text-center" width="15%">NºDoc/CUIT</th>
                                 <th class="text-center" width="15%">Receptor</th>
                                 <th class="imprimir">Neto Gravado</th>
                                 <th class="imprimir">Neto NoGravado</th>
@@ -73,7 +72,6 @@
                                     <td class="text-center">{{ r.fecha_cbte|date:'d/m/Y' }}</td>
                                     <td class="text-center">{{ r.tipo_cbte|default_if_none:'' }}</td>
                                     <td class="text-center">{{ r.punto_vta|default_if_none:'' }}</td>
-                                    <td class="text-center">{{ r.letra|default_if_none:'' }}</td>
                                     <td class="text-center">{{ r.factura.cbt_desde|default_if_none:'' }}</td>
                                     <td>{{ r.cae|default_if_none:'' }}</td>
                                     <td class="text-center">{{ r.factura.tipo_doc|default_if_none:'' }}</td>
@@ -103,10 +101,10 @@
                             <th></th>
                             <th></th>
                             <th></th>
-                            <th></th>
                         </tr>
                         </tfoot>
                     </table>
+                    {{resultado}}
                 {% else %}
                     
                     <div class="col-xs-12 ">
@@ -115,7 +113,7 @@
                     </div>
                     
                 {% endif %}
-                {{resultado}}
+                
             </div>
         </div>
     </div>

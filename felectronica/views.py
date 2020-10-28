@@ -150,12 +150,13 @@ def verificar_existencia_cae(request):
                   cpb_sig = cpb_comprobante.objects.filter(numero=nro_sig,pto_vta=pv,importe_total=imp_total,letra=letra,cpb_tipo__tipo=t).first()
                   cpb_sig_det = cpb_comprobante_detalle.objects.filter(cpb_comprobante=cpb_sig)
                   #import pdb; pdb.set_trace()
-
+                  datos=recuperar_cpb_afip(request,tipo_afip,pv,nro)
                   if cpb_sig:
                     cpb_creado = deepcopy(cpb_sig)
                     cpb_creado.id = None                  
                     cpb_creado.numero = nro                  
                     cpb_creado.cae = cae
+                    cpb_creado.cae_vto = datos['fecha_vencimiento']
                     cpb_creado.saldo = 0
                     cpb_creado.estado = cpb_estado.objects.get(pk=2)
                     cpb_creado.save()
@@ -217,7 +218,6 @@ def listar_cpbs_afip_faltantes(request):
         return HttpResponse('No existe el PV!')      
 
 
-
 class recuperar_cpbs_afip(VariablesMixin,TemplateView):
     template_name = 'general/varios/recuperar_cpbs_afip.html'
     pk_url_kwarg = 'id'
@@ -234,12 +234,14 @@ class recuperar_cpbs_afip(VariablesMixin,TemplateView):
             empresa = None 
         form = RecuperarCPBS(self.request.POST or None,empresa=empresa,request=self.request)           
         resultado,lista_faltantes = [],[]
-        cpbs = None  
+        cpbs = None          
         if form.is_valid():                                
+            from copy import deepcopy
             cpb_tipo = form.cleaned_data['cpb_tipo']            
             pto_vta = form.cleaned_data['pto_vta']                        
             generar = form.cleaned_data['generar']            
-            
+            if generar=='':
+              generar=2
             letra = cpb_tipo.letra
             tipo = cpb_tipo.cpb_tipo
             tipo_afip = cpb_tipo.numero_afip
@@ -281,6 +283,36 @@ class recuperar_cpbs_afip(VariablesMixin,TemplateView):
                   cpb = cpbs.filter(numero=l+1).first()
                   datos.update(cpb_sistema=cpb)
                   resultado.append(datos)
+                  if int(generar)==1:
+                    try:
+                      cpb_sig = cpb
+                      cpb_sig_det = cpb_comprobante_detalle.objects.filter(cpb_comprobante=cpb_sig)
+                      #import pdb; pdb.set_trace()
+                      print cpb_sig
+                      if cpb_sig:
+                        cpb_creado = deepcopy(cpb_sig)
+                        cpb_creado.id = None                  
+                        cpb_creado.numero = l                  
+                        cpb_creado.cae = datos['cae']
+                        cpb_creado.cae_vto = datos['fecha_vencimiento']
+                        cpb_creado.saldo = 0
+                        cpb_creado.estado = cpb_estado.objects.get(pk=2)
+                        cpb_creado.save()
+                        
+                        for d in cpb_sig_det:
+                          d_new = deepcopy(d)
+                          d_new.id = None
+                          d_new.cantidad = 0
+                          d_new.cpb_comprobante = cpb_creado
+                          d_new.save()
+                        
+                        coeficientes=cpb_sig_det.filter(tasa_iva__id__gt=2).values('tasa_iva').annotate(importe_total=Sum('importe_iva'),importe_base=Sum('importe_subtotal'))
+                        for cc in coeficientes:
+                          tasa = gral_tipo_iva.objects.get(pk=cc['tasa_iva'])       
+                          cpb_ti = cpb_comprobante_tot_iva(cpb_comprobante=cpb_creado,tasa_iva=tasa,importe_total=cc['importe_total'],importe_base=cc['importe_base'])
+                          cpb_ti.save()
+                    except Exception as e:
+                      print e
                         
         context['resultado'] =   resultado        
         context['form'] = form
