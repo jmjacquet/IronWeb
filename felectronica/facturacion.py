@@ -598,8 +598,7 @@ def facturarAFIP(request,idCpb):
         except:
             ultimo_cbte_sistema = ultimo_cbte_afip
 
-        print ultimo_cbte_sistema,ultimo_cbte_afip
-        
+                
         #Si el ultimo de afip no existe en el sistema lo genero, sinó lo recupero
         if (ultimo_cbte_afip>ultimo_cbte_sistema):
             
@@ -613,8 +612,7 @@ def facturarAFIP(request,idCpb):
             data['authserver_status']=authserver_status
             
             datos_cpb = recuperar_cpb_afip(request,tipo_cpb,pto_vta,ultimo_cbte_afip)
-            print datos_cpb
-
+            
             return data      
 
         else:
