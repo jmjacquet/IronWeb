@@ -558,8 +558,9 @@ def facturarAFIP(request,idCpb):
         data['appserver_status']=appserver_status
         data['dbserver_status']=dbserver_status
         data['authserver_status']=authserver_status
-        #data['errores']=u'¡Falló la comunicación con los servidores de AFIP / Certificados NO VALIDOS!'
-        data['errores']= str(e)
+        data['errores']=u'¡Falló la comunicación con los servidores de AFIP / Certificados NO VALIDOS! ('+str(e)+')'
+        #data['errores']= str(e)
+        
         return data         
 
     try:
