@@ -1051,29 +1051,54 @@ def facturarAFIP_simulac(request,idCpb):
         print lista_cpbs_faltantes
 
         for n in lista_cpbs_faltantes:
-            wsfev1.CompConsultar(tipo_cpb, pto_vta, n) 
+            
+            wsfev1.CompConsultar(tipo_cpb, pto_vta, n)             
             print wsfev1.factura
-                         
-            # cpb_nro = wsfev1.CbteNro
-            # fecha_vencimiento = wsfev1.Vencimiento    
-            # resultado = wsfev1.Resultado
-            # motivo = wsfev1.Motivo
-            # reproceso = wsfev1.Reproceso
-            # imp_total = wsfev1.ImpTotal
-            # cae = wsfev1.CAE       
-            # observaciones = wsfev1.Observaciones    
-            # fecha_cbte = wsfev1.FechaCbte
-            # concepto = wsfev1.ObtenerCampoFactura('concepto')    
-            # imp_tot_conc = wsfev1.ObtenerCampoFactura('imp_tot_conc')
-            # imp_neto = wsfev1.ImpNeto
-            # imp_op_ex = wsfev1.ImpOpEx
-            # imp_trib = wsfev1.ImpTrib
-            # imp_iva = wsfev1.ImpIVA      
-            # moneda_id = wsfev1.ObtenerCampoFactura('moneda_id')
-            # moneda_ctz = wsfev1.ObtenerCampoFactura('moneda_ctz')
-            # factura = wsfev1.factura
-            # errores=wsfev1.ErrMsg
+
+            cae = wsfev1.CAE
+            fecha_vencimiento = None
+            fecha_cbte = None
+            EmisionTipo = ''
+            if cae:
+                fecha_vencimiento = datetime.strptime(wsfev1.Vencimiento,'%Y%m%d')
+                EmisionTipo = wsfev1.EmisionTipo        
+                fecha_cbte =datetime.strptime(wsfev1.FechaCbte,'%Y%m%d')     
+
+            detalle = ''
         
+            if cae=='':        
+                detalle= u"La página esta caida o la respuesta es inválida"
+            elif (wsfev1.Resultado!="A"):
+                detalle= u"No se asignó CAE (Rechazado). Motivos:%s" %wsfev1.Motivo
+            elif wsfev1.Observaciones!="":
+                detalle = u"Se asignó CAE pero con advertencias. Motivos: %s" %wsfev1.Observaciones   
+                
+            cpb_nro = wsfev1.CbteNro
+            fecha_vencimiento = wsfev1.Vencimiento.strftime("%Y%m%d")    
+            resultado = wsfev1.Resultado
+            motivo = wsfev1.Motivo
+            reproceso = wsfev1.Reproceso
+            imp_total = wsfev1.ImpTotal
+                   
+            observaciones = wsfev1.Observaciones    
+            fecha_cbte = wsfev1.FechaCbte.strftime("%Y%m%d")
+            concepto = wsfev1.ObtenerCampoFactura('concepto')    
+            imp_tot_conc = wsfev1.ObtenerCampoFactura('imp_tot_conc')
+            imp_neto = wsfev1.ImpNeto
+            imp_op_ex = wsfev1.ImpOpEx
+            imp_trib = wsfev1.ImpTrib
+            imp_iva = wsfev1.ImpIVA      
+            moneda_id = wsfev1.ObtenerCampoFactura('moneda_id')
+            moneda_ctz = wsfev1.ObtenerCampoFactura('moneda_ctz')
+            factura = wsfev1.factura
+            errores=wsfev1.ErrMsg
+            
+            
+
+                     
+            
+            ult_nro = long(wsfev1.CompUltimoAutorizado(tipo_cpb, pto_vta) or 0)
+
         
         return data      
     else:
