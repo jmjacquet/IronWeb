@@ -14,7 +14,7 @@ from django.contrib import messages
 import json
 import urllib
 from general.views import VariablesMixin
-from .facturacion import facturarAFIP,consultar_cae,recuperar_cpb_afip,ultimo_cpb_afip
+from .facturacion import facturarAFIP,consultar_cae,recuperar_cpb_afip,ultimo_cpb_afip,facturarAFIP_simulac
 from comprobantes.models import *
 from django.core.serializers.json import DjangoJSONEncoder
 from .forms import RecuperarCPBS,ConsultaCPB
@@ -189,8 +189,7 @@ def verificar_existencia_cae(request):
     context['resultado'] = resultado 
     return render(request, 'general/varios/importar_cpbs.html',context)                
 
-def listar_cpbs_afip_faltantes(request):
-    
+def listar_cpbs_afip_faltantes(request):    
     pv = request.GET.get('pv', None)     
     letra = request.GET.get('letra', '')
     inicio = int(request.GET.get('inicio', 1))
@@ -213,7 +212,6 @@ def listar_cpbs_afip_faltantes(request):
         # print lista_optima,lista_sistema
         return HttpResponse(json.dumps(lista_sistema,cls=DjangoJSONEncoder), content_type='application/json' )  
         
-
     else:
         return HttpResponse('No existe el PV!')      
 
@@ -320,3 +318,19 @@ class recuperar_cpbs_afip(VariablesMixin,TemplateView):
 
     def post(self, *args, **kwargs):
         return self.get(*args, **kwargs)
+
+
+
+
+@login_required 
+def cpb_facturar_simulacion(request):
+    respuesta = []    
+    id = request.GET.get('id', None)     
+    try:
+      cpb = cpb_comprobante.objects.get(pk=id) 
+    except:
+      cpb=None
+    if cpb:
+      respuesta = facturarAFIP_simulac(request,id)      
+          
+    return HttpResponse(json.dumps(respuesta,cls=DjangoJSONEncoder), content_type = "application/json")
