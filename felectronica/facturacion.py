@@ -1097,7 +1097,7 @@ def facturarAFIP_simulac(request,idCpb):
 
                      
             
-            ult_nro = long(wsfev1.CompUltimoAutorizado(tipo_cpb, pto_vta) or 0)
+            
 
         
         return data      
