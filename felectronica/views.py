@@ -309,8 +309,28 @@ class recuperar_cpbs_afip(VariablesMixin,TemplateView):
                           tasa = gral_tipo_iva.objects.get(pk=cc['tasa_iva'])       
                           cpb_ti = cpb_comprobante_tot_iva(cpb_comprobante=cpb_creado,tasa_iva=tasa,importe_total=cc['importe_total'],importe_base=cc['importe_base'])
                           cpb_ti.save()
+                      else:
+                        #tengo que generarlo con los datos que trago de la factura de afip
+
+                        # cpb_creado = cpb_comprobante()
+                        # cpb_creado.numero = l                  
+                        # cpb_creado.cae = datos['cae']
+                        # cpb_creado.cae_vto = datos['fecha_vencimiento']
+                        # cpb_creado.saldo = 0
+                        # cpb_creado.estado = cpb_estado.objects.get(pk=2)
+                        # cpb_creado.save()
+
+                        # for d in cpb_sig_det:
+                        #   d_new = cpb_comprobante_detalle(d)
+                        #   d_new.id = None
+                        #   d_new.cantidad = 0
+                        #   d_new.cpb_comprobante = cpb_creado
+                        #   d_new.save()
+                        
+                        
+                        pass
                     except Exception as e:
-                      pass
+                      resultado.append(e)
                         
         context['resultado'] =   resultado        
         context['form'] = form

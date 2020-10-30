@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 from django.template import RequestContext,Context
 from django.shortcuts import render, redirect, get_object_or_404,render_to_response,HttpResponseRedirect,HttpResponse
+from django.template.loader import render_to_string,get_template
 from django.views.generic import TemplateView,ListView,CreateView,UpdateView,FormView,DetailView
 from django.core.urlresolvers import reverse
 from django.contrib.auth.decorators import login_required
@@ -9,1537 +10,2290 @@ from django.db import connection
 from datetime import datetime,date,timedelta
 from django.utils import timezone
 from dateutil.relativedelta import *
-from .forms import *
+from .forms import MovimCuentasForm,BancosForm,MovimCuentasFPForm,PercImpForm,FormaPagoForm,PtoVtaForm,DispoForm,SeguimientoForm,FormCheques,FormChequesCobro,PtoVtaEditForm,RetencForm
 from django.http import HttpResponseRedirect,HttpResponseForbidden,HttpResponse
-from django.db.models import Q,Sum,Count,FloatField,Func
-from comprobantes.models import *
+from django.db.models import Q,Sum,Count,F,DecimalField
+from .models import *
 import json
+import random
 from decimal import *
 from modal.views import AjaxCreateView,AjaxUpdateView,AjaxDeleteView
 from django.contrib import messages
 from general.utilidades import *
+from general.models import gral_empresa
 from general.views import VariablesMixin,getVariablesMixin
-from general.forms import pto_vta_habilitados,pto_vta_habilitados_list
 from usuarios.views import tiene_permiso
-from django.forms.models import inlineformset_factory,BaseInlineFormSet,formset_factory
-from productos.models import prod_productos
+from django.forms.models import inlineformset_factory,BaseInlineFormSet,modelformset_factory
+from productos.models import prod_productos,prod_producto_ubicac,prod_producto_lprecios
 from django.contrib.messages.views import SuccessMessageMixin
 from django.core.serializers.json import DjangoJSONEncoder
-from comprobantes.views import ultimoNro,buscarDatosProd,presup_aprobacion,cobros_cpb
-from django.db.models import DateTimeField, ExpressionWrapper, F, DecimalField, Max
-from easy_pdf.rendering import render_to_pdf_response
-from django.db.models.expressions import RawSQL
-
-################################################################
-def cuenta_corriente(request,compra_venta,entidad,fdesde,fhasta,estado,empresa):
-    #Cta_cte Clientes
-    
-    cpbs = cpb_comprobante.objects.filter(cpb_tipo__usa_ctacte=True,cpb_tipo__compra_venta=compra_venta,empresa=empresa).select_related('estado','cpb_tipo','entidad').order_by('entidad__apellido_y_nombre','fecha_cpb','cpb_tipo__tipo')
-    if entidad:
-               cpbs= cpbs.filter(entidad=entidad)    
-    if int(estado) == 0:                
-        cpbs=cpbs.filter(estado__in=[1,2])                
-    elif int(estado) == 2:                
-        cpbs=cpbs.filter(estado__in=[3])
-    else:                
-        cpbs=cpbs.filter(estado__in=[1,2,3])
-    if fdesde:                
-        cpbs=cpbs.filter(fecha_cpb__gte=fdesde)          
-    if fhasta:                
-        cpbs=cpbs.filter(fecha_cpb__lte=fhasta) 
-
-    return cpbs
+from general.forms import ConsultaCpbs,pto_vta_habilitados,pto_vta_habilitados_list,ConsultaCpbsCompras
+from django.utils.functional import curry 
+from django.forms.models import model_to_dict
 
 @login_required 
-def cta_cte_clientes(request,id=None):
-    limpiar_sesion(request)
-    if not tiene_permiso(request,'rep_cta_cte_clientes'):
-            return redirect(reverse('principal'))  
-    context = {}
-    context = getVariablesMixin(request)    
+def recalcular_precios(request):
+    detalles = cpb_comprobante_detalle.objects.filter(cpb_comprobante__cpb_tipo__tipo__in=[1,2,3,9,14,21,22,23],cpb_comprobante__cpb_tipo__usa_stock=True)
+    for c in detalles:
+        lp = prod_producto_lprecios.objects.get(producto=c.producto,lista_precios=c.lista_precios)
+        c.importe_costo = lp.precio_costo
+        c.save()
+
+    return HttpResponseRedirect(reverse('principal')) 
+
+@login_required 
+def recalcular_cpbs(request):
+    comprobantes = cpb_comprobante.objects.all()
+    for c in comprobantes:
+        recalcular_saldo_cpb(c.id)
+
+    return HttpResponseRedirect(reverse('principal')) 
+
+@login_required 
+def recalcular_cobranzas(request):
+
+    comprobantes = cpb_comprobante.objects.filter(cpb_tipo__tipo__in = [4,7,8])    
+    for c in comprobantes:
+        recalcular_saldos_cobranzas(c.id)
+
+    return HttpResponseRedirect(reverse('principal')) 
+
+@login_required 
+def eliminar_detalles_fp_huerfanos(request):
+    empresa = empresa_actual(request)
+    ids = cpb_comprobante.objects.all().values_list('id',flat=True)
+    ids = [int(x) for x in ids]
+    
+    detalles = cpb_comprobante_detalle.objects.filter(cpb_comprobante__empresa=empresa).exclude(cpb_comprobante__id__in=ids).values_list('cpb_comprobante',flat=True)
+
+    # for c in detalles
+    #     recalcular_saldo_cpb(c.id)
+
+    return HttpResponse( json.dumps(list(detalles), cls=DjangoJSONEncoder), content_type='application/json' )     
+  
+@login_required 
+def recalcular_compras(request):
+    usr= request.user     
     try:
-        empresa = empresa_actual(request)
+        usuario = usr                        
+    except:
+        usuario = None         
+    try:
+        tipo_usr = usr.userprofile.id_usuario.tipoUsr
+    except:
+        tipo_usr = 1
+    try:
+        empresa = usr.userprofile.id_usuario.empresa
     except gral_empresa.DoesNotExist:
-        empresa = None 
+        empresa = None           
+    comprobantes = cpb_comprobante.objects.filter(cpb_tipo__tipo__in=[1,2,3,9,21,22,23],cpb_tipo__compra_venta='C',empresa=empresa).order_by('-fecha_cpb','-id','-fecha_creacion')
+    for c in comprobantes:
+        recalcular_saldo_cpb(c.id)
 
-    form = ConsultaCtaCteCliente(request.POST or None,empresa=empresa,id=id,request=request)   
-        
-    cpbs = None
-    total_debe = 0  
-    total_haber = 0
-    total_ctacte_debe = 0    
-    total_ctacte_haber = 0
-    saldo_anterior_debe = 0  
-    saldo_anterior_haber = 0
-    saldo_anterior = 0 
-    fecha = date.today()
-    datos = []       
-
-    inicial = (request.method == 'GET')and id    
-
-    if form.is_valid() or inicial:                                
-        if inicial:
-            entidad = egr_entidad.objects.get(id=id)
-            fdesde = inicioMes()
-            fhasta = hoy()
-            estado = 0
-        else:
-            entidad = form.cleaned_data['entidad']                                                              
-            fdesde = form.cleaned_data['fdesde']   
-            fhasta = form.cleaned_data['fhasta']   
-            estado = form.cleaned_data['estado']                         
-                
-        cpbs = cuenta_corriente(request,'V',entidad,None,None,estado,empresa)
-                
-        try:
-            total_debe = cpbs.filter(cpb_tipo__tipo__in=[1,3,9]).aggregate(sum=Sum(F('importe_total'), output_field=DecimalField()))['sum'] or 0
-            total_haber = cpbs.filter(cpb_tipo__tipo__in=[2,4]).aggregate(sum=Sum(F('importe_total'), output_field=DecimalField()))['sum'] or 0
-
-        except:
-            total_debe = 0  
-            total_haber = 0             
-        
-        cpbs = cuenta_corriente(request,'V',entidad,fdesde,fhasta,estado,empresa)
-
-        try:
-            total_ctacte_debe = cpbs.filter(cpb_tipo__tipo__in=[1,3,9]).aggregate(sum=Sum(F('importe_total'), output_field=DecimalField()))['sum'] or 0          
-            total_ctacte_haber = cpbs.filter(cpb_tipo__tipo__in=[2,4]).aggregate(sum=Sum(F('importe_total'), output_field=DecimalField()))['sum'] or 0          
-        except:
-            total_ctacte_debe = 0    
-            total_ctacte_haber = 0
-
-        try:
-            saldo_anterior_debe = total_debe - total_ctacte_debe        
-            saldo_anterior_haber = total_haber - total_ctacte_haber  
-            saldo_anterior = saldo_anterior_debe - saldo_anterior_haber               
-        except:
-            saldo_anterior_debe = 0  
-            saldo_anterior_haber = 0
-            saldo_anterior = 0
-        
-        saldo = saldo_anterior
-        for i in cpbs:
-                saldo += (i.importe_total*i.cpb_tipo.signo_ctacte)
-                
-                datos.append(
-                    {
-                        'estado_id':i.estado.pk,
-                        'estado_color':i.estado.color,
-                        'fecha_cpb': i.fecha_cpb,
-                        'cpb_tipo': i.cpb_tipo,
-                        'observacion':i.observacion,                        
-                        'signo_ctacte':i.cpb_tipo.signo_ctacte,
-                        'cpb_tipo.tipo': i.cpb_tipo.tipo,
-                        'id':i.id,
-                        'get_cpb':i.get_cpb,
-                        'cpb_tipo.nombre':i.cpb_tipo.nombre,
-                        'fecha_vto':i.fecha_vto,
-                        'importe_total':i.importe_total,
-                        'saldo': saldo,
-                    }
-                )
-    context['form'] = form
-    context['cpbs'] = datos
-    context['fecha'] = fecha
-    context['total_debe'] = total_debe
-    context['total_haber'] = total_haber
-    context['total_ctacte_debe'] = total_ctacte_debe
-    context['total_ctacte_haber'] = total_ctacte_haber
-    context['saldo_anterior_debe'] = saldo_anterior_debe
-    context['saldo_anterior_haber'] = saldo_anterior_haber
-    context['saldo_anterior'] = saldo_anterior
-
-    if (request.POST.get('submit') == 'Imprimir'):        
-        cpbs = datos
-        cant = len(cpbs)
-        entidad = entidad  
-        return render_to_pdf_response(request,'reportes/cta_cte/reporte_cta_cte.html',locals())  
-
-    return render(request,'reportes/cta_cte/cta_cte_clientes.html',context )
-
-class saldos_clientes(VariablesMixin,ListView):
-    model = cpb_comprobante
-    template_name = 'reportes/cta_cte/saldos_clientes.html'
-    context_object_name = 'cpbs'    
-
-    @method_decorator(login_required)
-    def dispatch(self, *args, **kwargs):         
-        limpiar_sesion(self.request)        
-        if not tiene_permiso(self.request,'rep_saldos_clientes'):
-            return redirect(reverse('principal'))  
-        return super(saldos_clientes, self).dispatch(*args,**kwargs)
-
-    def get_context_data(self, **kwargs):
-        context = super(saldos_clientes, self).get_context_data(**kwargs)
-        try:
-            empresa = empresa_actual(self.request)
-        except gral_empresa.DoesNotExist:
-            empresa = None 
-        form = ConsultaSaldosClientes(self.request.POST or None,empresa=empresa,request=self.request)            
-        fecha = date.today()
-        totales = None
-        
-        if form.is_valid():                                            
-            cpbs = cpb_comprobante.objects.filter(pto_vta__in=pto_vta_habilitados_list(self.request),cpb_tipo__usa_ctacte=True,cpb_tipo__compra_venta='V',empresa=empresa,estado__in=[1,2]).select_related('entidad')
-            entidad = form.cleaned_data['entidad']                                                                           
-            if entidad:
-               cpbs= cpbs.filter(entidad=entidad)                                    
-            totales = cpbs.extra(select={'ultimo_pago':"SELECT MAX(cpb.fecha_imputacion) FROM cpb_comprobante cpb WHERE ((cpb.empresa=cpb_comprobante.empresa)AND(cpb.estado_id IN (1,2))AND(cpb.entidad=cpb_comprobante.entidad)AND(cpb.cpb_tipo=7))"})
-            totales = totales.values('entidad','entidad__apellido_y_nombre','entidad__codigo','entidad__fact_cuit','ultimo_pago')\
-            .annotate(saldo=Sum(F('importe_total')*F('cpb_tipo__signo_ctacte'), output_field=DecimalField())).order_by('-saldo','entidad__apellido_y_nombre')                        
-        context['form'] = form        
-        context['fecha'] = fecha
-        context['totales'] = totales
-        return context
-    def post(self, *args, **kwargs):
-        return self.get(*args, **kwargs)
-
-################################################################
+    return HttpResponseRedirect(reverse('cpb_compra_listado'))    
 
 @login_required 
-def cta_cte_proveedores(request,id=None):
-         
-        limpiar_sesion(request)        
-        if not tiene_permiso(request,'rep_cta_cte_prov'):
-            return redirect(reverse('principal'))          
+def recalcular_presupuestos(request):
+    usr= request.user     
+    try:
+        usuario = usr                        
+    except:
+        usuario = None         
+    try:
+        tipo_usr = usr.userprofile.id_usuario.tipoUsr
+    except:
+        tipo_usr = 1
+    try:
+        empresa = usr.userprofile.id_usuario.empresa
+    except gral_empresa.DoesNotExist:
+        empresa = None           
+    comprobantes = cpb_comprobante.objects.filter(cpb_tipo__tipo__in=[6],cpb_tipo__compra_venta='V',empresa=empresa).order_by('-fecha_cpb','-id','-fecha_creacion')
+    for c in comprobantes:
+        recalcular_saldo_cpb(c.id)
 
-        context = {}
-        context = getVariablesMixin(request)    
-        try:
-            empresa = empresa_actual(request)
-        except gral_empresa.DoesNotExist:
-            empresa = None 
-        form = ConsultaCtaCteProv(request.POST or None,empresa=empresa,id=id,request=request)   
-        cpbs = None
-        total_debe = 0  
-        total_haber = 0
-        total_ctacte_debe = 0    
-        total_ctacte_haber = 0
-        saldo_anterior_debe = 0  
-        saldo_anterior_haber = 0
-        saldo_anterior = 0 
-        fecha = date.today()
-        datos = [] 
-        inicial = (request.method == 'GET')and id    
+    return HttpResponseRedirect(reverse('cpb_presup_listado'))
 
-        if form.is_valid() or inicial:                                 
-            if inicial:
-                entidad = egr_entidad.objects.get(id=id)
-                fdesde = inicioMes()
-                fhasta = hoy()
-                estado = 0
-            else:
-                entidad = form.cleaned_data['entidad']                                                              
-                fdesde = form.cleaned_data['fdesde']   
-                fhasta = form.cleaned_data['fhasta']   
-                estado = form.cleaned_data['estado']                  
-                    
-            #cpbs = cpb_comprobante.objects.filter(entidad=entidad,cpb_tipo__usa_ctacte=True,cpb_tipo__compra_venta='C',empresa=empresa).select_related('cpb_tipo','entidad','pto_vta').order_by('entidad__apellido_y_nombre','fecha_cpb','cpb_tipo__tipo')
-            cpbs = cuenta_corriente(request,'C',entidad,None,None,estado,empresa)            
-            
-            # if int(estado) == 0:                
-            #     cpbs=cpbs.filter(estado__in=[1,2])                
-            # elif int(estado) == 2:                
-            #     cpbs=cpbs.filter(estado__in=[3])
-            # else:                
-            #     cpbs=cpbs.filter(estado__in=[1,2,3])
+def puedeEditarCPB(idCpb):
+    cpb=cpb_comprobante.objects.get(pk=idCpb)
+    #Si es factura NC ND o Recibo
+    puede=(cpb.estado.id<3)
+    if cpb.cpb_tipo.tipo not in [4,7]:     
+        puede=(cpb.importe_total==cpb.saldo) and (puede)       
+    if cpb.cpb_tipo.facturable:
+        puede=not(cpb.cae) and (puede)    
+    return puede
 
-            try:
-                total_haber = cpbs.filter(cpb_tipo__tipo__in=[1,3,9]).aggregate(sum=Sum(F('importe_total'), output_field=DecimalField()))['sum'] or 0          
-                total_debe = cpbs.filter(cpb_tipo__tipo__in=[2,7]).aggregate(sum=Sum(F('importe_total'), output_field=DecimalField()))['sum'] or 0             
-            except:
-                total_debe = 0  
-                total_haber = 0  
+def puedeEliminarCPB(idCpb):
+    cpb=cpb_comprobante.objects.get(pk=idCpb)
+    #Si es factura NC ND o Recibo
+    puede=(cpb.estado.id<=3)
+    if cpb.cpb_tipo.tipo not in [4,7]:     
+        puede=(cpb.importe_total==cpb.saldo) and (puede)       
+    puede=(not(cpb.cae)) and (puede)    
+    return puede
 
-            cpbs = cuenta_corriente(request,'C',entidad,fdesde,fhasta,estado,empresa)          
-                        
-            try:
-                total_ctacte_haber = cpbs.filter(cpb_tipo__tipo__in=[1,3,9]).aggregate(sum=Sum(F('importe_total'), output_field=DecimalField()))['sum'] or 0          
-                total_ctacte_debe = cpbs.filter(cpb_tipo__tipo__in=[2,7]).aggregate(sum=Sum(F('importe_total'), output_field=DecimalField()))['sum'] or 0
-            except:
-                total_ctacte_debe = 0
-                total_ctacte_haber = 0    
+def comprobantes_con_saldo(tipo):    
+    comprobantes = cpb_comprobante.objects.filter(cpb_tipo__tipo=tipo,saldo__gt=0).order_by('-fecha_cpb','-fecha_creacion')
+    return comprobantes
 
-            try:
-                saldo_anterior_debe = total_debe - total_ctacte_debe        
-                saldo_anterior_haber = total_haber - total_ctacte_haber  
-                saldo_anterior = saldo_anterior_haber - saldo_anterior_debe
-            except:
-                saldo_anterior_debe = 0  
-                saldo_anterior_haber = 0
-                saldo_anterior = 0
-
-            saldo = saldo_anterior
-            for i in cpbs:
-                    saldo += (i.importe_total*i.cpb_tipo.signo_ctacte)
-                    
-                    datos.append(
-                        {
-                            'estado_id':i.estado.pk,
-                            'estado_color':i.estado.color,
-                            'fecha_cpb': i.fecha_cpb,
-                            'cpb_tipo': i.cpb_tipo,
-                            'observacion':i.observacion,                        
-                            'signo_ctacte':i.cpb_tipo.signo_ctacte,
-                            'cpb_tipo.tipo': i.cpb_tipo.tipo,
-                            'id':i.id,
-                            'get_cpb':i.get_cpb,
-                            'cpb_tipo.nombre':i.cpb_tipo.nombre,
-                            'fecha_vto':i.fecha_vto,
-                            'importe_total':i.importe_total,
-                            'saldo': saldo,
-                        }
-                    )
-
-        context['form'] = form
-        context['cpbs'] = datos
-        context['fecha'] = fecha
-        context['total_debe'] = total_debe
-        context['total_haber'] = total_haber
-        context['total_ctacte_debe'] = total_ctacte_debe
-        context['total_ctacte_haber'] = total_ctacte_haber
-        context['saldo_anterior_debe'] = saldo_anterior_debe
-        context['saldo_anterior_haber'] = saldo_anterior_haber
-        context['saldo_anterior'] = saldo_anterior
-
-        if (request.POST.get('submit') == 'Imprimir'):
-            cpbs = datos
-            cant = len(cpbs)
-            entidad = entidad  
-            return render_to_pdf_response(request,'reportes/cta_cte/reporte_cta_cte.html',locals()) 
-
-        return render(request,'reportes/cta_cte/cta_cte_proveedores.html',context )
-    
-class saldos_proveedores(VariablesMixin,ListView):
-    model = cpb_comprobante
-    template_name = 'reportes/cta_cte/saldos_proveedores.html'
-    context_object_name = 'cpbs'    
-
-    @method_decorator(login_required)
-    def dispatch(self, *args, **kwargs):         
-        limpiar_sesion(self.request)        
-        if not tiene_permiso(self.request,'rep_saldos_prov'):
-            return redirect(reverse('principal'))  
-        return super(saldos_proveedores, self).dispatch(*args,**kwargs)
-
-    def get_context_data(self, **kwargs):
-        context = super(saldos_proveedores, self).get_context_data(**kwargs)
-        try:
-            empresa = empresa_actual(self.request)
-        except gral_empresa.DoesNotExist:
-            empresa = None 
-
-        form = ConsultaSaldosProv(self.request.POST or None,empresa=empresa,request=self.request)            
-        fecha = date.today()        
-        totales = None
-        if form.is_valid():                                
-            cpbs = cpb_comprobante.objects.filter(cpb_tipo__usa_ctacte=True,cpb_tipo__compra_venta='C',empresa=empresa,estado__in=[1,2]).select_related('entidad')
-            entidad = form.cleaned_data['entidad']                                                                           
-            if entidad:
-               cpbs= cpbs.filter(entidad=entidad)            
-            totales = cpbs.extra(select={'ultimo_pago':"SELECT MAX(cpb.fecha_imputacion) FROM cpb_comprobante cpb WHERE ((cpb.empresa=cpb_comprobante.empresa)AND(cpb.estado_id IN (1,2))AND(cpb.entidad=cpb_comprobante.entidad)AND(cpb.cpb_tipo=12))"})
-            totales = totales.values('entidad','entidad__apellido_y_nombre','entidad__codigo','entidad__fact_cuit','ultimo_pago').annotate(saldo=Sum(F('importe_total')*F('cpb_tipo__signo_ctacte'), output_field=DecimalField())).order_by('-saldo','entidad__apellido_y_nombre')
-
-
-        context['form'] = form        
-        context['fecha'] = fecha
-        context['totales'] = totales
-        return context
-    def post(self, *args, **kwargs):
-        return self.get(*args, **kwargs)
-             
-################################################################
-import unicodedata
-import StringIO
-def generarCITI(cpbs,ventas_compras,tipo_archivo,libro_iva_dig=False):    
-    nombre= ''
-    archivo = StringIO.StringIO()
-    nafip = None
-    if (ventas_compras=='V'):
-       if tipo_archivo=='cpbs': 
-        for c in cpbs:
-            nafip=c.get_nro_afip()            
-            if nafip==None:
-                continue
-            linea=""
-            linea += str(c.fecha_imputacion.strftime("%Y%m%d")).encode('utf-8').rjust(8, "0") #FECHA
-            linea += str(nafip).encode('utf-8').rjust(3, "0") #CODIGO CPB AFIP
-            linea += str(c.pto_vta).encode('utf-8').rjust(5, "0") #PTO VTA
-            linea += str(c.numero).encode('utf-8').rjust(20, "0") #NRO CPB
-            linea += str(c.numero).encode('utf-8').rjust(20, "0") #NRO CPB HASTA
-            
-            tipo_doc=c.entidad.tipo_doc
-            nro_doc=c.entidad.nro_doc
-            if tipo_doc == 99:
-                if not c.entidad.nro_doc:
-                    nro_doc = 0                
-            elif tipo_doc == 96:
-                nro_doc = c.entidad.nro_doc
-            elif tipo_doc == 80:    
-                nro_doc = c.entidad.fact_cuit
-            else:
-                nro_doc = c.entidad.fact_cuit
-            linea += str(tipo_doc).encode('utf-8').rjust(2, "0") #TIPO DOC
-            linea += str(nro_doc)[:20].encode('utf-8').rjust(20, "0") #nro DOC/cuit
-            nombre = unicodedata.normalize('NFKD', (c.entidad.apellido_y_nombre)[:30]).encode('ASCII', 'ignore')
-            linea += nombre.ljust(30, " ") #nombre
-            linea += str(c.importe_total).encode('utf-8').replace(".","").rjust(15, "0") #importe_total
-            linea += str(c.importe_no_gravado).encode('utf-8').replace(".","").rjust(15, "0") #importe_ng
-            linea += str(0).replace(".","").rjust(15, "0") #perc_nc
-            linea += str(c.importe_exento).encode('utf-8').replace(".","").rjust(15, "0") #importe_exento
-            
-            perc_impuestosNac=Decimal(0.00)
-            perc_IIBB=Decimal(0.00)
-            perc_impMunicip=Decimal(0.00)
-            importe_impuestosInt=Decimal(0.00)            
-            cpb_perc = cpb_comprobante_perc_imp.objects.filter(cpb_comprobante=c)
-           
-            try:
-                cpb_perc = cpb_comprobante_perc_imp.objects.filter(cpb_comprobante=c)                
-                for p in cpb_perc:                     
-                    id = p.perc_imp.id                     
-                    if id in [2,8]:
-                        perc_impMunicip+=p.importe_total                        
-                    elif id==3:
-                        importe_impuestosInt+=p.importe_total
-                    elif id in [5,7]:
-                        perc_IIBB+=p.importe_total
-                    else:
-                        perc_impuestosNac+=p.importe_total                           
-            except:
-                pass
-            
-            linea += str(perc_impuestosNac).encode('utf-8').replace(".","").rjust(15, "0") #perc_impuestosNac
-            linea += str(perc_IIBB).encode('utf-8').replace(".","").rjust(15, "0") #perc_IIBB
-            linea += str(perc_impMunicip).encode('utf-8').replace(".","").rjust(15, "0") #perc_impMunicip
-            linea += str(importe_impuestosInt).encode('utf-8').replace(".","").rjust(15, "0") #importe_impuestosInt                        
-            linea += str('PES').encode('utf-8') #Moneda
-            linea += str('0001000000').encode('utf-8')#tipo_cambio
-            cod_op = ' '
-            cant_alic = 0
-            try:
-                cpb_iva = cpb_comprobante_tot_iva.objects.filter(cpb_comprobante=c)
-                cant_alic = len(cpb_iva)
-                informa = len(cpb_iva.filter(tasa_iva__id_afip__lte=3))>0
-                cod_op = ' '
-                if informa:
-                    if c.importe_exento>0:
-                        cod_op = 'E'
-                    else:
-                        cod_op = 'N'
-            except:
-                cant_alic = 0
-                cod_op = 'N'
-            linea += str(cant_alic).encode('utf-8').rjust(1, "0") #cant_alic_iva
-            linea += str(cod_op).encode('utf-8')#cod_operacion
-            linea += str(0).replace(".","").rjust(15, "0") #otrosTributos            
-            linea += str(0).encode('utf-8').rjust(8, "0") #FECHA_VTO
-
-            if libro_iva_dig:
-                linea += str(0).replace(".","").rjust(15, "0") #Importe Reintegro Decreto 1043/2016
-
-            
-            archivo.write(linea+'\r\n')
-
-       elif tipo_archivo=='alicuotas':
-         for c in cpbs:
-            nafip=c.get_nro_afip()
-            if nafip==None:
-                continue
-            cpb_iva = cpb_comprobante_tot_iva.objects.filter(cpb_comprobante=c)
-            for ci in cpb_iva:            
-                linea="" 
-                linea += str(nafip).encode('utf-8').rjust(3, "0") #CODIGO CPB AFIP
-                linea += str(c.pto_vta).encode('utf-8').rjust(5, "0") #PTO VTA
-                linea += str(c.numero).encode('utf-8').rjust(20, "0") #NRO CPB                
-                linea += str(ci.importe_base).encode('utf-8').replace(".","").rjust(15, "0") #importe_neto
-                linea += str(ci.tasa_iva.id_afip).encode('utf-8').rjust(4, "0") #CODIGO IVA AFIP
-                linea += str(ci.importe_total).encode('utf-8').replace(".","").rjust(15, "0") #importe IVA            
-                archivo.write(linea+'\r\n')     
+def saldo_cpb(idCpb):
+    cpb=cpb_comprobante.objects.get(pk=idCpb)    
+    #los reciobs dde el cpb es el padre
+    cobranzas = cpb_cobranza.objects.filter(cpb_factura=cpb,cpb_comprobante__estado__pk__lt=3).aggregate(sum=Sum('importe_total'))
+    importes = cobranzas['sum']    
+    if not importes:
+      return cpb.importe_total
     else:
-        if tipo_archivo=='cpbs':
-         for c in cpbs:
-            nafip=c.get_nro_afip()
-            if nafip==None:
-                continue
-            linea=""
-            linea += str(c.fecha_imputacion.strftime("%Y%m%d")).encode('utf-8').rjust(8, "0") #FECHA
-            linea += str(nafip).encode('utf-8').rjust(3, "0") #CODIGO CPB AFIP
-            linea += str(c.pto_vta).encode('utf-8').rjust(5, "0") #PTO VTA
-            linea += str(c.numero).encode('utf-8').rjust(20, "0") #NRO CPB
-            linea += str('').encode('utf-8').ljust(16, " ") #NRO DESPACHO IMPORTACION            
-            tipo_doc=c.entidad.tipo_doc
-            if tipo_doc == 99:
-                nro_doc = 0
-            elif tipo_doc == 96:
-                nro_doc = c.entidad.nro_doc
-            elif tipo_doc == 80:    
-                nro_doc = c.entidad.fact_cuit
-            else:
-                nro_doc = c.entidad.fact_cuit            
-            linea += str(tipo_doc).encode('utf-8').rjust(2, "0") #TIPO DOC
-            linea += str(nro_doc)[:20].encode('utf-8').rjust(20, "0") #nro DOC/cuit            
-            nombre = unicodedata.normalize('NFKD', (c.entidad.apellido_y_nombre)[:30]).encode('ASCII', 'ignore')
-            linea += nombre.ljust(30, " ") #nombre
-            linea += str(c.importe_total).replace(".","").encode('utf-8').rjust(15, "0") #importe_total            
-            linea += str(c.importe_no_gravado).encode('utf-8').replace(".","").rjust(15, "0") #importe_ng            
-            linea += str(c.importe_exento).encode('utf-8').replace(".","").rjust(15, "0") #importe_exento
+      return (cpb.importe_total - Decimal(importes))
 
-            perc_impuestosNac=Decimal(0.00)
-            perc_IIBB=Decimal(0.00)
-            perc_impMunicip=Decimal(0.00)
-            importe_impuestosInt=Decimal(0.00)
-            perc_imp_iva=Decimal(0.00)
-            try:
-                cpb_perc = cpb_comprobante_perc_imp.objects.filter(cpb_comprobante=c)
-                for p in cpb_perc: 
-                    id = p.perc_imp.id                     
-                    if id in [2,8]:
-                        perc_impMunicip+=p.importe_total                        
-                    elif id==3:
-                        importe_impuestosInt+=p.importe_total
-                    elif id in [5,7]:
-                        perc_IIBB+=p.importe_total
-                    elif id in [6,13]:
-                        perc_imp_iva+=p.importe_total
-                    else:
-                        perc_impuestosNac+=p.importe_total
-            except:
-                pass
+def cobros_cpb(idCpb):
+    cpb=cpb_comprobante.objects.get(pk=idCpb)    
+    #los reciobs dde el cpb es el padre
+    cobranzas = cpb_cobranza.objects.filter(cpb_factura=cpb).aggregate(sum=Sum('importe_total'))
+    importes = cobranzas['sum']    
+    return importes
 
-            linea += str(perc_imp_iva).encode('utf-8').replace(".","").rjust(15, "0") #perc_impuestosNac
-            linea += str(perc_impuestosNac).encode('utf-8').replace(".","").rjust(15, "0") #perc_impuestosNac
-            linea += str(perc_IIBB).encode('utf-8').replace(".","").rjust(15, "0") #perc_IIBB
-            linea += str(perc_impMunicip).encode('utf-8').replace(".","").rjust(15, "0") #perc_impMunicip
-            linea += str(importe_impuestosInt).encode('utf-8').replace(".","").rjust(15, "0") #importe_impuestosInt
-            
-            linea += str('PES').encode('utf-8') #Moneda
-            linea += str('0001000000').encode('utf-8')#tipo_cambio            
-            cod_op = ' '
-            cant_alic = 0
-            try:
-                cpb_iva = cpb_comprobante_tot_iva.objects.filter(cpb_comprobante=c)
-                cant_alic = len(cpb_iva)
-                informa = len(cpb_iva.filter(tasa_iva__id_afip__lte=3))>0
-                cod_op = ' '
-                if informa:
-                    if c.importe_exento>0:
-                        cod_op = 'E'
-                    else:
-                        cod_op = 'N'
-            except:
-                cant_alic = 0
-                cod_op = 'N'
-            linea += str(cant_alic).encode('utf-8').rjust(1, "0") #cant_alic_iva
-            linea += str(cod_op).encode('utf-8')#cod_operacion
-            linea += str(c.importe_iva).encode('utf-8').replace(".","").rjust(15, "0") #credFiscalComputable            
-            linea += str(0).replace(".","").rjust(15, "0") #otrosTributos
-            linea += str(0).rjust(11, "0") #CUIT emisor/receptor
-            linea += str('').encode('utf-8').ljust(30, " ") #Nombre emisor/receptor
-            linea += str(0).replace(".","").rjust(15, "0") #IVA comision            
-            
-            archivo.write(linea+'\r\n')
-        elif tipo_archivo=='alicuotas':         
-         for c in cpbs:
-            nafip=c.get_nro_afip()
-            if nafip==None:
-                continue
-            cpb_iva = cpb_comprobante_tot_iva.objects.filter(cpb_comprobante=c)
-            tipo_doc=c.entidad.tipo_doc
-            if tipo_doc == 99:
-                nro_doc = 0
-            elif tipo_doc == 96:
-                nro_doc = c.entidad.nro_doc
-            elif tipo_doc == 80:    
-                nro_doc = c.entidad.fact_cuit
-            else:
-                nro_doc = c.entidad.fact_cuit
-            for ci in cpb_iva:            
-                linea="" 
-                linea += str(nafip).encode('utf-8').rjust(3, "0") #CODIGO CPB AFIP
-                linea += str(c.pto_vta).encode('utf-8').rjust(5, "0") #PTO VTA
-                linea += str(c.numero).encode('utf-8').rjust(20, "0") #NRO CPB                
-                linea += str(tipo_doc).encode('utf-8').rjust(2, "0") #TIPO DOC
-                linea += str(nro_doc).encode('utf-8').rjust(20, "0") #nro DOC/cuit
-                linea += str(ci.importe_base).encode('utf-8').replace(".","").rjust(15, "0") #importe_neto
-                linea += str(ci.tasa_iva.id_afip).encode('utf-8').rjust(4, "0") #CODIGO IVA AFIP
-                linea += str(ci.importe_total).encode('utf-8').replace(".","").rjust(15, "0") #importe IVA            
-                archivo.write(linea+'\r\n')        
-    
-    contents = archivo.getvalue()
-    archivo.close()    
-    return contents
+def obtener_stock(prod_ubi):     
+        total_stock = cpb_comprobante_detalle.objects.filter(cpb_comprobante__estado__in=[1,2],cpb_comprobante__cpb_tipo__usa_stock=True,cpb_comprobante__empresa__id=prod_ubi.ubicacion.empresa.id,producto__id=prod_ubi.producto.id,origen_destino__id=prod_ubi.ubicacion.id).prefetch_related('cpb_comprobante__empresa','producto','ubicacion').aggregate(total=Sum(F('cantidad') *F('cpb_comprobante__cpb_tipo__signo_stock'),output_field=DecimalField()))['total'] or 0               
+        return total_stock
 
 @login_required 
-def libro_iva_ventas(request):    
-    limpiar_sesion(request)
-    if not tiene_permiso(request,'rep_libro_iva'):
-            return redirect(reverse('principal'))  
-    context = {}
-    context = getVariablesMixin(request)    
+def buscarDatosProd(request):                                  
+   try:                          
+     prod= {}
+     idProd = request.GET.get('idp', '')
+     idubi = request.GET.get('idubi', None)       
+     idlista = request.GET.get('idlista', None)
+     p = None
+     coeficiente = 0
+     ppedido = 0
+     stock = 1
+     pventa = 0
+     precio_siva = 0
+     costo_siva = 0
+     total_iva=0
+     precio_tot = 0
+     pcosto = 0       
+     tasa_iva = 5 #Por defecto 0.21
+     pitc = 0.00
+     ptasa = 0.00
+     unidad = 'u.'
+     prod_lista = None
+     if idProd:
+      p = prod_productos.objects.get(id=idProd)
+      if p:
+          coeficiente = p.tasa_iva.coeficiente       
+          tasa_iva = p.tasa_iva.id
+          unidad = p.get_unidad_display()
+          if idubi:
+             
+              try:
+                  prod_ubi = prod_producto_ubicac.objects.get(producto=p,ubicacion__id=idubi)            
+              except:
+                  prod_ubi = None
+              if prod_ubi:
+                  stock = prod_ubi.get_stock_()
+                  ppedido = prod_ubi.get_reposicion()
+          if idlista:
+             try:
+                  prod_lista = prod_producto_lprecios.objects.get(producto=p,lista_precios__id=idlista) 
+             except:
+                  prod_lista = None
+             if prod_lista:
+                  pventa = prod_lista.precio_venta
+                  pcosto = prod_lista.precio_cimp           
+                  pitc = prod_lista.precio_itc
+                  ptasa = prod_lista.precio_tasa
+
+     precio_siva = pventa /(1+coeficiente)
+     precio_siva = Decimal(round(precio_siva,2))
+     if prod_lista:
+      costo_siva = prod_lista.precio_costo
+     total_iva = pventa - precio_siva
+     total_iva = Decimal(round(total_iva, 2))
+     precio_tot = pventa
+     
+     prod={'precio_venta':pventa,'precio_costo':pcosto,'stock':stock,'ppedido':ppedido,'tasa_iva__id':tasa_iva,'tasa_iva__coeficiente':coeficiente
+          ,'unidad':unidad,'precio_siva':precio_siva,'total_iva':total_iva,'precio_tot':precio_tot,'costo_siva':costo_siva,'pitc':pitc,'ptasa':ptasa}  
+             
+   except:
+     prod= {}
+   return HttpResponse( json.dumps(prod, cls=DjangoJSONEncoder), content_type='application/json' )     
+  
+def buscarPrecioProd(prod,letra,cant,precio):                                  
+                                       
+       coeficiente = 0
+       stock = 1
+       tasa_iva = 5 #Por defecto 0.21
+       unidad = 'u.'
+       if prod:
+            coeficiente = prod.tasa_iva.coeficiente       
+            tasa_iva = prod.tasa_iva.id
+            unidad = prod.get_unidad_display()                        
+
+       precio_siva = precio /(1+coeficiente)
+       
+       if letra=='A':
+        precio = precio_siva
+        importe_subtotal = (precio * cant)
+        importe_iva = round(importe_subtotal * coeficiente,2)
+        importe_total = round(importe_subtotal,2) + importe_iva
+       else:
+        precio = precio
+        importe_subtotal = (precio * cant)
+        importe_iva = round(importe_subtotal-(importe_subtotal/(1+coeficiente)),2)
+        importe_total = round(importe_subtotal,2) 
+        importe_subtotal = importe_total - importe_iva;
+
+
+       prod={'precio':round(precio,2),'importe_iva':round(importe_iva,2),'importe_subtotal':round(importe_subtotal,2),'importe_total':round(importe_total,2)}  
+       
+   
+       return prod
+
+def buscarPrecioListaProd(p,lista):                                      
+  try:
+    coeficiente = 0 
+    pventa = 0
+    precio_siva = 0
+    costo_siva = 0
+    total_iva=0
+    precio_tot = 0
+    pcosto = 0       
+    tasa_iva = 5 #Por defecto 0.21
+    pitc = 0.00
+    ptasa = 0.00
+    unidad = 'u.'
+    coeficiente = p.tasa_iva.coeficiente       
+    tasa_iva = p.tasa_iva.id
+    unidad = p.get_unidad_display()
     try:
-        empresa = empresa_actual(request)
-    except gral_empresa.DoesNotExist:
-        empresa = None 
-    form = ConsultaLibroIVAVentas(request.POST or None,request=request)            
-    fecha = date.today()
-    cpbs = None
-    alicuotas = None
-    if form.is_valid():                                
-        entidad = form.cleaned_data['entidad']                                                              
-        fdesde = form.cleaned_data['fdesde']   
-        fhasta = form.cleaned_data['fhasta']   
-        estado = form.cleaned_data['estado']
-        pto_vta = form.cleaned_data['pto_vta']  
-        fact_x = form.cleaned_data['fact_x']  
-        cae = form.cleaned_data['cae']  
-        total = 0                    
-        cpbs = cpb_comprobante.objects.filter(cpb_tipo__compra_venta='V',cpb_tipo__tipo__in=[1,2,3,9,14,21,22,23],empresa=empresa,fecha_imputacion__gte=fdesde,fecha_imputacion__lte=fhasta)\
-            .exclude(letra='X').filter(Q(pto_vta__in=pto_vta_habilitados_list(request)) | Q(cpb_tipo__tipo=14)).select_related('cpb_tipo','entidad')\
-            .only('id','pto_vta','letra','numero','fecha_imputacion','cpb_tipo__codigo','cpb_tipo__nombre','cpb_tipo__tipo','cpb_tipo__signo_ctacte','cae_vto','cae',\
-            'entidad__id','entidad__apellido_y_nombre','entidad__tipo_entidad','entidad__codigo','entidad__fact_cuit','entidad__nro_doc','entidad__fact_categFiscal',\
-            'importe_gravado','importe_iva','importe_perc_imp','importe_no_gravado','importe_exento','importe_total')
-            
-            
-        
-        if int(estado) == 0:                
-            cpbs=cpbs.filter(estado__in=[1,2])                
-        elif int(estado) == 2:                
-            cpbs=cpbs.filter(estado__in=[3])
-        else:                
-            cpbs=cpbs.filter(estado__in=[1,2,3])
-        
-        if entidad:
-                cpbs= cpbs.filter(entidad__apellido_y_nombre__icontains=entidad)
-        
-        if pto_vta:
-               cpbs= cpbs.filter(pto_vta=pto_vta)        
+        prod_lista = prod_producto_lprecios.objects.get(producto=p,lista_precios=lista) 
+    except:
+        prod_lista = None
+    if prod_lista:
+            pventa = prod_lista.precio_venta
+            pcosto = prod_lista.precio_cimp           
+            pitc = prod_lista.precio_itc
+            ptasa = prod_lista.precio_tasa
 
-        if int(cae)!=0:
-            no_tiene = (cae=='2')                
-            cpbs= cpbs.filter(cae_vto__isnull=no_tiene)
-        
-        if int(fact_x)==1:
-            cpbs= cpbs.filter(cpb_tipo__libro_iva=True)
-               
-        id_cpbs = [c.pk for c in cpbs]        
-        alicuotas = cpb_comprobante_tot_iva.objects.filter(cpb_comprobante__pk__in=id_cpbs)\
-                    .annotate(importe_final=Sum(F('importe_total')*F('cpb_comprobante__cpb_tipo__signo_ctacte'), output_field=DecimalField()),\
-                        importe=Sum(F('importe_base')*F('cpb_comprobante__cpb_tipo__signo_ctacte'), output_field=DecimalField()))\
-                    .order_by('-cpb_comprobante__fecha_imputacion','-cpb_comprobante__id')
+    precio_siva = pventa /(1+coeficiente)
+    precio_siva = Decimal(round(precio_siva,2))
+    if prod_lista:
+      costo_siva = prod_lista.precio_costo
+    total_iva = pventa - precio_siva
+    total_iva = Decimal(round(total_iva, 2))
+    precio_tot = pventa
 
-        if ('cpbs' in request.POST)and(cpbs):                
-            response = HttpResponse(generarCITI(cpbs,'V','cpbs'),content_type='text/plain')
-            response['Content-Disposition'] = 'attachment;filename="CITI_VENTAS_CBTE.txt"'
-            return response 
-        elif ('alicuotas' in request.POST)and(cpbs):
-            response = HttpResponse(generarCITI(cpbs,'V','alicuotas'),content_type='text/plain')
-            response['Content-Disposition'] = 'attachment;filename="CITI_VENTAS_ALICUOTAS.txt"'
-            return response 
-        elif ('cpbs_iva_dig' in request.POST)and(cpbs):                
-            response = HttpResponse(generarCITI(cpbs,'V','cpbs',True),content_type='text/plain')
-            response['Content-Disposition'] = 'attachment;filename="CITI_VENTAS_CBTE.txt"'
-            return response 
-        elif ('alic_iva_dig' in request.POST)and(cpbs):
-            response = HttpResponse(generarCITI(cpbs,'V','alicuotas',True),content_type='text/plain')
-            response['Content-Disposition'] = 'attachment;filename="CITI_VENTAS_ALICUOTAS.txt"'
-            return response 
-        
-    context['form'] = form
-    context['alicuotas'] = alicuotas
-    context['cpbs'] = cpbs
-    context['fecha'] = fecha          
-    return render(request,'reportes/contables/libro_iva_ventas.html',context )
+    prod={'precio_venta':pventa,'precio_costo':pcosto,'tasa_iva__id':tasa_iva,'tasa_iva__coeficiente':coeficiente
+        ,'unidad':unidad,'precio_siva':precio_siva,'total_iva':total_iva,'precio_tot':precio_tot,'costo_siva':costo_siva,'pitc':pitc,'ptasa':ptasa}  
+  except:
+    prod = {}
 
-@login_required                    
-def libro_iva_compras(request):
-    if not tiene_permiso(request,'rep_libro_iva'):
-            return redirect(reverse('principal'))  
-    context = {}
-    context = getVariablesMixin(request)    
-    try:
-        empresa = empresa_actual(request)
-    except gral_empresa.DoesNotExist:
-        empresa = None 
-    form = ConsultaLibroIVACompras(request.POST or None,request=request)            
-    fecha = date.today()
-    cpbs = None
-    alicuotas = None
-    if form.is_valid():                                
-        entidad = form.cleaned_data['entidad']                                                              
-        fdesde = form.cleaned_data['fdesde']   
-        fhasta = form.cleaned_data['fhasta']   
-        estado = form.cleaned_data['estado'] 
-        fact_x = form.cleaned_data['fact_x']  
-        pto_vta = form.cleaned_data['pto_vta'] 
-                
-        cpbs = cpb_comprobante.objects.filter(cpb_tipo__libro_iva=True,cpb_tipo__tipo__in=[1,2,3,9,21,22,23],cpb_tipo__compra_venta='C',empresa=empresa,fecha_imputacion__gte=fdesde,fecha_imputacion__lte=fhasta)\
-            .select_related('cpb_tipo','entidad')\
-            .only('id','pto_vta','letra','numero','fecha_imputacion','cpb_tipo__codigo','cpb_tipo__nombre','cpb_tipo__tipo','cpb_tipo__signo_ctacte','cae_vto','cae',\
-            'entidad__id','entidad__apellido_y_nombre','entidad__tipo_entidad','entidad__codigo','entidad__fact_cuit','entidad__nro_doc','entidad__fact_categFiscal',\
-            'importe_gravado','importe_iva','importe_perc_imp','importe_no_gravado','importe_exento','importe_total')
-            
-        
-        if int(estado) == 0:                
-            cpbs=cpbs.filter(estado__in=[1,2])                
-        elif int(estado) == 2:                
-            cpbs=cpbs.filter(estado__in=[3])
-        else:                
-            cpbs=cpbs.filter(estado__in=[1,2,3])
-        if entidad:
-                cpbs= cpbs.filter(entidad__apellido_y_nombre__icontains=entidad)
-        if pto_vta:
-               cpbs= cpbs.filter(pto_vta=pto_vta)                   
-
-        if int(fact_x)==1:
-            cpbs= cpbs.filter(cpb_tipo__libro_iva=True).exclude(letra='X')
-
-        id_cpbs = [c.pk for c in cpbs]        
-        alicuotas = cpb_comprobante_tot_iva.objects.filter(cpb_comprobante__pk__in=id_cpbs)\
-                    .annotate(importe_final=Sum(F('importe_total')*F('cpb_comprobante__cpb_tipo__signo_ctacte'), output_field=DecimalField()),\
-                        importe=Sum(F('importe_base')*F('cpb_comprobante__cpb_tipo__signo_ctacte'), output_field=DecimalField()))\
-                    .order_by('-cpb_comprobante__fecha_imputacion','-cpb_comprobante__id')
-        
-        if ('cpbs' in request.POST)and(cpbs):                
-            response = HttpResponse(generarCITI(cpbs,'C','cpbs'),content_type='text/plain')
-            response['Content-Disposition'] = 'attachment;filename="CITI_COMPRAS_CBTE.txt"'
-            return response 
-        elif ('alicuotas' in request.POST)and(cpbs):
-            response = HttpResponse(generarCITI(cpbs,'C','alicuotas'),content_type='text/plain')
-            response['Content-Disposition'] = 'attachment;filename="CITI_COMPRAS_ALICUOTAS.txt"'
-            return response 
-
-    context['form'] = form
-    context['cpbs'] = cpbs
-    context['alicuotas'] = alicuotas
-    context['fecha'] = fecha          
-    return render(request,'reportes/contables/libro_iva_compras.html',context )
-
-
-################################################################
-
-class caja_diaria(VariablesMixin,ListView):
-    model = cpb_comprobante
-    template_name = 'reportes/contables/caja_diaria.html'
-    context_object_name = 'cpbs'    
-
-    @method_decorator(login_required)
-    def dispatch(self, *args, **kwargs):         
-        limpiar_sesion(self.request)        
-        if not tiene_permiso(self.request,'rep_caja_diaria'):
-            return redirect(reverse('principal'))  
-        return super(caja_diaria, self).dispatch(*args,**kwargs)
-
-    def get_context_data(self, **kwargs):
-        context = super(caja_diaria, self).get_context_data(**kwargs)
-        try:
-            empresa = empresa_actual(self.request)
-        except gral_empresa.DoesNotExist:
-            empresa = None 
-        busq = None        
-        if self.request.POST:
-            busq = self.request.POST
-        else:
-            if 'caja_diara_busq' in self.request.session:
-                busq = self.request.session["caja_diara_busq"]        
-        form = ConsultaCajaDiaria(busq or None,empresa=empresa,request=self.request)   
-        cpbs = None
-        fecha = date.today()
-        detalles = []
-        if form.is_valid():                                            
-            fdesde = form.cleaned_data['fdesde']   
-            fhasta = form.cleaned_data['fhasta']   
-            cta = form.cleaned_data['cuenta']                                                         
-            tipo_forma_pago = form.cleaned_data['tipo_forma_pago']            
-                                   
-            cpbs = cpb_comprobante_fp.objects.filter(cpb_comprobante__empresa=empresa)\
-                .filter(Q(cpb_comprobante__estado__in=[1,2])|Q(cpb_comprobante__cpb_tipo__tipo=24))\
-                .select_related('cpb_comprobante','cpb_comprobante__cpb_tipo','cta_egreso','cta_ingreso','tipo_forma_pago')\
-                .order_by('mdcp_fecha','cpb_comprobante__fecha_cpb')
-            
-            if tipo_forma_pago:
-                cpbs = cpbs.filter(tipo_forma_pago=tipo_forma_pago)
-            debe=0
-            haber=0
-            saldo=0
-            saldo_cpb=0
-                                        
-            cpbs_debe = cpbs.filter(cta_ingreso=cta)
-            cpbs_haber= cpbs.filter(cta_egreso=cta) 
-            debe = cpbs_debe.aggregate(sum=Sum(F('importe'), output_field=DecimalField()))['sum'] or 0  
-            haber = cpbs_haber.aggregate(sum=Sum(F('importe'), output_field=DecimalField()))['sum'] or 0  
-           
-            cpbs= cpbs_debe | cpbs_haber                       
-            
-            cpbs_detalles = cpbs.filter(mdcp_fecha__gte=fdesde,mdcp_fecha__lte=fhasta)  
-            cpbs_detalles = cpbs_detalles.order_by('mdcp_fecha','cpb_comprobante__pto_vta','cpb_comprobante__letra','cpb_comprobante__numero')                
-
-                
-            for c in cpbs_detalles:
-                debe_cpb=0
-                haber_cpb=0
-                                    
-                if c.cta_ingreso == cta:
-                    debe_cpb = c.importe                        
-                
-                if c.cta_egreso == cta:
-                    haber_cpb = c.importe                                            
-
-                saldo_cpb += (debe_cpb-haber_cpb)
-                detalles.append(
-                    {
-                    'fecha':c.mdcp_fecha,
-                    'tipo':c.cpb_comprobante.cpb_tipo,
-                    'cpb_id':c.cpb_comprobante.pk,
-                    'cpb_fecha':c.cpb_comprobante.fecha_cpb,
-                    'cpb_venc':c.cpb_comprobante.fecha_vto,
-                    'nro_cpb':c.cpb_comprobante.get_cpb,
-                    'fp':c.tipo_forma_pago,
-                    'cheque':c.mdcp_cheque, 
-                    'banco':c.mdcp_banco,                   
-                    'debe':debe_cpb,
-                    'haber':haber_cpb,
-                    'saldo': saldo_cpb,
-                    }
-                )            
-
-            saldo = debe - haber 
-            self.request.session["caja_diara_busq"] = self.request.POST
-        else:
-            self.request.session["caja_diara_busq"] = None        
-                            
-        context['form'] = form
-        context['fecha'] = fecha
-        context['detalles'] = detalles
-        return context
-    
-    def post(self, *args, **kwargs):
-        return self.get(*args, **kwargs)
+  return prod  
+@login_required 
+def buscarDatosEntidad(request):                     
+   lista= {}  
+   try:
+      id = request.GET['id']
+      entidad = egr_entidad.objects.get(id=id)   
+      dcto=entidad.dcto_general or 0    
+      tope_cta_cte = entidad.tope_cta_cte
+      lista_precios = 1
+      if entidad.lista_precios_defecto:
+          lista_precios = entidad.lista_precios_defecto.id   
+      if tope_cta_cte>0:
+          saldo = entidad.get_saldo_pendiente()
+      else:
+          saldo = 0    
+      if not tope_cta_cte:
+        saldo_sobrepaso = 0
+      else:
+        saldo_sobrepaso = saldo - tope_cta_cte     
+      lista = {'fact_categFiscal':entidad.fact_categFiscal,'dcto_general':dcto,'saldo_sobrepaso':saldo_sobrepaso,'lista_precios':lista_precios}
+   except:
+    lista= {}
+   return HttpResponse( json.dumps(lista, cls=DjangoJSONEncoder), content_type='application/json' )  
 
 @login_required 
-def ver_cierre_diario(request):            
-    fdesde = datetime. strptime(request.GET.get('fdesde', hoy()),'%d/%m/%Y')
-    fhasta = datetime. strptime(request.GET.get('fhasta', hoy()),'%d/%m/%Y')
-    cuenta = request.GET.get('cuenta', None)    
-    if not cuenta:
-        return HttpResponseRedirect(reverse('caja_diaria'))
+def setearLetraCPB(request):
+   try:                          
+    id = request.GET['id']   
+    tipo = int(request.GET['tipo'])
+    entidad = egr_entidad.objects.get(id=id)
+    empr=empresa_actual(request)        
+    #Si el tipo es de Compra(2) paso los params a la inversa
+    if tipo==2:
+      letra = get_letra(empr.categ_fiscal,entidad.fact_categFiscal)    
+    else:
+      letra = get_letra(entidad.fact_categFiscal,empr.categ_fiscal)    
+    letra=list({letra})  
+   except:
+    letra= []
+   return HttpResponse( json.dumps(letra, cls=DjangoJSONEncoder), content_type='application/json' )   
+
+@login_required 
+def setearCta_FP(request):   
+   try:                          
     fp = request.GET.get('fp', None)
+    cta = request.GET.get('cta',None)   
+    datos= []
+    if fp and not cta:        
+        tipo_fp = cpb_tipo_forma_pago.objects.get(id=fp)        
+        cta = tipo_fp.cuenta.id        
+        datos = [int(cta)]            
+    elif cta and not fp:                
+        try:
+            tipo_fp = cpb_cuenta.objects.get(id=cta).tipo_forma_pago       
+            banco = cpb_cuenta.objects.get(id=cta).banco       
+            cbu = cpb_cuenta.objects.get(id=cta).nro_cuenta_bancaria       
+            if tipo_fp:
+                fp= tipo_fp.id
+                datos.append(int(fp))
+            if banco:
+                banco = banco.id
+                datos.append(int(banco))            
+            datos.append(cbu)
+
+        except:
+            tipo_fp = None
+   except:
+    datos= []
+   return HttpResponse( json.dumps(datos, cls=DjangoJSONEncoder), content_type='application/json' )   
+
+@login_required 
+def ultimp_nro_cpb_ajax(request):
+    ttipo = request.GET.get('cpb_tipo',0)
+    letra = request.GET.get('letra','X')
+    pto_vta = request.GET.get('pto_vta',0)
+    entidad = request.GET.get('entidad',None)
+    if ttipo=='':
+      ttipo=0
+    if letra=='':
+      letra='X'
+    if pto_vta=='':
+      pto_vta=0
+    if entidad=='':
+      entidad=None
+
     try:
-        empresa = empresa_actual(request)
-    except gral_empresa.DoesNotExist:
-        empresa = None 
-    
-    cpbs = cpb_comprobante_fp.objects.filter(cpb_comprobante__empresa=empresa,mdcp_fecha__gte=fdesde,mdcp_fecha__lte=fhasta)\
-                .filter(Q(cpb_comprobante__estado__in=[1,2])|Q(cpb_comprobante__cpb_tipo__tipo=24))\
-                .order_by('mdcp_fecha','cpb_comprobante__fecha_cpb')
-    if fp:
-        cpbs = cpbs.filter(tipo_forma_pago__pk=fp)
-
-    tot_saldo_ini = cpbs.filter(cpb_comprobante__cpb_tipo__tipo=24).aggregate(sum=Sum(F('importe'), output_field=DecimalField()))['sum'] or 0  
-    
-    cpbs_debe = cpbs.filter(cta_ingreso=cuenta).exclude(cpb_comprobante__cpb_tipo__tipo=24)
-    cpbs_haber= cpbs.filter(cta_egreso=cuenta).exclude(cpb_comprobante__cpb_tipo__tipo=24)
-
-    tot_debe = cpbs_debe.aggregate(sum=Sum(F('importe'), output_field=DecimalField()))['sum'] or 0  
-    
-    tot_haber = cpbs_haber.aggregate(sum=Sum(F('importe'), output_field=DecimalField()))['sum'] or 0  
-    saldo = tot_saldo_ini + tot_debe - tot_haber
-    variables = RequestContext(request, {'tot_debe':tot_debe,'tot_haber':tot_haber,'tot_saldo_ini':tot_saldo_ini,'saldo':saldo})        
-    
-    return render_to_response("reportes/contables/caja_diaria_total.html", variables)
-
-################################################################
-
-class ingresos_egresos(VariablesMixin,ListView):
-    model = cpb_comprobante
-    template_name = 'reportes/contables/ingresos_egresos.html'
-    context_object_name = 'cpbs'    
-
-    @method_decorator(login_required)
-    def dispatch(self, *args, **kwargs):         
-        limpiar_sesion(self.request)        
-        if not tiene_permiso(self.request,'rep_caja_diaria'):
-            return redirect(reverse('principal'))  
-        return super(ingresos_egresos, self).dispatch(*args,**kwargs)
-
-    def get_context_data(self, **kwargs):
-        context = super(ingresos_egresos, self).get_context_data(**kwargs)
-        try:
-            empresa = empresa_actual(self.request)
-        except gral_empresa.DoesNotExist:
-            empresa = None 
-        form = ConsultaIngresosEgresos(self.request.POST or None,empresa=empresa,request=self.request)            
-        fecha = date.today()
-        ingresos = None
-        egresos = None
-        ingresos_resumen = None
-        egresos_resumen = None
-        ingresos_cta_resumen = None
-        egresos_cta_resumen = None
-        ingresos_total = 0
-        egresos_total = 0
-        ingresos_cta_total = 0
-        egresos_cta_total = 0
-
-        if form.is_valid():                                
-            tipo_forma_pago = form.cleaned_data['tipo_forma_pago']                                                              
-            fdesde = form.cleaned_data['fdesde']   
-            fhasta = form.cleaned_data['fhasta']   
-            pto_vta = form.cleaned_data['pto_vta'] 
-            cuenta = form.cleaned_data['cuenta']             
-            
-            ingresos = cpb_comprobante_fp.objects.filter(cpb_comprobante__empresa=empresa,mdcp_fecha__gte=fdesde,mdcp_fecha__lte=fhasta,cpb_comprobante__estado__in=[1,2],cta_ingreso__isnull=False,mdcp_salida__isnull=True)
-            egresos = cpb_comprobante_fp.objects.filter(cpb_comprobante__empresa=empresa,mdcp_fecha__gte=fdesde,mdcp_fecha__lte=fhasta,cpb_comprobante__estado__in=[1,2],cta_egreso__isnull=False,mdcp_salida__isnull=True)
-            ingresos = ingresos.select_related('cpb_comprobante','cpb_comprobante__cpb_tipo','cta_ingreso','mdcp_banco','tipo_forma_pago')
-            egresos = egresos.select_related('cpb_comprobante','cpb_comprobante__cpb_tipo','cta_egreso','mdcp_banco','tipo_forma_pago')
-
-            if tipo_forma_pago:
-                   ingresos= ingresos.filter(tipo_forma_pago=tipo_forma_pago)
-                   egresos= egresos.filter(tipo_forma_pago=tipo_forma_pago)
-            if pto_vta:
-                   ingresos= ingresos.filter(cpb_comprobante__pto_vta=pto_vta)
-                   egresos= egresos.filter(cpb_comprobante__pto_vta=pto_vta)            
-
-            if cuenta:
-                   ingresos= ingresos.filter(cta_ingreso=cuenta)
-                   egresos= egresos.filter(cta_egreso=cuenta)
-                   
-
-            ingresos_resumen = ingresos.values('tipo_forma_pago__id','tipo_forma_pago__codigo','tipo_forma_pago__nombre')\
-                            .annotate( saldo=Sum(ExpressionWrapper(F("importe"), output_field=FloatField())) )
-            ingresos_total = ingresos.aggregate(ingresos_total=Sum('importe'))
-            egresos_resumen = egresos.values('tipo_forma_pago__id','tipo_forma_pago__codigo','tipo_forma_pago__nombre')\
-                            .annotate( saldo=Sum(ExpressionWrapper(F("importe"), output_field=FloatField())) )
-            egresos_total = egresos.aggregate(egresos_total=Sum('importe'))
-            
-            
-                   
-            ingresos_cta_resumen = ingresos.values('cta_ingreso__id','cta_ingreso__codigo','cta_ingreso__nombre').annotate( saldo=Sum(ExpressionWrapper(F("importe"), output_field=FloatField())) )
-            ingresos_cta_total = ingresos.aggregate(ingresos_cta_total=Sum('importe'))
-            egresos_cta_resumen = egresos.values('cta_egreso__id','cta_egreso__codigo','cta_egreso__nombre').annotate( saldo=Sum(ExpressionWrapper(F("importe"), output_field=FloatField())) )
-            egresos_cta_total = egresos.aggregate(egresos_total=Sum('importe'))
-        context['form'] = form
-        context['ingresos'] = ingresos
-        context['egresos'] = egresos
-        context['ingresos_resumen'] = ingresos_resumen
-        context['egresos_resumen'] = egresos_resumen
-        context['ingresos_cta_resumen'] = ingresos_cta_resumen
-        context['egresos_cta_resumen'] = egresos_cta_resumen
-        context['ingresos_total'] = ingresos_total
-        context['egresos_total'] = egresos_total
-        context['ingresos_cta_total'] = ingresos_cta_total
-        context['egresos_cta_total'] = egresos_cta_total
-        context['fecha'] = fecha        
-        return context
-    def post(self, *args, **kwargs):
-        return self.get(*args, **kwargs)
-        
-################################################################
-
-class saldos_cuentas(VariablesMixin,ListView):
-    model = cpb_comprobante
-    template_name = 'reportes/contables/cuentas.html'
-    context_object_name = 'cpbs'    
-
-    @method_decorator(login_required)
-    def dispatch(self, *args, **kwargs):         
-        limpiar_sesion(self.request)        
-        if not tiene_permiso(self.request,'rep_saldos_cuentas'):
-            return redirect(reverse('principal'))  
-        return super(saldos_cuentas, self).dispatch(*args,**kwargs)
-
-    def get_context_data(self, **kwargs):
-        context = super(saldos_cuentas, self).get_context_data(**kwargs)
-        try:
-            empresa = empresa_actual(self.request)
-        except gral_empresa.DoesNotExist:
-            empresa = None 
-        form = ConsultaSaldosCuentas(self.request.POST or None,empresa=empresa,request=self.request)   
-        cpbs = None
-        fecha = date.today()
-        datos = []
-        if form.is_valid():                                            
-            fdesde = form.cleaned_data['fdesde']   
-            fhasta = form.cleaned_data['fhasta']   
-            cuenta = form.cleaned_data['cuenta']                                             
-            pto_vta = form.cleaned_data['pto_vta'] 
-            
-            ctas = cpb_cuenta.objects.filter(empresa=empresa,baja=False)
-
-            if cuenta:
-                ctas = ctas.filter(id=cuenta.id)           
-            
-            for cta in ctas:
-                
-                cpbs = cpb_comprobante_fp.objects.filter(cpb_comprobante__empresa=empresa,cpb_comprobante__estado__in=[1,2]).select_related('cpb_comprobante','cpb_comprobante__cpb_tipo','cta_egreso','cta_ingreso','tipo_forma_pago').order_by('cpb_comprobante__fecha_cpb','id')                
-                if pto_vta:
-                    cpbs = cpbs.filter(cpb_comprobante__pto_vta=pto_vta)
-                
-                debe=0
-                haber=0
-                saldo=0
-                saldo_cpb=0
-                detalles = []
-                                
-                cpbs_debe = cpbs.filter(cta_ingreso=cta)
-                cpbs_haber= cpbs.filter(cta_egreso=cta) 
-                debe = cpbs_debe.aggregate(sum=Sum(F('importe'), output_field=DecimalField()))['sum'] or 0  
-                haber = cpbs_haber.aggregate(sum=Sum(F('importe'), output_field=DecimalField()))['sum'] or 0  
-               
-                cpbs= cpbs_debe | cpbs_haber
-                cpbs = cpbs.order_by('cpb_comprobante__fecha_cpb')
-               
-                
-                # cpbs = cpbs.filter(cpb_comprobante__fecha_cpb__gte=fdesde)
-                cpbs_anteriores = cpbs.filter(mdcp_fecha__lt=fdesde)
-                cpbs_detalles = cpbs.filter(mdcp_fecha__gte=fdesde,mdcp_fecha__lte=fhasta)  
-                cpbs_posteriores = cpbs.filter(mdcp_fecha__gt=fhasta)                 
-
-                debe_ant= cpbs_anteriores.filter(cta_ingreso=cta).aggregate(sum=Sum(F('importe'), output_field=DecimalField()))['sum'] or 0  
-                haber_ant = cpbs_anteriores.filter(cta_egreso=cta).aggregate(sum=Sum(F('importe'), output_field=DecimalField()))['sum'] or 0         
-                debe_pos= 0
-                haber_pos = cpbs_posteriores.filter(cta_egreso=cta).aggregate(sum=Sum(F('importe'), output_field=DecimalField()))['sum'] or 0         
-                                
-                saldo_inicial = debe_ant - haber_ant
-                saldo_futuro = debe_pos - haber_pos                
-                  
-                if saldo_inicial != 0:                                
-                    detalles.append(
-                            {
-                            'fecha':fdesde,
-                            'tipo':'',
-                            'nro_cpb':'SALDO ANTERIOR',
-                            'debe': debe_ant,
-                            'haber':haber_ant,
-                            'saldo': saldo_inicial,
-                            }
-                        )
-                    saldo_cpb = saldo_inicial
-                for c in cpbs_detalles:
-                    debe_cpb=0
-                    haber_cpb=0
-                                        
-                    if c.cta_ingreso == cta:
-                        debe_cpb = c.importe                        
-                    
-                    if c.cta_egreso == cta:
-                        haber_cpb = c.importe                                            
-
-                    saldo_cpb += (debe_cpb-haber_cpb)
-
-                    detalles.append(
-                        {
-                        'fecha':c.mdcp_fecha,
-                        'tipo':c.cpb_comprobante.cpb_tipo,
-                        'nro_cpb':c.cpb_comprobante.get_cpb,
-                        'fp':c.tipo_forma_pago,
-                        'mdcp_cheque':c.mdcp_cheque,
-                        'debe':debe_cpb,
-                        'haber':haber_cpb,
-                        'saldo': saldo_cpb,
-                        }
-                    )
-                if saldo_futuro != 0:                                
-                    detalles.append(
-                            {
-                            'fecha':fhasta,
-                            'tipo':'',
-                            'nro_cpb':'COMPROMISOS A FUTURO',
-                            'debe': debe_pos,
-                            'haber':haber_pos,
-                            'saldo': saldo_futuro,
-                            }
-                        )
-                    saldo_cpb += saldo_futuro
-
-                saldo = debe - haber 
-                datos.append(
-                    {
-                        'id_cuenta':cta.id,
-                        'cuenta':cta,
-                        'debe':debe,
-                        'haber':haber,
-                        'saldo': saldo,
-                        'detalles': detalles,                        
-                    }
-                )
-                    
-        context['form'] = form
-        context['datos'] = datos
-        context['fecha'] = fecha
-        return context
-
-    def post(self, *args, **kwargs):
-        return self.get(*args, **kwargs)
-
-################################################################
-
-class vencimientos_cpbs(VariablesMixin,ListView):
-    model = cpb_comprobante
-    template_name = 'reportes/varios/vencimientos_cpbs.html'
-    context_object_name = 'cpbs'    
-
-    @method_decorator(login_required)
-    def dispatch(self, *args, **kwargs):         
-        limpiar_sesion(self.request)        
-        if not tiene_permiso(self.request,'rep_varios'):
-            return redirect(reverse('principal'))  
-        return super(vencimientos_cpbs, self).dispatch(*args,**kwargs)
-
-    def get_context_data(self, **kwargs):
-        context = super(vencimientos_cpbs, self).get_context_data(**kwargs)
-        try:
-            empresa = empresa_actual(self.request)
-        except gral_empresa.DoesNotExist:
-            empresa = None 
-        form = ConsultaVencimientos(self.request.POST or None,empresa=empresa,request=self.request)            
-        fecha = date.today()        
-
-        comprobantes = cpb_comprobante.objects.filter(cpb_tipo__tipo__in=[1,2,3,4,5,6,7,9,14],empresa=empresa).order_by('-fecha_vto','-fecha_cpb','-id')\
-        .select_related('estado','entidad','cpb_tipo','vendedor')\
-        .only('id','pto_vta','letra','numero','importe_total','fecha_cpb','estado','fecha_vto','cpb_tipo__codigo','cpb_tipo__nombre','cpb_tipo__tipo','cpb_tipo__signo_ctacte','cae_vto','cae','observacion','seguimiento','vendedor__apellido_y_nombre',\
-            'entidad__id','entidad__apellido_y_nombre','entidad__tipo_entidad','entidad__codigo','entidad__fact_cuit','entidad__nro_doc','entidad__fact_categFiscal')
-                
-        if form.is_valid():                                
-            entidad = form.cleaned_data['entidad']                                                              
-            fdesde = form.cleaned_data['fdesde']   
-            fhasta = form.cleaned_data['fhasta']                                                 
-            pto_vta = form.cleaned_data['pto_vta']               
-            estado = form.cleaned_data['estado']
-            tipo_cpb = form.cleaned_data['tipo_cpb']
-            cae = form.cleaned_data['cae']  
-
-            if int(estado) == 0:                
-                comprobantes=comprobantes.filter(estado__in=[1,2])                
-            elif int(estado) == 2:                
-                comprobantes=comprobantes.filter(estado__in=[3])
-            else:                
-                comprobantes=comprobantes.filter(estado__in=[1,2,3])                  
-
-            if tipo_cpb:                
-                comprobantes=comprobantes.filter(cpb_tipo=tipo_cpb)  
-
-            if fdesde:
-                comprobantes= comprobantes.filter(fecha_cpb__gte=fdesde)
-            if fhasta:
-                comprobantes= comprobantes.filter(fecha_cpb__lte=fhasta)
+        tipo=cpb_tipo.objects.get(id=ttipo)        
+        nro = 1    
+        if tipo.usa_pto_vta == True:            
+            pv = cpb_pto_vta.objects.get(numero=int(pto_vta),empresa=empresa_actual(request))                        
+            ult_nro = cpb_pto_vta_numero.objects.get(cpb_tipo=tipo,letra=letra,cpb_pto_vta=pv,empresa=empresa_actual(request)).ultimo_nro
+            nro = ult_nro+1                
+        else:
+            nro = 1                
             if entidad:
-                comprobantes= comprobantes.filter(entidad__apellido_y_nombre__icontains=entidad)           
-            if pto_vta:
-                comprobantes= comprobantes.filter(pto_vta=pto_vta)            
+                entidad = egr_entidad.objects.get(id=entidad)
+                ult_cpb = cpb_comprobante.objects.filter(entidad=entidad,cpb_tipo=tipo,letra=letra,pto_vta=int(pto_vta),empresa=empresa_actual(request)).order_by('numero').last()        
+                if ult_cpb:
+                        nro = ult_cpb.numero + 1        
+            else:
+              tipo=cpb_tipo.objects.get(id=ttipo)
+              nro = tipo.ultimo_nro + 1  
+    except:                        
+        nro = 1  
 
-            if int(cae)!=0:
-                no_tiene = (cae=='2')                
-                comprobantes= comprobantes.filter(cae_vto__isnull=no_tiene)           
-        else:
-            comprobantes = None
-
-        context['form'] = form
-        context['comprobantes'] = comprobantes
-        context['fecha'] = fecha        
-        return context
-    def post(self, *args, **kwargs):
-        return self.get(*args, **kwargs)
-
-################################################################
-
-class seguimiento_cheques(VariablesMixin,ListView):
-    model = cpb_comprobante    
-    template_name = 'reportes/contables/seguimiento_cheques.html'
-    context_object_name = 'cpbs'    
-
-    @method_decorator(login_required)
-    def dispatch(self, *args, **kwargs):         
-        limpiar_sesion(self.request)        
-        if not tiene_permiso(self.request,'rep_seguim_cheques'):
-            return redirect(reverse('principal'))  
-        return super(seguimiento_cheques, self).dispatch(*args,**kwargs)
-
-    def get_context_data(self, **kwargs):
-        context = super(seguimiento_cheques, self).get_context_data(**kwargs)
-        try:
-            empresa = empresa_actual(self.request)
-        except gral_empresa.DoesNotExist:
-            empresa = None 
-        
-        fecha = hoy()
-        
-        form = ConsultaHistStockProd(self.request.POST or None)   
-        
-        cheques = cpb_comprobante_fp.objects.filter(cpb_comprobante__empresa=empresa,tipo_forma_pago__cuenta__tipo=2,cpb_comprobante__estado__in=[1,2]).order_by('-fecha_creacion','-mdcp_fecha')\
-            .select_related('cpb_comprobante','cta_ingreso','cta_egreso','tipo_forma_pago','mdcp_banco','cpb_comprobante__cpb_tipo','cpb_comprobante__entidad','mdcp_salida__cta_ingreso','mdcp_salida__cpb_comprobante__cpb_tipo')
-        
-        if form.is_valid():
-            fdesde = form.cleaned_data['fdesde']   
-            fhasta = form.cleaned_data['fhasta']                              
-            cheques = cheques.filter(mdcp_fecha__gte=fdesde,mdcp_fecha__lte=fhasta)
-            
-        cta_cheques = cpb_cuenta.objects.filter(tipo=2)     
-        cartera = cheques.filter(cta_egreso__isnull=True,cta_ingreso__in=cta_cheques,mdcp_salida__isnull=True).order_by('-mdcp_fecha','-fecha_creacion')
-        cobrados = cheques.filter(cpb_comprobante__cpb_tipo__tipo=4,mdcp_salida__cpb_comprobante__cpb_tipo__tipo=8,cta_egreso__isnull=True,cta_ingreso__in=cta_cheques,mdcp_salida__isnull=False).order_by('-fecha_creacion','-mdcp_fecha',)
-        pagados = cheques.filter(cpb_comprobante__cpb_tipo__tipo=7,cta_egreso__in=cta_cheques,mdcp_salida__isnull=True).order_by('-fecha_creacion','-mdcp_fecha',)
-        cheques = cartera | cobrados | pagados
-
-
-        context['form'] = form 
-        context['cheques'] = cheques
-        context['cartera'] = cartera
-        context['pagados'] = pagados
-        context['cobrados'] = cobrados
-        context['fecha'] = fecha        
-        return context
+    nro=list({nro})     
     
-    def post(self, *args, **kwargs):
-        return self.get(*args, **kwargs)
+    return HttpResponse( json.dumps(nro, cls=DjangoJSONEncoder), content_type='application/json' )   
 
-################################################################
+@login_required 
+def buscarDatosCPB(request):                     
+   try:                          
+    id = request.GET['id']   
+    saldo=saldo_cpb(id)
+    cpbs=list({'saldo':saldo})  
+   except:
+    cpbs= []
+   return HttpResponse( json.dumps(cpbs, cls=DjangoJSONEncoder), content_type='application/json' )     
 
-class ProdHistoricoView(VariablesMixin,ListView):
-    model = cpb_comprobante_detalle
-    template_name = 'reportes/varios/historico_productos.html'
-    context_object_name = 'movimientos'    
+@login_required 
+def verifCobranza(request):                     
+    cpbs = request.GET.getlist('cpbs[]')            
+    cant = 0
+    if cpbs:                                
+        entidades = list(cpb_comprobante.objects.filter(id__in=cpbs).values_list('entidad',flat=True))
+        cant=len(set(entidades))        
+    
+    return HttpResponse(json.dumps(cant), content_type = "application/json")
 
-    @method_decorator(login_required)
-    def dispatch(self, *args, **kwargs):         
-        limpiar_sesion(self.request)        
-        if not tiene_permiso(self.request,'rep_varios'):
-            return redirect(reverse('principal'))
-        return super(ProdHistoricoView, self).dispatch(*args,**kwargs)
+@login_required 
+def verifUnificacion(request):                     
+    cpbs = request.GET.getlist('cpbs[]')            
+    cant = 0
+    data= {}
+    if cpbs: 
+        comprobantes = cpb_comprobante.objects.filter(id__in=cpbs,cae=None,estado__id__lte=2,cpb_tipo__tipo__in=[1,2,3,9,21,22,23])                                       
+        cant_cpbs = len(set(list(comprobantes.values_list('id',flat=True))))        
+        cant_entidades = len(set(list(comprobantes.values_list('entidad',flat=True))))
+        cant_cpb_tipo = len(set(list(comprobantes.values_list('cpb_tipo',flat=True))))                    
+        data = {'cant_cpbs':int(cant_cpbs),'cant_entidades':int(cant_entidades),'cant_cpb_tipo':int(cant_cpb_tipo)}        
+    return HttpResponse(json.dumps(data,cls=DjangoJSONEncoder), content_type = "application/json")
+    
+@login_required 
+def presup_aprobacion(request,id,estado):
+    cpb = cpb_comprobante.objects.get(pk=id) 
+    cpb.presup_aprobacion=cpb_estado.objects.get(id=estado)
+    cpb.save()
+    messages.success(request, u'Los datos se guardaron con éxito!')               
+    return HttpResponseRedirect(reverse('cpb_presup_listado'))
 
-    def get_context_data(self, **kwargs):
-        context = super(ProdHistoricoView, self).get_context_data(**kwargs)
-        try:
-            empresa = empresa_actual(self.request)
-        except gral_empresa.DoesNotExist:
-            empresa = None 
-        fecha = date.today()
-        
-        form = ConsultaHistStockProd(self.request.POST or None)   
+@login_required 
+def presup_anular_reactivar(request,id,estado):
+    cpb = cpb_comprobante.objects.get(pk=id) 
+    cpb.estado=cpb_estado.objects.get(id=estado)    
+    if int(estado)==1:
+      cpb.presup_aprobacion=cpb_estado.objects.get(id=estado)
+    cpb.save()
+    messages.success(request, u'Los datos se guardaron con éxito!')               
+    return HttpResponseRedirect(reverse('cpb_presup_listado'))
+       
+@login_required 
+def cpb_anular_reactivar(request,id,estado,descr=None):
+    cpb = cpb_comprobante.objects.get(pk=id) 
+    #Si es Factura de Venta/Compra y tiene pago/cobro asociado
+    
+    if ((cpb.cpb_tipo.tipo not in [4,7])and cpb.tiene_cobranzas()):       
+        messages.error(request, u'¡El Comprobante posee movimientos de cobro/pago asociados!.Verifique')
+        return HttpResponseRedirect(cpb.get_listado())
+   
+     #Para cada uno de los comprobantes de Movimientos/Traspaso anulo o reactivo sus CPBS(Cheques cobrados/diferidos/depositados)
+    fps = cpb_comprobante_fp.objects.filter(cpb_comprobante=cpb,mdcp_salida__isnull=False).values_list('mdcp_salida',flat=True)
+    
+    if (len(fps)>0):
+        messages.error(request, u'¡El Comprobante posee movimientos de cobranza/depósito de Cheques asociados!. Verifique')
+        return HttpResponseRedirect(cpb.get_listado())    
 
-        movimientos = cpb_comprobante_detalle.objects.none()
-        #movimientos = cpb_comprobante_detalle.objects.filter(cpb_comprobante__empresa=empresa,cpb_comprobante__fecha_cpb=hoy()).select_related('producto','cpb_comprobante').order_by('producto')
-        
-        if form.is_valid():                                            
-            producto = form.cleaned_data['producto']                                                              
-            fdesde = form.cleaned_data['fdesde']   
-            fhasta = form.cleaned_data['fhasta']       
-            
-            movimientos = cpb_comprobante_detalle.objects.filter(cpb_comprobante__estado__in=[1,2],cpb_comprobante__cpb_tipo__usa_stock=True,cpb_comprobante__empresa=empresa,cpb_comprobante__fecha_cpb__gte=fdesde,cpb_comprobante__fecha_cpb__lte=fhasta).order_by('-cpb_comprobante__fecha_cpb','-cpb_comprobante__id','-producto')        
-            
-            if producto:
-                movimientos = movimientos.filter(Q(producto__nombre__icontains=producto))
 
-            movimientos=movimientos.select_related('cpb_comprobante','cpb_comprobante__cpb_tipo','producto','producto__categoria')
-                       
-        context['form'] = form
-        context['movimientos'] = movimientos
-        return context
-    def post(self, *args, **kwargs):
-        return self.get(*args, **kwargs)         
+    state = cpb_estado.objects.get(id=estado)
+    cpb.estado=state
+    
+    if estado==3:
+        cpb.anulacion_fecha=hoy()
+    else:
+        cpb.anulacion_fecha=None
 
-################################################################
+    if descr:
+        cpb.anulacion_motivo = descr 
+    cpb.save()
+    
 
-class RankingsView(VariablesMixin,TemplateView):
-    template_name = 'reportes/varios/rankings.html'
-
-    @method_decorator(login_required)
-    def dispatch(self, *args, **kwargs):         
-        limpiar_sesion(self.request)        
-        if not tiene_permiso(self.request,'rep_varios'):
-            return redirect(reverse('principal'))  
-        return super(RankingsView, self).dispatch(*args,**kwargs)
-
-    def get_context_data(self, **kwargs):
-        context = super(RankingsView, self).get_context_data(**kwargs)
-        try:
-            empresa = empresa_actual(self.request)
-        except gral_empresa.DoesNotExist:
-            empresa = None 
-        
-
-        form = ConsultaRankings(self.request.POST or None,empresa=empresa,request=self.request)            
-        fecha = date.today()        
-
-        comprobantes = cpb_comprobante.objects.filter(cpb_tipo__tipo__in=[1,2,3,9,21,22,23],estado__in=[1,2])        
-        
-        meses = list()
-        import locale        
-        locale.setlocale(locale.LC_ALL, '')
-        for m in MESES:
-            meses.append(m[1])
-        
-        ventas_deuda = list()
-        ventas_pagos = list()
-        compras_deuda = list()
-        compras_pagos = list()
-        fdesde = ultimo_anio()
-        fhasta = hoy()
-        if form.is_valid():                                            
-            fdesde = form.cleaned_data['fdesde']   
-            fhasta = form.cleaned_data['fhasta']                                                 
-            pto_vta = form.cleaned_data['pto_vta']                           
-          
-            if fdesde:
-                comprobantes= comprobantes.filter(fecha_cpb__gte=fdesde)            
-            if fhasta:
-                comprobantes= comprobantes.filter(fecha_cpb__lte=fhasta)           
-            if pto_vta:
-                comprobantes= comprobantes.filter(pto_vta=pto_vta)            
-
+    movs = cpb_comprobante_fp.objects.filter(pk__in=fps)
+    for m in movs:
+        m.cpb_comprobante.estado = state
+        if estado==3:
+            m.cpb_comprobante.anulacion_fecha=hoy()
         else:
-            
-            context['productos_vendidos'] = None
-            context['productos_comprados'] = None
-            context['ranking_vendedores'] =  None
-            context['ranking_clientes'] =  None
-            context['ranking_proveedores'] =  None
-            context['productos_vendidos_categ'] = None
+            m.cpb_comprobante.anulacion_fecha=None
 
+        if descr:
+            m.cpb_comprobante.anulacion_motivo = descr 
+        m.cpb_comprobante.save()   
 
-        context['form'] = form
-        context['fecha'] = fecha        
-        context['fdesde'] = fdesde
-        context['fhasta'] = fhasta
-        
-        if comprobantes:
-            
-            cpbs = comprobantes.annotate(m=Month('fecha_cpb')).values('m')        
-            ventas = cpbs.filter(cpb_tipo__compra_venta='V').annotate(pendiente=Sum(F('saldo')*F('cpb_tipo__signo_ctacte'),output_field=DecimalField()),saldado=Sum((F('importe_total')-F('saldo'))*F('cpb_tipo__signo_ctacte'),output_field=DecimalField())).order_by(F('m'))
-            compras = cpbs.filter(cpb_tipo__compra_venta='C').annotate(pendiente=Sum(F('saldo')*F('cpb_tipo__signo_ctacte'),output_field=DecimalField()),saldado=Sum((F('importe_total')-F('saldo'))*F('cpb_tipo__signo_ctacte'),output_field=DecimalField())).order_by(F('m'))
+    #Para cada uno de los comprobantes del Recibo/OP recalculo su saldo (Recibos/OP anulados no suman)
+    if (cpb.cpb_tipo.tipo in [4,7]):
+        cobranzas = cpb_cobranza.objects.filter(cpb_comprobante=cpb)
+        for c in cobranzas:
+            recalcular_saldo_cpb(c.cpb_factura.pk)
 
-            for v in ventas:
-                ventas_deuda.append(v['pendiente'])
-                ventas_pagos.append(v['saldado'])
+    messages.success(request, u'¡Los datos se guardaron con éxito!')
+    return HttpResponseRedirect(cpb.get_listado())
 
-            for c in compras:
-                compras_deuda.append(c['pendiente'])
-                compras_pagos.append(c['saldado'])
-            
+@login_required 
+def cpb_facturar(request,id,nro):
+    try:
+        cpb = cpb_comprobante.objects.get(pk=id) 
+    except:
+        cpb=None
+    #cpb.estado=cpb_estado.objects.get(id=4)
+    if cpb:                
+        if nro == None:
+            nro = random.randrange(0, 99999999999999, 14) 
+        nro = "{num:>014}".format(num=str(nro))
+        cpb.cae = nro
+        cpb.cae_vto = cpb.fecha_cpb+timedelta(days=30)        
+        cpb.save()   
+        messages.success(request, u'Los datos se guardaron con éxito!') 
+        return HttpResponseRedirect(cpb.get_listado())
+    return HttpResponseRedirect(reverse('cpb_venta_listado'))
 
+from felectronica.facturacion import facturarAFIP,consultar_cae,facturarAFIP_simulac
 
+@login_required 
+def cpb_facturar_afip(request):
+    respuesta = []    
+    respuesta = []    
+    id = request.GET.get('id', None)     
+    try:
+        cpb = cpb_comprobante.objects.get(pk=id) 
+    except:
+        cpb=None
+    if cpb:
+        if cpb.cae is None:
+          respuesta = facturarAFIP(request,id)
+          estado = respuesta.get('resultado','')
+          cae = respuesta.get('cae','')
+          vto_cae = respuesta.get('fecha_vencimiento',None)
+          detalle = respuesta.get('detalle','')        
+          nro_cpb = respuesta.get('cpb_nro','')
+          
+          if (estado=='A')and(cae!=''):            
+              #cpb.estado=cpb_estado.objects.get(id=4)
+              cpb.cae = cae
+              cpb.cae_vto = vto_cae
+              cpb.cae_errores = None
+              if detalle!='':
+                  cpb.cae_observaciones = cpb.cae_observaciones+' '+detalle
+              cpb.numero = int(nro_cpb)
+              messages.success(request, u'¡Se facturó correctamente!')
+          else:
+              cpb.cae = None
+              cpb.cae_errores = respuesta.get('errores','')
+              cpb.cae_excepcion = respuesta.get('excepcion','')
+              cpb.cae_traceback = respuesta.get('traceback','')
+              
+          cpb.cae_xml_request = respuesta.get('XmlRequest','')   
+          cpb.cae_xml_response = respuesta.get('XmlResponse','')   
 
-            cpb_detalles = cpb_comprobante_detalle.objects.filter(cpb_comprobante__in=comprobantes)
-            productos_vendidos = cpb_detalles.filter(cpb_comprobante__cpb_tipo__compra_venta='V')
-            productos_vendidos_total = productos_vendidos.aggregate(sum=Sum(F('importe_total')*F('cpb_comprobante__cpb_tipo__signo_ctacte'), output_field=DecimalField()))['sum'] or 0 
-            productos_vendidos = productos_vendidos.values('producto__nombre').annotate(tot=Sum(F('importe_total')*F('cpb_comprobante__cpb_tipo__signo_ctacte'),output_field=DecimalField())).order_by('-tot')[:10]
-            context['productos_vendidos'] = productos_vendidos
+          cpb.save()
+          
+        else:
+          messages.error(request, u'El comprobante ya posée CAE!')
+          respuesta=dict(errores=u'El comprobante ya posée CAE!')
+    return HttpResponse(json.dumps(respuesta,cls=DjangoJSONEncoder), content_type = "application/json")
 
-            productos_comprados = cpb_detalles.filter(cpb_comprobante__cpb_tipo__compra_venta='C')
-            productos_comprados_total = productos_comprados.aggregate(sum=Sum(F('importe_total')*F('cpb_comprobante__cpb_tipo__signo_ctacte'), output_field=DecimalField()))['sum'] or 0 
-            productos_comprados = productos_comprados.values('producto__nombre').annotate(tot=Sum(F('importe_total')*F('cpb_comprobante__cpb_tipo__signo_ctacte'),output_field=DecimalField())).order_by('-tot')[:10]
-            context['productos_comprados'] = productos_comprados
-                    
-            ranking_vendedores = comprobantes.values('vendedor__apellido_y_nombre').annotate(tot=Sum(F('importe_total'),output_field=DecimalField())).order_by('-tot')[:10]
-            context['ranking_vendedores'] = ranking_vendedores
+@login_required 
+def respuesta(request):
+    respuesta = ['holaaa']    
+    print 'holaaa'
+    import time
+    time.sleep(5)
+    print 'chau'
+    return HttpResponse(json.dumps(respuesta,cls=DjangoJSONEncoder), content_type = "application/json")
 
-            ranking_clientes = comprobantes.filter(cpb_tipo__compra_venta='V').values('entidad__apellido_y_nombre').annotate(tot=Sum(F('importe_total')*F('cpb_tipo__signo_ctacte'),output_field=DecimalField())).order_by('-tot')[:10]
-            context['ranking_clientes'] = ranking_clientes
+@login_required 
+def cpb_facturar_afip_id(request,id):
+    respuesta = []
+    try:
+        cpb = cpb_comprobante.objects.get(pk=id) 
+    except:
+        cpb=None
 
-            ranking_proveedores = comprobantes.filter(cpb_tipo__compra_venta='C').values('entidad__apellido_y_nombre').annotate(tot=Sum(F('importe_total')*F('cpb_tipo__signo_ctacte'),output_field=DecimalField())).order_by('-tot')[:10]
-            context['ranking_proveedores'] = ranking_proveedores
+    if cpb:
+        #cpb.estado=cpb_estado.objects.get(id=4)
+        respuesta = facturarAFIP(request,id)
+        estado = respuesta.get('resultado','')
+        cae = respuesta.get('cae','')
+        vto_cae = respuesta.get('fecha_vencimiento',None)
+        detalle = respuesta.get('detalle','')
+        observaciones = respuesta.get('observaciones','')
+        errores = respuesta.get('errores','')
+        nro_cpb = respuesta.get('cpb_nro','')
+        if (estado=='A')and(cae!=''):            
+            cpb.cae = cae
+            cpb.cae_vto = vto_cae
+            if detalle!='':
+                cpb.observacion = cpb.observacion+' '+detalle
+            cpb.numero = int(nro_cpb)
+            cpb.save()
+            messages.success(request, u'Los datos se guardaron con éxito!')
 
-            productos_vendidos_categ = cpb_detalles.filter(cpb_comprobante__cpb_tipo__compra_venta='V')
-            productos_vendidos_categ_total = productos_vendidos_categ.aggregate(sum=Sum(F('importe_total')*F('cpb_comprobante__cpb_tipo__signo_ctacte'), output_field=DecimalField()))['sum'] or 0 
-            productos_vendidos_categ = productos_vendidos_categ.values('producto__categoria__nombre').annotate(tot=Sum(F('importe_total')*F('cpb_comprobante__cpb_tipo__signo_ctacte'),output_field=DecimalField())).order_by('-tot')[:10]
-            context['productos_vendidos_categ'] = productos_vendidos_categ
+    return HttpResponse(json.dumps(respuesta,cls=DjangoJSONEncoder), content_type = "application/json")
 
-        context['meses']= json.dumps(meses,cls=DecimalEncoder)       
-        context['ventas_deuda']=  json.dumps(ventas_deuda,cls=DecimalEncoder)
-        context['ventas_pagos']=  json.dumps(ventas_pagos,cls=DecimalEncoder)
-        context['compras_deuda']= json.dumps(compras_deuda,cls=DecimalEncoder)
-        context['compras_pagos']= json.dumps(compras_pagos,cls=DecimalEncoder)
+@login_required 
+def cpbs_anular(request):        
+    limpiar_sesion(request)        
+    id_cpbs = request.GET.getlist('id_cpb')    
+    id_cpbs = cpb_comprobante.objects.filter(id__in=id_cpbs,cae=None).values_list('id',flat=True)    
+    for c in id_cpbs:        
+        cpb_anular_reactivar(request,c,3)    
 
-        return context
+    return HttpResponse(json.dumps(len(id_cpbs)), content_type = "application/json")
 
-    def post(self, *args, **kwargs):
-        return self.get(*args, **kwargs)
-
-################################################################
-
-class costo_producto_vendidoView(VariablesMixin,ListView):
-    model = cpb_comprobante_detalle
-    template_name = 'reportes/varios/costo_producto_vendido.html'
-    context_object_name = 'movimientos'    
-
-    @method_decorator(login_required)
-    def dispatch(self, *args, **kwargs):         
-        limpiar_sesion(self.request)        
-        if not tiene_permiso(self.request,'rep_varios'):
-            return redirect(reverse('principal'))
-        return super(costo_producto_vendidoView, self).dispatch(*args,**kwargs)
-
-    def get_context_data(self, **kwargs):
-        context = super(costo_producto_vendidoView, self).get_context_data(**kwargs)
-        try:
-            empresa = empresa_actual(self.request)
-        except gral_empresa.DoesNotExist:
-            empresa = None 
-        fecha = date.today()
-        
-        form = ConsultaHistStockProd(self.request.POST or None)   
-
-        movimientos = cpb_comprobante_detalle.objects.none()
-        #movimientos = cpb_comprobante_detalle.objects.filter(cpb_comprobante__empresa=empresa,cpb_comprobante__fecha_cpb=hoy()).select_related('producto','cpb_comprobante').order_by('producto')
-        
-        if form.is_valid():                                            
-            producto = form.cleaned_data['producto']                                                              
-            fdesde = form.cleaned_data['fdesde']   
-            fhasta = form.cleaned_data['fhasta']       
-            
-            movimientos = cpb_comprobante_detalle.objects.filter(cpb_comprobante__cpb_tipo__compra_venta='V',cpb_comprobante__estado__in=[1,2],cpb_comprobante__cpb_tipo__usa_stock=True,cpb_comprobante__empresa=empresa,cpb_comprobante__fecha_cpb__gte=fdesde,cpb_comprobante__fecha_cpb__lte=fhasta).order_by('-cpb_comprobante__fecha_cpb','-cpb_comprobante__id','-producto')        
-            
-            if producto:
-                movimientos = movimientos.filter(Q(producto__nombre__icontains=producto))
-
-            movimientos=movimientos.select_related('cpb_comprobante','cpb_comprobante__cpb_tipo','producto','producto__categoria')
-                       
-        context['form'] = form
-        context['movimientos'] = movimientos
-        return context
-    def post(self, *args, **kwargs):
-        return self.get(*args, **kwargs)         
-
-################################################################
-
-class comisiones_vendedoresView(VariablesMixin,ListView):
+class EditarSeguimientoView(VariablesMixin,AjaxUpdateView):
+    form_class = SeguimientoForm
     model = cpb_comprobante
-    template_name = 'reportes/varios/comisiones_vendedores.html'
-    context_object_name = 'cpbs'    
+    pk_url_kwarg = 'id'
+    template_name = 'modal/general/form_seguimiento.html'
 
     @method_decorator(login_required)
-    def dispatch(self, *args, **kwargs):         
-        limpiar_sesion(self.request)        
-        if not tiene_permiso(self.request,'rep_varios'):
-            return redirect(reverse('principal'))
-        return super(comisiones_vendedoresView, self).dispatch(*args,**kwargs)
+    def dispatch(self, *args, **kwargs):        
+        return super(EditarSeguimientoView, self).dispatch(*args, **kwargs)
 
-    def get_context_data(self, **kwargs):
-        context = super(comisiones_vendedoresView, self).get_context_data(**kwargs)
-        try:
-            empresa = empresa_actual(self.request)
-        except gral_empresa.DoesNotExist:
-            empresa = None 
-        form = ConsultaVendedores(self.request.POST or None,empresa=empresa,request=self.request)            
-        comprobantes = None
-        porcCom = None        
-        campo = 'importe_subtotal'
-        if form.is_valid():                                
-            vendedor = form.cleaned_data['vendedor']                                                              
-            cliente = form.cleaned_data['cliente']
-            fdesde = form.cleaned_data['fdesde']   
-            fhasta = form.cleaned_data['fhasta']                                                 
-            pto_vta = form.cleaned_data['pto_vta']               
-            porcCom = form.cleaned_data['comision']
-            campo = form.cleaned_data['campo']
-            comprobantes = cpb_comprobante.objects.filter(cpb_tipo__tipo__in=[1,3,9])
+    def form_valid(self, form):        
+        messages.success(self.request, u'Los datos se guardaron con éxito!')
+        return super(EditarSeguimientoView, self).form_valid(form)
 
-            if fdesde:
-                comprobantes= comprobantes.filter(fecha_cpb__gte=fdesde)
-            if fhasta:
-                comprobantes= comprobantes.filter(fecha_cpb__lte=fhasta)
-            if vendedor:
-                comprobantes= comprobantes.filter(vendedor=vendedor)
-            if cliente:
-                comprobantes= comprobantes.filter(entidad__apellido_y_nombre__icontains=cliente)
-            if pto_vta:
-                comprobantes= comprobantes.filter(pto_vta=pto_vta)            
+    def form_invalid(self, form):         
+        return self.render_to_response(self.get_context_data(form=form))
 
-            if porcCom:
-                comision = Decimal(porcCom)/100
-                comprobantes= comprobantes.annotate(total=F(campo)).annotate(comision=Sum(ExpressionWrapper(F(campo)*comision, output_field=FloatField())) )
+    def get_initial(self):    
+        initial = super(EditarSeguimientoView, self).get_initial()                      
+        return initial 
+
+# def unique_field_formset(field_name):
+#     from django.forms.models import BaseInlineFormSet
+#     class UniqueFieldFormSet (BaseInlineFormSet):
+#         def clean(self):
+#             if any(self.errors):
+#                 # Don't bother validating the formset unless each form is valid on its own
+#                 return
+#             values = set()
+#             for form in self.forms:
+#                 value = form.cleaned_data[field_name]
+#                 if value in values:
+#                     raise forms.ValidationError('No deben repetirse productos!')
+#                 values.add(value)
+#     return UniqueFieldFormSet
+
+####################################################################################
+from easy_pdf.rendering import render_to_pdf_response,render_to_pdf 
+from reportlab.lib import units
+from reportlab.graphics import renderPM
+from reportlab.graphics.barcode import createBarcodeDrawing
+from reportlab.graphics.shapes import Drawing
+from general.generarI25 import GenerarImagen
+from general.base64 import encodestring,b64encode
+import StringIO
+
+def armarCodBar(cod):
+    barcode = GenerarImagen(codigo=cod)
+    output = StringIO.StringIO()
+    barcode.save(output,format="PNG")
+    data = encodestring(output.getvalue())
+    return format(data)
+
+@login_required 
+def imprimirFactura(request,id,pdf=None):   
+    cpb = cpb_comprobante.objects.get(id=id)        
+    #puedeVerPadron(request,c.id_unidad.pk)    
+    
+    if not cpb:
+      raise Http404            
+
+    detalle_comprobante = cpb_comprobante_detalle.objects.filter(cpb_comprobante=cpb)
+    detalle_totales_iva = cpb_comprobante_tot_iva.objects.filter(cpb_comprobante=cpb)    
+    
+    discrimina_iva = cpb.letra == 'A'
+
+    if cpb.condic_pago == 2:
+        cobranzas = cpb_comprobante_fp.objects.filter(cpb_comprobante__cpb_cobranza_cpb__cpb_factura=cpb,cpb_comprobante__estado__pk__lt=3)
+        cantidad = cobranzas.count()    
+    else:
+        cobranzas = None
+        cantidad = 0
+    
+    try:
+        cod_cpb = cpb_nro_afip.objects.get(cpb_tipo=cpb.cpb_tipo.tipo,letra=cpb.letra).numero_afip    
+        codigo_letra = '{0:0{width}}'.format(cod_cpb,width=2)
+    except:
+        codigo_letra = '000'
+
+    if cpb.letra == 'X':
+        codigo_letra = '000'        
+        tipo_cpb =  'REMITO X'
+        leyenda = u'DOCUMENTO NO VÁLIDO COMO FACTURA'
+           
+    facturado = (cpb.cae!=None)
+
+    cantidad = detalle_comprobante.count() + cantidad
+    total_exng = cpb.importe_exento + cpb.importe_no_gravado + cpb.importe_perc_imp
+    if discrimina_iva:
+        total_bruto = cpb.importe_subtotal        
+    else:
+        total_bruto = cpb.importe_total        
+    
+    renglones = 20 - cantidad
+    if renglones < 0:
+        renglones = 0
+    renglones = range(renglones)
+    context = Context()    
+    fecha = hoy()
+
+    try:
+      total_imp1 = cpb.importe_tasa1
+      total_imp2 = cpb.importe_tasa2
+      total_imp = total_imp1 + total_imp2      
+    except:
+      total_imp1=0
+      total_imp2=0
+      total_imp=0
+    try:
+        config = empresa_actual(request)
+    except gral_empresa.DoesNotExist:
+        config = None 
+    
+    sujeto_retencion = None
+    
+
+    if cpb.cpb_tipo.usa_pto_vta == True:
+        c = cpb.get_pto_vta()  
+        if c.leyenda and discrimina_iva:
+          sujeto_retencion = u"OPERACIÓN SUJETA A RETENCIÓN"      
+    else:
+        c = config
+    
+    tipo_logo_factura = c.tipo_logo_factura
+    cuit = c.cuit
+    ruta_logo = c.ruta_logo
+    nombre_fantasia = c.nombre_fantasia
+    domicilio = c.domicilio
+    email = c.email
+    telefono = c.telefono
+    celular = c.celular
+    iibb = c.iibb
+    categ_fiscal = c.categ_fiscal
+    fecha_inicio_activ = c.fecha_inicio_activ
+    
+         
+    if facturado:                
+        cod = ""
+        cod += str(cuit).rjust(11, "0") #CUIT
+        cod += str(cod_cpb).rjust(2, "0") #TIPO_CPB
+        cod += str(cpb.pto_vta).rjust(4, "0") #PTO_VTA 
+        cod += str(cpb.cae).rjust(14, "0") #CAE
+        cod += str(cpb.cae_vto.strftime("%Y%m%d")).rjust(8, "0") #VTO_CAE
+        cod += str(digVerificador(cod))                       
+        codbar = armarCodBar(cod)
+        codigo = cod
+  
+    template = 'general/facturas/factura.html'                        
+    if pdf:
+        return render_to_pdf(template,locals())
+    return render_to_pdf_response(request, template, locals())
+
+@login_required 
+def imprimirFacturaHTML(request,id,pdf=None):   
+    cpb = cpb_comprobante.objects.get(id=id)        
+    #puedeVerPadron(request,c.id_unidad.pk)    
+    if not cpb:
+      raise Http404   
+
+    detalle_comprobante = cpb_comprobante_detalle.objects.filter(cpb_comprobante=cpb)
+    detalle_totales_iva = cpb_comprobante_tot_iva.objects.filter(cpb_comprobante=cpb)    
+    
+    discrimina_iva = cpb.letra == 'A'
+
+    if cpb.condic_pago == 2:
+        cobranzas = cpb_comprobante_fp.objects.filter(cpb_comprobante__cpb_cobranza_cpb__cpb_factura=cpb,cpb_comprobante__estado__pk__lt=3)
+        cantidad = cobranzas.count()    
+    else:
+        cobranzas = None
+        cantidad = 0
+    
+    try:
+        cod_cpb = cpb_nro_afip.objects.get(cpb_tipo=cpb.cpb_tipo.tipo,letra=cpb.letra).numero_afip    
+        codigo_letra = '{0:0{width}}'.format(cod_cpb,width=2)
+    except:
+        codigo_letra = '000'
+
+    if cpb.letra == 'X':
+        codigo_letra = '000'        
+        tipo_cpb =  'REMITO X'
+        leyenda = u'DOCUMENTO NO VÁLIDO COMO FACTURA'
+           
+    facturado = (cpb.cae!=None)
+
+    cantidad = detalle_comprobante.count() + cantidad
+    total_exng = cpb.importe_exento + cpb.importe_no_gravado
+    if discrimina_iva:
+        total_bruto = cpb.importe_subtotal
+    else:
+        total_bruto = cpb.importe_total
+    renglones = 20 - cantidad
+    if renglones < 0:
+        renglones = 0
+    renglones = range(renglones)
+    context = Context()    
+    fecha = datetime.now()    
+    try:
+        config = empresa_actual(request)
+    except gral_empresa.DoesNotExist:
+        config = None 
+    
+    if cpb.cpb_tipo.usa_pto_vta == True:
+        c = cpb.get_pto_vta()        
+    else:
+        c = config
+    
+    tipo_logo_factura = c.tipo_logo_factura
+    cuit = c.cuit
+    ruta_logo = c.ruta_logo
+    nombre_fantasia = c.nombre_fantasia
+    domicilio = c.domicilio
+    email = c.email
+    telefono = c.telefono
+    celular = c.celular
+    iibb = c.iibb
+    categ_fiscal = c.categ_fiscal
+    fecha_inicio_activ = c.fecha_inicio_activ
+
+    if facturado:        
+        cod = ""
+        cod += str(cuit).rjust(11, "0") #CUIT
+        cod += str(cod_cpb).rjust(2, "0") #TIPO_CPB
+        cod += str(cpb.pto_vta).rjust(4, "0") #PTO_VTA 
+        cod += str(cpb.cae).rjust(14, "0") #CAE
+        cod += str(cpb.cae_vto.strftime("%Y%m%d")).rjust(8, "0") #VTO_CAE
+        cod += str(digVerificador(cod))       
+                
+        codbar = armarCodBar(cod)
+        codigo = cod
+  
+    template = 'general/facturas/factura.html'                        
+    return render(request, template, locals())    
+
+@login_required 
+def imprimirPresupuesto(request,id,pdf=None):   
+    cpb = cpb_comprobante.objects.get(id=id)        
+    if not cpb:
+      raise Http404   
+    #puedeVerPadron(request,c.id_unidad.pk)    
+    try:
+        config = empresa_actual(request)
+    except gral_empresa.DoesNotExist:
+        config = None 
+    
+    c = config    
+    tipo_logo_factura = c.tipo_logo_factura
+    cuit = c.cuit
+    ruta_logo = c.ruta_logo
+    nombre_fantasia = c.nombre_fantasia
+    domicilio = c.domicilio
+    email = c.email
+    telefono = c.telefono
+    celular = c.celular
+    iibb = c.iibb
+    categ_fiscal = c.categ_fiscal
+    fecha_inicio_activ = c.fecha_inicio_activ
+
+    detalle_comprobante = cpb_comprobante_detalle.objects.filter(cpb_comprobante=cpb)    
+    cantidad = detalle_comprobante.count()        
+    
+    renglones = 20 - cantidad
+    if renglones < 0:
+        renglones = 0
+    renglones = range(renglones)
+    context = Context()    
+    fecha = datetime.now()    
+    discrimina_iva = cpb.letra == 'A'
+    factura_X = cpb.letra == 'X'
+    if discrimina_iva:
+        subtotal = cpb.importe_subtotal
+    else:
+        subtotal = cpb.importe_total
+    codigo_letra = '000'    
+    leyenda = u'DOCUMENTO NO VÁLIDO COMO FACTURA'
+
+    template = 'general/facturas/presupuesto.html'                        
+    if pdf:
+        return render_to_pdf(template,locals())
+    return render_to_pdf_response(request, template, locals())
+
+@login_required 
+def imprimirRemito(request,id,pdf=None):   
+    cpb = cpb_comprobante.objects.get(id=id)        
+    if not cpb:
+      raise Http404   
+    #puedeVerPadron(request,c.id_unidad.pk)    
+    try:
+        config = empresa_actual(request)
+    except gral_empresa.DoesNotExist:
+        config = None 
+    
+    c = config    
+    tipo_logo_factura = c.tipo_logo_factura
+    cuit = c.cuit
+    ruta_logo = c.ruta_logo
+    nombre_fantasia = c.nombre_fantasia
+    domicilio = c.domicilio
+    email = c.email
+    telefono = c.telefono
+    celular = c.celular
+    iibb = c.iibb
+    categ_fiscal = c.categ_fiscal
+    fecha_inicio_activ = c.fecha_inicio_activ      
+
+    detalle_comprobante = cpb_comprobante_detalle.objects.filter(cpb_comprobante=cpb)    
+    cantidad = detalle_comprobante.count()
+    leyenda = u'DOCUMENTO NO VÁLIDO COMO FACTURA'
+    codigo_letra = '000'
+    renglones = 20 - cantidad
+    if renglones < 0:
+        renglones = 0
+    renglones = range(renglones)
+    context = Context()    
+    fecha = hoy()   
+    tipo = 'ORIGINAL'
+    template = 'general/facturas/remito.html'                        
+    if pdf:
+        return render_to_pdf(template,locals())
+    return render_to_pdf_response(request, template, locals())
+
+@login_required 
+def imprimirCobranza(request,id,pdf=None):   
+    cpb = cpb_comprobante.objects.get(id=id)        
+    if not cpb:
+      raise Http404   
+    #puedeVerPadron(request,c.id_unidad.pk)    
+    try:
+        config = empresa_actual(request)
+    except gral_empresa.DoesNotExist:
+        config = None  
+    
+    c = config
+    
+    tipo_logo_factura = c.tipo_logo_factura
+    cuit = c.cuit
+    ruta_logo = c.ruta_logo
+    nombre_fantasia = c.nombre_fantasia
+    domicilio = c.domicilio
+    email = c.email
+    telefono = c.telefono
+    celular = c.celular
+    iibb = c.iibb
+    categ_fiscal = c.categ_fiscal
+    fecha_inicio_activ = c.fecha_inicio_activ       
+    
+    cobranzas = cpb_cobranza.objects.filter(cpb_comprobante=cpb)    
+    retenciones = cpb_comprobante_retenciones.objects.filter(cpb_comprobante=cpb)    
+    leyenda = u'DOCUMENTO NO VÁLIDO COMO FACTURA'
+    pagos = cpb_comprobante_fp.objects.filter(cpb_comprobante=cpb)    
+    codigo_letra = '000'
+    
+    context = Context()    
+    fecha = hoy()    
         
-        context['porcCom'] = porcCom
-        context['form'] = form
-        context['comprobantes'] = comprobantes       
-        return context
-    def post(self, *args, **kwargs):
-        return self.get(*args, **kwargs)         
+    template = 'general/facturas/cobranza.html'                        
+    if pdf:
+        return render_to_pdf(template,locals())
+    return render_to_pdf_response(request, template, locals())
 
-################################################################
-from django.http import JsonResponse
+@login_required 
+def imprimirCobranzaCtaCte(request,id,pdf=None):   
+    cpb = cpb_comprobante.objects.get(id=id)        
+    if not cpb:
+      raise Http404   
+    #puedeVerPadron(request,c.id_unidad.pk)    
+    try:
+        config = empresa_actual(request)
+    except gral_empresa.DoesNotExist:
+        raise Http404   
+    
+    c = config
+    
+    tipo_logo_factura = c.tipo_logo_factura
+    cuit = c.cuit
+    ruta_logo = c.ruta_logo
+    nombre_fantasia = c.nombre_fantasia
+    domicilio = c.domicilio
+    email = c.email
+    telefono = c.telefono
+    celular = c.celular
+    iibb = c.iibb
+    categ_fiscal = c.categ_fiscal
+    fecha_inicio_activ = c.fecha_inicio_activ   
+    
+    leyenda = u'DOCUMENTO NO VÁLIDO COMO FACTURA'
+    pagos = cpb_comprobante_fp.objects.filter(cpb_comprobante=cpb)    
+    codigo_letra = '000'
+    retenciones = cpb_comprobante_retenciones.objects.filter(cpb_comprobante=cpb) 
+    context = Context()    
+    fecha = hoy()    
+    
+    total_ctacte = cpb_comprobante.objects.filter(entidad=cpb.entidad,pto_vta__in=pto_vta_habilitados_list(request),cpb_tipo__usa_ctacte=True,cpb_tipo__compra_venta='V'\
+        ,empresa=config,estado__in=[1,2],fecha_cpb__lte=cpb.fecha_cpb).aggregate(sum=Sum(F('importe_total')*F('cpb_tipo__signo_ctacte'), output_field=DecimalField()))['sum'] or 0    
+    if total_ctacte<0:
+        total_ctacte=0
+    
+    template = 'general/facturas/cobranza_ctacte.html'                        
+    if pdf:
+        return render_to_pdf(template,locals())
+    return render_to_pdf_response(request, template, locals())
 
-def ValuesQuerySetToDict(vqs):
-    return [item for item in vqs]
+@login_required 
+def imprimirPagoCtaCte(request,id,pdf=None):   
+    cpb = cpb_comprobante.objects.get(id=id)        
+    if not cpb:
+      raise Http404   
+    #puedeVerPadron(request,c.id_unidad.pk)    
+    try:
+        config = empresa_actual(request)
+    except gral_empresa.DoesNotExist:
+        raise Http404   
+    
+    c = config
+    
+    tipo_logo_factura = c.tipo_logo_factura
+    cuit = c.cuit
+    ruta_logo = c.ruta_logo
+    nombre_fantasia = c.nombre_fantasia
+    domicilio = c.domicilio
+    email = c.email
+    telefono = c.telefono
+    celular = c.celular
+    iibb = c.iibb
+    categ_fiscal = c.categ_fiscal
+    fecha_inicio_activ = c.fecha_inicio_activ   
+    
+    cobranzas = cpb_cobranza.objects.filter(cpb_comprobante=cpb,cpb_comprobante__estado__pk__lt=3)    
+    leyenda = u'DOCUMENTO NO VÁLIDO COMO FACTURA'
+    pagos = cpb_comprobante_fp.objects.filter(cpb_comprobante=cpb,cpb_comprobante__estado__pk__lt=3)    
+    codigo_letra = '000'
+    
+    context = Context()    
+    fecha = datetime.now()    
+    
+    total_ctacte = cpb_comprobante.objects.filter(entidad=cpb.entidad,pto_vta__in=pto_vta_habilitados_list(request),cpb_tipo__usa_ctacte=True,cpb_tipo__compra_venta='C'\
+        ,empresa=config,estado__in=[1,2],fecha_cpb__lte=cpb.fecha_cpb).aggregate(sum=Sum(F('importe_total')*F('cpb_tipo__signo_ctacte'), output_field=DecimalField()))['sum'] or 0    
+    if total_ctacte<0:
+        total_ctacte=0
+    
+    template = 'general/facturas/orden_pago_ctacte.html'                        
+    if pdf:
+        return render_to_pdf(template,locals())
+    return render_to_pdf_response(request, template, locals())
 
-class Month(Func):
-    function = 'EXTRACT'
-    template = '%(function)s(MONTH from %(expressions)s)'
-    output_field = models.IntegerField()
+@login_required 
+def imprimirPago(request,id,pdf=None):   
+    cpb = cpb_comprobante.objects.get(id=id)        
+    if not cpb:
+      raise Http404   
+    #puedeVerPadron(request,c.id_unidad.pk)    
+    try:
+        config = empresa_actual(request)
+    except gral_empresa.DoesNotExist:
+        config = None 
+    
+    c = config
+    
+    tipo_logo_factura = c.tipo_logo_factura
+    cuit = c.cuit
+    ruta_logo = c.ruta_logo
+    nombre_fantasia = c.nombre_fantasia
+    domicilio = c.domicilio
+    email = c.email
+    telefono = c.telefono
+    celular = c.celular
+    iibb = c.iibb
+    categ_fiscal = c.categ_fiscal
+    fecha_inicio_activ = c.fecha_inicio_activ
+
+    cobranzas = cpb_cobranza.objects.filter(cpb_comprobante=cpb,cpb_comprobante__estado__pk__lt=3)    
+    leyenda = u'DOCUMENTO NO VÁLIDO COMO FACTURA'
+    pagos = cpb_comprobante_fp.objects.filter(cpb_comprobante=cpb,cpb_comprobante__estado__pk__lt=3)    
+    codigo_letra = '000'
+    
+    context = Context()    
+    fecha = datetime.now()    
+  
+    template = 'general/facturas/orden_pago.html'                        
+    if pdf:
+        return render_to_pdf(template,locals())
+    return render_to_pdf_response(request, template, locals())
+
+#************* EMAIL **************
+from django.core.mail import send_mail, EmailMessage
+from django.core.mail.backends.smtp import EmailBackend
+
+
+def verifEmail(request):                     
+    id = request.POST.get('id',None)            
+    email = None
+    try:
+      email = cpb_comprobante.objects.filter(id=id).first().entidad.get_correo()    
+      if not email:
+        email=''
+    except:
+      email=''
+    return HttpResponse(json.dumps(email), content_type = "application/json")
+
+@login_required 
+def mandarEmail(request,id):   
+    try:
+        email = str(request.GET.get('email',''))        
+        cpb = cpb_comprobante.objects.get(id=id)            
+        mail_destino = []
+        if not email:
+          email=str(cpb.entidad.email)
+        direccion = email
+        if not direccion:
+            messages.error(request, 'El comprobante no pudo ser enviado! (verifique la dirección de correo del destinatario)')  
+            return HttpResponseRedirect(cpb.get_listado())
+        mail_destino.append(direccion)
+        try:
+          config = empresa_actual(request)    
+        except gral_empresa.DoesNotExist:
+             raise ValueError
+
+        datos = config.get_datos_mail()      
+        mail_cuerpo = datos['mail_cuerpo']
+        mail_servidor = datos['mail_servidor']
+        mail_puerto = int(datos['mail_puerto'])
+        mail_usuario = datos['mail_usuario']
+        mail_password = str(datos['mail_password'])
+        mail_origen = datos['mail_origen']      
+       
+        if cpb.cpb_tipo.tipo == 4 or cpb.cpb_tipo.tipo == 7:
+            post_pdf = imprimirCobranza(request,id,True)              
+        elif cpb.cpb_tipo.tipo == 5:
+            post_pdf = imprimirRemito(request,id,True)          
+        elif cpb.cpb_tipo.tipo == 6:
+            post_pdf = imprimirPresupuesto(request,id,True)  
+        else:
+            post_pdf = imprimirFactura(request,id,True)  
+            
+        fecha = datetime.now()              
+        nombre = "%s" % cpb
+        image_url = request.build_absolute_uri(reverse("chequear_email",kwargs={'id': cpb.id}))
+        
+        html_content = get_template('general/varios/email.html').render({'mensaje': mail_cuerpo,'image_url':image_url})
+                
+        backend = EmailBackend(host=mail_servidor, port=mail_puerto, username=mail_usuario,password=mail_password,fail_silently=False)        
+        email = EmailMessage( subject=u'%s' % (cpb.get_cpb_tipo),body=html_content,from_email=mail_origen,to=mail_destino,connection=backend)                
+        email.attach(u'%s.pdf' %nombre,post_pdf, "application/pdf")
+        email.content_subtype = 'html'        
+        email.send()        
+        cpb.fecha_envio_mail=fecha
+        cpb.save()
+        messages.success(request, 'El comprobante fué enviado con éxito!')
+        return HttpResponseRedirect(cpb.get_listado())
+    except Exception as e:
+        messages.error(request, 'El comprobante no pudo ser enviado! (verifique la dirección de correo del destinatario)')  
+        return HttpResponseRedirect(cpb.get_listado())
+
+#************* BANCOS **************
+class BancosView(VariablesMixin,ListView):
+    model = cpb_banco
+    template_name = 'general/lista_bancos.html'
+    context_object_name = 'bancos'
+
+    @method_decorator(login_required)
+    def dispatch(self, *args, **kwargs):        
+        if not tiene_permiso(self.request,'gral_configuracion'):
+            return redirect(reverse('principal'))
+        return super(BancosView, self).dispatch(*args, **kwargs)
+    def get_queryset(self):
+        try:            
+            queryset = cpb_banco.objects.filter(empresa__id__in=empresas_habilitadas(self.request))
+        except:
+            queryset = cpb_banco.objects.none()
+        return queryset
+
+class BancosCreateView(VariablesMixin,AjaxCreateView):
+    form_class = BancosForm
+    template_name = 'modal/general/form_banco.html'
+
+    @method_decorator(login_required)
+    def dispatch(self, *args, **kwargs):        
+        if not tiene_permiso(self.request,'gral_configuracion'):
+            return redirect(reverse('principal'))
+        return super(BancosCreateView, self).dispatch(*args, **kwargs)
+
+    def form_valid(self, form):                       
+        form.instance.empresa = empresa_actual(self.request)
+        messages.success(self.request, u'Los datos se guardaron con éxito!')
+        return super(BancosCreateView, self).form_valid(form)
+
+    def get_initial(self):    
+        initial = super(BancosCreateView, self).get_initial()               
+        return initial    
+
+class BancosEditView(VariablesMixin,AjaxUpdateView):
+    form_class = BancosForm
+    model = cpb_banco
+    pk_url_kwarg = 'id'
+    template_name = 'modal/general/form_banco.html'
+
+    @method_decorator(login_required)
+    def dispatch(self, *args, **kwargs):        
+        if not tiene_permiso(self.request,'gral_configuracion'):
+            return redirect(reverse('principal'))
+        return super(BancosEditView, self).dispatch(*args, **kwargs)
+
+    def form_valid(self, form):
+        messages.success(self.request, u'Los datos se guardaron con éxito!')        
+        return super(BancosEditView, self).form_valid(form)
+
+    def get_initial(self):    
+        initial = super(BancosEditView, self).get_initial()                      
+        return initial    
+
 
 @login_required
-def ver_grafico(request):
-    productos_vendidos = cpb_comprobante_detalle.objects.filter(cpb_comprobante__cpb_tipo__compra_venta='V',cpb_comprobante__cpb_tipo__tipo__in=[1,2,3,9,21,22,23],cpb_comprobante__estado__in=[1,2],cpb_comprobante__fecha_cpb__year=hoy().year)
-    productos_vendidos_total = productos_vendidos.aggregate(sum=Sum(F('cantidad')*F('cpb_comprobante__cpb_tipo__signo_ctacte'), output_field=DecimalField()))['sum'] or 0 
-    productos_vendidos = productos_vendidos.values('producto__nombre').annotate(tot=Sum(F('cantidad')*F('cpb_comprobante__cpb_tipo__signo_ctacte'),output_field=DecimalField())).order_by('-tot')[:20]
+def BancosDeleteView(request, id):
+    try:
+        objeto = get_object_or_404(cpb_banco, id=id)
+        if not tiene_permiso(request,'gral_configuracion'):
+                return redirect(reverse('principal'))       
+        objeto.delete()
+        messages.success(request, u'¡Los datos se guardaron con éxito!')
+    except:
+        messages.error(request, u'¡Los datos no pudieron eliminarse!')
+    return redirect('bancos_listado')        
+
+#************* MOVIMIENTOS INTERNOS **************
+
+class MovInternosViewList(VariablesMixin,ListView):
+    model = cpb_comprobante
+    template_name = 'general/movimientos/movimientos_listado.html'
+    context_object_name = 'movimientos'    
+
+    @method_decorator(login_required)
+    def dispatch(self, *args, **kwargs):         
+        limpiar_sesion(self.request)        
+        if not tiene_permiso(self.request,'cpb_movimientos'):
+            return redirect(reverse('principal'))
+        return super(MovInternosViewList, self).dispatch(*args,**kwargs)
+
+    def get_context_data(self, **kwargs):
+        context = super(MovInternosViewList, self).get_context_data(**kwargs)
+        try:
+            config = empresa_actual(self.request)
+        except gral_empresa.DoesNotExist:
+            config = None 
+        form = ConsultaCpbsCompras(self.request.POST or None,empresa=config,request=self.request)   
+        movimientos = cpb_comprobante_fp.objects.filter(cpb_comprobante__cpb_tipo__id=13,cpb_comprobante__empresa__id__in=empresas_habilitadas(self.request)).order_by('-cpb_comprobante__fecha_cpb','-cpb_comprobante__fecha_creacion').select_related('cpb_comprobante')                
+        if form.is_valid():                                
+            fdesde = form.cleaned_data['fdesde']   
+            fhasta = form.cleaned_data['fhasta']                                                             
+            
+            if fdesde:
+                movimientos= movimientos.filter(cpb_comprobante__fecha_cpb__gte=fdesde)
+            if fhasta:
+                movimientos= movimientos.filter(cpb_comprobante__fecha_cpb__lte=fhasta)              
+        else:
+            mvs= movimientos.filter(cpb_comprobante__fecha_cpb__gte=inicioMesAnt(),cpb_comprobante__fecha_cpb__lte=finMes())            
+            if len(mvs)==0:
+                mvs = movimientos[:20]                        
+            movimientos=mvs
+
+        context['form'] = form
+        context['movimientos'] = movimientos
+        return context
+
     
+    def post(self, *args, **kwargs):
+        return self.get(*args, **kwargs)
 
-    # comprobantes = cpb_comprobante.objects.filter(pto_vta__in=pto_vta_habilitados(request),cpb_tipo__tipo__in=[1,2,3,9,21,22,23],estado__in=[1,2],fecha_cpb__year=2018)
-    # comprobantes = comprobantes.annotate(m=Month('fecha_cpb')).values('cpb_tipo__compra_venta','m')\
-    #         .annotate(cant=Count('id'),total=Sum(F('importe_total')*F('cpb_tipo__signo_ctacte'),output_field=DecimalField())).order_by(F('m'),F('cpb_tipo__compra_venta'))        
-    productos_vendidos = ValuesQuerySetToDict(productos_vendidos)
+class CPBMIFPFormSet(BaseInlineFormSet): 
+    pass 
 
-  
-    #return JsonResponse(json.dumps(ventas, cls=DjangoJSONEncoder))            
-    return HttpResponse( json.dumps(productos_vendidos, cls=DjangoJSONEncoder), content_type='application/json' )  
+CPBFPFormSet = inlineformset_factory(cpb_comprobante, cpb_comprobante_fp,form=MovimCuentasFPForm,formset=CPBMIFPFormSet, can_delete=True,extra=0,min_num=1)
+
+class MovInternosCreateView(VariablesMixin,CreateView):
+    form_class = MovimCuentasForm
+    template_name = 'general/movimientos/movimientos_form.html'
+    
+    @method_decorator(login_required)
+    def dispatch(self, *args, **kwargs):            
+        if not tiene_permiso(self.request,'cpb_mov_abm'):
+            return redirect(reverse('principal'))
+        return super(MovInternosCreateView, self).dispatch(*args, **kwargs)
+    
+    def get_initial(self):    
+        initial = super(MovInternosCreateView, self).get_initial()        
+        initial['tipo_form'] = 'ALTA'        
+        return initial   
+
+    def get_form_kwargs(self,**kwargs):
+        kwargs = super(MovInternosCreateView, self).get_form_kwargs()
+        kwargs['request'] = self.request              
+        
+        return kwargs
+
+    def get(self, request, *args, **kwargs):
+        self.object = None
+        form_class = self.get_form_class()
+        form = self.get_form(form_class)       
+        CPBFPFormSet.form = staticmethod(curry(MovimCuentasFPForm,request=request))
+        cpb_fp = CPBFPFormSet(prefix='formFP')        
+        return self.render_to_response(self.get_context_data(form=form,cpb_fp = cpb_fp))
+
+    def post(self, request, *args, **kwargs):
+        self.object = None
+        form_class = self.get_form_class()
+        form = self.get_form(form_class)       
+        CPBFPFormSet.form = staticmethod(curry(MovimCuentasFPForm,request=request))
+        cpb_fp = CPBFPFormSet(self.request.POST,prefix='formFP')
+        if form.is_valid() and cpb_fp.is_valid():            
+            return self.form_valid(form, cpb_fp)
+        else:
+            return self.form_invalid(form, cpb_fp)        
+
+    def form_valid(self, form, cpb_fp):
+        self.object = form.save(commit=False)        
+        estado=cpb_estado.objects.get(pk=2)
+        self.object.estado=estado   
+        self.object.letra='X'
+        self.object.pto_vta=0
+        self.object.numero = ultimoNro(13,self.object.pto_vta,self.object.letra)
+        tipo=cpb_tipo.objects.get(pk=13)
+        self.object.cpb_tipo=tipo
+        self.object.empresa = empresa_actual(self.request)
+        self.object.usuario = usuario_actual(self.request)        
+        self.object.fecha_imputacion=self.object.fecha_cpb
+        self.object.save()
+        cpb_fp.instance = self.object
+        cpb_fp.cpb_comprobante = self.object.id               
+        cpb_fp.save()
+        messages.success(self.request, u'Los datos se guardaron con éxito!') 
+        return HttpResponseRedirect(reverse('movimientos_listado'))
+
+    def form_invalid(self, form,cpb_fp):                                                       
+        return self.render_to_response(self.get_context_data(form=form,cpb_fp = cpb_fp))
+
+class MovInternosEditView(VariablesMixin,UpdateView):
+    form_class = MovimCuentasForm
+    template_name = 'general/movimientos/movimientos_form.html'
+    pk_url_kwarg = 'id'    
+    model = cpb_comprobante    
+
+    @method_decorator(login_required)
+    def dispatch(self, *args, **kwargs):            
+        if not tiene_permiso(self.request,'cpb_mov_abm'):
+            return redirect(reverse('principal'))        
+        return super(MovInternosEditView, self).dispatch(*args, **kwargs)
+    
+    def get_initial(self):    
+        initial = super(MovInternosEditView, self).get_initial()        
+        initial['tipo_form'] = 'EDICION'
+        return initial 
+
+    def get(self, request, *args, **kwargs):
+        self.object = self.get_object()
+        form_class = self.get_form_class()
+        form = self.get_form(form_class)                       
+        # form.fields['numero'].widget.attrs['disabled'] = True        
+        CPBFPFormSet.form = staticmethod(curry(MovimCuentasFPForm,request=request))
+        cpb_fp = CPBFPFormSet(instance=self.object,prefix='formFP')
+        return self.render_to_response(self.get_context_data(form=form,cpb_fp = cpb_fp))
+
+    def post(self, request, *args, **kwargs):
+        self.object = self.get_object()
+        form_class = self.get_form_class()
+        form = self.get_form(form_class)       
+        CPBFPFormSet.form = staticmethod(curry(MovimCuentasFPForm,request=request))
+        cpb_fp = CPBFPFormSet(self.request.POST,instance=self.object,prefix='formFP')
+        if form.is_valid() and cpb_fp.is_valid():
+            return self.form_valid(form, cpb_fp)
+        else:
+            return self.form_invalid(form, cpb_fp)        
+
+    def form_valid(self, form, cpb_fp):
+        self.object = form.save(commit=False)                
+        self.object.fecha_imputacion=self.object.fecha_cpb
+        self.object.save()
+        cpb_fp.instance = self.object
+        cpb_fp.cpb_comprobante = self.object.id        
+        cpb_fp.save()                    
+        messages.success(self.request, u'Los datos se guardaron con éxito!')
+        return HttpResponseRedirect(reverse('movimientos_listado'))
+
+    def get_form_kwargs(self):
+        kwargs = super(MovInternosEditView, self).get_form_kwargs()
+        kwargs['request'] = self.request
+        return kwargs
+
+    def form_invalid(self, form,cpb_fp):                                                       
+        return self.render_to_response(self.get_context_data(form=form,cpb_fp = cpb_fp))
+    
+@login_required
+def MovInternosDeleteView(request, id):
+    cpb = get_object_or_404(cpb_comprobante, id=id)
+    if not tiene_permiso(request,'cpb_mov_abm'):
+            return redirect(reverse('principal'))
+    try:        
+        #Movim Traspaso
+        if cpb.cpb_tipo.pk == 13: 
+            #traigo los fps de los recibos asociados        
+            cpbs = cpb_comprobante_fp.objects.filter(mdcp_salida__id=cpb.id)
+            for c in cpbs:
+                c.mdcp_salida = None
+                c.save()            
+        cpb.delete()
+        messages.success(request, u'Los datos se guardaron con éxito!')
+    except:
+        messages.error(request, u'No se pudo eliminar el Comprobante!')
+    return redirect('movimientos_listado')
+
+##########################################################################
+
+class ComprobantesVerView(VariablesMixin,DetailView):
+    model = cpb_comprobante
+    pk_url_kwarg = 'id'
+    context_object_name = 'cpb'
+    template_name = 'general/facturas/detalle_factura.html'
+
+    @method_decorator(login_required)
+    def dispatch(self, *args, **kwargs): 
+        return super(ComprobantesVerView, self).dispatch(*args, **kwargs)
+
+    def get_context_data(self, **kwargs):        
+        context = super(ComprobantesVerView, self).get_context_data(**kwargs)
+        try:
+            config = empresa_actual(self.request)
+        except gral_empresa.DoesNotExist:
+            config = None 
+        cpb = self.object
+        context['config'] = config
+        detalle_comprobante = cpb_comprobante_detalle.objects.filter(cpb_comprobante=cpb).select_related('producto','tasa_iva')       
+        context['detalle_comprobante'] = detalle_comprobante
+        cobranzas = cpb_comprobante_fp.objects.filter(cpb_comprobante__cpb_cobranza_cpb__cpb_factura=cpb).select_related('tipo_forma_pago')  
+        context['cobranzas'] = cobranzas 
+        return context
+
+class RecibosVerView(VariablesMixin,DetailView):
+    model = cpb_comprobante
+    pk_url_kwarg = 'id'
+    context_object_name = 'cpb'
+    template_name = 'general/facturas/detalle_recibo.html'
+
+    @method_decorator(login_required)
+    def dispatch(self, *args, **kwargs): 
+        return super(RecibosVerView, self).dispatch(*args, **kwargs)
+
+    def get_context_data(self, **kwargs):        
+        context = super(RecibosVerView, self).get_context_data(**kwargs)
+        try:
+            config = empresa_actual(self.request)
+        except gral_empresa.DoesNotExist:
+            config = None 
+        cpb = self.object
+        context['config'] = config
+        detalle = cpb_comprobante_fp.objects.filter(cpb_comprobante=cpb).select_related('tipo_forma_pago','mdcp_banco','cta_ingreso','cta_egreso')       
+        context['detalle'] = detalle        
+        cobranzas = cpb_cobranza.objects.filter(cpb_comprobante=cpb,cpb_comprobante__estado__pk__lt=3).select_related('cpb_comprobante')  
+        context['cobranzas'] = cobranzas 
+        return context
+
+class OrdenPagoVerView(VariablesMixin,DetailView):
+    model = cpb_comprobante
+    pk_url_kwarg = 'id'
+    context_object_name = 'cpb'
+    template_name = 'general/facturas/detalle_op.html'
+
+    @method_decorator(login_required)
+    def dispatch(self, *args, **kwargs): 
+        return super(OrdenPagoVerView, self).dispatch(*args, **kwargs)
+
+    def get_context_data(self, **kwargs):        
+        context = super(OrdenPagoVerView, self).get_context_data(**kwargs)
+        try:
+            config = empresa_actual(self.request)
+        except gral_empresa.DoesNotExist:
+            config = None 
+        cpb = self.object
+        context['config'] = config
+        detalle = cpb_comprobante_fp.objects.filter(cpb_comprobante=cpb).select_related('tipo_forma_pago','mdcp_banco','cta_ingreso','cta_egreso')       
+        context['detalle'] = detalle        
+        cobranzas = cpb_cobranza.objects.filter(cpb_comprobante=cpb,cpb_comprobante__estado__pk__lt=3).select_related('cpb_comprobante')  
+        context['cobranzas'] = cobranzas 
+        return context
+
+class NCNDVerView(VariablesMixin,DetailView):
+    model = cpb_comprobante
+    pk_url_kwarg = 'id'
+    context_object_name = 'cpb'
+    template_name = 'general/facturas/detalle_ncnd.html'
+
+    @method_decorator(login_required)
+    def dispatch(self, *args, **kwargs): 
+        return super(NCNDVerView, self).dispatch(*args, **kwargs)
+
+    def get_context_data(self, **kwargs):        
+        context = super(NCNDVerView, self).get_context_data(**kwargs)
+        try:
+            config = empresa_actual(self.request)
+        except gral_empresa.DoesNotExist:
+            config = None 
+        cpb = self.object
+        context['config'] = config
+        detalle_comprobante = cpb_comprobante_detalle.objects.filter(cpb_comprobante=cpb).select_related('producto','tasa_iva')       
+        context['detalle_comprobante'] = detalle_comprobante 
+        return context
+
+class RemitoVerView(VariablesMixin,DetailView):
+    model = cpb_comprobante
+    pk_url_kwarg = 'id'
+    context_object_name = 'cpb'
+    template_name = 'general/facturas/detalle_remito.html'
+
+    @method_decorator(login_required)
+    def dispatch(self, *args, **kwargs): 
+        return super(RemitoVerView, self).dispatch(*args, **kwargs)
+
+    def get_context_data(self, **kwargs):        
+        context = super(RemitoVerView, self).get_context_data(**kwargs)
+        try:
+            config = empresa_actual(self.request)
+        except gral_empresa.DoesNotExist:
+            config = None 
+        cpb = self.object
+        context['config'] = config
+        detalle_comprobante = cpb_comprobante_detalle.objects.filter(cpb_comprobante=cpb).select_related('producto','tasa_iva')       
+        context['detalle_comprobante'] = detalle_comprobante             
+        return context
+
+class PresupVerView(VariablesMixin,DetailView):
+    model = cpb_comprobante
+    pk_url_kwarg = 'id'
+    context_object_name = 'cpb'
+    template_name = 'general/facturas/detalle_presup.html'
+
+    @method_decorator(login_required)
+    def dispatch(self, *args, **kwargs): 
+        return super(PresupVerView, self).dispatch(*args, **kwargs)
+
+    def get_context_data(self, **kwargs):        
+        context = super(PresupVerView, self).get_context_data(**kwargs)
+        try:
+            config = empresa_actual(self.request)
+        except gral_empresa.DoesNotExist:
+            config = None 
+        cpb = self.object
+        context['config'] = config
+        detalle_comprobante = cpb_comprobante_detalle.objects.filter(cpb_comprobante=cpb).select_related('producto','tasa_iva')       
+        context['detalle_comprobante'] = detalle_comprobante    
+
+        return context
+
+class MovimVerView(VariablesMixin,DetailView):
+    model = cpb_comprobante
+    pk_url_kwarg = 'id'
+    context_object_name = 'cpb'
+    template_name = 'general/facturas/detalle_movimiento.html'
+
+    @method_decorator(login_required)
+    def dispatch(self, *args, **kwargs): 
+        return super(MovimVerView, self).dispatch(*args, **kwargs)
+
+    def get_context_data(self, **kwargs):        
+        context = super(MovimVerView, self).get_context_data(**kwargs)
+        try:
+            config = empresa_actual(self.request)
+        except gral_empresa.DoesNotExist:
+            config = None 
+        cpb = self.object
+        context['config'] = config
+        detalle = cpb_comprobante_fp.objects.filter(cpb_comprobante=cpb).select_related('tipo_forma_pago','mdcp_banco','cta_ingreso','cta_egreso')       
+        context['detalle'] = detalle               
+        return context
+
+#************* PercImp **************
+class PercImpView(VariablesMixin,ListView):
+    model = cpb_perc_imp
+    template_name = 'general/lista_perc_imp.html'
+    context_object_name = 'perc_imp'
+
+    @method_decorator(login_required)
+    def dispatch(self, *args, **kwargs):        
+        if not tiene_permiso(self.request,'gral_configuracion'):
+            return redirect(reverse('principal'))
+        return super(PercImpView, self).dispatch(*args, **kwargs)
+
+    def get_queryset(self):
+        try:            
+            queryset = cpb_perc_imp.objects.filter(empresa__id__in=empresas_habilitadas(self.request))
+        except:
+            queryset = cpb_perc_imp.objects.none()
+        return queryset
+
+class PercImpCreateView(VariablesMixin,AjaxCreateView):
+    form_class = PercImpForm
+    template_name = 'modal/general/form_perc_imp.html'
+
+    @method_decorator(login_required)
+    def dispatch(self, *args, **kwargs):        
+        if not tiene_permiso(self.request,'gral_configuracion'):
+            return redirect(reverse('principal'))
+        return super(PercImpCreateView, self).dispatch(*args, **kwargs)
+
+    def form_valid(self, form):                       
+        form.instance.empresa = empresa_actual(self.request)
+        messages.success(self.request, u'Los datos se guardaron con éxito!')
+        return super(PercImpCreateView, self).form_valid(form)
+
+    def get_initial(self):    
+        initial = super(PercImpCreateView, self).get_initial()               
+        return initial    
+
+class PercImpEditView(VariablesMixin,AjaxUpdateView):
+    form_class = PercImpForm
+    model = cpb_perc_imp
+    pk_url_kwarg = 'id'
+    template_name = 'modal/general/form_perc_imp.html'
+
+    @method_decorator(login_required)
+    def dispatch(self, *args, **kwargs):        
+        if not tiene_permiso(self.request,'gral_configuracion'):
+            return redirect(reverse('principal'))
+        return super(PercImpEditView, self).dispatch(*args, **kwargs)
+
+    def form_valid(self, form):        
+        messages.success(self.request, u'Los datos se guardaron con éxito!')
+        return super(PercImpEditView, self).form_valid(form)
+
+    def get_initial(self):    
+        initial = super(PercImpEditView, self).get_initial()                      
+        return initial    
+
+@login_required
+def PercImpDeleteView(request, id):
+    try:
+        objeto = get_object_or_404(cpb_perc_imp, id=id)
+        if not tiene_permiso(request,'gral_configuracion'):
+                return redirect(reverse('principal'))       
+        objeto.delete()
+        messages.success(request, u'¡Los datos se guardaron con éxito!')
+    except:
+        messages.error(request, u'¡Los datos no pudieron eliminarse!')
+    return redirect('percimp_listado')   
+
+#************* Retenciones ****
+class RetencView(VariablesMixin,ListView):
+    model = cpb_retenciones
+    template_name = 'general/lista_retenc.html'
+    context_object_name = 'retenc'
+
+    @method_decorator(login_required)
+    def dispatch(self, *args, **kwargs):        
+        if not tiene_permiso(self.request,'gral_configuracion'):
+            return redirect(reverse('principal'))
+        return super(RetencView, self).dispatch(*args, **kwargs)
+
+    def get_queryset(self):
+        try:            
+            queryset = cpb_retenciones.objects.filter(empresa__id__in=empresas_habilitadas(self.request))
+        except:
+            queryset = cpb_retenciones.objects.none()
+        return queryset
+
+class RetencCreateView(VariablesMixin,AjaxCreateView):
+    form_class = RetencForm
+    template_name = 'modal/general/form_retenc.html'
+
+    @method_decorator(login_required)
+    def dispatch(self, *args, **kwargs):        
+        if not tiene_permiso(self.request,'gral_configuracion'):
+            return redirect(reverse('principal'))
+        return super(RetencCreateView, self).dispatch(*args, **kwargs)
+
+    def form_valid(self, form):                       
+        form.instance.empresa = empresa_actual(self.request)
+        messages.success(self.request, u'Los datos se guardaron con éxito!')
+        return super(RetencCreateView, self).form_valid(form)
+
+    def get_initial(self):    
+        initial = super(RetencCreateView, self).get_initial()               
+        return initial    
+
+class RetencEditView(VariablesMixin,AjaxUpdateView):
+    form_class = RetencForm
+    model = cpb_retenciones
+    pk_url_kwarg = 'id'
+    template_name = 'modal/general/form_retenc.html'
+
+    @method_decorator(login_required)
+    def dispatch(self, *args, **kwargs):        
+        if not tiene_permiso(self.request,'gral_configuracion'):
+            return redirect(reverse('principal'))
+        return super(RetencEditView, self).dispatch(*args, **kwargs)
+
+    def form_valid(self, form):        
+        messages.success(self.request, u'Los datos se guardaron con éxito!')
+        return super(RetencEditView, self).form_valid(form)
+
+    def get_initial(self):    
+        initial = super(RetencEditView, self).get_initial()                      
+        return initial    
+
+@login_required
+def RetencDeleteView(request, id):
+    try:
+        objeto = get_object_or_404(cpb_retenciones, id=id)
+        if not tiene_permiso(request,'gral_configuracion'):
+                return redirect(reverse('principal'))       
+        objeto.delete()
+        messages.success(request, u'¡Los datos se guardaron con éxito!')
+    except:
+        messages.error(request, u'¡Los datos no pudieron eliminarse!')
+    return redirect('retenc_listado')   
+
+#************* FormaPago  **************
+class FPView(VariablesMixin,ListView):
+    model = cpb_tipo_forma_pago
+    template_name = 'general/lista_formapago.html'
+    context_object_name = 'formapago'
+
+    @method_decorator(login_required)
+    def dispatch(self, *args, **kwargs):        
+        if not tiene_permiso(self.request,'gral_configuracion'):
+            return redirect(reverse('principal'))
+        return super(FPView, self).dispatch(*args, **kwargs)
+
+    def get_queryset(self):
+        try:            
+            queryset = cpb_tipo_forma_pago.objects.filter(empresa__id__in=empresas_habilitadas(self.request))
+        except:
+            queryset = cpb_tipo_forma_pago.objects.none()
+        return queryset
+
+class FPCreateView(VariablesMixin,AjaxCreateView):
+    form_class = FormaPagoForm
+    template_name = 'modal/general/form_formapago.html'
+
+    @method_decorator(login_required)
+    def dispatch(self, *args, **kwargs):        
+        if not tiene_permiso(self.request,'gral_configuracion'):
+            return redirect(reverse('principal'))
+        return super(FPCreateView, self).dispatch(*args, **kwargs)
+
+    def form_valid(self, form):                       
+        form.instance.empresa = empresa_actual(self.request)
+        messages.success(self.request, u'Los datos se guardaron con éxito!')
+        return super(FPCreateView, self).form_valid(form)
+
+    def get_initial(self):    
+        initial = super(FPCreateView, self).get_initial()               
+        return initial    
+
+    def get_form_kwargs(self):
+        kwargs = super(FPCreateView, self).get_form_kwargs()
+        kwargs['request'] = self.request
+        return kwargs
+
+class FPEditView(VariablesMixin,AjaxUpdateView):
+    form_class = FormaPagoForm
+    model = cpb_tipo_forma_pago
+    pk_url_kwarg = 'id'
+    template_name = 'modal/general/form_formapago.html'
+
+    @method_decorator(login_required)
+    def dispatch(self, *args, **kwargs):        
+        if not tiene_permiso(self.request,'gral_configuracion'):
+            return redirect(reverse('principal'))
+        return super(FPEditView, self).dispatch(*args, **kwargs)
+
+    def form_valid(self, form):        
+        messages.success(self.request, u'Los datos se guardaron con éxito!')
+        return super(FPEditView, self).form_valid(form)
+
+    def get_initial(self):    
+        initial = super(FPEditView, self).get_initial()                      
+        return initial    
+
+    def get_form_kwargs(self):
+        kwargs = super(FPEditView, self).get_form_kwargs()
+        kwargs['request'] = self.request
+        return kwargs
+
+@login_required
+def FPDeleteView(request, id):
+    try:
+        objeto = get_object_or_404(cpb_tipo_forma_pago, id=id)
+        if not tiene_permiso(request,'gral_configuracion'):
+                return redirect(reverse('principal'))       
+        objeto.delete()
+        messages.success(request, u'¡Los datos se guardaron con éxito!')
+    except:
+        messages.error(request, u'¡Los datos no pudieron eliminarse!')
+    return redirect('formapago_listado')           
+
+#************* Pto de Venta y sus Nros **************
+class PtoVtaView(VariablesMixin,ListView):
+    model = cpb_pto_vta
+    template_name = 'general/pto_vta/pto_vta_listado.html'
+    context_object_name = 'pto_vta'
+
+    @method_decorator(login_required)
+    def dispatch(self, *args, **kwargs):        
+        if not tiene_permiso(self.request,'gral_configuracion'):
+            return redirect(reverse('principal'))
+        return super(PtoVtaView, self).dispatch(*args, **kwargs)
+
+    def get_context_data(self, **kwargs):
+        context = super(PtoVtaView, self).get_context_data(**kwargs)        
+        try:            
+            context['numeros'] = cpb_pto_vta_numero.objects.filter(cpb_pto_vta__in=pto_vta_habilitados(self.request)).select_related('cpb_tipo','cpb_pto_vta').order_by('cpb_pto_vta__numero','cpb_tipo__nombre','letra')
+        except:
+            context['numeros'] = None
+        return context
+
+    def get_queryset(self):
+        try:            
+            empresa = empresa_actual(self.request)  
+            usuario = usuario_actual(self.request) 
+            queryset = cpb_pto_vta.objects.all().order_by('numero')
+            if empresa:
+                queryset = queryset.filter(empresa__id__in=empresas_habilitadas(self.request))        
+            try:
+                if usuario.cpb_pto_vta:
+                    queryset = queryset.filter(id=usuario.cpb_pto_vta.id)        
+            except:     
+                return queryset
+            return queryset            
+        except:
+            queryset = cpb_pto_vta.objects.none()
+
+        return queryset
+
+class PtoVtaCreateView(VariablesMixin,CreateView):
+    form_class = PtoVtaForm
+    model = cpb_pto_vta    
+    template_name = 'general/pto_vta/pto_vta_form.html'
+    success_url = '/comprobantes/pto_vta'
+
+    @method_decorator(login_required)
+    def dispatch(self, *args, **kwargs): 
+        if not tiene_permiso(self.request,'gral_configuracion'):
+            return redirect(reverse('principal'))
+        return super(PtoVtaCreateView, self).dispatch(*args, **kwargs)
+
+    def form_valid(self, form):        
+        form.instance.empresa = empresa_actual(self.request)
+        messages.success(self.request, u'Los datos se guardaron con éxito!')
+        return super(PtoVtaCreateView, self).form_valid(form)
+
+    def get_form_kwargs(self):
+        kwargs = super(PtoVtaCreateView, self).get_form_kwargs()
+        kwargs['request'] = self.request
+        return kwargs
+
+    def form_invalid(self, form):         
+        return self.render_to_response(self.get_context_data(form=form))
+
+    def get_initial(self):    
+        initial = super(PtoVtaCreateView, self).get_initial()
+        initial['request'] = self.request                      
+        return initial        
+
+class PtoVtaEditView(VariablesMixin,UpdateView):
+    form_class = PtoVtaEditForm
+    model = cpb_pto_vta
+    pk_url_kwarg = 'id'
+    template_name = 'general/pto_vta/pto_vta_form.html'
+    success_url = '/comprobantes/pto_vta'
+
+    @method_decorator(login_required)
+    def dispatch(self, *args, **kwargs): 
+        if not tiene_permiso(self.request,'gral_configuracion'):
+            return redirect(reverse('principal'))
+        return super(PtoVtaEditView, self).dispatch(*args, **kwargs)
+
+    def form_valid(self, form):        
+        messages.success(self.request, u'Los datos se guardaron con éxito!')
+        return super(PtoVtaEditView, self).form_valid(form)
+
+    def get_form_kwargs(self):
+        kwargs = super(PtoVtaEditView, self).get_form_kwargs()
+        # kwargs['request'] = self.request
+        return kwargs
+
+    def get_context_data(self, **kwargs):
+        context = super(PtoVtaEditView, self).get_context_data(**kwargs)        
+        try:            
+            context['nro'] = self.get_object()
+        except:
+            context['nro'] = None
+        return context
+
+    def form_invalid(self, form):         
+        return self.render_to_response(self.get_context_data(form=form))
+
+    def get_initial(self):    
+        initial = super(PtoVtaEditView, self).get_initial()
+        # initial['request'] = self.request                      
+        return initial
 
 
-######################################################
 
 @login_required 
-def reporte_retenciones_imp(request):    
-    limpiar_sesion(request)
-    if not tiene_permiso(request,'rep_retenciones_imp'):
-            return redirect(reverse('principal'))  
-    context = {}
-    context = getVariablesMixin(request)    
-    try:
-        empresa = empresa_actual(request)
-    except gral_empresa.DoesNotExist:
-        empresa = None 
-    form = ConsultaRepRetencImp(request.POST or None,request=request)            
-    fecha = date.today()
+def pto_vta_baja_reactivar(request,id):
+    pto_vta = cpb_pto_vta.objects.get(pk=id) 
+    pto_vta.baja = not pto_vta.baja
+    pto_vta.save()   
+    messages.success(request, u'Los datos se guardaron con éxito!')            
+    return HttpResponseRedirect(reverse("pto_vta_listado"))
+
+@login_required 
+def pto_vta_numero_cambiar(request,id,nro):        
+    pto_vta_numero = cpb_pto_vta_numero.objects.get(id=id,cpb_pto_vta__empresa=empresa_actual(request))    
+    if pto_vta_numero:
+            pto_vta_numero.ultimo_nro = nro    
+            pto_vta_numero.save()
+            messages.success(request, u'Los datos se guardaron con éxito!')               
+    return HttpResponseRedirect(reverse('pto_vta_listado'))
+
+#************* Disponibilidades **************
+class DispoView(VariablesMixin,ListView):
+    model = cpb_cuenta
+    template_name = 'general/lista_dispo.html'
+    context_object_name = 'cuenta'
+
+    @method_decorator(login_required)
+    def dispatch(self, *args, **kwargs):        
+        if not tiene_permiso(self.request,'gral_configuracion'):
+            return redirect(reverse('principal'))
+        return super(DispoView, self).dispatch(*args, **kwargs)
+
+    def get_context_data(self, **kwargs):
+        context = super(DispoView, self).get_context_data(**kwargs)                
+        return context
+
+    def get_queryset(self):
+        try:            
+            queryset = cpb_cuenta.objects.filter(empresa__id__in=empresas_habilitadas(self.request))
+        except:
+            queryset = cpb_cuenta.objects.none()
+        return queryset
+
+class DispoCreateView(VariablesMixin,AjaxCreateView):
+    form_class = DispoForm
+    template_name = 'modal/general/form_dispo.html'
+
+    @method_decorator(login_required)
+    def dispatch(self, *args, **kwargs):        
+        if not tiene_permiso(self.request,'gral_configuracion'):
+            return redirect(reverse('principal'))
+        return super(DispoCreateView, self).dispatch(*args, **kwargs)
+
+    def form_valid(self, form):                       
+        form.instance.empresa = empresa_actual(self.request)
+        messages.success(self.request, u'Los datos se guardaron con éxito!')
+        return super(DispoCreateView, self).form_valid(form)
+
+    def get_initial(self):    
+        initial = super(DispoCreateView, self).get_initial()               
+        return initial  
     
-    cpbs = rets = impuestos = None
-    if form.is_valid():                                
-        entidad = form.cleaned_data['entidad']                                                              
-        fdesde = form.cleaned_data['fdesde']   
-        fhasta = form.cleaned_data['fhasta']           
-        pto_vta = form.cleaned_data['pto_vta']  
-        nro_cpb = form.cleaned_data['nro_cpb']          
-        total = 0                    
-        cpbs = cpb_comprobante_perc_imp.objects.filter(cpb_comprobante__empresa=empresa,cpb_comprobante__fecha_imputacion__gte=fdesde,cpb_comprobante__fecha_imputacion__lte=fhasta)\
-            .select_related('cpb_comprobante','perc_imp','cpb_comprobante__cpb_tipo','cpb_comprobante__entidad')\
-            .only('id','perc_imp','cpb_comprobante','importe_total','detalle').order_by('-cpb_comprobante__fecha_imputacion','-id')            
-                            
-        rets = cpb_comprobante_retenciones.objects.filter(cpb_comprobante__empresa=empresa,cpb_comprobante__fecha_imputacion__gte=fdesde,cpb_comprobante__fecha_imputacion__lte=fhasta)\
-            .select_related('cpb_comprobante','retencion','cpb_comprobante__cpb_tipo','cpb_comprobante__entidad')\
-            .only('id','retencion','cpb_comprobante','ret_nrocpb','ret_importe_isar','ret_fecha_cpb','importe_total','detalle').order_by('-cpb_comprobante__fecha_imputacion','-id')  
+    def get_form_kwargs(self):
+        kwargs = super(DispoCreateView, self).get_form_kwargs()
+        kwargs['request'] = self.request
+        return kwargs  
 
-        impuestos = cpb_comprobante.objects.filter(empresa=empresa,fecha_imputacion__gte=fdesde,fecha_imputacion__lte=fhasta)\
-            .annotate(tot_imp=Sum(F('importe_tasa1')+F('importe_tasa2'), output_field=DecimalField())).filter(tot_imp__gt=0)\
-            .select_related('cpb_tipo','entidad').order_by('-fecha_imputacion','-id')            
+class DispoEditView(VariablesMixin,AjaxUpdateView):
+    form_class = DispoForm
+    model = cpb_cuenta
+    pk_url_kwarg = 'id'
+    template_name = 'modal/general/form_dispo.html'
 
-        if entidad:
-                cpbs= cpbs.filter(cpb_comprobante__entidad__apellido_y_nombre__icontains=entidad)
-                rets= rets.filter(cpb_comprobante__entidad__apellido_y_nombre__icontains=entidad)
-                impuestos = impuestos.filter(entidad__apellido_y_nombre__icontains=entidad)
-        
-        if pto_vta:
-               cpbs= cpbs.filter(cpb_comprobante__pto_vta=pto_vta)        
-               rets= rets.filter(cpb_comprobante__pto_vta=pto_vta)        
-               impuestos = impuestos.filter(pto_vta=pto_vta)
+    @method_decorator(login_required)
+    def dispatch(self, *args, **kwargs):        
+        if not tiene_permiso(self.request,'gral_configuracion'):
+            return redirect(reverse('principal'))
 
-        if nro_cpb:
-               cpbs= cpbs.filter(cpb_comprobante__numero=nro_cpb)        
-               rets= rets.filter(cpb_comprobante__numero=nro_cpb)        
-               impuestos = impuestos.filter(numero=nro_cpb)
+        if not self.get_object().modificable:
+            return redirect(reverse('disponibilidades_listado'))
+        return super(DispoEditView, self).dispatch(*args, **kwargs)
 
-        
-    context['form'] = form
-    context['cpbs'] = cpbs
-    context['rets'] = rets
-    context['impuestos'] = impuestos
-    context['fecha'] = fecha          
-    return render(request,'reportes/contables/retenc_imp.html',context )
+    def form_valid(self, form):        
+        messages.success(self.request, u'Los datos se guardaron con éxito!')
+        return super(DispoEditView, self).form_valid(form)
+
+    def get_initial(self):    
+        initial = super(DispoEditView, self).get_initial()                
+        initial['request'] = self.request        
+        return initial 
+
+    def get_form_kwargs(self):
+        kwargs = super(DispoEditView, self).get_form_kwargs()
+        kwargs['request'] = self.request
+        return kwargs    
+
+@login_required
+def DispoDeleteView(request, id):
+    try:
+        objeto = get_object_or_404(cpb_cuenta, id=id)
+        if not tiene_permiso(request,'gral_configuracion'):
+                return redirect(reverse('principal'))       
+        objeto.delete()
+        messages.success(request, u'¡Los datos se guardaron con éxito!')
+    except:
+        messages.error(request, u'¡Los datos no pudieron eliminarse!')
+    return redirect('disponibilidades_listado')     
+
+@login_required 
+def dispo_baja_reactivar(request,id):
+    
+    cuenta = cpb_cuenta.objects.get(pk=id)
+    if not cuenta.modificable:
+            return redirect(reverse('disponibilidades_listado')) 
+    cuenta.baja = not cuenta.baja
+    cuenta.save()               
+    messages.success(self.request, u'Los datos se guardaron con éxito!')
+    return HttpResponseRedirect(reverse("disponibilidades_listado"))
+
+@login_required 
+def SeleccionarChequesView(request):        
+    if request.method == 'POST' and request.is_ajax():                                       
+        cheque = request.POST.get('cheques', None)              
+        response = []
+        if cheque:
+            cpb_fp = cpb_comprobante_fp.objects.filter(id=int(cheque))            
+            response = list(cpb_fp.values('id','tipo_forma_pago__id','cta_ingreso__id','cta_egreso__id','mdcp_fecha','mdcp_banco__id','mdcp_cheque','importe','detalle'))            
+        return HttpResponse(json.dumps(response,cls=DjangoJSONEncoder), content_type='application/json')
+    else:
+        id_cheques = request.GET.getlist('id_ch')
+        try:
+            id_cheques = [int(x) for x in request.GET.getlist('id_ch')]
+        except:
+            id_cheques = []
+        formCheques = FormCheques(request=request,id_cheques=id_cheques)
+        variables = RequestContext(request, {'formCheques':formCheques})        
+        return render_to_response("general/varios/buscar_cheques.html", variables)
+
+@login_required 
+def CobrarDepositarChequesView(request):        
+    if request.method == 'POST' and request.is_ajax():                                                             
+        formCheques = FormChequesCobro(request.POST,request=request)                                    
+        response = []
+        if formCheques.is_valid():
+            #HAGO LA MAGIA DE CREAR MOVIM Y DEMAS            
+            try:
+                id_cheques = [int(x) for x in request.POST.getlist('id_fp')]
+                cheques = cpb_comprobante_fp.objects.filter(id__in=id_cheques)
+                total_cheques = cheques.aggregate(sum=Sum('importe'))['sum'] or 0    
+            except:
+                id_cheques = []
+                cheques = None
+                total_cheques = 0
+           
+            estado=cpb_estado.objects.get(pk=2)            
+            tipo=cpb_tipo.objects.get(pk=13)            
+            letra='X'
+            pto_vta=0
+            numero = ultimoNro(13,pto_vta,letra)
+            cuenta = formCheques.cleaned_data['cuenta']                                                 
+            fecha_cpb = formCheques.cleaned_data['fecha_cpb']
+            
+
+            detalle=u"Detalle Cobranza cheques"
+            for c in cheques:
+                detalle = detalle+' '+str(c.mdcp_cheque)
+
+            movimiento = cpb_comprobante(cpb_tipo=tipo,estado=estado,pto_vta=pto_vta,letra=letra,numero=numero,fecha_cpb=fecha_cpb,importe_total=total_cheques,
+                     usuario=usuario_actual(request),empresa = empresa_actual(request),fecha_imputacion=fecha_cpb)            
+            movimiento.save()
+            
+            tipo_fp=cpb_tipo_forma_pago.objects.get(pk=1)
+            cta_egreso = cpb_cuenta.objects.get(pk=4)
+            recibo_fp = cpb_comprobante_fp(cpb_comprobante=movimiento,tipo_forma_pago=tipo_fp,cta_egreso=cta_egreso,cta_ingreso=cuenta,mdcp_fecha=datetime.now(),importe=total_cheques,detalle=detalle)
+            recibo_fp.save()            
+            
+            
+            for c in cheques:
+                c.mdcp_salida = recibo_fp
+                c.save()
+            response.append({'msj':u'¡Se registró el movimiento con éxito!','estado':0})
+        else:
+            
+            response.append({'msj':u'¡No se pudieron procesar las cobranzas!','estado':1})            
+        return HttpResponse(json.dumps(response,cls=DjangoJSONEncoder), content_type='application/json')
+    else:        
+        try:
+            id_cheques = [int(x) for x in request.GET.getlist('id_fp')]
+            cheques = cpb_comprobante_fp.objects.filter(id__in=id_cheques)
+            total_cheques = cheques.aggregate(sum=Sum('importe'))['sum'] or 0    
+        except:
+            id_cheques = []
+            cheques = None
+            total_cheques = 0        
+
+        formCheques = FormChequesCobro(request=request)
+        variables = RequestContext(request, {'formCheques':formCheques,'total_cheques':total_cheques})        
+        return render_to_response("general/varios/cobrar_cheques.html", variables)
+
+@login_required 
+def imprimir_detalles(request):        
+    limpiar_sesion(request)        
+    id_cpbs = [int(x) for x in request.GET.getlist('id_cpb')]        
+    cpbs_detalles = cpb_comprobante_detalle.objects.filter(cpb_comprobante__id__in=id_cpbs,cpb_comprobante__empresa = empresa_actual(request)).order_by('cpb_comprobante__fecha_cpb','producto__nombre')
+    context = {}
+    context = getVariablesMixin(request)  
+    context['cpbs_detalles'] = cpbs_detalles
+    fecha = datetime.now()        
+    context['fecha'] = fecha 
+    template = 'reportes/varios/rep_detalle_cpbs.html'                        
+    return render_to_pdf_response(request, template, context)
 
 
+###############################################################
+from .forms import SaldoInicialForm
+class SaldoInicialCreateView(VariablesMixin,AjaxCreateView):
+    form_class = SaldoInicialForm
+    template_name = 'modal/general/form_saldo_inicial.html'
+    model = cpb_tipo_forma_pago
+
+    @method_decorator(login_required)
+    def dispatch(self, *args, **kwargs):                    
+        return super(SaldoInicialCreateView, self).dispatch(*args, **kwargs)
+    
+    def get_initial(self):    
+        initial = super(SaldoInicialCreateView, self).get_initial()        
+        return initial   
+
+    def get_form_kwargs(self,**kwargs):
+        kwargs = super(SaldoInicialCreateView, self).get_form_kwargs()
+        kwargs['request'] = self.request                      
+        return kwargs
+     
+
+    def form_valid(self, form):
+        self.object = form.save(commit=False)        
+        estado=cpb_estado.objects.get(pk=3)
+        tipo=cpb_tipo.objects.get(pk=27)
+        cpb = cpb_comprobante(cpb_tipo=tipo,pto_vta=0,letra="X",numero=0,fecha_cpb=self.object.mdcp_fecha,importe_iva=0,fecha_imputacion=self.object.mdcp_fecha,
+                importe_total=self.object.importe,estado=estado,usuario=usuario_actual(self.request),fecha_vto=self.object.mdcp_fecha,empresa = empresa_actual(self.request))
+        cpb.save()              
+        self.object.cpb_comprobante = cpb        
+        self.object.save()
+        messages.success(self.request, u'Los datos se guardaron con éxito!') 
+        return super(SaldoInicialCreateView, self).form_valid(form)
+
+@login_required
+def SaldoInicialDeleteView(request, id):
+    try:
+        objeto = get_object_or_404(cpb_comprobante, id=id)       
+        objeto.delete()
+        messages.success(request, u'¡Los datos se guardaron con éxito!')
+    except:
+        messages.error(request, u'¡Los datos no pudieron eliminarse!')
+    return redirect('caja_diaria')       
+
+
+import csv, io
+import random
+def unicode_csv_reader(unicode_csv_data, dialect=csv.excel, **kwargs):
+    # csv.py doesn't do Unicode; encode temporarily as UTF-8:
+    csv_reader = csv.reader(utf_8_encoder(unicode_csv_data),
+                            dialect=dialect, **kwargs)
+    for row in csv_reader:
+        # decode UTF-8 back to Unicode, cell by cell:
+        yield [unicode(cell, 'utf-8') for cell in row]
+
+def utf_8_encoder(unicode_csv_data):
+    for line in unicode_csv_data:
+        yield line.encode('utf-8')
+@login_required 
+def verificar_existencia_cae(request):               
+    from .forms import ImportarCPBSForm
+    from copy import deepcopy
+
+    context = {}
+    context = getVariablesMixin(request) 
+    resultado = []
+    if request.method == 'POST':
+        form = ImportarCPBSForm(request.POST,request.FILES,request=request)
+        if form.is_valid():      
+
+            csv_file = form.cleaned_data['archivo']
+            empresa = form.cleaned_data['empresa']
+            migra = form.cleaned_data['migra']
+           
+            if not csv_file.name.endswith('.csv'):
+                messages.error(request,'¡El archivo debe tener extensión .CSV!')
+                return HttpResponseRedirect(reverse("verificar_existencia_cae"))
+            
+            if csv_file.multiple_chunks():
+                messages.error(request,"El archivo es demasiado grande (%.2f MB)." % (csv_file.size/(1000*1000),))
+                return HttpResponseRedirect(reverse("verificar_existencia_cae"))
+
+            decoded_file = csv_file.read().decode("latin1").replace(",", ".").replace("'", "")
+            io_string = io.StringIO(decoded_file)
+            reader = unicode_csv_reader(io_string)                
+            
+            comprobantes = cpb_comprobante.objects.filter(cpb_tipo__compra_venta='V',empresa=empresa,cae__isnull=False)
+
+            listado_cae_sistema = [c.cae.strip() for c in comprobantes]
+            listado_cae_faltantes = []
+            cant=0
+            #Fecha Tipo  Punto de Venta  Número Desde  Número Hasta  Cód. Autorización Tipo Doc. Receptor  Nro. Doc. Receptor  
+            # Denominación Receptor Tipo Cambio Moneda  Imp. Neto Gravado Imp. Neto No Gravado  Imp. Op. Exentas  IVA Imp. Total
+
+            next(reader) #Omito el Encabezado Gral                            
+            next(reader) #Omito el Encabezado de las columnas                           
+            for index,line in enumerate(reader):                      
+                campos = line[0].split(";")               
+                fecha=campos[0].strip()
+                if fecha=='':
+                    fecha=None
+                else:
+                    fecha = datetime.strptime(fecha, "%d/%m/%Y").date()   #fecha_nacim             
+                tipo = campos[1].strip()
+                pv = int(campos[2].strip())
+                nro = int(campos[3].strip())
+                cae = campos[5].strip()                
+
+                if nro=='':
+                    continue #Salta al siguiente                    
+                
+                if cae not in listado_cae_sistema:
+                  tdoc = campos[6].strip()
+                  nrodoc = campos[7].strip()
+                  receptor = campos[8].strip()
+
+                  imp_neto_g = campos[11].strip()
+                  imp_neto_nograv = campos[12].strip()
+                  imp_exento = campos[13].strip()
+                  imp_iva = campos[14].strip()
+                  imp_total = campos[15].strip()
+                  listado_cae_faltantes.append(dict(fecha=fecha,tipo=tipo,cae=cae,pv=pv,nro=nro,tdoc=tdoc,nrodoc=nrodoc,receptor=receptor,imp_neto_g=imp_neto_g,\
+                                                    imp_neto_nograv=imp_neto_nograv,imp_exento=imp_exento,imp_iva=imp_iva,imp_total=imp_total))
+                
+                cant+=1                       
+
+            if migra:
+              for l in listado_cae_faltantes:
+                try:                  
+                  nro = l['nro']
+                  nro_sig=nro+1
+                  cae = l['cae']
+                  pv=l['pv']
+                  imp_total = l['imp_total']
+                  tipo_afip = int(l['tipo'].split('-')[0])
+                  tipo_cpb_afip = cpb_nro_afip.objects.filter(numero_afip=tipo_afip).first()
+                  letra,t = tipo_cpb_afip.letra,tipo_cpb_afip.cpb_tipo                  
+                  cpb_sig = cpb_comprobante.objects.filter(numero=nro_sig,pto_vta=pv,importe_total=imp_total,letra=letra,cpb_tipo__tipo=t).first()
+                  cpb_sig_det = cpb_comprobante_detalle.objects.filter(cpb_comprobante=cpb_sig)
+                  #import pdb; pdb.set_trace()
+
+                  if cpb_sig:
+                    cpb_creado = deepcopy(cpb_sig)
+                    cpb_creado.id = None                  
+                    cpb_creado.numero = nro                  
+                    cpb_creado.cae = cae
+                    cpb_creado.saldo = 0
+                    cpb_creado.estado = cpb_estado.objects.get(pk=2)
+                    cpb_creado.save()
+                    
+                    for d in cpb_sig_det:
+                      d_new = deepcopy(d)
+                      d_new.id = None
+                      d_new.cantidad = 0
+                      d_new.cpb_comprobante = cpb_creado
+                      d_new.save()
+                    
+                    coeficientes=cpb_sig_det.filter(tasa_iva__id__gt=2).values('tasa_iva').annotate(importe_total=Sum('importe_iva'),importe_base=Sum('importe_subtotal'))
+                    for cc in coeficientes:
+                      tasa = gral_tipo_iva.objects.get(pk=cc['tasa_iva'])       
+                      cpb_ti = cpb_comprobante_tot_iva(cpb_comprobante=cpb_creado,tasa_iva=tasa,importe_total=cc['importe_total'],importe_base=cc['importe_base'])
+                      cpb_ti.save()
+                    
+                except Exception as e:
+                  print e
+
+                  #if cpb_sig:
+              tot=len(listado_cae_faltantes)
+              messages.success(request, u'Se regeneraron %s CPBs faltantes con éxito! (%s Comprobantes verificados)'%(tot,cant))            
+            else:
+              messages.success(request, u'Se importó el archivo con éxito! (%s Comprobantes verificados)'% cant )            
+            resultado = listado_cae_faltantes
+    else:
+        form = ImportarCPBSForm(None,None,request=request)
+    context['form'] = form    
+    context['resultado'] = resultado 
+    return render(request, 'general/varios/importar_cpbs.html',context)                
