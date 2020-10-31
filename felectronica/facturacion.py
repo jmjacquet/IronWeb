@@ -516,7 +516,7 @@ def facturarAFIP(request,idCpb):
         }                
     
     try:
-        cpb=cpb_comprobante.objects.get(pkc=idCpb)
+        cpb=cpb_comprobante.objects.get(pk=idCpb)
     except:
         cpb = None
 
