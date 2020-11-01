@@ -452,7 +452,7 @@ var tabla = $('#dataTables-cpb_venta').DataTable({
                             if (rta != 'A') {
                                 alertify.errorAlert(observaciones);
                             } else {
-                                // alertify.successAlert("¡Se facturó correctamente!", function() {
+                                 // alertify.successAlert("¡Se facturó correctamente!", function() {
                                 //     location.reload();
                                 // });
                                 location.reload();
@@ -466,7 +466,7 @@ var tabla = $('#dataTables-cpb_venta').DataTable({
                     },
                      error : function(message) {
                      alertify.errorAlert("¡No se pudo comunicar con los servidores de AFIP!"+ '<br> (Pruebe nuevamente en unos minutos)');
-                     console.error(message);                    
+                     console.log(message);                    
                      $("#facturando").hide();
                   }
                 });
@@ -513,7 +513,7 @@ var tabla = $('#dataTables-cpb_venta').DataTable({
             },
             error : function(message) {
                      alertify.errorAlert("¡No se pudo validar la dirección de Email!");
-                     console.error(message);
+                     console.log(message);
                   }
         });
         });

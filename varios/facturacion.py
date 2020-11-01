@@ -87,10 +87,211 @@ def _autenticar(request,crt,key,service="wsfe", ttl=60*60*10,cuit=None):
     return token, sign
 
 
-
-
 from django.http import JsonResponse
 from pyafipws.wsfev1 import WSFEv1
+
+def ultimo_cpb_afip(request,tipo_cpb,pto_vta):
+    
+        empresa = empresa_actual(request)
+        HOMO = empresa.homologacion
+
+        if HOMO:
+            WSDL = "https://wswhomo.afip.gov.ar/wsfev1/service.asmx?WSDL"
+            WSAA_URL = "https://wsaahomo.afip.gov.ar/ws/services/LoginCms"
+        else:
+            WSDL="https://servicios1.afip.gov.ar/wsfev1/service.asmx?WSDL"    
+            WSAA_URL = "https://wsaa.afip.gov.ar/ws/services/LoginCms"    
+
+               
+        appserver_status = ''
+        dbserver_status = ''
+        authserver_status = ''
+        #try:
+        fecha = datetime.now().strftime("%Y%m%d")
+        wsfev1 = WSFEv1()
+        
+        wsfev1.Conectar(wsdl=WSDL)
+        
+        cuit = empresa.cuit
+        # cuit = 30714843571
+        wsfev1.Cuit = cuit
+
+        crt = empresa.fe_crt
+        key= empresa.fe_key
+
+        wsfev1.Token, wsfev1.Sign = _autenticar(request,crt=crt,key=key,cuit=cuit)        
+
+        wsfev1.Dummy()
+        appserver_status = wsfev1.AppServerStatus
+        dbserver_status = wsfev1.DbServerStatus
+        authserver_status = wsfev1.AuthServerStatus
+       
+        
+        ult_nro = long(wsfev1.CompUltimoAutorizado(tipo_cpb, pto_vta) or 0)        
+   
+        return ult_nro
+
+
+def recuperar_cpb_afip(request,tipo_cpb,pto_vta,nro_cpb):
+    
+        empresa = empresa_actual(request)
+        HOMO = empresa.homologacion
+
+        if HOMO:
+            WSDL = "https://wswhomo.afip.gov.ar/wsfev1/service.asmx?WSDL"
+            WSAA_URL = "https://wsaahomo.afip.gov.ar/ws/services/LoginCms"
+        else:
+            WSDL="https://servicios1.afip.gov.ar/wsfev1/service.asmx?WSDL"    
+            WSAA_URL = "https://wsaa.afip.gov.ar/ws/services/LoginCms"    
+
+
+        #Traigo el comprobante
+        token = ''
+        sign = ''
+        cae = ''
+        fecha_vencimiento = ''
+        
+        resultado = ''
+        motivo = ''
+        reproceso = ''
+        observaciones = ''
+        concepto = ''
+        
+        
+        fecha_cbte = ''
+        imp_total = ''
+        imp_tot_conc = ''
+        imp_neto = ''
+        imp_op_ex = ''
+        imp_trib = ''
+        imp_iva = ''
+        moneda_id = ''
+        moneda_ctz = ''
+        detalle = ''
+        ult_nro = ''
+        errores = ''
+            
+        data = {                        
+            'cae': cae,
+            'fecha_vencimiento': fecha_vencimiento,
+            'cpb_nro':nro_cpb,
+            'resultado':resultado,
+            'motivo':motivo,
+            'reproceso':reproceso,
+            'observaciones' : observaciones,
+            'concepto':concepto,
+            'tipo_cbte': tipo_cpb,
+            'punto_vta':pto_vta,   
+            'fecha_cbte': fecha_cbte,
+            'imp_total': imp_total,
+            'imp_tot_conc': imp_tot_conc,
+            'imp_neto': imp_neto,
+            'imp_op_ex': imp_op_ex,
+            'imp_trib': imp_trib,
+            'imp_iva': imp_iva,    
+            'moneda_id': moneda_id,
+            'moneda_ctz': moneda_ctz,    
+            'detalle':detalle,
+            'ult_nro':ult_nro,
+            'errores':errores,
+            'factura':'',
+            }
+        
+
+                
+        appserver_status = ''
+        dbserver_status = ''
+        authserver_status = ''
+        #try:
+        fecha = datetime.now().strftime("%Y%m%d")
+        wsfev1 = WSFEv1()
+        
+        wsfev1.Conectar(wsdl=WSDL)
+        
+        cuit = empresa.cuit
+        # cuit = 30714843571
+        wsfev1.Cuit = cuit
+
+        crt = empresa.fe_crt
+        key= empresa.fe_key
+
+        wsfev1.Token, wsfev1.Sign = _autenticar(request,crt=crt,key=key,cuit=cuit)        
+
+        wsfev1.Dummy()
+        appserver_status = wsfev1.AppServerStatus
+        dbserver_status = wsfev1.DbServerStatus
+        authserver_status = wsfev1.AuthServerStatus
+        
+        wsfev1.CompConsultar(tipo_cpb, pto_vta, nro_cpb) 
+                
+        cpb_nro = wsfev1.CbteNro
+        fecha_vencimiento = wsfev1.Vencimiento    
+        resultado = wsfev1.Resultado
+        motivo = wsfev1.Motivo
+        reproceso = wsfev1.Reproceso
+        imp_total = wsfev1.ImpTotal
+        cae = wsfev1.CAE       
+        observaciones = wsfev1.Observaciones    
+        fecha_cbte = wsfev1.FechaCbte
+        concepto = wsfev1.ObtenerCampoFactura('concepto')    
+        imp_tot_conc = wsfev1.ObtenerCampoFactura('imp_tot_conc')
+        imp_neto = wsfev1.ImpNeto
+        imp_op_ex = wsfev1.ImpOpEx
+        imp_trib = wsfev1.ImpTrib
+        imp_iva = wsfev1.ImpIVA      
+        moneda_id = wsfev1.ObtenerCampoFactura('moneda_id')
+        moneda_ctz = wsfev1.ObtenerCampoFactura('moneda_ctz')
+        factura = wsfev1.factura
+        errores=wsfev1.ErrMsg
+
+
+        detalle = ''
+        
+        if cae=='':        
+            detalle= u"La página esta caida o la respuesta es inválida"
+        elif (wsfev1.Resultado!="A"):
+            detalle= u"No se asignó CAE (Rechazado). Motivos:%s" %wsfev1.Motivo
+        elif wsfev1.Observaciones!="":
+            detalle = u"Se asignó CAE pero con advertencias. Motivos: %s" %wsfev1.Observaciones   
+
+        fecha_vencimiento = None
+        fecha_cbte = None
+        EmisionTipo = ''
+        if cae:
+            fecha_vencimiento = datetime.strptime(wsfev1.Vencimiento,'%Y%m%d')
+            EmisionTipo = wsfev1.EmisionTipo        
+            fecha_cbte =datetime.strptime(wsfev1.FechaCbte,'%Y%m%d')              
+        
+        ult_nro = long(wsfev1.CompUltimoAutorizado(tipo_cpb, pto_vta) or 0)
+
+        data = {                        
+            'cae': cae,
+            'fecha_vencimiento': fecha_vencimiento,
+            'cpb_nro':cpb_nro,
+            'resultado':resultado,
+            'motivo':motivo,
+            'reproceso':reproceso,
+            'observaciones' : observaciones,
+            'concepto':concepto,
+            'tipo_cbte': tipo_cpb,
+            'punto_vta':pto_vta,   
+            'fecha_cbte': fecha_cbte,
+            'imp_total': imp_total,
+            'imp_tot_conc': imp_tot_conc,
+            'imp_neto': imp_neto,
+            'imp_op_ex': imp_op_ex,
+            'imp_trib': imp_trib,
+            'imp_iva': imp_iva,    
+            'moneda_id': moneda_id,
+            'moneda_ctz': moneda_ctz,    
+            'detalle':detalle,
+            'ult_nro':ult_nro,
+            'errores':errores,
+            'factura':factura,
+            }
+   
+        return data
+
 
 def consultar_cae(request,idcpb):               
     
@@ -202,8 +403,8 @@ def consultar_cae(request,idcpb):
     wsfev1.Cuit = cuit
 
     if HOMO:
-        crt = "COPYFAST_PRUEBA.crt"
-        key= "COPYFAST_PRUEBA.key"
+        crt = empresa.fe_crt
+        key= empresa.fe_key
     else:
         try:
             #crt = "COPYFAST_PRUEBA.crt"
@@ -234,124 +435,14 @@ def consultar_cae(request,idcpb):
     #     data['authserver_status']=authserver_status
     #     data['errores']=u'¡Falló la comunicación con los servidores de AFIP!'
     #     return data      
-        
-    try:
-        wsfev1.CompConsultar(tipo_cpb, pto_vta, nro_cpb) 
-                
-        cpb_nro = wsfev1.CbteNro
-        fecha_vencimiento = wsfev1.Vencimiento    
-        resultado = wsfev1.Resultado
-        motivo = wsfev1.Motivo
-        reproceso = wsfev1.Reproceso
-        imp_total = wsfev1.ImpTotal
-        cae = wsfev1.CAE       
-        observaciones = wsfev1.Observaciones    
-        fecha_cbte = wsfev1.FechaCbte
-        concepto = wsfev1.ObtenerCampoFactura('concepto')    
-        imp_tot_conc = wsfev1.ObtenerCampoFactura('imp_tot_conc')
-        imp_neto = wsfev1.ImpNeto
-        imp_op_ex = wsfev1.ImpOpEx
-        imp_trib = wsfev1.ImpTrib
-        imp_iva = wsfev1.ImpIVA      
-        moneda_id = wsfev1.ObtenerCampoFactura('moneda_id')
-        moneda_ctz = wsfev1.ObtenerCampoFactura('moneda_ctz')
-        
-        errores=wsfev1.ErrMsg
-
-
-        detalle = ''
-        
-        if cae=='':        
-            detalle= "La página esta caida o la respuesta es inválida"
-        elif (wsfev1.Resultado!="A"):
-            detalle= "No se asignó CAE (Rechazado). Motivos:%s" %wsfev1.Motivo
-        elif wsfev1.Observaciones!="":
-            detalle = "Se asignó CAE pero con advertencias. Motivos: %s" %wsfev1.Observaciones   
-
-        fecha_vencimiento = None
-        fecha_cbte = None
-        EmisionTipo = ''
-        if cae:
-            fecha_vencimiento = datetime.strptime(wsfev1.Vencimiento,'%Y%m%d')
-            EmisionTipo = wsfev1.EmisionTipo        
-            fecha_cbte =datetime.strptime(wsfev1.FechaCbte,'%Y%m%d')              
-        
-        ult_nro = long(wsfev1.CompUltimoAutorizado(tipo_cpb, pto_vta) or 0)
-
-        data = {            
-            'token':token,
-            'sign':sign,
-            'cae': cae,
-            'fecha_vencimiento': fecha_vencimiento,
-            'cpb_nro':cpb_nro,
-            'resultado':resultado,
-            'motivo':motivo,
-            'reproceso':reproceso,
-            'observaciones' : observaciones,
-            'concepto':concepto,
-            'tipo_cbte': tipo_cpb,
-            'punto_vta':pto_vta,   
-            'fecha_cbte': fecha_cbte,
-            'imp_total': imp_total,
-            'imp_tot_conc': imp_tot_conc,
-            'imp_neto': imp_neto,
-            'imp_op_ex': imp_op_ex,
-            'imp_trib': imp_trib,
-            'imp_iva': imp_iva,    
-            'moneda_id': moneda_id,
-            'moneda_ctz': moneda_ctz,    
-            'detalle':detalle,
-            'ult_nro':ult_nro,
-            'excepcion':wsfev1.Excepcion,     
-            'traceback':wsfev1.Traceback,
-            'XmlRequest':wsfev1.XmlRequest,
-            'XmlResponse':wsfev1.XmlResponse,
-            'appserver_status':appserver_status,
-            'dbserver_status':dbserver_status,
-            'authserver_status':authserver_status,
-            'errores':errores,
-            }
-    except:
-        if wsfev1:
-            data = {
-            'token':token,
-            'sign':sign,
-            'cae': cae,
-            'fecha_vencimiento': fecha_vencimiento,
-            'cpb_nro':cpb_nro,
-            'resultado':resultado,
-            'motivo':motivo,
-            'reproceso':reproceso,
-            'observaciones' : observaciones,
-            'concepto':concepto,
-            'tipo_cbte': tipo_cpb,
-            'punto_vta':pto_vta,   
-            'fecha_cbte': fecha_cbte,
-            'imp_total': imp_total,
-            'imp_tot_conc': imp_tot_conc,
-            'imp_neto': imp_neto,
-            'imp_op_ex': imp_op_ex,
-            'imp_trib': imp_trib,
-            'imp_iva': imp_iva,    
-            'moneda_id': moneda_id,
-            'moneda_ctz': moneda_ctz,    
-            'detalle':detalle,
-            'ult_nro':ult_nro,
-            'excepcion':wsfev1.Excepcion,     
-            'traceback':wsfev1.Traceback,
-            'XmlRequest':wsfev1.XmlRequest,
-            'XmlResponse':wsfev1.XmlResponse,
-            'appserver_status':appserver_status,
-            'dbserver_status':dbserver_status,
-            'authserver_status':authserver_status,
-            'errores':errores,
-            }                   
+         
+    data = recuperar_cpb_afip(request,wsfev1,tipo_cpb,pto_vta,nro_cpb)
 
     return data
 
+
 def obtener_ultimo_cpb_afip(request,tipo_cpb,pto_vta):
-    cpb = cpb_comprobante.objects.filter(cpb_tipo=tipo_cpb,pto_vta=pto_vta,cae__isnull=False).order_by('-numero').first()
-    print "Ultimo CPB Autorizado en el Sistema %s"%cpb 
+    cpb = cpb_comprobante.objects.filter(cpb_tipo=tipo_cpb,pto_vta=pto_vta,cae__isnull=False).order_by('-numero').first()    
     return cpb
 
 
@@ -471,8 +562,8 @@ def facturarAFIP(request,idCpb):
         #wsfev1.Cuit = 30715026178
         
         if HOMO:
-            crt = "COPYFAST_PRUEBA.crt"
-            key= "COPYFAST_PRUEBA.key"
+            crt = empresa.fe_crt
+            key= empresa.fe_key
         else:
             try:
                 #crt = "COPYFAST_PRUEBA.crt"
@@ -497,7 +588,8 @@ def facturarAFIP(request,idCpb):
         dbserver_status = wsfev1.DbServerStatus
         authserver_status = wsfev1.AuthServerStatus
 
-        cbte_nro = long(wsfev1.CompUltimoAutorizado(tipo_cpb, pto_vta) or 0)            
+        ultimo_cbte_afip = long(wsfev1.CompUltimoAutorizado(tipo_cpb, pto_vta) or 0)            
+
         
     except Exception as e:
         data['excepcion']=wsfev1.Excepcion
@@ -507,8 +599,9 @@ def facturarAFIP(request,idCpb):
         data['appserver_status']=appserver_status
         data['dbserver_status']=dbserver_status
         data['authserver_status']=authserver_status
-        #data['errores']=u'¡Falló la comunicación con los servidores de AFIP / Certificados NO VALIDOS!'
-        data['errores']= e.msj
+        data['errores']=u'¡Falló la comunicación con los servidores de AFIP / Certificados NO VALIDOS! ('+str(e)+')'
+        #data['errores']= str(e)
+        
         return data         
 
     try:
@@ -539,9 +632,34 @@ def facturarAFIP(request,idCpb):
             data['appserver_status']=appserver_status
             data['dbserver_status']=dbserver_status
             data['authserver_status']=authserver_status
+            
             return data        
 
-        cbt_desde = cbte_nro + 1; cbt_hasta = cbte_nro + 1
+        # try:
+        #     ultimo_cbte_sistema = obtener_ultimo_cpb_afip(request,cpb.cpb_tipo,cpb.pto_vta).numero
+        # except:
+        #     ultimo_cbte_sistema = ultimo_cbte_afip
+
+                
+        # #Si el ultimo de afip no existe en el sistema genero los faltantes en el sistema y sigo
+        # if (ultimo_cbte_afip>ultimo_cbte_sistema):
+            
+        #     # data['errores']=u'¡El ultimo nro de AFIP es %s, verifique!'%ultimo_cbte_afip
+        #     # data['excepcion']=wsfev1.Excepcion
+        #     # data['traceback']=wsfev1.Traceback
+        #     # data['XmlRequest']=wsfev1.XmlRequest
+        #     # data['XmlResponse']=wsfev1.XmlResponse
+        #     # data['appserver_status']=appserver_status
+        #     # data['dbserver_status']=dbserver_status
+        #     # data['authserver_status']=authserver_status
+            
+        #     # datos_cpb = recuperar_cpb_afip(request,tipo_cpb,pto_vta,ultimo_cbte_afip)
+            
+        #     # return data      
+        #     ultimo_cbte_sistema = ultimo_cbte_afip
+
+        
+        cbt_desde = ultimo_cbte_afip + 1; cbt_hasta = ultimo_cbte_afip + 1
         
         #Informar o no IVA
         #Datos de http://www.sistemasagiles.com.ar/trac/wiki/ManualPyAfipWs#FacturaCMonotributoExento
@@ -574,9 +692,10 @@ def facturarAFIP(request,idCpb):
             imp_iva, imp_trib, imp_op_ex, fecha_cbte, fecha_venc_pago, 
             fecha_serv_desde, fecha_serv_hasta,moneda_id, moneda_ctz)
         #Si crea el cpb ya se lo guardo
-        if ok:
+
+        if ok:            
             cpb.numero = int(cbt_desde)
-            cpb.save()
+            cpb.save()            
         else:
             data['errores']=u'¡No pudo crearse el CPB en AFIP!'
             data['excepcion']=wsfev1.Excepcion
@@ -587,7 +706,7 @@ def facturarAFIP(request,idCpb):
             data['dbserver_status']=dbserver_status
             data['authserver_status']=authserver_status
             return data 
-        
+
         if f.letra != 'C':
             #Traigo los coeficientes de IVA
                 # iva_id: código Alícuota de IVA (según tabla de parámetros AFIP)
@@ -598,8 +717,11 @@ def facturarAFIP(request,idCpb):
                 id = c.tasa_iva.id_afip # 21%
                 base_imp = c.importe_base
                 importe = c.importe_total
+                if importe==0:
+                    id=3
                 wsfev1.AgregarIva(id, base_imp, importe) 
-
+            if len(cpb_iva)==0:
+                wsfev1.AgregarIva(3, 0, 0) 
             
             #Traigo las percepciones de IVA
                 # tributo_id: código tipo de impuesto (según tabla de parámetros AFIP)
@@ -638,7 +760,7 @@ def facturarAFIP(request,idCpb):
                 p_cuit = p.entidad.fact_cuit
             else:
                 p_cuit = p.entidad.fact_cuit
-                
+            
             wsfev1.AgregarCmpAsoc(p_tipo, p_pv, p_nro,p_cuit)                   
 
         #Si es FactCredElectr debo informar tb el CBU
@@ -649,7 +771,7 @@ def facturarAFIP(request,idCpb):
                 wsfev1.AgregarOpcional(22, "S")    
 
                 
-
+        
         #http://www.sistemasagiles.com.ar/trac/wiki/ManualPyAfipWs#M%C3%A9todosprincipalesdeWSFEv1
         wsfev1.CAESolicitar()
         
@@ -725,7 +847,7 @@ def facturarAFIP(request,idCpb):
             'errores':errores,
             }                
 
-    except:
+    except Exception as e:
 
         if wsfev1:
             data = {
@@ -759,10 +881,13 @@ def facturarAFIP(request,idCpb):
             'appserver_status':appserver_status,
             'dbserver_status':dbserver_status,
             'authserver_status':authserver_status,
-            'errores':wsfev1.ErrMsg,
-            }            
+            'errores':wsfev1.ErrMsg +''+str(e) ,
+            } 
+        else:
+            data=dict(errores=errores+''+str(e))           
             
     return data
+
 
 def facturarAFIP_simulac(request,idCpb):        
     empresa = empresa_actual(request)
@@ -798,6 +923,7 @@ def facturarAFIP_simulac(request,idCpb):
     detalle = ''
     ult_nro = ''
     errores = ''
+    factura = ''
   
         
     data = {            
@@ -832,7 +958,9 @@ def facturarAFIP_simulac(request,idCpb):
         'dbserver_status':'',
         'authserver_status':'',
         'errores':errores,
+        'factura':factura,
         }   
+    
     try:
         cpb=cpb_comprobante.objects.get(pk=idCpb)
     except:
@@ -899,9 +1027,7 @@ def facturarAFIP_simulac(request,idCpb):
             #key= "COPYFAST_PRUEBA.key"
         except:
             data['errores']=u'¡fe_key no es válido!'
-            return data
-
-    print crt,key,cuit
+            return data    
 
     wsfev1.Token, wsfev1.Sign = _autenticar(request,crt=crt,key=key,cuit=cuit)            
     token=wsfev1.Token
@@ -912,181 +1038,33 @@ def facturarAFIP_simulac(request,idCpb):
     dbserver_status = wsfev1.DbServerStatus
     authserver_status = wsfev1.AuthServerStatus
 
-    cbte_nro = long(wsfev1.CompUltimoAutorizado(tipo_cpb, pto_vta) or 0)            
-    print "Ultimo CPB Autorizado en AFIP %s"%cbte_nro 
-            
+    ultimo_cbte_afip = long(wsfev1.CompUltimoAutorizado(tipo_cpb, pto_vta) or 0)    
 
     try:
-        fecha = datetime.now().strftime("%Y%m%d")
-        concepto = 3 #Productos y Servicios
-        tipo_doc = f.entidad.tipo_doc
-
-
-        if not tipo_doc:
-            data['errores']=u'¡Debe cargar un tipo de Documento válido!'
-            return data         
-        
-        if tipo_doc == 99:
-            nro_doc = 0
-        elif tipo_doc == 96:
-            nro_doc = f.entidad.nro_doc
-        elif tipo_doc == 80:    
-            nro_doc = f.entidad.fact_cuit
-        else:
-            nro_doc = f.entidad.fact_cuit
-
-        if nro_doc == '':
-            data['errores']=u'¡Debe cargar un Nº de Documento válido!'
-            data['excepcion']=wsfev1.Excepcion
-            data['traceback']=wsfev1.Traceback
-            data['XmlRequest']=wsfev1.XmlRequest
-            data['XmlResponse']=wsfev1.XmlResponse
-            data['appserver_status']=appserver_status
-            data['dbserver_status']=dbserver_status
-            data['authserver_status']=authserver_status
-            return data        
-
-        cbt_desde = cbte_nro + 1; cbt_hasta = cbte_nro + 1
-        
-        #Informar o no IVA
-        #Datos de http://www.sistemasagiles.com.ar/trac/wiki/ManualPyAfipWs#FacturaCMonotributoExento
-        if f.letra == 'C':
-            imp_total = f.importe_total
-            imp_tot_conc = 0
-            imp_neto = f.importe_total
-            imp_iva = 0
-            imp_trib = 0
-            imp_op_ex = 0
-        else:
-            imp_total = f.importe_total
-            imp_tot_conc = f.importe_no_gravado
-            imp_neto = f.importe_gravado
-            imp_iva = f.importe_iva
-            imp_trib = f.importe_perc_imp
-            imp_op_ex = f.importe_exento
-        
-        fecha_cbte = f.fecha_cpb.strftime("%Y%m%d")
-        fecha_venc_pago = f.fecha_cpb.strftime("%Y%m%d")
-        
-        # Fechas del período del servicio facturado (solo si concepto = 1?)
-        fecha_serv_desde = f.fecha_cpb.strftime("%Y%m%d")
-        fecha_serv_hasta = f.fecha_cpb.strftime("%Y%m%d")
-        moneda_id = 'PES'; moneda_ctz = '1.000'
-
-        # Inicializo la factura interna con los datos de la cabecera
-        ultimo_cpb_sistema = obtener_ultimo_cpb_afip(tipo_cpb,pto_vta)
-
-
-
-        # wsfev1.CAESolicitar()
-        
-        # cae = wsfev1.CAE
-        # resultado = wsfev1.Resultado
-        # cpb_nro = wsfev1.CbteNro
-        # ult_nro = cpb_nro      
-        
-        # detalle = ''
-                
-        # motivo = wsfev1.Motivo
-        # observaciones = wsfev1.Observaciones   
-        
-        # if cae=='':        
-        #     detalle= u"La página esta caida o la respuesta es inválida"
-        # elif (wsfev1.Resultado!="A"):
-        #     detalle= u"No se asignó CAE (Rechazado). Motivos:%s" %motivo
-        # elif observaciones!=[]:
-        #         detalle = u"Se asignó CAE pero con advertencias. Motivos: %s" %observaciones          
-
-        # fecha_vencimiento = None
-        # fecha_cbte = None
-        # EmisionTipo = ''
-        # if cae!='':
-        #     fecha_vencimiento = datetime.strptime(wsfev1.Vencimiento,'%Y%m%d')
-        #     EmisionTipo = wsfev1.EmisionTipo        
-        #     fecha_cbte =datetime.strptime(wsfev1.FechaCbte,'%Y%m%d')        
-
-        # reproceso = wsfev1.Reproceso
-        # imp_total = wsfev1.ImpTotal    
-        # concepto = wsfev1.ObtenerCampoFactura('concepto')    
-        # imp_tot_conc = wsfev1.ObtenerCampoFactura('imp_tot_conc')
-        # imp_neto = wsfev1.ImpNeto
-        # imp_op_ex = wsfev1.ImpOpEx
-        # imp_trib = wsfev1.ImpTrib
-        # imp_iva = wsfev1.ImpIVA      
-        # moneda_id = wsfev1.ObtenerCampoFactura('moneda_id')
-        # moneda_ctz = wsfev1.ObtenerCampoFactura('moneda_ctz')
-        
-        # errores=wsfev1.ErrMsg
-
-        data = {            
-            'token':token,
-            'sign':sign,
-            'cae': cae,
-            'fecha_vencimiento': fecha_vencimiento,
-            'cpb_nro':cpb_nro,
-            'resultado':resultado,
-            'motivo':motivo,
-            'reproceso':reproceso,
-            'observaciones' : observaciones,
-            'concepto':concepto,
-            'tipo_cbte': tipo_cpb,
-            'punto_vta':pto_vta,   
-            'fecha_cbte': fecha_cbte,
-            'imp_total': imp_total,
-            'imp_tot_conc': imp_tot_conc,
-            'imp_neto': imp_neto,
-            'imp_op_ex': imp_op_ex,
-            'imp_trib': imp_trib,
-            'imp_iva': imp_iva,    
-            'moneda_id': moneda_id,
-            'moneda_ctz': moneda_ctz,    
-            'detalle':detalle,
-            'ult_nro':ult_nro,
-            'excepcion':wsfev1.Excepcion,     
-            'traceback':wsfev1.Traceback,
-            'XmlRequest':wsfev1.XmlRequest,
-            'XmlResponse':wsfev1.XmlResponse,
-            'appserver_status':appserver_status,
-            'dbserver_status':dbserver_status,
-            'authserver_status':authserver_status,
-            'errores':errores,
-            }                
-
+        ultimo_cbte_sistema = obtener_ultimo_cpb_afip(request,cpb.cpb_tipo,cpb.pto_vta).numero
     except:
+        ultimo_cbte_sistema = ultimo_cbte_afip
 
-        if wsfev1:
-            data = {
-            'token':token,
-            'sign':sign,
-            'cae': cae,
-            'fecha_vencimiento': fecha_vencimiento,
-            'cpb_nro':cpb_nro,
-            'resultado':resultado,
-            'motivo':motivo,
-            'reproceso':reproceso,
-            'observaciones' : observaciones,
-            'concepto':concepto,
-            'tipo_cbte': tipo_cpb,
-            'punto_vta':pto_vta,   
-            'fecha_cbte': fecha_cbte,
-            'imp_total': imp_total,
-            'imp_tot_conc': imp_tot_conc,
-            'imp_neto': imp_neto,
-            'imp_op_ex': imp_op_ex,
-            'imp_trib': imp_trib,
-            'imp_iva': imp_iva,    
-            'moneda_id': moneda_id,
-            'moneda_ctz': moneda_ctz,    
-            'detalle':detalle,
-            'ult_nro':ult_nro,
-            'excepcion':wsfev1.Excepcion,     
-            'traceback':wsfev1.Traceback,
-            'XmlRequest':wsfev1.XmlRequest,
-            'XmlResponse':wsfev1.XmlResponse,
-            'appserver_status':appserver_status,
-            'dbserver_status':dbserver_status,
-            'authserver_status':authserver_status,
-            'errores':errores,
-            }            
             
+    #Si el ultimo de afip no existe en el sistema lo genero, sinó lo recupero
+    if (ultimo_cbte_afip>ultimo_cbte_sistema):
+        datos_cpb = recuperar_cpb_afip(request,tipo_cpb,pto_vta,ultimo_cbte_afip)
+        
+        data.update(factura=datos_cpb['factura'])
+        return data      
+    else:
+        cbt_desde = ultimo_cbte_afip + 1; cbt_hasta = ultimo_cbte_afip + 1
+        #sigo con la creacion del cpb y obtengo el CAE
+
+    
+    print "Ultimo CPB Autorizado en AFIP %s y en el Sistema %s"%(ultimo_cbte_afip,ultimo_cbte_sistema)
+
+    print u"Comprobante Nº: %s CAE Nº: %s Fecha Venc: %s"%(data['cpb_nro'],data['cae'],data['fecha_vencimiento'])
+    print data['factura']
+
+
+
     return data
+
+
+

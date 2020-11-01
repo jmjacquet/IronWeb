@@ -534,8 +534,6 @@ def cpb_facturar_afip(request):
       
         if cpb.cae is None:
           respuesta = facturarAFIP(request,id)
-          
-          #respuesta = facturarAFIP_simulac(request,id)        
           estado = respuesta.get('resultado','')
           cae = respuesta.get('cae','')
           vto_cae = respuesta.get('fecha_vencimiento',None)
@@ -550,6 +548,7 @@ def cpb_facturar_afip(request):
               if detalle!='':
                   cpb.cae_observaciones = cpb.cae_observaciones+' '+detalle
               cpb.numero = int(nro_cpb)
+              messages.success(request, u'¡Se facturó correctamente!')
           else:
               cpb.cae = None
               cpb.cae_errores = respuesta.get('errores','')
@@ -560,7 +559,7 @@ def cpb_facturar_afip(request):
           cpb.cae_xml_response = respuesta.get('XmlResponse','')   
 
           cpb.save()
-          messages.success(request, u'Los datos se guardaron con éxito!')
+          
         else:
           messages.error(request, u'El comprobante ya posée CAE!')
           respuesta=dict(errores=u'El comprobante ya posée CAE!')
@@ -569,10 +568,8 @@ def cpb_facturar_afip(request):
 @login_required 
 def respuesta(request):
     respuesta = ['holaaa']    
-    print 'holaaa'
     import time
     time.sleep(5)
-    print 'chau'
     return HttpResponse(json.dumps(respuesta,cls=DjangoJSONEncoder), content_type = "application/json")
 
 @login_required 

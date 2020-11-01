@@ -415,13 +415,13 @@ def generarCITI(cpbs,ventas_compras,tipo_archivo,libro_iva_dig=False):
             linea += str(importe_impuestosInt).encode('utf-8').replace(".","").rjust(15, "0") #importe_impuestosInt                        
             linea += str('PES').encode('utf-8') #Moneda
             linea += str('0001000000').encode('utf-8')#tipo_cambio
-            cod_op = ' '
+            cod_op = 'N'
             cant_alic = 0
             try:
                 cpb_iva = cpb_comprobante_tot_iva.objects.filter(cpb_comprobante=c)
                 cant_alic = len(cpb_iva)
                 informa = len(cpb_iva.filter(tasa_iva__id_afip__lte=3))>0
-                cod_op = ' '
+                cod_op = 'N'
                 if informa:
                     if c.importe_exento>0:
                         cod_op = 'E'
@@ -515,13 +515,13 @@ def generarCITI(cpbs,ventas_compras,tipo_archivo,libro_iva_dig=False):
             
             linea += str('PES').encode('utf-8') #Moneda
             linea += str('0001000000').encode('utf-8')#tipo_cambio            
-            cod_op = ' '
+            cod_op = 'N'
             cant_alic = 0
             try:
                 cpb_iva = cpb_comprobante_tot_iva.objects.filter(cpb_comprobante=c)
                 cant_alic = len(cpb_iva)
                 informa = len(cpb_iva.filter(tasa_iva__id_afip__lte=3))>0
-                cod_op = ' '
+                cod_op = 'N'
                 if informa:
                     if c.importe_exento>0:
                         cod_op = 'E'

@@ -14,43 +14,11 @@ from django.contrib import messages
 import json
 import urllib
 from general.views import VariablesMixin
-from .facturacion import facturarAFIP,consultar_cae,recuperar_cpb_afip
+from .facturacion import facturarAFIP,consultar_cae,recuperar_cpb_afip,ultimo_cpb_afip,facturarAFIP_simulac
 from comprobantes.models import *
 from django.core.serializers.json import DjangoJSONEncoder
-from .forms import ConsultaCAE,ConsultaCPB
+from .forms import RecuperarCPBS,ConsultaCPB
 
-class CAEView(VariablesMixin,TemplateView):
-    template_name = 'felectronica.html'
-    pk_url_kwarg = 'id'
-
-    @method_decorator(login_required)
-    def dispatch(self, *args, **kwargs):
-        return super(CAEView, self).dispatch(*args, **kwargs)
-
-    def get_context_data(self, **kwargs):
-        context = super(CAEView, self).get_context_data(**kwargs)        
-        try:
-            empresa = empresa_actual(self.request)
-        except gral_empresa.DoesNotExist:
-            empresa = None 
-        form = ConsultaCAE(self.request.POST or None,empresa=empresa,request=self.request)           
-        facturacion=None
-        cpb = None  
-        if form.is_valid():                                
-            idcpb = form.cleaned_data['idcpb']            
-            facturacion=consultar_cae(self.request,idcpb)                       
-            
-            try:
-                cpb=cpb_comprobante.objects.get(id=idcpb)       
-            except:
-                cpb = None    
-        context['facturacion'] =   facturacion        
-        context['cpb'] =   cpb     
-        context['form'] = form
-        return context
-
-    def post(self, *args, **kwargs):
-        return self.get(*args, **kwargs)
 
 class CPBDatosView(VariablesMixin,TemplateView):
     template_name = 'general/cpb_afip_consulta.html'
@@ -182,12 +150,13 @@ def verificar_existencia_cae(request):
                   cpb_sig = cpb_comprobante.objects.filter(numero=nro_sig,pto_vta=pv,importe_total=imp_total,letra=letra,cpb_tipo__tipo=t).first()
                   cpb_sig_det = cpb_comprobante_detalle.objects.filter(cpb_comprobante=cpb_sig)
                   #import pdb; pdb.set_trace()
-
+                  datos=recuperar_cpb_afip(request,tipo_afip,pv,nro)
                   if cpb_sig:
                     cpb_creado = deepcopy(cpb_sig)
                     cpb_creado.id = None                  
                     cpb_creado.numero = nro                  
                     cpb_creado.cae = cae
+                    cpb_creado.cae_vto = datos['fecha_vencimiento']
                     cpb_creado.saldo = 0
                     cpb_creado.estado = cpb_estado.objects.get(pk=2)
                     cpb_creado.save()
@@ -206,7 +175,7 @@ def verificar_existencia_cae(request):
                       cpb_ti.save()
                     
                 except Exception as e:
-                  print e
+                  pass
 
                   #if cpb_sig:
               tot=len(listado_cae_faltantes)
@@ -220,7 +189,7 @@ def verificar_existencia_cae(request):
     context['resultado'] = resultado 
     return render(request, 'general/varios/importar_cpbs.html',context)                
 
-def listar_cpbs_afip_faltantes(request):
+def listar_cpbs_afip_faltantes(request):    
     pv = request.GET.get('pv', None)     
     letra = request.GET.get('letra', '')
     inicio = int(request.GET.get('inicio', 1))
@@ -236,13 +205,152 @@ def listar_cpbs_afip_faltantes(request):
             cpbs = list(set([int(x.numero) for x in cpbs]))
             lista_optima = range(inicio,fin+1)        
             lista_sistema = [int(x) for x in lista_optima if int(x) not in cpbs]
-            
+            lista_facturas = [recuperar_cpb_afip]
         except:
             cpbs=None
         
         # print lista_optima,lista_sistema
         return HttpResponse(json.dumps(lista_sistema,cls=DjangoJSONEncoder), content_type='application/json' )  
         
-
     else:
         return HttpResponse('No existe el PV!')      
+
+
+class recuperar_cpbs_afip(VariablesMixin,TemplateView):
+    template_name = 'general/varios/recuperar_cpbs_afip.html'
+    pk_url_kwarg = 'id'
+
+    @method_decorator(login_required)
+    def dispatch(self, *args, **kwargs):
+        return super(recuperar_cpbs_afip, self).dispatch(*args, **kwargs)
+
+    def get_context_data(self, **kwargs):
+        context = super(recuperar_cpbs_afip, self).get_context_data(**kwargs)        
+        try:
+            empresa = empresa_actual(self.request)
+        except gral_empresa.DoesNotExist:
+            empresa = None 
+        form = RecuperarCPBS(self.request.POST or None,empresa=empresa,request=self.request)           
+        resultado,lista_faltantes = [],[]
+        cpbs = None          
+        if form.is_valid():                                
+            from copy import deepcopy
+            cpb_tipo = form.cleaned_data['cpb_tipo']            
+            pto_vta = form.cleaned_data['pto_vta']                        
+            generar = form.cleaned_data['generar']            
+            if generar=='':
+              generar=2
+            letra = cpb_tipo.letra
+            tipo = cpb_tipo.cpb_tipo
+            tipo_afip = cpb_tipo.numero_afip
+            cpbs = cpb_comprobante.objects.filter(cpb_tipo=tipo,letra=letra,pto_vta=pto_vta,cae__isnull=False)
+            id_cpbs = sorted(list(set([int(x.numero) for x in cpbs])))            
+            if id_cpbs:
+              utimo_cpb=int(ultimo_cpb_afip(self.request,tipo_afip,pto_vta))
+              lista_optima = range(id_cpbs[0],utimo_cpb)        
+              lista_faltantes = [x for x in lista_optima if x not in id_cpbs]
+            # data = {                        
+            # 'cae': cae,
+            # 'fecha_vencimiento': fecha_vencimiento,
+            # 'cpb_nro':cpb_nro,
+            # 'resultado':resultado,
+            # 'motivo':motivo,
+            # 'reproceso':reproceso,
+            # 'observaciones' : observaciones,
+            # 'concepto':concepto,
+            # 'tipo_cbte': tipo_cpb,
+            # 'punto_vta':pto_vta,   
+            # 'fecha_cbte': fecha_cbte,
+            # 'imp_total': imp_total,
+            # 'imp_tot_conc': imp_tot_conc,
+            # 'imp_neto': imp_neto,
+            # 'imp_op_ex': imp_op_ex,
+            # 'imp_trib': imp_trib,
+            # 'imp_iva': imp_iva,    
+            # 'moneda_id': moneda_id,
+            # 'moneda_ctz': moneda_ctz,    
+            # 'detalle':detalle,
+            # 'ult_nro':ult_nro,
+            # 'errores':errores,
+            # 'factura':factura,
+            # }
+            if lista_faltantes:
+              for l in lista_faltantes:
+                datos=recuperar_cpb_afip(self.request,tipo_afip,pto_vta,l)
+                if datos:
+                  #busco el cpb relacionado superior
+                  cpb = cpbs.filter(numero=l+1).first()
+                  datos.update(cpb_sistema=cpb)
+                  resultado.append(datos)
+                  if int(generar)==1:
+                    try:
+                      cpb_sig = cpb
+                      cpb_sig_det = cpb_comprobante_detalle.objects.filter(cpb_comprobante=cpb_sig)
+                      #import pdb; pdb.set_trace()
+                      if cpb_sig:
+                        cpb_creado = deepcopy(cpb_sig)
+                        cpb_creado.id = None                  
+                        cpb_creado.numero = l                  
+                        cpb_creado.cae = datos['cae']
+                        cpb_creado.cae_vto = datos['fecha_vencimiento']
+                        cpb_creado.saldo = 0
+                        cpb_creado.estado = cpb_estado.objects.get(pk=2)
+                        cpb_creado.save()
+                        
+                        for d in cpb_sig_det:
+                          d_new = deepcopy(d)
+                          d_new.id = None
+                          d_new.cantidad = 0
+                          d_new.cpb_comprobante = cpb_creado
+                          d_new.save()
+                        
+                        coeficientes=cpb_sig_det.filter(tasa_iva__id__gt=2).values('tasa_iva').annotate(importe_total=Sum('importe_iva'),importe_base=Sum('importe_subtotal'))
+                        for cc in coeficientes:
+                          tasa = gral_tipo_iva.objects.get(pk=cc['tasa_iva'])       
+                          cpb_ti = cpb_comprobante_tot_iva(cpb_comprobante=cpb_creado,tasa_iva=tasa,importe_total=cc['importe_total'],importe_base=cc['importe_base'])
+                          cpb_ti.save()
+                      else:
+                        #tengo que generarlo con los datos que trago de la factura de afip
+
+                        # cpb_creado = cpb_comprobante()
+                        # cpb_creado.numero = l                  
+                        # cpb_creado.cae = datos['cae']
+                        # cpb_creado.cae_vto = datos['fecha_vencimiento']
+                        # cpb_creado.saldo = 0
+                        # cpb_creado.estado = cpb_estado.objects.get(pk=2)
+                        # cpb_creado.save()
+
+                        # for d in cpb_sig_det:
+                        #   d_new = cpb_comprobante_detalle(d)
+                        #   d_new.id = None
+                        #   d_new.cantidad = 0
+                        #   d_new.cpb_comprobante = cpb_creado
+                        #   d_new.save()
+                        
+                        
+                        pass
+                    except Exception as e:
+                      resultado.append(e)
+                        
+        context['resultado'] =   resultado        
+        context['form'] = form
+        return context
+
+    def post(self, *args, **kwargs):
+        return self.get(*args, **kwargs)
+
+
+
+
+@login_required 
+def cpb_facturar_simulacion(request):
+    respuesta = []    
+    id = request.GET.get('id', None)     
+    try:
+      cpb = cpb_comprobante.objects.get(pk=id) 
+    except:
+      cpb=None
+    if cpb:
+      respuesta = facturarAFIP_simulac(request,id)      
+          
+    return HttpResponse(json.dumps(respuesta,cls=DjangoJSONEncoder), content_type = "application/json")

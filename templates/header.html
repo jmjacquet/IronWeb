@@ -39,6 +39,11 @@
                     <li>
                       <a href="{% url 'usuarios' %}"><i class="icon-users"></i>Configurar Usuarios</a>
                     </li>
+                    <li class="divider"></li> 
+                    <li>
+                      <a href="{% url 'recuperar_cpbs_afip' %}"><i class="icon-note"></i>CPBs Faltantes AFIP</a>
+                    </li>
+                    <li class="divider"></li> 
                     {% endif %} 
                     <li>
                       <a id="cambiar_passwd" href="#"><i class="icon-key"></i>Cambiar Contraseña</a>                      
@@ -48,8 +53,7 @@
                     <li>
                       <a href="{% url 'tareas_listado' %}"><i class="fa fa-exclamation-triangle"></i> Tareas/Problemas </a>
                     </li>
-                    <li class="divider">
-                    </li> 
+                    <li class="divider"></li> 
                     {% endif %}  
                     <li>
                       <a href="{% url 'logout' %}"><i class="icon-logout"></i> Salir</a>
