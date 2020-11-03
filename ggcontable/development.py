@@ -25,7 +25,7 @@ DATABASES = {
 #     'debug_toolbar.middleware.DebugToolbarMiddleware',#Barra DEBUG
 # )
 
-
+STATIC_ROOT = '/home/grupogua/apps/ironweb_prueba_static'
 
 # INSTALLED_APPS += (
 #     'debug_toolbar',    
