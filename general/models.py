@@ -78,6 +78,7 @@ class gral_empresa(models.Model):
     codbar_detalle = models.BooleanField(u'Detalle en Etiquetas CB',default=False)
     
     cbu = models.CharField('CBU',max_length=100, blank=True)
+    cbu_alias = models.CharField('Alias CBU',max_length=20, blank=True)
     class Meta:
         db_table = 'gral_empresa'
 

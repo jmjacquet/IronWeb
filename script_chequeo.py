@@ -30,7 +30,7 @@ lista_dbs = ['ironweb_410','ironweb_411','ironweb_412','ironweb_413','ironweb_41
 #SCRIPT_EJECUCION = "INSERT INTO `configuracion_vars` VALUES(5, 'dri_cartel_inicio', 'Cartel que aparece al Liquidar DReI', NULL, NULL, NULL);"
 #SCRIPT_EJECUCION = "DELETE FROM `django_session`;"
 #SCRIPT_EJECUCION = "ALTER TABLE tributo ADD COLUMN CORRER_VENC_FDESDE DATE NULL;"
-SCRIPT_EJECUCION = "ALTER TABLE `gral_empresa` ADD `cbu` VARCHAR(100) NULL;"
+SCRIPT_EJECUCION = "ALTER TABLE `gral_empresa` ADD `cbu_alias` VARCHAR(20) NULL;"
 
 print "##############################################"
 print SCRIPT_EJECUCION
