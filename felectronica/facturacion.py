@@ -766,7 +766,7 @@ def facturarAFIP(request,idCpb):
         #Si es FactCredElectr debo informar tb el CBU
         if (f.cpb_tipo.tipo in [21,22, 23]):
             wsfev1.AgregarOpcional(2101, f.empresa.cbu)  # CBU
-            wsfev1.AgregarOpcional(2102, f.empresa.nombre)                # alias
+            wsfev1.AgregarOpcional(2102, f.empresa.nombre[:20])                # alias
             if f.cpb_tipo.tipo in [22, 23]:
                 wsfev1.AgregarOpcional(22, "S")    
 
