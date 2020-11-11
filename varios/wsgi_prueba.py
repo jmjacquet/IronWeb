@@ -8,11 +8,9 @@ sys.path.append(PROJECT_DIR)
 
 os.environ['DJANGO_SETTINGS_MODULE'] = "ggcontable.development"
 os.environ['ENTIDAD_ID'] = '1'
-os.environ['ENTIDAD_DB'] = 'ironweb_414'
+os.environ['ENTIDAD_DB'] = 'gg_ironweb'
 os.environ['ENTIDAD_DIR'] = 'prueba'
 
 from django.core.wsgi import get_wsgi_application
 
 application = get_wsgi_application()
-
-
