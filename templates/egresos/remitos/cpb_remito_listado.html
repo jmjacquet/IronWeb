@@ -3,7 +3,10 @@
 {% load i18n l10n %}
 {% load humanize %}
 {% block main %} 
-
+         <div id="cargando" class="cargando" >
+            <span class="cargando-txt">CARGANDO...</span>
+            <img class="cargando-img" src="{% static 'img/loading-bars.svg' %}">
+        </div>
           <div class="col-md-12 cerca">   
                 <div class="portlet box toolbar_blue">
                     <div class="portlet-title">
@@ -22,7 +25,7 @@
                     <a class="btn btn-sm blue-steel" style="float:left;margin-right:10px;" href="{% url 'cpb_remitoc_nuevo' %}">Nuevo Remito</a>
                     {% endif %}                    
                      </div>
-                    <table id="dataTables-cpb_remito" class="table table-striped compact table-hover table-no-bordered tabla_nueva nowrap">          
+                    <table id="dataTables-cpb_remito" style="display:none;" class="table table-striped compact table-hover table-no-bordered tabla_nueva nowrap">          
                         <thead>
                             <tr>
                                 <th class="no-sort text-center"></th>                                
@@ -220,29 +223,16 @@ var tabla = $('#dataTables-cpb_remito').DataTable({
                     className: 'btnToolbar',                    
                 },
             ],
-            // initComplete: function () {
-            //    // this.api().columns().every( function () {[0, 1, 9]
-            //     this.api().columns([1]).every( function () {
-            //         var column = this;
-            //         var select = $('<select class="form-control"><option value="">Todos</option></select>')
-            //             .appendTo( $(column.footer()).empty() )
-            //             .on( 'change', function () {
-            //                 var val = $.fn.dataTable.util.escapeRegex(
-            //                     $(this).val()
-            //                 );
-     
-            //                 column
-            //                     .search( val ? '^'+val+'$' : '', true, false )
-            //                     .draw();
-            //             } );
-     
-            //          column.data().unique().sort().each( function ( d, j ) {
-            //         //column.cells('', column[0]).render('display').sort().unique().each( function ( d, j ){
-            //             select.append( '<option value="'+d+'">'+d+'</option>' )
-            //         } );
-            //     } );
+            PreDrawCallback:function(){
+            $("#cargando").show();
+            },
+            initComplete: function () {
+               
+                $("#dataTables-cpb_remito").show();
+                  this.fnAdjustColumnSizing();
+                $("#cargando").hide();
 
-            // }
+            },
         });
 
 

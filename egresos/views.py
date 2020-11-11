@@ -429,7 +429,8 @@ class CPBPagosViewList(VariablesMixin,ListView):
         except gral_empresa.DoesNotExist:
             empresa = None 
         form = ConsultaCpbsCompras(self.request.POST or None,empresa=empresa,request=self.request)   
-        comprobantes = cpb_comprobante.objects.filter(cpb_tipo__tipo=7,empresa=empresa,estado__in=[1,2]).order_by('-fecha_cpb','-id').select_related('estado','cpb_tipo','entidad')
+        comprobantes = cpb_comprobante.objects.filter(cpb_tipo__tipo=7,empresa=empresa,estado__in=[1,2]).order_by('-fecha_cpb','-id')\
+                        .annotate(cobranzas=Sum('cpb_cobranza_cpb__importe_total')).select_related('estado','cpb_tipo','entidad','vendedor')
         if form.is_valid():                                
             entidad = form.cleaned_data['entidad']                                                              
             fdesde = form.cleaned_data['fdesde']   
@@ -438,9 +439,9 @@ class CPBPagosViewList(VariablesMixin,ListView):
             estado = form.cleaned_data['estado']
 
             if int(estado) == 1:                
-                comprobantes = cpb_comprobante.objects.filter(cpb_tipo__tipo=7,empresa=empresa,estado__in=[1,2,3]).order_by('-fecha_cpb','-id').select_related('estado','cpb_tipo','entidad')
+                comprobantes = cpb_comprobante.objects.filter(cpb_tipo__tipo=7,empresa=empresa,estado__in=[1,2,3]).annotate(cobranzas=Sum('cpb_cobranza_cpb__importe_total'))
             elif int(estado) == 2:   
-                comprobantes = cpb_comprobante.objects.filter(cpb_tipo__tipo=7,empresa=empresa,estado__in=[3]).order_by('-fecha_cpb','-id').select_related('estado','cpb_tipo','entidad')
+                comprobantes = cpb_comprobante.objects.filter(cpb_tipo__tipo=7,empresa=empresa,estado__in=[3]).annotate(cobranzas=Sum('cpb_cobranza_cpb__importe_total'))
 
             if fdesde:
                 comprobantes= comprobantes.filter(Q(fecha_cpb__gte=fdesde))
@@ -452,8 +453,10 @@ class CPBPagosViewList(VariablesMixin,ListView):
 
             if pto_vta:
                 comprobantes= comprobantes.filter(Q(pto_vta=pto_vta)) 
+
+            comprobantes = comprobantes.select_related('estado','cpb_tipo','entidad','vendedor')
         else:            
-            cpbs= comprobantes.filter(fecha_cpb__gte=inicioMesAnt(),fecha_cpb__lte=finMes())
+            cpbs= comprobantes.filter(fecha_cpb__gte=inicioMesAnt(),fecha_cpb__lte=finMes()).select_related('estado','cpb_tipo','entidad','vendedor')
             if len(cpbs)==0:
                 cpbs = comprobantes[:20]            
             comprobantes=cpbs
