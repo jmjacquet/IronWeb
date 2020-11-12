@@ -1,0 +1,32 @@
+version: '3'
+services:
+  mysql5:
+    container_name: mysql5-ironweb
+    image: mysql:5.7    
+    environment:
+      MYSQL_ROOT_PASSWORD: qwerty
+    volumes:
+      - ./varios/mysqldata:/var/lib/mysql
+    ports:
+      - "3306:3306"
+   
+  phpmyadmin:
+    container_name: phpmyadmin-ironweb
+    image: phpmyadmin/phpmyadmin:5.0.1    
+    environment:
+      PMA_HOST: mysql5
+      PMA_USER: root
+      PMA_PASSWORD: qwerty
+    ports:
+      - "8080:80"
+      
+  django:        
+    tty: true        # docker run -t
+    build: .
+    container_name: django-ironweb       
+    volumes:
+     - .:/ironweb
+    ports:
+     - "8000:8000"
+    links:
+       - mysql5:mydb
