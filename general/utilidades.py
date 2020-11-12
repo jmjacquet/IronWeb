@@ -20,6 +20,8 @@ SINO = (
     (2, u'N'),
 )
 
+
+
 TIPO_USR = (
     (0, u'Administrador'),
     (1, u'Cliente/Usuario'),

@@ -10,6 +10,8 @@ function abrir_modal(url) {
     }
 $(document).ready(function() { 
 
+$("#facturando").hide();  
+
 $.fn.datepicker.dates['es'] = {
     days: ["Domingo", "Lunes", "Martes", "Miércoles", "Jueves", "Viernes", "Sábado", "Domingo"],
     daysShort: ["Dom", "Lun", "Mar", "Mié", "Jue", "Vie", "Sáb", "Dom"],
@@ -424,9 +426,11 @@ var tabla = $('#dataTables-cpb_venta').DataTable({
             'message': '¿Desea generar la Factura Electrónica (AFIP) del comprobante seleccionado?',
             transition: 'fade',
             'onok': function() {
+                $("#facturando").show();
                 $.ajax({
                     url: "/comprobantes/cpb_facturar_afip/",
                     type: 'get',
+                    timeout: 60000,
                     dataType: 'json',
                     data: {
                         'id': id
@@ -448,18 +452,23 @@ var tabla = $('#dataTables-cpb_venta').DataTable({
                             if (rta != 'A') {
                                 alertify.errorAlert(observaciones);
                             } else {
-                                alertify.successAlert("¡Se facturó correctamente!", function() {
-                                    location.reload();
-                                });
-                                setTimeout(function() {
-                                    location.reload();
-                                }, 5000);
+                                // alertify.successAlert("¡Se facturó correctamente!", function() {
+                                //     location.reload();
+                                // });
+                                location.reload();
+                                
                             }
                             ;
                         } else {
-                            alertify.errorAlert("¡No se pudo facturar!");
+                            alertify.errorAlert("¡No se pudo facturar!"+ '<br>'+observaciones);
                         }
-                    }
+                        $("#facturando").hide();
+                    },
+                     error : function(message) {
+                     alertify.errorAlert("¡No se pudo comunicar con los servidores de AFIP!"+ '<br> (Pruebe nuevamente en unos minutos)');
+                     console.error(message);                    
+                     $("#facturando").hide();
+                  }
                 });
             },
             'oncancel': function() {
@@ -471,15 +480,44 @@ var tabla = $('#dataTables-cpb_venta').DataTable({
         alerta.show();
         return true;
     }    
+    
     $("a[name='btn_facturacion']", tabla.rows().nodes()).click(function() {
         var id = $(this).attr('value');
-        facturar(id);
+        facturar(id);        
     });
 
 
-
-
-
+    $("a[name='mandarEmail']").click(function() {
+        var id = $(this).attr('value');
+        datos = []
+        $.ajax({
+            url: "/comprobantes/verifEmail/",
+            type: "post",
+            dataType: 'json',
+            data: {
+                'id': id
+            },
+            success: function(data) {
+                if (data!='') {
+                    window.location.href = '/comprobantes/mandarEmail/'+id;
+                } else {
+                    alertify.prompt('ENVIAR COMPROBANTE x EMAIL','Ingrese la dirección de Email:','',
+                        function(evt, value) 
+                        {
+                            var email = value;
+                            window.location.href = '/comprobantes/mandarEmail/'+id+'/?email='+email;
+                        },
+                        function() { alertify.errorAlert("¡Verifique la dirección de Email ingresada!") }
+                    ).set('labels', {ok:'Aceptar', cancel:'Cancelar'}).set('type', 'email');
+                }
+            },
+            error : function(message) {
+                     alertify.errorAlert("¡No se pudo validar la dirección de Email!");
+                     console.error(message);
+                  }
+        });
+        });
+   
 
      
 
