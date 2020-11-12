@@ -4,7 +4,10 @@
 {% load bootstrap3 %}
 {% load humanize %}
 {% block main %} 
-    
+        <div id="cargando" class="cargando" >
+            <span class="cargando-txt">CARGANDO...</span>
+            <img class="cargando-img" src="{% static 'img/loading-bars.svg' %}">
+        </div>
         <div class="row">
           <div class="col-md-12">   
             <div class="portlet box toolbar_blue">
@@ -29,108 +32,143 @@
                                 
                         </div>
                     </div>
-                    {% if cpbs %}  
-                        <div class="btn-group " style="float:left;margin-right:10px;"> 
-                             <button name="cpbs" type="submit" target="_blank" class="btn btn-xs blue-hoki" style="float:left;margin-right:10px;"><i class="fa fa-save fa-fw"></i>  CITI CPBs </button>    
-                             <button name="alicuotas" type="submit" target="_blank" class="btn btn-xs blue-hoki" style="float:left;margin-right:10px;"><i class="fa fa-save fa-fw"></i> CITI Alícuotas </button>    
-                             <button name="cpbs_iva_dig" type="submit" target="_blank" class="btn btn-xs blue-steel" style="float:left;margin-right:10px;"><i class="fa fa-save fa-fw"></i>  IVA Digital CPBs </button>    
-                             <button name="alic_iva_dig" type="submit" target="_blank" class="btn btn-xs blue-steel"><i class="fa fa-save fa-fw"></i> IVA Digital Alícuotas </button>    
-                        </div>  
-                    {% endif %}
+                    <div class="tabbable-line">
+                        <ul class="nav nav-tabs ">
+                            <li class="active">
+                                <a href="#tab_15_1" data-toggle="tab" aria-expanded="true">
+                                COMPROBANTES</a>
+                            </li>
+                            <li >
+                                <a href="#tab_15_2" data-toggle="tab" >
+                                ALÍCUOTAS</a>
+                            </li>                        
+                        </ul>
+                        <div class="tab-content">
+                            <div class="tab-pane active" id="tab_15_1">        
+                                <div class="row cerca">                 
+                                    <div class="col-sm-12 cerca">   
+                                        {% if cpbs %}  
+                                        <div class="btn-group " style="float:left;margin-right:10px;"> 
+                                             <button name="cpbs" type="submit" target="_blank" class="btn btn-xs blue-hoki" style="float:left;margin-right:10px;"><i class="fa fa-save fa-fw"></i>  CITI CPBs </button>                                        
+                                             <button name="cpbs_iva_dig" type="submit" target="_blank" class="btn btn-xs blue-steel" style="float:left;margin-right:10px;"><i class="fa fa-save fa-fw"></i>  IVA Digital CPBs </button>    
+                                            
+                                        </div>  
+                                        {% endif %}
+                                        <table id="dataTables-cpb_venta" style="display:none;" class="table table-striped compact table-hover table-no-bordered tabla_nueva nowrap">         
+                                            <thead>
+                                                <tr>
+                                                    <th class="text-center">F.Imputación</th>  
+                                                    <th ></th>
+                                                    <th >Comprobante</th>
+                                                    <th class="text-center">Nº CAE</th>                                
+                                                    <th >Cliente</th>                                                                    
+                                                    <th class="text-right">Gravado</th>
+                                                    <th class="text-right">IVA</th>                                
+                                                    <th class="text-right">Perc/Imp.</th>                                                            
+                                                    <th class="text-right">No Grav.{% if empresa.usa_impuestos %}(NG+Imp+Tasas){% endif %}</th>
+                                                    {% if empresa.usa_impuestos %}<th class="text-right">{{empresa.nombre_impuesto1}}</th>{% endif %}
+                                                    {% if empresa.usa_impuestos %}<th class="text-right">{{empresa.nombre_impuesto2}}</th>{% endif %}
+                                                    <th class="text-right">Exento</th>
+                                                    <th class="text-right">Total</th>                                                                      
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+                                                {% for cpb in cpbs %}
+                                                <tr>                                
+                                                    <td title="{{cpb.id|safe}}" class="text-center">{{ cpb.fecha_imputacion|date:'d/m/Y' }}</td>
+                                                    <td title="{{ cpb.cpb_tipo}}">{{ cpb.cpb_tipo.codigo|default_if_none:'' }}</td>
+                                                    <td >{{ cpb.get_cpb }}</td>                                
+                                                    <td  {% if cpb.cae %}title="Vencimiento CAE: {{cpb.cae_vto|date:'d/m/Y'}}" class="listado_estado success"{% endif %}> {{cpb.cae|default_if_none:''}}</td>       
+                                                    <td  title="{{ cpb.entidad}}" ><strong>{{ cpb.entidad|truncatechars:60 }}</strong></td>
+                                                    <td class="importe">${{cpb.get_importe_gravado|default_if_none:0|floatformat:2}}</td>
+                                                    <td class="importe">${{cpb.get_importe_iva|default_if_none:0|floatformat:2}}</td>
+                                                    <td class="importe">${{cpb.get_importe_perc_imp|default_if_none:0|floatformat:2}}</td>
+                                                    <td class="importe">${{cpb.get_importe_no_gravado|default_if_none:0|floatformat:2}}</td>
+                                                    {% if empresa.usa_impuestos %}<td class="importe">${{cpb.importe_tasa1|default_if_none:0|floatformat:2}}</td>{% endif %}
+                                                    {% if empresa.usa_impuestos %}<td class="importe">${{cpb.importe_tasa2|default_if_none:0|floatformat:2}}</td>{% endif %}
+                                                    <td class="importe">${{cpb.get_importe_exento|default_if_none:0|floatformat:2}}</td>
+                                                    <td class="importe">${{cpb.get_importe_total|default_if_none:0|floatformat:2}}</td>
+                                                </tr>
+                                                {% endfor %}
+                                            </tbody>
+                                            <tfoot>
+                                                <tr>
+                                                    <th></th>
+                                                    <th></th> 
+                                                    <th></th> 
+                                                    <th></th>                                 
+                                                    <th></th>
+                                                    <th class="importe"></th>                                 
+                                                    <th class="importe"></th>                                 
+                                                    <th class="importe"></th>                                 
+                                                    <th class="importe"></th>                                 
+                                                    {% if empresa.usa_impuestos %}<th class="importe"></th>{% endif %}
+                                                    {% if empresa.usa_impuestos %}<th class="importe"></th>{% endif %}
+                                                    <th class="importe"></th>                                 
+                                                    <th class="importe"></th>                                 
+                                                </tr>
+                                            </tfoot>
+                                        </table>
+                                    </div>
+                                </div>
+                            </div>
+                       
+                            <div class="tab-pane" id="tab_15_2">        
+                                <div class="row cerca">                 
+                                    <div class="col-sm-12 cerca">   
+                                        {% if cpbs %}  
+                                            <div class="btn-group " style="float:left;margin-right:10px;">                                          
+                                                 <button name="alicuotas" type="submit" target="_blank" class="btn btn-xs blue-hoki" style="float:left;margin-right:10px;"><i class="fa fa-save fa-fw"></i> CITI Alícuotas </button>                                             
+                                                 <button name="alic_iva_dig" type="submit" target="_blank" class="btn btn-xs blue-steel"><i class="fa fa-save fa-fw"></i> IVA Digital Alícuotas </button>    
+                                            </div>  
+                                        {% endif %}
+                                        <table id="dataTables-cpb_venta_alic" style="display:none;" class="table table-striped compact table-hover table-no-bordered tabla_nueva nowrap">         
+                                            <thead>
+                                                <tr>                                
+                                                    <th class="text-center">F.Imputac.</th>  
+                                                    <th></th>
+                                                    <th >Comprobante</th>
+                                                    <th >Proveedor</th> 
+                                                    <th class="text-right">Importe</th>
+                                                    <th class="text-right">% IVA</th>                                                                
+                                                    <th class="text-right">Total</th>                                                                      
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+                                                {% for a in alicuotas %}
+                                                <tr>                                
+                                                    <td title="{{cpb.pk|safe}}" class="text-center">{{ a.cpb_comprobante.fecha_imputacion|date:'d/m/Y' }}</td>
+                                                    <td class="text-center" title="{{ a.cpb_comprobante.cpb_tipo}}">{{ a.cpb_comprobante.cpb_tipo.codigo|default_if_none:'' }}</td>
+                                                    <td >{{ a.cpb_comprobante.get_cpb}}</td>                                
+                                                    <td  title="{{ a.cpb_comprobante.entidad}}" ><strong>{{ a.cpb_comprobante.entidad|truncatechars:60 }}</strong></td>
+                                                    <td class="importe">${{a.importe|default_if_none:0|floatformat:2}}</td>
+                                                    <td class="importe">{{a.get_iva|default_if_none:0|floatformat:2}}</td>
+                                                    <td class="importe">${{a.importe_final|default_if_none:0|floatformat:2}}</td>
+                                                </tr>
+                                                {% endfor %}
+                                            </tbody>
+                                            <tfoot>
+                                                <tr>
+                                                    <th></th>
+                                                    <th></th>    
+                                                    <th></th>    
+                                                    <th></th>                                                               
+                                                    <th class="importe"></th>                                 
+                                                    <th class="importe"></th>                                 
+                                                    <th class="importe"></th>                                                                 
+                                                </tr>
+                                            </tfoot>
+                                        </table>   
+                                    </div>
+                                </div>
+                                
+                            </div>
+                        </div>
+                    </div>
                            </form>                                                   
                     
-                    <table id="dataTables-cpb_venta" class="table table-striped compact table-hover table-no-bordered tabla_nueva nowrap">         
-                        <thead>
-                            <tr>
-                                <th class="text-center">F.Imputación</th>  
-                                <th ></th>
-                                <th >Comprobante</th>
-                                <th class="text-center">Nº CAE</th>                                
-                                <th >Cliente</th>                                                                    
-                                <th class="text-right">Gravado</th>
-                                <th class="text-right">IVA</th>                                
-                                <th class="text-right">Perc/Imp.</th>                                                            
-                                <th class="text-right">No Grav.{% if empresa.usa_impuestos %}(NG+Imp+Tasas){% endif %}</th>
-                                {% if empresa.usa_impuestos %}<th class="text-right">{{empresa.nombre_impuesto1}}</th>{% endif %}
-                                {% if empresa.usa_impuestos %}<th class="text-right">{{empresa.nombre_impuesto2}}</th>{% endif %}
-                                <th class="text-right">Exento</th>
-                                <th class="text-right">Total</th>                                                                      
-                            </tr>
-                        </thead>
-                        <tbody>
-                            {% for cpb in cpbs %}
-                            <tr>                                
-                                <td title="{{cpb.id|safe}}" class="text-center">{{ cpb.fecha_imputacion|date:'d/m/Y' }}</td>
-                                <td title="{{ cpb.cpb_tipo}}">{{ cpb.cpb_tipo.codigo|default_if_none:'' }}</td>
-                                <td >{{ cpb.get_cpb }}</td>                                
-                                <td  {% if cpb.cae %}title="Vencimiento CAE: {{cpb.cae_vto|date:'d/m/Y'}}" class="listado_estado success"{% endif %}> {{cpb.cae|default_if_none:''}}</td>       
-                                <td  title="{{ cpb.entidad}}" ><strong>{{ cpb.entidad|truncatechars:60 }}</strong></td>
-                                <td class="importe">${{cpb.get_importe_gravado|default_if_none:0|floatformat:2}}</td>
-                                <td class="importe">${{cpb.get_importe_iva|default_if_none:0|floatformat:2}}</td>
-                                <td class="importe">${{cpb.get_importe_perc_imp|default_if_none:0|floatformat:2}}</td>
-                                <td class="importe">${{cpb.get_importe_no_gravado|default_if_none:0|floatformat:2}}</td>
-                                {% if empresa.usa_impuestos %}<td class="importe">${{cpb.importe_tasa1|default_if_none:0|floatformat:2}}</td>{% endif %}
-                                {% if empresa.usa_impuestos %}<td class="importe">${{cpb.importe_tasa2|default_if_none:0|floatformat:2}}</td>{% endif %}
-                                <td class="importe">${{cpb.get_importe_exento|default_if_none:0|floatformat:2}}</td>
-                                <td class="importe">${{cpb.get_importe_total|default_if_none:0|floatformat:2}}</td>
-                            </tr>
-                            {% endfor %}
-                        </tbody>
-                        <tfoot>
-                            <tr>
-                                <th></th>
-                                <th></th> 
-                                <th></th> 
-                                <th></th>                                 
-                                <th></th>
-                                <th class="importe"></th>                                 
-                                <th class="importe"></th>                                 
-                                <th class="importe"></th>                                 
-                                <th class="importe"></th>                                 
-                                {% if empresa.usa_impuestos %}<th class="importe"></th>{% endif %}
-                                {% if empresa.usa_impuestos %}<th class="importe"></th>{% endif %}
-                                <th class="importe"></th>                                 
-                                <th class="importe"></th>                                 
-                            </tr>
-                        </tfoot>
-                    </table>
-                    <table id="dataTables-cpb_venta_alic" class="table table-striped compact table-hover table-no-bordered tabla_nueva nowrap">         
-                        <thead>
-                            <tr>                                
-                                <th class="text-center">F.Imputac.</th>  
-                                <th></th>
-                                <th >Comprobante</th>
-                                <th >Proveedor</th> 
-                                <th class="text-right">Importe</th>
-                                <th class="text-right">% IVA</th>                                                                
-                                <th class="text-right">Total</th>                                                                      
-                            </tr>
-                        </thead>
-                        <tbody>
-                            {% for a in alicuotas %}
-                            <tr>                                
-                                <td title="{{cpb.pk|safe}}" class="text-center">{{ a.cpb_comprobante.fecha_imputacion|date:'d/m/Y' }}</td>
-                                <td class="text-center" title="{{ a.cpb_comprobante.cpb_tipo}}">{{ a.cpb_comprobante.cpb_tipo.codigo|default_if_none:'' }}</td>
-                                <td >{{ a.cpb_comprobante.get_cpb}}</td>                                
-                                <td  title="{{ a.cpb_comprobante.entidad}}" ><strong>{{ a.cpb_comprobante.entidad|truncatechars:60 }}</strong></td>
-                                <td class="importe">${{a.importe|default_if_none:0|floatformat:2}}</td>
-                                <td class="importe">{{a.get_iva|default_if_none:0|floatformat:2}}</td>
-                                <td class="importe">${{a.importe_final|default_if_none:0|floatformat:2}}</td>
-                            </tr>
-                            {% endfor %}
-                        </tbody>
-                        <tfoot>
-                            <tr>
-                                <th></th>
-                                <th></th>    
-                                <th></th>    
-                                <th></th>                                                               
-                                <th class="importe"></th>                                 
-                                <th class="importe"></th>                                 
-                                <th class="importe"></th>                                                                 
-                            </tr>
-                        </tfoot>
-                    </table>                                                 
+                    
+                                                                  
                 
             </div>
            </div>
@@ -279,7 +317,17 @@ var tabla = $('#dataTables-cpb_venta').DataTable({
                     className: 'btnToolbar',                    
                 },
             ],
+             PreDrawCallback:function(){
+            $("#cargando").show();
+            },
             initComplete: function () {
+               
+                $("#dataTables-cpb_venta").show();
+                 $("#dataTables-cpb_venta_alic").show();
+                  this.fnAdjustColumnSizing();
+                $("#cargando").hide();
+
+            
                // this.api().columns().every( function () {[0, 1, 9]
                 this.api().columns([1]).every( function () {
                     var column = this;
@@ -478,6 +526,7 @@ var tabla = $('#dataTables-cpb_venta_alic').DataTable({
                     className: 'btnToolbar',                    
                 },
             ],
+            
             initComplete: function () {
                // this.api().columns().every( function () {[0, 1, 9]
                 this.api().columns([5]).every( function () {

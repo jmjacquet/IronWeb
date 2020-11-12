@@ -8,7 +8,10 @@
     <script src="{% static 'js/scripts/scripts_prod_stock.js'%}?{% now "Ymd"%}" type="text/javascript"></script>   
 {% endblock %}
 {% block main %}   
-
+        <div id="cargando" class="cargando" >
+            <span class="cargando-txt">CARGANDO...</span>
+            <img class="cargando-img" src="{% static 'img/loading-bars.svg' %}">
+        </div>
         <div class="col-md-12 cerca">   
             <div class="portlet box toolbar_green">
                 <div class="portlet-title">
@@ -28,7 +31,7 @@
                     </form>         
                 </div>
             </div>           
-            <table id="dataTables-historico" class="table table-striped compact table-hover table-no-bordered tabla_nueva nowrap">         
+            <table id="dataTables-historico" style="display:none;"  class="table table-striped compact table-hover table-no-bordered tabla_nueva nowrap">         
                 <thead>
                     <tr>                                                               
                         <th class="text-center">Fecha Mov.</th>
@@ -136,7 +139,7 @@ var tabla = $('#dataTables-historico').DataTable({
                   "orderable": false,
                 }],          
            "paging":   true,
-           "lengthMenu": [[50, -1], [50, "Todos"]],
+           "lengthMenu": [[20,50, -1], [20,50, "Todos"]],
            "autoWidth": false,           
            "order": [],
            "colReorder": true,
@@ -222,7 +225,14 @@ var tabla = $('#dataTables-historico').DataTable({
                     className: 'btnToolbar',                    
                 },
             ],
+            PreDrawCallback:function(){
+            $("#cargando").show();
+            },
             initComplete: function () {
+               
+                $("#dataTables-historico").show();
+                  this.fnAdjustColumnSizing();
+                $("#cargando").hide();
                // this.api().columns().every( function () {[0, 1, 9]
                 this.api().columns([2,4]).every( function () {
                     var column = this;

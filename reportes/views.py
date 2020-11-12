@@ -595,10 +595,8 @@ def libro_iva_ventas(request):
         cae = form.cleaned_data['cae']  
         total = 0                    
         cpbs = cpb_comprobante.objects.filter(cpb_tipo__compra_venta='V',cpb_tipo__tipo__in=[1,2,3,9,14,21,22,23],empresa=empresa,fecha_imputacion__gte=fdesde,fecha_imputacion__lte=fhasta)\
-            .exclude(letra='X').filter(Q(pto_vta__in=pto_vta_habilitados_list(request)) | Q(cpb_tipo__tipo=14)).select_related('cpb_tipo','entidad')\
-            .only('id','pto_vta','letra','numero','fecha_imputacion','cpb_tipo__codigo','cpb_tipo__nombre','cpb_tipo__tipo','cpb_tipo__signo_ctacte','cae_vto','cae',\
-            'entidad__id','entidad__apellido_y_nombre','entidad__tipo_entidad','entidad__codigo','entidad__fact_cuit','entidad__nro_doc','entidad__fact_categFiscal',\
-            'importe_gravado','importe_iva','importe_perc_imp','importe_no_gravado','importe_exento','importe_total')
+            .exclude(letra='X').filter(Q(pto_vta__in=pto_vta_habilitados_list(request)) | Q(cpb_tipo__tipo=14))\
+            .select_related('cpb_tipo','entidad')
             
             
         
@@ -622,11 +620,11 @@ def libro_iva_ventas(request):
         if int(fact_x)==1:
             cpbs= cpbs.filter(cpb_tipo__libro_iva=True)
                
-        id_cpbs = [c.pk for c in cpbs]        
+        id_cpbs = [c.id for c in cpbs]        
         alicuotas = cpb_comprobante_tot_iva.objects.filter(cpb_comprobante__pk__in=id_cpbs)\
                     .annotate(importe_final=Sum(F('importe_total')*F('cpb_comprobante__cpb_tipo__signo_ctacte'), output_field=DecimalField()),\
                         importe=Sum(F('importe_base')*F('cpb_comprobante__cpb_tipo__signo_ctacte'), output_field=DecimalField()))\
-                    .order_by('-cpb_comprobante__fecha_imputacion','-cpb_comprobante__id')
+                    .select_related('cpb_comprobante','cpb_comprobante__cpb_tipo','cpb_comprobante__entidad','tasa_iva').order_by('-cpb_comprobante__fecha_imputacion','-cpb_comprobante__id')
 
         if ('cpbs' in request.POST)and(cpbs):                
             response = HttpResponse(generarCITI(cpbs,'V','cpbs'),content_type='text/plain')
@@ -638,11 +636,11 @@ def libro_iva_ventas(request):
             return response 
         elif ('cpbs_iva_dig' in request.POST)and(cpbs):                
             response = HttpResponse(generarCITI(cpbs,'V','cpbs',True),content_type='text/plain')
-            response['Content-Disposition'] = 'attachment;filename="CITI_VENTAS_CBTE.txt"'
+            response['Content-Disposition'] = 'attachment;filename="CITI_VENTAS_CBTE_DIGITAL.txt"'
             return response 
         elif ('alic_iva_dig' in request.POST)and(cpbs):
             response = HttpResponse(generarCITI(cpbs,'V','alicuotas',True),content_type='text/plain')
-            response['Content-Disposition'] = 'attachment;filename="CITI_VENTAS_ALICUOTAS.txt"'
+            response['Content-Disposition'] = 'attachment;filename="CITI_VENTAS_ALICUOTAS_DIGITAL.txt"'
             return response 
         
     context['form'] = form
@@ -698,7 +696,7 @@ def libro_iva_compras(request):
         alicuotas = cpb_comprobante_tot_iva.objects.filter(cpb_comprobante__pk__in=id_cpbs)\
                     .annotate(importe_final=Sum(F('importe_total')*F('cpb_comprobante__cpb_tipo__signo_ctacte'), output_field=DecimalField()),\
                         importe=Sum(F('importe_base')*F('cpb_comprobante__cpb_tipo__signo_ctacte'), output_field=DecimalField()))\
-                    .order_by('-cpb_comprobante__fecha_imputacion','-cpb_comprobante__id')
+                    .select_related('cpb_comprobante','cpb_comprobante__cpb_tipo','cpb_comprobante__entidad','tasa_iva').order_by('-cpb_comprobante__fecha_imputacion','-cpb_comprobante__id')
         
         if ('cpbs' in request.POST)and(cpbs):                
             response = HttpResponse(generarCITI(cpbs,'C','cpbs'),content_type='text/plain')
@@ -707,6 +705,14 @@ def libro_iva_compras(request):
         elif ('alicuotas' in request.POST)and(cpbs):
             response = HttpResponse(generarCITI(cpbs,'C','alicuotas'),content_type='text/plain')
             response['Content-Disposition'] = 'attachment;filename="CITI_COMPRAS_ALICUOTAS.txt"'
+            return response 
+        elif ('cpbs_iva_dig' in request.POST)and(cpbs):                
+            response = HttpResponse(generarCITI(cpbs,'C','cpbs',True),content_type='text/plain')
+            response['Content-Disposition'] = 'attachment;filename="CITI_COMPRAS_CBTE_DIGITAL.txt"'
+            return response 
+        elif ('alic_iva_dig' in request.POST)and(cpbs):
+            response = HttpResponse(generarCITI(cpbs,'C','alicuotas',True),content_type='text/plain')
+            response['Content-Disposition'] = 'attachment;filename="CITI_COMPRAS_ALICUOTAS_DIGITAL.txt"'
             return response 
 
     context['form'] = form
@@ -1431,7 +1437,7 @@ class comisiones_vendedoresView(VariablesMixin,ListView):
             pto_vta = form.cleaned_data['pto_vta']               
             porcCom = form.cleaned_data['comision']
             campo = form.cleaned_data['campo']
-            comprobantes = cpb_comprobante.objects.filter(cpb_tipo__tipo__in=[1,3,9])
+            comprobantes = cpb_comprobante.objects.filter(cpb_tipo__tipo__in=[1,3,9]).select_related('cpb_tipo','estado','entidad')
 
             if fdesde:
                 comprobantes= comprobantes.filter(fecha_cpb__gte=fdesde)

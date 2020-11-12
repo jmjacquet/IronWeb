@@ -771,6 +771,7 @@ def facturarAFIP(request,idCpb):
             # alias = unicodedata.normalize('NFKD', (f.empresa.nombre[:20])).encode('ASCII', 'ignore')
             # print alias
             #wsfev1.AgregarOpcional(2102, f.empresa.cbu_alias) # alias
+
             if f.cpb_tipo.tipo in [22, 23]:
                 wsfev1.AgregarOpcional(22, "S")    
 

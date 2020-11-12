@@ -38,7 +38,7 @@ TIME_INPUT_FORMATS = ('%H:%M',)
 DATE_INPUT_FORMATS = ('%d/%m/%Y',)
 MEDIA_ROOT = os.path.join(SITE_ROOT, 'media')
 MEDIA_URL = '/media/'
-
+STATIC_ROOT = os.path.join(SITE_ROOT, 'static')
 # STATIC_ = '/home/grupogua1/webapps/ironweb/ggcontable/static'
 STATIC_URL = '/static/'
 

@@ -26,7 +26,7 @@ MIDDLEWARE_CLASSES += (
     'debug_toolbar.middleware.DebugToolbarMiddleware',#Barra DEBUG
 )
 
-
+STATIC_ROOT = os.path.join(SITE_ROOT, 'static')
 
 INSTALLED_APPS += (
     'debug_toolbar',    

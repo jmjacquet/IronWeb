@@ -3,7 +3,10 @@
 {% load i18n l10n %}
 {% load humanize %}
 {% block main %} 
-
+         <div id="cargando" class="cargando" >
+            <span class="cargando-txt">CARGANDO...</span>
+            <img class="cargando-img" src="{% static 'img/loading-bars.svg' %}">
+        </div>
           <div class="col-md-12 cerca">   
                 <div class="portlet box toolbar_blue">
                     <div class="portlet-title">
@@ -22,7 +25,7 @@
                     <a class="btn btn-sm color_barra"  style="margin-right:10px;" href="{% url 'cpb_remito_nuevo_vacio' %}">Nuevo Remito</a>
                    
                     </div>
-                    <table id="dataTables-cpb_remito" class="table table-striped compact table-hover table-no-bordered tabla_nueva nowrap">          
+                    <table id="dataTables-cpb_remito" style="display:none;"  class="table table-striped compact table-hover table-no-bordered tabla_nueva nowrap">          
                         <thead>
                             <tr>
                                 <th class="no-sort text-center"></th>                                
@@ -220,6 +223,16 @@ var tabla = $('#dataTables-cpb_remito').DataTable({
                     className: 'btnToolbar',                    
                 },
             ],
+            PreDrawCallback:function(){
+            $("#cargando").show();
+            },
+            initComplete: function () {
+               
+                $("#dataTables-cpb_remito").show();
+                  this.fnAdjustColumnSizing();
+                $("#cargando").hide();
+
+            },
             // initComplete: function () {
             //    // this.api().columns().every( function () {[0, 1, 9]
             //     this.api().columns([1]).every( function () {

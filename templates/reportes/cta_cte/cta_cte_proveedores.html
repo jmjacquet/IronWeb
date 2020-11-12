@@ -5,7 +5,10 @@
 {% load humanize %}
 {% block main %} 
     
-
+         <div id="cargando" class="cargando" >
+            <span class="cargando-txt">CARGANDO...</span>
+            <img class="cargando-img" src="{% static 'img/loading-bars.svg' %}">
+        </div>
           <div class="col-md-12 cerca">   
             <div class="portlet box toolbar_blue">
                 <div class="portlet-title">
@@ -32,7 +35,7 @@
                     </button>
                         
                     </form>
-                    <table id="dataTables-cpb_venta" class="table table-striped compact table-hover table-no-bordered tabla_nueva">         
+                    <table id="dataTables-cpb_venta" style="display:none;" class="table table-striped compact table-hover table-no-bordered tabla_nueva">         
                         <thead>
                             <tr>                               
                                 <th class="text-center">Fecha</th>                                
@@ -234,7 +237,17 @@ var tabla = $('#dataTables-cpb_venta').DataTable({
                     className: 'btnToolbar',                    
                 },
             ],
-            "footerCallback": function ( row, data, start, end, display ) {
+            PreDrawCallback:function(){
+            $("#cargando").show();
+            },
+            initComplete: function () {
+               
+                $("#dataTables-cpb_venta").show();
+                  this.fnAdjustColumnSizing();
+                $("#cargando").hide();
+
+            },
+            footerCallback: function ( row, data, start, end, display ) {
             var api = this.api(), data;
             var floatVal = function (i) {
                 if (typeof i === "number") {

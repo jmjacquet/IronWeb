@@ -1254,7 +1254,9 @@ class MovInternosViewList(VariablesMixin,ListView):
         except gral_empresa.DoesNotExist:
             config = None 
         form = ConsultaCpbsCompras(self.request.POST or None,empresa=config,request=self.request)   
-        movimientos = cpb_comprobante_fp.objects.filter(cpb_comprobante__cpb_tipo__id=13,cpb_comprobante__empresa__id__in=empresas_habilitadas(self.request)).order_by('-cpb_comprobante__fecha_cpb','-cpb_comprobante__fecha_creacion').select_related('cpb_comprobante')                
+        movimientos = cpb_comprobante_fp.objects.filter(cpb_comprobante__cpb_tipo__id=13,cpb_comprobante__empresa__id__in=empresas_habilitadas(self.request))\
+                      .order_by('-cpb_comprobante__fecha_cpb','-cpb_comprobante__fecha_creacion')\
+                      .select_related('cpb_comprobante','tipo_forma_pago','cta_egreso','cta_ingreso','mdcp_banco')                
         if form.is_valid():                                
             fdesde = form.cleaned_data['fdesde']   
             fhasta = form.cleaned_data['fhasta']                                                             

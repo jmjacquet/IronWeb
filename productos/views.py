@@ -780,7 +780,8 @@ class ProdStockView(VariablesMixin,ListView):
             tipo_prod = int(form.cleaned_data['tipo_prod'])             
             lleva_stock = form.cleaned_data['lleva_stock']                         
             stock_pp = int(form.cleaned_data['stock_pp'])                         
-            productos = prod_producto_ubicac.objects.filter(producto__empresa__id__in=empresas_habilitadas(self.request)).select_related('producto','producto__categoria')            
+            productos = prod_producto_ubicac.objects.filter(producto__empresa__id__in=empresas_habilitadas(self.request))\
+                        .select_related('producto','producto__categoria','ubicacion')            
         
             if producto:
                 productos = productos.filter(producto__nombre__icontains=producto)

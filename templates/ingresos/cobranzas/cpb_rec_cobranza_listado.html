@@ -27,7 +27,7 @@
 
                     {% include "general/varios/barra_busqueda_compras.html" %}          
                     <a class="btn btn-sm green-jungle" style="float:left;margin-right:20px;" href="{% url 'cpb_rec_cobranza_nuevo' %}">Nueva Cobranza</a>
-                    <table width="100%" id="dataTables-cobranzas" class="table table-striped compact table-hover table-no-bordered tabla_nueva nowrap">         
+                    <table width="100%" id="dataTables-cobranzas" style="display:none;"  class="table table-striped compact table-hover table-no-bordered tabla_nueva nowrap">         
                         <thead>
                             <tr>
                                 <th class="no-sort"></th>                                                                 
@@ -37,7 +37,7 @@
                                 <th class="imprimir text-right">Total</th>
                                 <th class="imprimir text-right">Importe</th>
                                 <th class="imprimir text-right">Retenc</th>
-                                <th>Comprobantes</th> 
+                                <th>Detalle Cobros</th> 
                                 <th>Cobrador</th>            
                                 <th>Descripción</th>                    
                                 
@@ -83,10 +83,11 @@
                                 <td class="importe">${{cpb.importe_subtotal|default_if_none:0|floatformat:2}}</td>
                                 <td class="importe">${{cpb.importe_ret|default_if_none:0|floatformat:2}}</td>                               
                                 <td class="wrap">
-                                    {% for cc in cpb.get_cobranzas %}                                   
-                                    {% include "general/varios/cpb_span_ver.html" %}&nbsp;                                    
-                                    {% endfor %}
-                                </td>
+                                {% if cpb.cobranzas > 0 %}                                    
+                                    <a href="{% url 'recibo_ver' id=cpb.id %}"  title="VER" class="modal-detail" data-modal-head="DETALLE {{cpb.cpb_tipo.nombre|upper}} {{cpb}}   Fecha: {{cpb.fecha_cpb|date:'d/m/Y'}}" data-modal-callback="reload"><i class="fa fa-list-alt text-success"></i>
+                                    </a>                                
+                                {% endif%}
+                                </td>          
                                 <td>{{ cpb.vendedor|default_if_none:''|truncatechars:60 }}</td>
                                 <td  title="{{ cpb.descripcion}}">{{ cpb.descripcion|default_if_none:''|truncatechars:60 }}</td>                                
 

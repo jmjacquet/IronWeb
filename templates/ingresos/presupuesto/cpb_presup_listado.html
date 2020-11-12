@@ -8,7 +8,10 @@
     <script src="{% static 'js/scripts/scripts_general.js'%}?{% now "Ymd"%}" type="text/javascript"></script>    
 {% endblock %}
 {% block main %} 
-
+         <div id="cargando" class="cargando" >
+            <span class="cargando-txt">CARGANDO...</span>
+            <img class="cargando-img" src="{% static 'img/loading-bars.svg' %}">
+        </div>
           <div class="col-md-12 cerca">           
             <div class="portlet box toolbar_violet">
                 <div class="portlet-title">
@@ -25,7 +28,7 @@
                      <a class="btn btn-sm purple-plum" style="float:left;margin-right:20px;" href="{% url 'cpb_presup_nuevo' %}">Nuevo Presupuesto</a>                     
                  </div>
 
-                    <table id="dataTables-cpb_presupuesto" class="table table-striped compact table-hover table-no-bordered tabla_nueva nowrap">         
+                    <table id="dataTables-cpb_presupuesto" style="display:none;"  class="table table-striped compact table-hover table-no-bordered tabla_nueva nowrap">         
                         <thead>
                             <tr>
                                 <th class="no-sort text-center"></th>
@@ -102,7 +105,7 @@
                                     {% if cpb.anulacion_motivo %}  <i title="{{cpb.anulacion_motivo}}" class="glyphicon glyphicon-exclamation-sign text-danger"></i> {% endif %} 
                                     {% if cpb.fecha_envio_mail %}  <i title="Email enviado el {{cpb.fecha_envio_mail|date:'d/m/Y'}}" class="fa fa-envelope-o icono_seguimiento"></i> {% endif %}
                                 </td>  
-                                <td class="listado_estado {{cpb.estado_cpb.color}}">{{cpb.estado_cpb}}</td>
+                                <td class="listado_estado {{cpb.estado_color}}">{{cpb.estado}}</td>
                                 <td class="listado_estado {{cpb.presup_aprobacion.color}}">{{cpb.presup_aprobacion|default_if_none:''}}</td>                                
                                 <td class="text-center">{{cpb.fecha_cpb|date:'d/m/Y'}}</td>
                                 <td class="text-center">{{ cpb.fecha_vto|date:'d/m/Y'}}</td>
@@ -294,6 +297,9 @@ var tabla = $('#dataTables-cpb_presupuesto').DataTable({
                         select.append( '<option value="'+d+'">'+d+'</option>' )
                     } );
                 } );
+                $("#dataTables-cpb_presupuesto").show();
+                  this.fnAdjustColumnSizing();
+                $("#cargando").hide();
 
             },
              footerCallback: function ( row, data, start, end, display ) {
