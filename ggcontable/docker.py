@@ -16,7 +16,7 @@ DATABASES = {
             'NAME': os.environ.get('ENTIDAD_DB'),           # Or path to database file if using sqlite3.
             'USER': 'root',                      # Not used with sqlite3.
             'PASSWORD': 'qwerty',            # Not used with sqlite3.
-            'HOST': 'mydb',                   # Set to empty string for localhost. Not used with sqlite3.
+            'HOST': 'mysql5',                   # Set to empty string for localhost. Not used with sqlite3.
             'PORT': '3306',    
         },
     }
@@ -31,4 +31,10 @@ INSTALLED_APPS += (
     'debug_toolbar',    
 )
 
+#INTERNAL_IPS = ('localhost','mydb')
+def show_toolbar(request):
+        return True
 
+DEBUG_TOOLBAR_CONFIG = {
+    'SHOW_TOOLBAR_CALLBACK': show_toolbar,
+}        
