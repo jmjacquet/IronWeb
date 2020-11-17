@@ -5,7 +5,7 @@
 {% block extra_css %}
   <link rel="stylesheet" href="{% static 'css/comprobantes.css'%}" type="text/css" >
 {% endblock %}
-<div class="modal-dialog modal-modal" style="width:500px;">
+<div class="modal-dialog modal-modal" style="width:650px;">
   <div class="modal-content">
     <div class="modal-wrapper">
       <div data-dismiss="modal" class="close-modal"><button type="button" class="close" data-dismiss="modal" aria-hidden="true">x</button></div>
@@ -128,11 +128,12 @@
 
   $("#id_productos_datos").change(function(){
   var id =  $("#id_productos_datos").val();
+  
   if (id!='')
     {
           $.ajax({
-                data: {'id': id},
-                url: '/buscarDatosProd/',
+                data: {'idp': id},
+                url: '/productos/prod_consultar_detalles/',
                 type: 'get',
                 cache: true,          
                 beforeSend: function(){
@@ -143,48 +144,49 @@
                 },
                 success : function(data) {
                      
-                     if (data!='')
+                     if (data['producto']!='')
                         {
-                          $("#apellido_y_nombre").text(data['apellido_y_nombre']); 
-                          $("#nro_doc").text(data['nro_doc']); 
-                          if (data['fecha_nac']==null){
-                            $("#fecha_nac").text(''); }
-                            else{
-                          $("#fecha_nac").text(moment(data['fecha_nac']).format("DD/MM/YYYY")); 
-                          }
-                          $("#legajo").text(data['legajo']); 
-                          $("#edad").text(data['edad']+' años'); 
-                          $("#telcel").text((data['telefono']||'')+' / '+(data['celular']||'')); 
-                          $("#email").text(data['email']); 
-                          $("#cod_postal").text(data['cod_postal']);
-                          $("#domicilio").text(data['domicilio']);
-                          $("#provincia").text(data['provincia']);
-                          $("#localidad").text(data['localidad']);
-                          $("#art").text(data['art']); 
+                          console.info(data['producto'][0]);
+                          // $("#apellido_y_nombre").text(data['apellido_y_nombre']); 
+                          // $("#nro_doc").text(data['nro_doc']); 
+                          // if (data['fecha_nac']==null){
+                          //   $("#fecha_nac").text(''); }
+                          //   else{
+                          // $("#fecha_nac").text(moment(data['fecha_nac']).format("DD/MM/YYYY")); 
+                          // }
+                          // $("#legajo").text(data['legajo']); 
+                          // $("#edad").text(data['edad']+' años'); 
+                          // $("#telcel").text((data['telefono']||'')+' / '+(data['celular']||'')); 
+                          // $("#email").text(data['email']); 
+                          // $("#cod_postal").text(data['cod_postal']);
+                          // $("#domicilio").text(data['domicilio']);
+                          // $("#provincia").text(data['provincia']);
+                          // $("#localidad").text(data['localidad']);
+                          // $("#art").text(data['art']); 
                           
-                          $("#empresa").text(data['empresa']); 
-                          if (data['empr_fingreso']==null){
-                            $("#empr_fingreso").text(''); 
-                          }else{
-                            $("#empr_fingreso").text(moment(data['empr_fingreso']).format("DD/MM/YYYY")); };
-                          $("#trab_cargo").text(data['trab_cargo']); 
-                          if (data['trab_fingreso']==null){
-                            $("#trab_fingreso").text(''); 
-                          }else{
-                          $("#trab_fingreso").text(moment(data['trab_fingreso']).format("DD/MM/YYYY")); };
-                          if (data['trab_fbaja']==null){
-                            $("#trab_fbaja").text(''); 
-                          }else{
-                          $("#trab_fbaja").text(moment(data['trab_fbaja']).format("DD/MM/YYYY"));}; 
-                          $("#trab_armas").text(data['trab_armas']); 
-                          $("#trab_tareas_dif").text(data['trab_tareas_dif']); 
-                          $("#trab_preocupac").text(data['trab_preocupac']); 
-                          if (data['trab_preocup_fecha']==null){
-                            $("#trab_preocup_fecha").text(''); 
-                          }else{
-                          $("#trab_preocup_fecha").text(moment(data['trab_preocup_fecha']).format("DD/MM/YYYY")); };
-                          $("#antig_empresa").text(data['antig_empresa']+' años'); 
-                          $("#antig_trabajo").text(data['antig_trabajo']+' años'); 
+                          // $("#empresa").text(data['empresa']); 
+                          // if (data['empr_fingreso']==null){
+                          //   $("#empr_fingreso").text(''); 
+                          // }else{
+                          //   $("#empr_fingreso").text(moment(data['empr_fingreso']).format("DD/MM/YYYY")); };
+                          // $("#trab_cargo").text(data['trab_cargo']); 
+                          // if (data['trab_fingreso']==null){
+                          //   $("#trab_fingreso").text(''); 
+                          // }else{
+                          // $("#trab_fingreso").text(moment(data['trab_fingreso']).format("DD/MM/YYYY")); };
+                          // if (data['trab_fbaja']==null){
+                          //   $("#trab_fbaja").text(''); 
+                          // }else{
+                          // $("#trab_fbaja").text(moment(data['trab_fbaja']).format("DD/MM/YYYY"));}; 
+                          // $("#trab_armas").text(data['trab_armas']); 
+                          // $("#trab_tareas_dif").text(data['trab_tareas_dif']); 
+                          // $("#trab_preocupac").text(data['trab_preocupac']); 
+                          // if (data['trab_preocup_fecha']==null){
+                          //   $("#trab_preocup_fecha").text(''); 
+                          // }else{
+                          // $("#trab_preocup_fecha").text(moment(data['trab_preocup_fecha']).format("DD/MM/YYYY")); };
+                          // $("#antig_empresa").text(data['antig_empresa']+' años'); 
+                          // $("#antig_trabajo").text(data['antig_trabajo']+' años'); 
                           
                         }
                         else{                 

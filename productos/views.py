@@ -1082,3 +1082,42 @@ def prod_buscar_datos(request):
     form = BuscarProdDatos(None,request=request)          
     variables = RequestContext(request, {'form':form})        
     return render_to_response("productos/producto_datos.html", variables)        
+
+@login_required 
+def prod_consultar_detalles(request):      
+   from django.core import serializers
+   d= {}
+   idProd = request.GET.get('idp', '')
+   try:
+        producto = prod_productos.objects.filter(pk=idProd).first()
+   except prod_productos.DoesNotExist:
+        producto = None     
+   try:
+        prod_stock = prod_producto_ubicac.objects.filter(producto__pk=idProd)      
+   except prod_producto_ubicac.DoesNotExist:
+        prod_stock = None         
+   try:
+        prod_precios = prod_producto_lprecios.objects.filter(producto__pk=idProd)       
+   except prod_producto_lprecios.DoesNotExist:
+        prod_precios = None        
+              
+   print producto
+   
+   d['producto']=dict(pk=producto.pk,nombre=producto.nombre,categoria=producto.categoria.nombre,
+                tipo_producto=producto.get_tipo_producto_display(),unidad=producto.get_unidad_display(),
+                tasa_iva=producto.tasa_iva.nombre,)
+   
+   d['prod_precios']=[dict(pk=x.pk,lista_precio=x.lista_precios.nombre,precio_venta=x.precio_venta) for x in prod_precios]
+   
+   d['prod_stock']= [dict(pk=x.pk,ubicacion=x.ubicacion.nombre,punto_pedido=x.punto_pedido,
+                    stock=x.get_stock_(),unidad=x.producto.get_unidad_display()) for x in prod_stock]
+   
+   # data = serializers.serialize('json', [prod_precios,])
+   # struct = json.loads(data)
+   # d['prod_precios']= json.dumps(struct[0])
+   # data = serializers.serialize('json', [prod_stock,])
+   # struct = json.loads(data)
+   # d['prod_stock']= json.dumps(struct[0])
+
+   return HttpResponse( json.dumps(d,cls=DjangoJSONEncoder), content_type='application/json' ) 
+    
