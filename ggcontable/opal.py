@@ -11,8 +11,8 @@ DB_PASS = config('DB_PASS')
 DB_HOST = config('DB_HOST')
 
 
-STATIC_ROOT = "/home/apps/server_apache/IronWeb/static/"
-MEDIA_ROOT = "/home/apps/server_apache/IronWeb/media/"
+STATIC_ROOT = "/home/grupogua/apps/server_apache/IronWeb/static/"
+MEDIA_ROOT = "/home/grupogua/apps/server_apache/IronWeb/media/"
 
 DATABASES = {
         'default': {
