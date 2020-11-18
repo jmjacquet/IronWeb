@@ -1091,10 +1091,11 @@ def datos_afip(request,cuit):
         wsaa = WSAA()
         crt = empresa.fe_crt
         key= empresa.fe_key
+        wsaa.Token, wsaa.Sign = _autenticar(request,crt=crt,key=key,cuit=cuit)    
         ta = wsaa.Autenticar("ws_sr_padron_a4",crt=crt,key=key,)        
-        print ta
+        
         padron = WSSrPadronA4()
-        print padron
+        
         # padron.SetTicketAcceso(ta)
         # padron.Cuit = empresa.cuit
         # padron.Conectar()
