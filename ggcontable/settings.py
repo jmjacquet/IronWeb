@@ -46,10 +46,7 @@ TEMPLATE_DIRS = (
     os.path.join(SITE_ROOT, 'templates'),
 )
 
-STATICFILES_DIRS = (
-    os.path.join(SITE_ROOT, "staticfiles"),   
-    # os.path.join(SITE_ROOT, "dist"),  
-)
+
 
 
 ADMIN_MEDIA_PREFIX = os.path.join(SITE_ROOT, '/static/admin/')

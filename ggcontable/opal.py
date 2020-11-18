@@ -17,7 +17,7 @@ MEDIA_ROOT = "/home/apps/server_apache/IronWeb/media/"
 DATABASES = {
         'default': {
             'ENGINE': 'django.db.backends.mysql', # Add 'postgresql_psycopg2', 'postgresql', 'mysql', 'sqlite3' or 'oracle'.
-            'NAME': ENTIDAD_DB,           # Or path to database file if using sqlite3.
+            'NAME': os.environ.get('ENTIDAD_DB'),           # Or path to database file if using sqlite3.
             'USER':  DB_USER,    
             'PASSWORD':  DB_PASS,            # Not used with sqlite3.
             'HOST':  DB_HOST,                      # Set to empty string for localhost. Not used with sqlite3.
@@ -25,6 +25,10 @@ DATABASES = {
         },
     }
     
+STATICFILES_DIRS = (
+    os.path.join(SITE_ROOT, "static"),   
+    # os.path.join(SITE_ROOT, "dist"),  
+)
 # MIDDLEWARE_CLASSES += (
 #     'debug_toolbar.middleware.DebugToolbarMiddleware',#Barra DEBUG
 # )

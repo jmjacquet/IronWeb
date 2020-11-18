@@ -11,6 +11,11 @@ TEMPLATE_DEBUG = DEBUG
 DB_USER = config("DB_USER")
 DB_PASS = config("DB_PASS")
 
+STATICFILES_DIRS = (
+    os.path.join(SITE_ROOT, "staticfiles"),   
+    # os.path.join(SITE_ROOT, "dist"),  
+)
+
 DATABASES = {
         'default': {
             'ENGINE': 'django.db.backends.mysql', # Add 'postgresql_psycopg2', 'postgresql', 'mysql', 'sqlite3' or 'oracle'.

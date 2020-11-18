@@ -7,6 +7,11 @@ DEBUG = True
 
 TEMPLATE_DEBUG = DEBUG
 
+STATICFILES_DIRS = (
+    os.path.join(SITE_ROOT, "staticfiles"),   
+    # os.path.join(SITE_ROOT, "dist"),  
+)
+
 DB_USER = config("DB_USER")
 DB_PASS = config("DB_PASS")
 
