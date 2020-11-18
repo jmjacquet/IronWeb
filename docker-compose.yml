@@ -9,10 +9,10 @@ services:
     ports:
      - "8000:8000"
     networks:
-      - tasasweb_default
+      - repo_default
     links:
        - mysql5:mysql5
 
 networks:
-  tasasweb_default:
+  repo_default:
     external: true

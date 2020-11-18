@@ -23,16 +23,16 @@
                   <table class="table table-user-information table-striped table-hover">
                     <tbody>                      
                       <tr>                        
-                        <td >Categoría:</td><td colspan="3" id="categ"></td>
+                        <td >Categoría:</td><td class="negrita" colspan="3" id="categ"></td>
                       </tr>
                       <tr>
-                        <td>Tipo Producto:</td><td colspan="3" id="tipop"></td>
+                        <td>Tipo Producto:</td><td class="negrita" colspan="3" id="tipop"></td>
                       </tr>
                       <tr>
-                        <td>Tasa IVA:</td><td id="tasa_iva"></td><td>Unidad:</td><td id="unidad"></td>
+                        <td>Tasa IVA:</td><td id="tasa_iva" class="negrita"></td><td>Unidad:</td><td id="unidad" class="negrita" ></td>
                       </tr>                      
                       <tr>
-                        <td>Descripción:</td><td colspan="3" id="descr"></td>
+                        <td>Descripción:</td><td colspan="3" id="descr" class="negrita"></td>
                       </tr>
                     </tbody>
                   </table>
@@ -142,8 +142,8 @@
                       {
                         for (let i = 0; i<data['prod_stock'].length; i++) {
                               row = data['prod_stock'][i];
-                              $("#tabla_prod_stock").append('<tr><td class="text-center texto_detalle">'+row['ubicacion']+'</td><td class="importe texto_detalle">$'+row['punto_pedido']+'</td>'+
-                                '<td class="importe_total texto_detalle">$'+row['stock']+'</td><td class="text-left texto_detalle">'+row['unidad']+'</td></tr>');
+                              $("#tabla_prod_stock").append('<tr><td class="text-center texto_detalle">'+row['ubicacion']+'</td><td class="importe texto_detalle">'+row['punto_pedido']+'</td>'+
+                                '<td class="importe_total texto_detalle">'+row['stock']+'</td><td class="text-left texto_detalle">'+row['unidad']+'</td></tr>');
                             }
                       }else{
                         $("#tabla_prod_stock").html('<tr><td colspan="4"></td></tr>')
