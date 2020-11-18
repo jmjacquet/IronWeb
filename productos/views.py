@@ -1105,7 +1105,7 @@ def prod_consultar_detalles(request):
    
    d['producto']=dict(pk=producto.pk,nombre=producto.nombre,categoria=producto.categoria.nombre,
                 tipo_producto=producto.get_tipo_producto_display(),unidad=producto.get_unidad_display(),
-                tasa_iva=producto.tasa_iva.nombre,)
+                tasa_iva=producto.tasa_iva.nombre,descr=producto.descripcion)
    
    d['prod_precios']=[dict(pk=x.pk,lista_precio=x.lista_precios.nombre,precio_venta=x.precio_venta) for x in prod_precios]
    

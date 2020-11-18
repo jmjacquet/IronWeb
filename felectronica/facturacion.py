@@ -1068,3 +1068,38 @@ def facturarAFIP_simulac(request,idCpb):
 
 
 
+
+def datos_afip(request,cuit):
+        from pyafipws.wsaa import WSAA
+        from pyafipws.ws_sr_padron import WSSrPadronA4
+        empresa = empresa_actual(request)
+        HOMO = empresa.homologacion
+
+        if HOMO:
+            WSDL = "https://wswhomo.afip.gov.ar/wsfev1/service.asmx?WSDL"
+            WSAA_URL = "https://wsaahomo.afip.gov.ar/ws/services/LoginCms"
+        else:
+            WSDL="https://servicios1.afip.gov.ar/wsfev1/service.asmx?WSDL"    
+            WSAA_URL = "https://wsaa.afip.gov.ar/ws/services/LoginCms"    
+
+               
+        appserver_status = ''
+        dbserver_status = ''
+        authserver_status = ''
+        #try:
+        fecha = datetime.now().strftime("%Y%m%d")
+        wsaa = WSAA()
+        crt = empresa.fe_crt
+        key= empresa.fe_key
+        ta = wsaa.Autenticar("ws_sr_padron_a4",crt=crt,key=key,)        
+        print ta
+        padron = WSSrPadronA4()
+        print padron
+        # padron.SetTicketAcceso(ta)
+        # padron.Cuit = empresa.cuit
+        # padron.Conectar()
+        
+        # ok = padron.Consultar(cuit)
+
+   
+        return padron
