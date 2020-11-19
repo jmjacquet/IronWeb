@@ -34,7 +34,18 @@ MIDDLEWARE_CLASSES += (
 STATIC_ROOT = os.path.join(SITE_ROOT, 'static')
 
 INSTALLED_APPS += (
-    'debug_toolbar',    
+   # 'debug_toolbar',   
+    'compressor' ,
 )
 
+STATICFILES_FINDERS += (
+    'compressor.finders.CompressorFinder',
+    )
+
+
+COMPRESS_ENABLED = True
+
+
+COMPRESS_CSS_FILTERS = ['compressor.filters.css_default.CssAbsoluteFilter','compressor.filters.cssmin.CSSMinFilter']
+COMPRESS_JS_FILTERS = ["compressor.filters.jsmin.JSMinFilter"]
 

@@ -44,8 +44,7 @@ STATIC_URL = '/static/'
 TEMPLATE_DIRS = (
     os.path.join(SITE_ROOT, 'templates'),
 )
-
-
+MEDIA_ROOT = os.path.join(SITE_ROOT, 'media')
 
 
 ADMIN_MEDIA_PREFIX = os.path.join(SITE_ROOT, '/static/admin/')

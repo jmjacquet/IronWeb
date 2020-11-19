@@ -26,7 +26,7 @@ DATABASES = {
     }
     
 STATICFILES_DIRS = (
-    os.path.join(SITE_ROOT, "static"),   
+    os.path.join(SITE_ROOT, "staticfiles"),   
     # os.path.join(SITE_ROOT, "dist"),  
 )
 # MIDDLEWARE_CLASSES += (
@@ -35,6 +35,20 @@ STATICFILES_DIRS = (
 
 
 
-# INSTALLED_APPS += (
-#     'debug_toolbar',    
-# )
+
+INSTALLED_APPS += (
+   # 'debug_toolbar',   
+    'compressor' ,
+)
+
+STATICFILES_FINDERS += (
+    'compressor.finders.CompressorFinder',
+    )
+
+
+
+COMPRESS_ENABLED = True
+
+
+COMPRESS_CSS_FILTERS = ['compressor.filters.css_default.CssAbsoluteFilter','compressor.filters.cssmin.CSSMinFilter']
+COMPRESS_JS_FILTERS = ["compressor.filters.jsmin.JSMinFilter"]

@@ -1100,16 +1100,17 @@ def prod_consultar_detalles(request):
         prod_precios = prod_producto_lprecios.objects.filter(producto__pk=idProd)       
    except prod_producto_lprecios.DoesNotExist:
         prod_precios = None        
-              
-   print producto
+
    
    d['producto']=dict(pk=producto.pk,nombre=producto.nombre,categoria=producto.categoria.nombre,
                 tipo_producto=producto.get_tipo_producto_display(),unidad=producto.get_unidad_display(),
                 tasa_iva=producto.tasa_iva.nombre,descr=producto.descripcion)
    
-   d['prod_precios']=[dict(pk=x.pk,lista_precio=x.lista_precios.nombre,precio_venta=x.precio_venta) for x in prod_precios]
+   if prod_precios:
+       d['prod_precios']=[dict(pk=x.pk,lista_precio=x.lista_precios.nombre,precio_venta=x.precio_venta) for x in prod_precios]
    
-   d['prod_stock']= [dict(pk=x.pk,ubicacion=x.ubicacion.nombre,punto_pedido=x.punto_pedido or 0,
+   if prod_stock:
+       d['prod_stock']= [dict(pk=x.pk,ubicacion=x.ubicacion.nombre,punto_pedido=x.punto_pedido or 0,
                     stock=x.get_stock_() or 0,unidad=x.producto.get_unidad_display() or '') for x in prod_stock]
    
    # data = serializers.serialize('json', [prod_precios,])

@@ -60,7 +60,8 @@ var tabla = $('#dataTables-cpb_venta').DataTable({
               footer: false
               },
             responsive: true,
-            dom: 'Bfrtlip',
+            //dom: 'Bfrtlip',
+            dom: "Bf<'row'<'col-sm-12'tr>>"+"<'row'<'col-sm-3'l><'col-sm-9'ip>>",
             buttons: [
                 {
                     extend:    'colvis',
