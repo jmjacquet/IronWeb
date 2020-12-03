@@ -253,7 +253,7 @@ class FormChequesCobro(forms.Form):
 
 class SaldoInicialForm(forms.ModelForm):
 	tipo_forma_pago = forms.ModelChoiceField(label='Medio de Pago',queryset=cpb_tipo_forma_pago.objects.filter(baja=False),empty_label='---')
-	mdcp_fecha = forms.DateField(label='Fecha',widget=forms.DateInput(attrs={'class': 'form-control datepicker'}),initial=hoy(),required = False)
+	mdcp_fecha = forms.DateField(label='Fecha',widget=forms.DateInput(attrs={'class': 'form-control datepicker'}),initial=hoy(),required = True)
 	mdcp_banco = forms.ModelChoiceField(label='Banco',queryset=cpb_banco.objects.filter(baja=False),empty_label='---',required = False)
 	detalle = forms.CharField(label='Detalle',widget=forms.Textarea(attrs={ 'class':'form-control','rows': 3}),required = False)		
 	importe = forms.DecimalField(widget=PrependWidget(attrs={'class':'form-control','step':0},base_widget=NumberInput, data='$'),initial=0.00,decimal_places=2)	
