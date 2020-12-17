@@ -10,8 +10,7 @@ function calcularTotales(){
             var $importe = parseFloat($("input[name='formFP-"+j+"-importe']").val())|| 0;               
             if ($importe == '') $importe=0;       
             tot2 = tot2 + $importe;                  
-       });
-       console.log(tot2);
+       });      
       $("#id_importe_total").val(tot2);
   };
 
@@ -23,11 +22,11 @@ $('.formFP').formset({
           deleteText: 'Eliminar',
           prefix: 'formFP',
           formCssClass: 'dynamic-form',
-          keepFieldValues:'',
+          keepFieldValues:'',          
           added: function (row) {           
-            var i = $(row).index();            
+            var i = $("#formFP-TOTAL_FORMS").val()-1;   
             $("[name='formFP-"+i+"-importe']").val('0');                        
-            $("[name='formFP-"+i+"-tipo_forma_pago']").focus();                       
+            $("[name='formFP-"+i+"-tipo_forma_pago']").focus();                                  
             $('.datepicker').each(function(){
                   $(this).datepicker({
                       format: "dd/mm/yyyy",

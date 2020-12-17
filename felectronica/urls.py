@@ -18,4 +18,6 @@ urlpatterns = patterns('felectronica.views',
     url(r'^listar_cpbs_afip_faltantes/$', listar_cpbs_afip_faltantes,name="listar_cpbs_afip_faltantes"),
 
     url(r'^cpb_facturar_simulacion/$',  cpb_facturar_simulacion,name="cpb_facturar_simulacion"),
+    url(r'^datos_afip/$',  datos_afip,name="datos_afip"),
+
     )

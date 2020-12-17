@@ -49,9 +49,8 @@
                                     <div class="col-sm-12 cerca">   
                                         {% if cpbs %}  
                                         <div class="btn-group " style="float:left;margin-right:10px;"> 
-                                             <button name="cpbs" type="submit" target="_blank" class="btn btn-xs blue-hoki" style="float:left;margin-right:10px;"><i class="fa fa-save fa-fw"></i>  CITI CPBs </button>                                        
-                                             <button name="cpbs_iva_dig" type="submit" target="_blank" class="btn btn-xs blue-steel" style="float:left;margin-right:10px;"><i class="fa fa-save fa-fw"></i>  IVA Digital CPBs </button>    
-                                            
+                                             <button name="cpbs" type="submit" target="_blank" class="btn btn-sm blue-hoki" style="float:left;margin-right:10px;"><i class="fa fa-save fa-fw"></i>  CITI CPBs </button>
+                                             <button name="cpbs_iva_dig" type="submit" target="_blank" class="btn btn-sm blue-steel" style="float:left;margin-right:10px;"><i class="fa fa-save fa-fw"></i>  IVA Digital CPBs </button>    
                                         </div>  
                                         {% endif %}
                                         
@@ -116,8 +115,8 @@
                                     <div class="col-sm-12 cerca">   
                                         {% if cpbs %}  
                                             <div class="btn-group " style="float:left;margin-right:10px;">                                          
-                                                 <button name="alicuotas" type="submit" target="_blank" class="btn btn-xs blue-hoki" style="float:left;margin-right:10px;"><i class="fa fa-save fa-fw"></i> CITI Alícuotas </button>                                             
-                                                 <button name="alic_iva_dig" type="submit" target="_blank" class="btn btn-xs blue-steel"><i class="fa fa-save fa-fw"></i> IVA Digital Alícuotas </button>    
+                                                 <button name="alicuotas" type="submit" target="_blank" class="btn btn-sm blue-hoki" style="float:left;margin-right:10px;"><i class="fa fa-save fa-fw"></i> CITI Alícuotas </button>                                             
+                                                 <button name="alic_iva_dig" type="submit" target="_blank" class="btn btn-sm blue-steel"><i class="fa fa-save fa-fw"></i> IVA Digital Alícuotas </button>    
                                             </div>  
                                         {% endif %}
                                         <table id="dataTables-cpb_venta_alic" style="display:none;" class="table table-striped compact table-hover table-no-bordered tabla_nueva nowrap">         
@@ -240,7 +239,8 @@ var tabla = $('#dataTables-cpb_venta').DataTable({
               footer: false
               },
             responsive: false,
-            dom: 'Bfrtlip',
+            //dom: 'Bfrtlip',
+            dom: "Bf<'row'<'col-sm-12'tr>>"+"<'row'<'col-sm-3'l><'col-sm-9'ip>>",
             buttons: [
                 {
                     extend:    'colvis',
@@ -323,7 +323,7 @@ var tabla = $('#dataTables-cpb_venta').DataTable({
                
                 $("#dataTables-cpb_venta").show();
                  $("#dataTables-cpb_venta_alic").show();
-                  this.fnAdjustColumnSizing();
+                  // this.fnAdjustColumnSizing();
                 $("#cargando").hide();
                // this.api().columns().every( function () {[0, 1, 9]
                 this.api().columns([1]).every( function () {
@@ -450,7 +450,8 @@ var tabla = $('#dataTables-cpb_venta_alic').DataTable({
               footer: false
               },
             responsive: false,
-            dom: 'Bfrtlip',
+            //dom: 'Bfrtlip',
+            dom: "Bf<'row'<'col-sm-12'tr>>"+"<'row'<'col-sm-3'l><'col-sm-9'ip>>",
             buttons: [
                 {
                     extend:    'colvis',

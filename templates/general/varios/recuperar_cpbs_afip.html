@@ -26,10 +26,10 @@
             <div class="col-md-12">
                 <form class="form" accept-charset="UTF-8" role="form" action="" method="post">
                     {% csrf_token %}
-                    <div class="barra_busqueda  col-xs-12">
-                        <div class="col-sm-2 col-xs-1">{% bootstrap_field form.cpb_tipo  %}</div>
-                        <div class="col-sm-1 col-xs-1">{% bootstrap_field form.pto_vta  %}</div>
-                        <div class="col-sm-2 col-xs-1">{% bootstrap_field form.generar  %}</div>
+                    <div class="barra_busqueda row">
+                        <div class="col-sm-2 col-xs-12">{% bootstrap_field form.cpb_tipo  %}</div>
+                        <div class="col-sm-2 col-xs-3">{% bootstrap_field form.pto_vta  %}</div>
+                        <div class="col-sm-2 col-xs-5">{% bootstrap_field form.generar  %}</div>
                         <div class="col-sm-1 col-xs-4"><button class="btn btn-sm color_barra" type="submit">Buscar</button></div>
                     </div>
                 </form>

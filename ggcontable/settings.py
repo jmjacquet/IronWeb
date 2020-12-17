@@ -36,20 +36,15 @@ DEFAULT_CHARSET = 'utf-8'
 FILE_CHARSET = 'utf-8'
 TIME_INPUT_FORMATS = ('%H:%M',)
 DATE_INPUT_FORMATS = ('%d/%m/%Y',)
-MEDIA_ROOT = os.path.join(SITE_ROOT, 'media')
-MEDIA_URL = '/media/'
 
-# STATIC_ = '/home/grupogua1/webapps/ironweb/ggcontable/static'
+
+MEDIA_URL = '/media/'
 STATIC_URL = '/static/'
 
 TEMPLATE_DIRS = (
     os.path.join(SITE_ROOT, 'templates'),
 )
-
-STATICFILES_DIRS = (
-    os.path.join(SITE_ROOT, "staticfiles"),   
-    # os.path.join(SITE_ROOT, "dist"),  
-)
+MEDIA_ROOT = os.path.join(SITE_ROOT, 'media')
 
 
 ADMIN_MEDIA_PREFIX = os.path.join(SITE_ROOT, '/static/admin/')

@@ -2,7 +2,7 @@ $(document).ready(function() {
 $("input[type=number]").click(function(){
             this.select()
           });
-$.fm({        
+$.modal({        
         custom_callbacks: {
             "recargarC": function(data, options) {
                recargarClientes();
@@ -248,8 +248,8 @@ $( "#GuardarRec" ).click(function() {
       total_cpbs = parseFloat($("#id_importe_cpbs").val())};
 
 
-      if (total<=0){
-        alertify.errorAlert("¡El importe total debe ser mayor a cero!");
+      if (total==0){
+        alertify.errorAlert("¡El importe total debe ser distinto a cero!");
          $("#GuardarRec").prop("disabled", false);
          return false;
       };

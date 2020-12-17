@@ -1,37 +1,40 @@
 # -*- coding: utf-8 -*-
 from .settings import *
-import os
 from decouple import config
 
 DEBUG = True
-# DEBUG = False
+#DEBUG = False
 
-TEMPLATE_DEBUG = DEBUG
 
-DB_USER = config("DB_USER")
-DB_PASS = config("DB_PASS")
+DB_USER = config('DB_USER')
+DB_PASS = config('DB_PASS')
+DB_HOST = config('DB_HOST')
 
-STATICFILES_DIRS = (
-    os.path.join(SITE_ROOT, "staticfiles"),   
-    # os.path.join(SITE_ROOT, "dist"),  
-)
+
+STATIC_ROOT = "/home/grupogua/apps/server_apache/IronWeb/static/"
+MEDIA_ROOT = "/home/grupogua/apps/server_apache/IronWeb/media/"
 
 DATABASES = {
         'default': {
             'ENGINE': 'django.db.backends.mysql', # Add 'postgresql_psycopg2', 'postgresql', 'mysql', 'sqlite3' or 'oracle'.
             'NAME': os.environ.get('ENTIDAD_DB'),           # Or path to database file if using sqlite3.
             'USER':  DB_USER,    
-            'PASSWORD':  DB_PASS,             # Not used with sqlite3.
-            'HOST':  '127.0.0.1',                      # Set to empty string for localhost. Not used with sqlite3.
+            'PASSWORD':  DB_PASS,            # Not used with sqlite3.
+            'HOST':  DB_HOST,                      # Set to empty string for localhost. Not used with sqlite3.
             'PORT': '',      
         },
     }
-
-MIDDLEWARE_CLASSES += (
-    'debug_toolbar.middleware.DebugToolbarMiddleware',#Barra DEBUG
+    
+STATICFILES_DIRS = (
+    os.path.join(SITE_ROOT, "staticfiles"),   
+    # os.path.join(SITE_ROOT, "dist"),  
 )
+# MIDDLEWARE_CLASSES += (
+#     'debug_toolbar.middleware.DebugToolbarMiddleware',#Barra DEBUG
+# )
 
-STATIC_ROOT = os.path.join(SITE_ROOT, 'static')
+
+
 
 INSTALLED_APPS += (
    # 'debug_toolbar',   
@@ -43,9 +46,9 @@ STATICFILES_FINDERS += (
     )
 
 
+
 COMPRESS_ENABLED = True
 
 
 COMPRESS_CSS_FILTERS = ['compressor.filters.css_default.CssAbsoluteFilter','compressor.filters.cssmin.CSSMinFilter']
 COMPRESS_JS_FILTERS = ["compressor.filters.jsmin.JSMinFilter"]
-

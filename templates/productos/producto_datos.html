@@ -5,7 +5,7 @@
 {% block extra_css %}
   <link rel="stylesheet" href="{% static 'css/comprobantes.css'%}" type="text/css" >
 {% endblock %}
-<div class="modal-dialog modal-modal" style="width:500px;">
+<div class="modal-dialog modal-modal" style="width:700px;">
   <div class="modal-content">
     <div class="modal-wrapper">
       <div data-dismiss="modal" class="close-modal"><button type="button" class="close" data-dismiss="modal" aria-hidden="true">x</button></div>
@@ -22,21 +22,17 @@
                 <div class="col-xs-12">
                   <table class="table table-user-information table-striped table-hover">
                     <tbody>                      
-                      <tr>
-                        <td>Categoría:</td><td><strong>{{producto.categoria|default_if_none:'' }}</strong></td><td></td><td></td>
+                      <tr>                        
+                        <td >Categoría:</td><td class="negrita" colspan="3" id="categ"></td>
                       </tr>
                       <tr>
-                        <td>Tipo Producto:</td><td><strong>{{producto.get_tipo_producto_display|default_if_none:'' }}</strong></td><td>Mostrar en:</td><td><strong>{{ producto.get_mostrar_en_display|default_if_none:'' }}</strong></td>
+                        <td>Tipo Producto:</td><td class="negrita" colspan="3" id="tipop"></td>
                       </tr>
                       <tr>
-                        <td>Tasa IVA:</td><td><strong>{{ producto.tasa_iva|default_if_none:'' }}</strong></td><td>Unidad:</td><td><strong>{{ producto.get_unidad_display|default_if_none:'' }}</strong></td>
-                      </tr>
+                        <td>Tasa IVA:</td><td id="tasa_iva" class="negrita"></td><td>Unidad:</td><td id="unidad" class="negrita" ></td>
+                      </tr>                      
                       <tr>
-                        <td>Llevar Stock:</td><td><strong><i class="fa {% if producto.llevar_stock %}fa-check text-success{% else %}fa-close text-danger{% endif %}"></i></strong></td>
-                        <td>Stock Negativo:</td><td><strong><i class="fa {% if producto.stock_negativo %}fa-check text-success{% else %}fa-close text-danger{% endif %}"></i></strong></td>
-                      </tr>
-                      <tr>
-                        <td>Descripción:</td><td colspan="3"><strong>{{producto.descripcion|default_if_none:'' }}</strong></td>
+                        <td>Descripción:</td><td colspan="3" id="descr" class="negrita"></td>
                       </tr>
                     </tbody>
                   </table>
@@ -45,7 +41,7 @@
               <div class="row">
                 <div class="col-xs-12 col-sm-5">
                   <div class="titulo_detalle">Detalle Stock Disponible</div>
-                  <table id="dataTables-cpb_venta" class="table table-striped  table-hover table-no-bordered tabla_nueva nowrap ">
+                  <table class="table table-striped  table-hover table-no-bordered tabla_nueva nowrap ">
                     <thead>
                       <tr>
                         <th class="text-center">Ubicación</th>
@@ -54,41 +50,21 @@
                         <th class="text-left">Unidad</th>
                       </tr>
                     </thead>
-                    <tbody>
-                      {% for ps in prod_stock %}
-                        <tr>
-                          <td class="text-center texto_detalle">{{ ps.ubicacion}}</td>
-                          <td class="importe texto_detalle">{{ps.punto_pedido|default_if_none:0|floatformat:2}}</td>
-                          <td class="importe_total texto_detalle">{{ps.get_stock|default_if_none:0|floatformat:2}}</td>
-                          <td class="text-left texto_detalle">[{{ps.producto.get_unidad_display|default_if_none:''}}]</td>
-                        </tr>
-                      {% endfor %}
+                    <tbody id="tabla_prod_stock" >                      
                     </tbody>
                   </table>
                 </div>
                 
                 <div class="col-xs-12 col-sm-7">
                   <div class="titulo_detalle">Detalle Precios</div>
-                  <table id="dataTables-cpb_venta" class="table table-striped  table-hover table-no-bordered tabla_nueva nowrap ">
+                  <table  class="table table-striped  table-hover table-no-bordered tabla_nueva nowrap ">
                     <thead>
                       <tr>
-                        <th class="text-center">Lista de Precio</th>
-                        <th class="text-right">P.Costo</th>
-                        <th class="text-right">P.CostoImp.</th>
-                        <th class="text-right">Coef.Gan.</th>
+                        <th class="text-center">Lista de Precio</th>                       
                         <th class="text-right">P.Venta</th>
                       </tr>
                     </thead>
-                    <tbody>
-                      {% for pp in prod_precios %}
-                        <tr>
-                          <td class="text-center texto_detalle">{{pp.lista_precios}}</td>
-                          <td class="importe texto_detalle">${{pp.precio_costo|default_if_none:0|floatformat:2}}</td>
-                          <td class="importe texto_detalle">${{pp.precio_cimp|default_if_none:0|floatformat:2}}</td>
-                          <td class="importe texto_detalle">{{pp.get_porc_gan|default_if_none:0|floatformat:2}}%</td>
-                          <td class="importe_total texto_detalle">${{pp.precio_venta|default_if_none:0|floatformat:2}}</td>
-                        </tr>
-                      {% endfor %}
+                    <tbody id="tabla_precios" >                     
                     </tbody>
                   </table>
                 </div>
@@ -128,11 +104,12 @@
 
   $("#id_productos_datos").change(function(){
   var id =  $("#id_productos_datos").val();
+  
   if (id!='')
     {
           $.ajax({
-                data: {'id': id},
-                url: '/buscarDatosProd/',
+                data: {'idp': id},
+                url: '/productos/prod_consultar_detalles/',
                 type: 'get',
                 cache: true,          
                 beforeSend: function(){
@@ -142,109 +119,60 @@
                     $('#cargando').hide();
                 },
                 success : function(data) {
-                     
-                     if (data!='')
-                        {
-                          $("#apellido_y_nombre").text(data['apellido_y_nombre']); 
-                          $("#nro_doc").text(data['nro_doc']); 
-                          if (data['fecha_nac']==null){
-                            $("#fecha_nac").text(''); }
-                            else{
-                          $("#fecha_nac").text(moment(data['fecha_nac']).format("DD/MM/YYYY")); 
-                          }
-                          $("#legajo").text(data['legajo']); 
-                          $("#edad").text(data['edad']+' años'); 
-                          $("#telcel").text((data['telefono']||'')+' / '+(data['celular']||'')); 
-                          $("#email").text(data['email']); 
-                          $("#cod_postal").text(data['cod_postal']);
-                          $("#domicilio").text(data['domicilio']);
-                          $("#provincia").text(data['provincia']);
-                          $("#localidad").text(data['localidad']);
-                          $("#art").text(data['art']); 
-                          
-                          $("#empresa").text(data['empresa']); 
-                          if (data['empr_fingreso']==null){
-                            $("#empr_fingreso").text(''); 
-                          }else{
-                            $("#empr_fingreso").text(moment(data['empr_fingreso']).format("DD/MM/YYYY")); };
-                          $("#trab_cargo").text(data['trab_cargo']); 
-                          if (data['trab_fingreso']==null){
-                            $("#trab_fingreso").text(''); 
-                          }else{
-                          $("#trab_fingreso").text(moment(data['trab_fingreso']).format("DD/MM/YYYY")); };
-                          if (data['trab_fbaja']==null){
-                            $("#trab_fbaja").text(''); 
-                          }else{
-                          $("#trab_fbaja").text(moment(data['trab_fbaja']).format("DD/MM/YYYY"));}; 
-                          $("#trab_armas").text(data['trab_armas']); 
-                          $("#trab_tareas_dif").text(data['trab_tareas_dif']); 
-                          $("#trab_preocupac").text(data['trab_preocupac']); 
-                          if (data['trab_preocup_fecha']==null){
-                            $("#trab_preocup_fecha").text(''); 
-                          }else{
-                          $("#trab_preocup_fecha").text(moment(data['trab_preocup_fecha']).format("DD/MM/YYYY")); };
-                          $("#antig_empresa").text(data['antig_empresa']+' años'); 
-                          $("#antig_trabajo").text(data['antig_trabajo']+' años'); 
-                          
+                      $("#tabla_prod_stock").html('');
+                      $("#tabla_precios").html('');
+                     var row;
+                     if (data['producto']!='')
+                        {                          
+                          $("#categ").text(data['producto']['categoria']); 
+                          $("#tipop").text(data['producto']['tipo_producto']); 
+                          $("#tasa_iva").text(data['producto']['tasa_iva']); 
+                          $("#unidad").text(data['producto']['unidad']);                           
+                          $("#descr").text(data['producto']['descr']);  
                         }
                         else{                 
-                          $("#apellido_y_nombre").text(''); 
-                          $("#nro_doc").text(''); 
-                          $("#fecha_nac").text('');
-                          $("#legajo").text('');
-                          $("#edad").text('');
-                          $("#telcel").text('');
-                          $("#email").text('');
-                          $("#art").text('');
-                          $("#cod_postal").text('');
-                          $("#domicilio").text('');
-                          $("#provincia").text('');
-                          $("#localidad").text('');
-                          $("#empresa").text(''); 
-                          $("#empr_fingreso").text(''); 
-                          $("#trab_cargo").text('');
-                          $("#trab_fingreso").text('');
-                          $("#trab_fbaja").text('');
-                          $("#trab_preocupac").text('');
-                          $("#trab_armas").text('');
-                          $("#trab_tareas_dif").text('');
-                          $("#trab_preocup_fecha").text('');
-                          $("#antig_empresa").text('');
-                          $("#antig_trabajo").text('');
+                         $("#categ").text(''); 
+                         $("#tipop").text(''); 
+                         $("#tasa_iva").text(''); 
+                         $("#unidad").text('');                           
+                         $("#descr").text('');                           
                         };
+                      
+                      if (data['prod_stock'])
+                      {
+                        for (let i = 0; i<data['prod_stock'].length; i++) {
+                              row = data['prod_stock'][i];
+                              $("#tabla_prod_stock").append('<tr><td class="text-center texto_detalle">'+row['ubicacion']+'</td><td class="importe texto_detalle">'+row['punto_pedido']+'</td>'+
+                                '<td class="importe_total texto_detalle">'+row['stock']+'</td><td class="text-left texto_detalle">'+row['unidad']+'</td></tr>');
+                            }
+                      }else{
+                        $("#tabla_prod_stock").html('<tr><td colspan="4"></td></tr>')
+                      };
+
+                      if (data['prod_precios'])
+                      {
+                        for (let i2 = 0; i2<data['prod_precios'].length; i2++) {                              
+                              row = data['prod_precios'][i2];
+                              $("#tabla_precios").append('<tr><td class="text-center texto_detalle">'+row['lista_precio']+'</td><td class="importe_total texto_detalle">$'+row['precio_venta']+'</td></tr>')
+                            }
+                      }else{                       
+                        $("#tabla_precios").html('<tr><td colspan="2"></td></tr>')
+                      }
 
                         
                 },
                 error : function(message) {
                      /*alertify.alert('Búsqueda por CUIT','No se encontró el Proveedor.');*/
-                     console.log(message);
+                     console.error(message);
                   }
               });
      
     }else{                 
-            $("#apellido_y_nombre").text(''); 
-            $("#nro_doc").text(''); 
-            $("#fecha_nac").text('');
-            $("#legajo").text('');
-            $("#edad").text('');
-            $("#telcel").text('');
-            $("#email").text('');
-            $("#cod_postal").text('');
-            $("#domicilio").text('');
-            $("#provincia").text('');
-            $("#localidad").text('');
-            $("#art").text('');
-            $("#empresa").text(''); 
-            $("#empr_fingreso").text(''); 
-            $("#trab_cargo").text('');
-            $("#trab_fingreso").text('');
-            $("#trab_fbaja").text('');
-            $("#trab_armas").text('');
-            $("#trab_tareas_dif").text('');
-            $("#trab_preocup_fecha").text('');
-            $("#antig_empresa").text('');
-            $("#antig_trabajo").text('');
-            $("#trab_preocupac").text('');
+             $("#categ").text(''); 
+             $("#tipop").text(''); 
+             $("#tasa_iva").text(''); 
+             $("#unidad").text('');                           
+             $("#descr").text('');     
           };
 
 }); 

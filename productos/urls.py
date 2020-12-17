@@ -50,5 +50,6 @@ urlpatterns = patterns('productos.views',
     url(r'^importar_productos/$', importar_productos,name="importar_productos"),
 
     url(r'^prod_buscar_datos/$', prod_buscar_datos, name="prod_buscar_datos"),
+    url(r'^prod_consultar_detalles/$', 'prod_consultar_detalles', name='prod_consultar_detalles'),
 
     )

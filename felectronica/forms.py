@@ -7,6 +7,11 @@ from general.forms import pto_vta_habilitados
 
 from general.models import gral_empresa
 
+_SINO = (    
+    (1, u'S'),
+    (2, u'N'),
+)
+
 class ImportarCPBSForm(forms.Form):		
 	archivo = forms.FileField(label='Seleccione un archivo',required=True)  
 	migra = forms.ChoiceField(label=u'¿Crear CPBs Faltantes?',choices=SINO,required=True,initial=2)
@@ -35,7 +40,7 @@ class ImportarCPBSForm(forms.Form):
 class RecuperarCPBS(forms.Form):               
 	cpb_tipo = forms.ModelChoiceField(label='Tipo CPB',queryset=cpb_nro_afip.objects.all(),required = True,empty_label=None)
 	pto_vta = forms.IntegerField(label='Pto. Vta.',required = True)		
-	generar = forms.ChoiceField(label=u'¿Crear CPBs Faltantes?',choices=SINO,required=True,initial=2)
+	generar = forms.ChoiceField(label=u'¿Crear CPBs?',choices=_SINO,required=True,initial=2)
 	def __init__(self, *args, **kwargs):		
 		empresa = kwargs.pop('empresa', None)  
 		request = kwargs.pop('request', None)  

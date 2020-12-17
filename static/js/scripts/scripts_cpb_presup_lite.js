@@ -9,12 +9,14 @@ $("#id_entidad").chosen({
           no_results_text: "Cliente inexistente...",
           placeholder_text_single:"Seleccione un Cliente",
           allow_single_deselect: true,
+          search_contains: true,
       }); 
 
 $("#id_vendedor").chosen({
           no_results_text: "Vendedor inexistente...",
           placeholder_text_single:"Seleccione un Vendedor",
           allow_single_deselect: true,
+          search_contains: true,
       }); 
 
 

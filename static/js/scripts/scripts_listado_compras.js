@@ -67,7 +67,8 @@ var tabla = $('#dataTables-cpb_compra').DataTable({
            "colReorder": true,
            "searching": true,
             responsive: true,
-            dom: 'Bfrtlip',
+            //dom: 'Bfrtlip',
+            dom: "Bf<'row'<'col-sm-12'tr>>"+"<'row'<'col-sm-3'l><'col-sm-9'ip>>",
             buttons: [
                 {
                     extend:    'colvis',
@@ -374,7 +375,31 @@ var tabla = $('#dataTables-cpb_compra').DataTable({
         }
     });
 
-    
+ $("a[name='mandarEmail']").click(function() {
+        var id = $(this).attr('value');
+        datos = []
+        $.ajax({
+            url: "/comprobantes/verifEmail/",
+            type: "post",
+            dataType: 'json',
+            data: {
+                'id': id
+            },
+            success: function(data) {
+                if (data!='') {
+                    window.location.href = '/comprobantes/mandarEmail/'+id;
+                } else {
+                    alertify.prompt('ENVIAR COMPROBANTE x EMAIL','Ingrese la dirección de Email:','',
+                        function(evt, value) 
+                        {
+                            var email = value;
+                            window.location.href = '/comprobantes/mandarEmail/'+id+'/?email='+email;
+                        },
+                        function(){} ).set('labels', {ok:'Aceptar', cancel:'Cancelar'}).set('type', 'email');
+                }
+            }
+        });
+        });   
     
 
 });

@@ -12,3 +12,5 @@ errores.log
 requirements.txt
 /media/certificados
 *.bkp
+/varios
+/pyafipws/cache

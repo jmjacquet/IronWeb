@@ -354,3 +354,16 @@ def cpb_facturar_simulacion(request):
       respuesta = facturarAFIP_simulac(request,id)      
           
     return HttpResponse(json.dumps(respuesta,cls=DjangoJSONEncoder), content_type = "application/json")
+
+@login_required 
+def datos_afip(request):
+    from .facturacion import datos_afip
+    respuesta = []    
+    cuit = request.GET.get('cuit', None)     
+    data = datos_afip(request,cuit) 
+    # try:
+    #   data = datos_afip(request,cuit) 
+    # except:
+    #   data=None    
+          
+    return HttpResponse(json.dumps(data,cls=DjangoJSONEncoder), content_type = "application/json")    
