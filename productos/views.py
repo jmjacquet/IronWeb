@@ -1109,9 +1109,13 @@ def prod_consultar_detalles(request):
    if prod_precios:
        d['prod_precios']=[dict(pk=x.pk,lista_precio=x.lista_precios.nombre,precio_venta=x.precio_venta) for x in prod_precios]
    
+   
    if prod_stock:
-       d['prod_stock']= [dict(pk=x.pk,ubicacion=x.ubicacion.nombre,punto_pedido=x.punto_pedido or 0,
+        try:
+            d['prod_stock']= [dict(pk=x.pk,ubicacion=x.ubicacion.nombre,punto_pedido=x.punto_pedido or 0,
                     stock=x.get_stock_() or 0,unidad=x.producto.get_unidad_display() or '') for x in prod_stock]
+        except:
+            pass
    
    # data = serializers.serialize('json', [prod_precios,])
    # struct = json.loads(data)
