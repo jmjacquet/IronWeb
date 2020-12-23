@@ -6,10 +6,10 @@ PROJECT_DIR = os.path.abspath(os.path.join(BASE_DIR, '..'))
 
 sys.path.append(PROJECT_DIR)
 
-os.environ['DJANGO_SETTINGS_MODULE'] = "ggcontable.production"
+os.environ['DJANGO_SETTINGS_MODULE'] = "ggcontable.opal"
 os.environ['ENTIDAD_ID'] = '1'
-os.environ['ENTIDAD_DB'] = 'ironweb_417'
-os.environ['ENTIDAD_DIR'] = 'umbraldistrib'
+os.environ['ENTIDAD_DB'] = 'ironweb_brolcazsrl'
+os.environ['ENTIDAD_DIR'] = 'brolcazsrl'
 from django.core.wsgi import get_wsgi_application
 application = get_wsgi_application()
 

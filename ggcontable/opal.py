@@ -2,7 +2,7 @@
 from .settings import *
 from decouple import config
 
-DEBUG = True
+DEBUG = False
 #DEBUG = False
 
 
@@ -47,7 +47,7 @@ STATICFILES_FINDERS += (
 
 
 
-COMPRESS_ENABLED = True
+COMPRESS_ENABLED = False
 
 
 COMPRESS_CSS_FILTERS = ['compressor.filters.css_default.CssAbsoluteFilter','compressor.filters.cssmin.CSSMinFilter']
