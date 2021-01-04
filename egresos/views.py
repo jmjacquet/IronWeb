@@ -398,7 +398,7 @@ def CPBCompraDeleteView(request, id):
         cpb = get_object_or_404(cpb_comprobante, id=id)
         if not tiene_permiso(request,'cpb_compras_abm'):
                 return redirect(reverse('principal'))
-        if not puedeEliminarCPB(id):
+        if not puedeEliminarCPB(cpb):
                 messages.error(request, u'¡No puede editar un Comprobante con Pagos/Saldado!')
                 return redirect(reverse('cpb_compra_listado'))
         cpb.delete()
