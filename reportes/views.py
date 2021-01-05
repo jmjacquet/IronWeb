@@ -435,8 +435,8 @@ def generarCITI(cpbs,ventas_compras,tipo_archivo,libro_iva_dig=False):
             linea += str(0).replace(".","").rjust(15, "0") #otrosTributos            
             linea += str(0).encode('utf-8').rjust(8, "0") #FECHA_VTO
 
-            if libro_iva_dig:
-                linea += str(0).replace(".","").rjust(15, "0") #Importe Reintegro Decreto 1043/2016
+            # if libro_iva_dig:
+            #     linea += str(0).replace(".","").rjust(15, "0") #Importe Reintegro Decreto 1043/2016
 
             
             archivo.write(linea+'\r\n')
@@ -636,11 +636,11 @@ def libro_iva_ventas(request):
             return response 
         elif ('cpbs_iva_dig' in request.POST)and(cpbs):                
             response = HttpResponse(generarCITI(cpbs,'V','cpbs',True),content_type='text/plain')
-            response['Content-Disposition'] = 'attachment;filename="CITI_VENTAS_CBTE_DIGITAL.txt"'
+            response['Content-Disposition'] = 'attachment;filename="VENTAS_CBTE_DIGITAL.txt"'
             return response 
         elif ('alic_iva_dig' in request.POST)and(cpbs):
             response = HttpResponse(generarCITI(cpbs,'V','alicuotas',True),content_type='text/plain')
-            response['Content-Disposition'] = 'attachment;filename="CITI_VENTAS_ALICUOTAS_DIGITAL.txt"'
+            response['Content-Disposition'] = 'attachment;filename="VENTAS_ALICUOTAS_DIGITAL.txt"'
             return response 
         
     context['form'] = form
@@ -708,11 +708,11 @@ def libro_iva_compras(request):
             return response 
         elif ('cpbs_iva_dig' in request.POST)and(cpbs):                
             response = HttpResponse(generarCITI(cpbs,'C','cpbs',True),content_type='text/plain')
-            response['Content-Disposition'] = 'attachment;filename="CITI_COMPRAS_CBTE_DIGITAL.txt"'
+            response['Content-Disposition'] = 'attachment;filename="COMPRAS_CBTE_DIGITAL.txt"'
             return response 
         elif ('alic_iva_dig' in request.POST)and(cpbs):
             response = HttpResponse(generarCITI(cpbs,'C','alicuotas',True),content_type='text/plain')
-            response['Content-Disposition'] = 'attachment;filename="CITI_COMPRAS_ALICUOTAS_DIGITAL.txt"'
+            response['Content-Disposition'] = 'attachment;filename="COMPRAS_ALICUOTAS_DIGITAL.txt"'
             return response 
 
     context['form'] = form
