@@ -273,15 +273,15 @@ class PrincipalView(VariablesMixin,TemplateView):
             ventas = comprobantes.filter(cpb_tipo__compra_venta='V',anio=m[1],m=m[0]).annotate(pendiente=Sum(F('saldo')*F('cpb_tipo__signo_ctacte'),output_field=DecimalField()),saldado=Sum((F('importe_total')-F('saldo'))*F('cpb_tipo__signo_ctacte'),output_field=DecimalField())).order_by(F('anio'),F('m'))
             compras = comprobantes.filter(cpb_tipo__compra_venta='C',anio=m[1],m=m[0]).annotate(pendiente=Sum(F('saldo')*F('cpb_tipo__signo_ctacte'),output_field=DecimalField()),saldado=Sum((F('importe_total')-F('saldo'))*F('cpb_tipo__signo_ctacte'),output_field=DecimalField())).order_by(F('anio'),F('m'))
             if ventas:
-                ventas_deuda.append(ventas.first().get('pendiente',Decimal(0.00)))
-                ventas_pagos.append(ventas.first().get('saldado',Decimal(0.00)))
+                ventas_deuda.append(ventas[0].get('pendiente',Decimal(0.00)))
+                ventas_pagos.append(ventas[0].get('saldado',Decimal(0.00)))
             else:
                 ventas_deuda.append(Decimal(0.00))
                 ventas_pagos.append(Decimal(0.00))
             
             if compras:
-                compras_deuda.append(compras.first().get('pendiente',Decimal(0.00)))
-                compras_pagos.append(compras.first().get('saldado',Decimal(0.00)))            
+                compras_deuda.append(compras[0].get('pendiente',Decimal(0.00)))
+                compras_pagos.append(compras[0].get('saldado',Decimal(0.00)))            
             else:
                 compras_deuda.append(Decimal(0.00))
                 compras_pagos.append(Decimal(0.00))

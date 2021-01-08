@@ -450,13 +450,14 @@ table.dataTable.dtr-inline.collapsed.compact > tbody > tr > th:first-child {
 }
 table.dataTable.dtr-inline.collapsed.compact > tbody > tr > td:first-child:before,
 table.dataTable.dtr-inline.collapsed.compact > tbody > tr > th:first-child:before {
-  top: 2px;
-  left: 4px;
-  height: 14px;
-  width: 14px;
-  border-radius: 14px;
-  line-height: 14px;
-  text-indent: 0px;
+      top: 50%;
+    left: 4px;
+    height: 14px;
+    width: 14px;
+    border-radius: 14px;
+    background-color: #213160;
+    line-height: 17px;
+    text-indent: 0px;
 }
 table.dataTable.dtr-column > tbody > tr > td.control,
 table.dataTable.dtr-column > tbody > tr > th.control {

@@ -113,8 +113,8 @@ def recalcular_presupuestos(request):
 
     return HttpResponseRedirect(reverse('cpb_presup_listado'))
 
-def puedeEditarCPB(idCpb):
-    cpb=cpb_comprobante.objects.get(pk=idCpb)
+def puedeEditarCPB(cpb):    
+    #cpb=cpb_comprobante.objects.get(pk=idCpb)
     #Si es factura NC ND o Recibo
     puede=(cpb.estado.id<3)
     if cpb.cpb_tipo.tipo not in [4,7]:     
@@ -123,8 +123,8 @@ def puedeEditarCPB(idCpb):
         puede=not(cpb.cae) and (puede)    
     return puede
 
-def puedeEliminarCPB(idCpb):
-    cpb=cpb_comprobante.objects.get(pk=idCpb)
+def puedeEliminarCPB(cpb):
+    #cpb=cpb_comprobante.objects.get(pk=idCpb)
     #Si es factura NC ND o Recibo
     puede=(cpb.estado.id<=3)
     if cpb.cpb_tipo.tipo not in [4,7]:     

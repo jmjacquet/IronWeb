@@ -158,12 +158,9 @@
                       }else{                       
                         $("#tabla_precios").html('<tr><td colspan="2"></td></tr>')
                       }
-
-                        
                 },
-                error : function(message) {
-                     /*alertify.alert('Búsqueda por CUIT','No se encontró el Proveedor.');*/
-                     console.error(message);
+                error : function(message) {                     
+                     //console.error(message);
                   }
               });
      

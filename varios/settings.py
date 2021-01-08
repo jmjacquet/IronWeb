@@ -36,20 +36,22 @@ DEFAULT_CHARSET = 'utf-8'
 FILE_CHARSET = 'utf-8'
 TIME_INPUT_FORMATS = ('%H:%M',)
 DATE_INPUT_FORMATS = ('%d/%m/%Y',)
-MEDIA_ROOT = os.path.join(SITE_ROOT, 'media')
+
+
 MEDIA_URL = '/media/'
-STATIC_ROOT = os.path.join(SITE_ROOT, 'static')
-# STATIC_ = '/home/grupogua1/webapps/ironweb/ggcontable/static'
 STATIC_URL = '/static/'
+
+
+STATIC_ROOT = os.path.join(SITE_ROOT, 'static')
+MEDIA_ROOT = os.path.join(SITE_ROOT, 'media')
+
+
 
 TEMPLATE_DIRS = (
     os.path.join(SITE_ROOT, 'templates'),
 )
 
-STATICFILES_DIRS = (
-    os.path.join(SITE_ROOT, "staticfiles"),   
-    # os.path.join(SITE_ROOT, "dist"),  
-)
+
 
 
 ADMIN_MEDIA_PREFIX = os.path.join(SITE_ROOT, '/static/admin/')
@@ -127,11 +129,8 @@ EMAIL_USE_TLS = True
 EMAIL_HOST = config('EMAIL_HOST', default='localhost')
 EMAIL_HOST_PASSWORD = config('EMAIL_HOST_PASSWORD', default='')
 EMAIL_HOST_USER = config('EMAIL_HOST_USER', default='')
+EMAIL_PORT = 587
 
-
-
-SERVER_EMAIL = 'errores_web@grupoguadalupe.com.ar'
-DEFAULT_FROM_EMAIL = 'errores_web@grupoguadalupe.com.ar'
 
 LOGGING = {
     'version': 1,

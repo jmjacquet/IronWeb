@@ -702,7 +702,7 @@ class CPBVentaEditView(VariablesMixin,UpdateView):
     def dispatch(self, *args, **kwargs):            
        if not tiene_permiso(self.request,'cpb_ventas_abm'):
             return redirect(reverse('principal'))
-       if not puedeEditarCPB(self.get_object().pk):
+       if not puedeEditarCPB(self.get_object()):
             messages.error(self.request, u'¡No puede editar un Comprobante Saldado/Facturado o con saldos parciales!')
             return redirect(reverse('cpb_venta_listado'))
        return super(CPBVentaEditView, self).dispatch(*args, **kwargs)
@@ -917,7 +917,7 @@ def CPBVentaDeleteView(request, id):
         cpb = get_object_or_404(cpb_comprobante, id=id)
         if not tiene_permiso(request,'cpb_ventas_abm'):
                 return redirect(reverse('principal'))
-        if not puedeEliminarCPB(id):
+        if not puedeEliminarCPB(cpb):
                 messages.error(request, u'¡No puede eliminar un Comprobante Saldado/Facturado!')
                 return redirect(reverse('cpb_venta_listado'))
         cpb.delete()
@@ -1656,7 +1656,7 @@ class CPBRecCobranzaEditView(VariablesMixin,CreateView):
     def dispatch(self, *args, **kwargs):            
         if not tiene_permiso(self.request,'cpb_cobranzas_abm'):
             return redirect(reverse('principal'))  
-        if not puedeEditarCPB(self.get_object().pk):
+        if not puedeEditarCPB(self.get_object()):
             messages.error(self.request, u'¡No puede editar un Comprobante Saldado/Facturado!')
             return redirect(reverse('cpb_rec_cobranza_listado'))
         return super(CPBRecCobranzaEditView, self).dispatch(*args, **kwargs)
@@ -2005,7 +2005,7 @@ class CPBLiqProdEditView(VariablesMixin,SuccessMessageMixin,UpdateView):
     def dispatch(self, *args, **kwargs):            
         if not tiene_permiso(self.request,'cpb_liqprod_abm'):
             return redirect(reverse('principal'))
-        if not puedeEditarCPB(self.get_object().pk):
+        if not puedeEditarCPB(self.get_object()):
             messages.error(self.request, u'¡No puede editar un Comprobante con Pagos/Saldado!')
             return redirect(reverse('cpb_ventas_listado'))
         return super(CPBLiqProdEditView, self).dispatch(*args, **kwargs)
@@ -2075,7 +2075,7 @@ def CPBLiqProdDeleteView(request, id):
         cpb = get_object_or_404(cpb_comprobante, id=id)
         if not tiene_permiso(request,'cpb_liqprod_abm'):
                 return redirect(reverse('principal'))
-        if not puedeEliminarCPB(id):
+        if not puedeEliminarCPB(cpb):
                 messages.error(request, u'¡No puede editar un Comprobante Saldado/Facturado!')
                 return redirect(reverse('cpb_venta_listado'))
         cpb.delete()
