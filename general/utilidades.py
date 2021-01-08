@@ -20,7 +20,10 @@ SINO = (
     (2, u'N'),
 )
 
-
+SINO_ = (    
+    (1, u'S'),
+    (2, u'N'),
+)
 
 TIPO_USR = (
     (0, u'Administrador'),

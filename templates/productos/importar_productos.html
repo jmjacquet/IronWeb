@@ -1,15 +1,11 @@
-{% extends "base.html" %}
+{% extends "index.html" %}
 {% load static from staticfiles %}
 {% load i18n l10n %}
 {% load humanize %}
 {% load bootstrap3 %}
 {% load crispy_forms_tags %}
 
-{% block breadcrumbs %}              
-        <div class="breadcrumbs">
-           IMPORTAR/AGREGAR PRODUCTOS (STOCK Y PRECIOS) 
-        </div>
-{% endblock breadcrumbs %}
+
 {% block extra_css %}
 	<link rel="stylesheet" href="{% static 'css/abms.css'%}?{% now "Ymd"%}" type="text/css" >
 {% endblock %}
@@ -22,8 +18,16 @@
 {% endblock cargando %}
 {% block principal %}                            
 <br>
-
-<div class="panel panel-body panel-primary panel_centrado">
+<div class="col-md-12 cerca">
+	<div class="portlet box toolbar_blue">
+		<div class="portlet-title">
+			<div class="caption bold">
+				<i class="fa fa-cubes"></i>IMPORTAR/AGREGAR PRODUCTOS (STOCK Y PRECIOS) 
+			</div>
+		</div>
+	</div>	
+</div>
+<div class="panel panel-body panel-primary">
 <div class="row">	
  	<div class="col-xs-12 ">
 	<fieldset>		
@@ -32,15 +36,27 @@
 		<div class="row">	
 			<div class="col-xs-12">
 				<div class="col-sm-6">{{ form.empresa|as_crispy_field }}</div>						
-				<div class="col-sm-6">{{ form.sobreescribir|as_crispy_field }}</div>				
+				<div class="col-sm-4">{{ form.lista_precios|as_crispy_field }}</div>						
 			</div>
 		</div>
 		<div class="row">
 			<div class="col-xs-12 ">
-				<div class="col-sm-6">{{ form.archivo|as_crispy_field }}</div>										
-				<div class="col-sm-6"><button class="btn pull-right btn-primary" id="Procesar" type="button"><i class="fa fa-check"></i> Importar</button></div>
+				<div class="col-sm-6">{{ form.archivo|as_crispy_field }}</div>														
 			</div>
 		</div>
+	    <div class="row">	
+			<div class="col-xs-12 ">
+				<div class="col-sm-6">
+		            <div class="callout callout-primary alert alert-info" role="alert">
+		             	<a href="{{MEDIA_URL}}PLANTILLA_PRODUCTOS.csv"class="alert-link" target="_blank">Descargar aquí</a>
+		              	la plantilla de ejemplo, completar e importar (csv).
+		            </div>
+	            </div>
+				<div class="col-sm-3 text-right cerca"><label>¿Sobreescribir existentes?</label></div><div class="col-sm-1 cerca">{{ form.sobreescribir|as_crispy_field }}</div>
+				<div class="col-sm-2"><button class="btn pull-right btn-primary" id="Procesar" type="button"><i class="fa fa-check"></i> Importar</button></div>
+			</div>
+		</div>
+		</form>
 	</fieldset>
  </div>
 </div> 
@@ -56,6 +72,10 @@
       });
  });
 </script>
+
+
+
+
   
 {% endblock principal %}
 

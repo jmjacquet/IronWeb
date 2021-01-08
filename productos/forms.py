@@ -312,7 +312,8 @@ class ImpresionCodbarsForm(forms.Form):
 
 class ImportarProductosForm(forms.Form):	
 	archivo = forms.FileField(label='Seleccione un archivo',required=True)  
-	sobreescribir = forms.ChoiceField(label=u'¿Sobreescribir Existentes?',choices=SINO,required=True,initial='S')
+	sobreescribir = forms.ChoiceField(label=u'',choices=SINO,required=True,initial=1)
+	lista_precios = forms.ModelChoiceField(queryset=prod_lista_precios.objects.filter(baja=False),initial=0)	
 	empresa = forms.ModelChoiceField(queryset=gral_empresa.objects.all(),empty_label=None,required=True)	
 	def __init__(self, *args, **kwargs):
 		request = kwargs.pop('request', None)
@@ -321,6 +322,7 @@ class ImportarProductosForm(forms.Form):
 			empresas = empresas_buscador(request)
 			self.fields['empresa'].queryset = empresas
 			self.fields['empresa'].initial = 1
+			self.fields['lista_precios'].queryset = prod_lista_precios.objects.filter(baja=False,empresa__id__in=empresas_habilitadas(request))
 		except:
 			empresa = empresa_actual(request)  
 
@@ -333,6 +335,10 @@ class ImportarProductosForm(forms.Form):
 			if archivo.multiple_chunks():
 				self.add_error("archivo",u"El archivo es demasiado grande (%.2f MB)." % (archivo.size/(1000*1000),))
 		return self.cleaned_data
+
+
+
+
 
 from ingresos.forms import ProductoModelChoiceField
 class BuscarProdDatos(forms.Form):
