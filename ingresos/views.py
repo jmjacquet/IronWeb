@@ -29,6 +29,9 @@ from general.forms import ConsultaCpbs,ConsultaCpbsCompras,pto_vta_habilitados,p
 from django.utils.functional import curry 
 from trabajos.models import orden_pedido,orden_pedido_detalle
 
+from ggcontable.local import CACHE_TTL
+from django.core.cache import cache
+
 
 class CPBSVentasList(VariablesMixin,ListView):
     model = cpb_comprobante
@@ -51,8 +54,8 @@ class CPBSVentasList(VariablesMixin,ListView):
         form = ConsultaCpbs(self.request.POST or None,empresa=empresa,request=self.request)   
         comprobantes = cpb_comprobante.objects.filter(cpb_tipo__tipo__in=[1,2,3,9,14,21,22,23],cpb_tipo__compra_venta='V'\
             ,empresa=empresa).filter(Q(pto_vta__in=pto_vta_habilitados_list(self.request)) | Q(cpb_tipo__tipo=14))
-        comprobantes = comprobantes.annotate(cobranzas=Count('cpb_cobranza_factura'))\
-                        .select_related('estado','cpb_tipo','entidad','vendedor','id_cpb_padre')                        
+        comprobantes = comprobantes.annotate(cobranzas=Count('cpb_cobranza_factura'))
+                                      
 
         if form.is_valid():                                
             entidad = form.cleaned_data['entidad']                                                              
@@ -88,15 +91,22 @@ class CPBSVentasList(VariablesMixin,ListView):
                 comprobantes= comprobantes.filter(pto_vta=pto_vta) 
             if letra:
                 comprobantes= comprobantes.filter(letra=letra) 
+            comprobantes = comprobantes.select_related('estado','cpb_tipo','entidad','vendedor','id_cpb_padre')          
         else:
-            cpbs= comprobantes.filter(fecha_cpb__gte=inicioMesAnt(),fecha_cpb__lte=finMes(),estado__in=[1,2])            
-            if len(cpbs)==0:
-                cpbs = comprobantes.filter(estado__in=[1,2])[:20]                         
-            comprobantes=cpbs
+            key='ventas:%s'%empresa.pk
+            if key in cache:
+                comprobantes=cache.get(key)
+            else:                
+                cpbs= comprobantes.filter(fecha_cpb__gte=inicioMesAnt(),fecha_cpb__lte=finMes(),estado__in=[1,2])            
+                if cpbs.count()==0:
+                    cpbs = comprobantes.filter(estado__in=[1,2]).select_related('estado','cpb_tipo','entidad','vendedor','id_cpb_padre')[:20]                                         
+                comprobantes=cpbs
+                cache.set(key,comprobantes,CACHE_TTL)
 
         context['form'] = form
         context['comprobantes'] = comprobantes
         return context
+    
     def post(self, *args, **kwargs):
         return self.get(*args, **kwargs)
 

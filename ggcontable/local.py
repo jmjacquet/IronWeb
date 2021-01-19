@@ -8,8 +8,8 @@ DEBUG = True
 
 TEMPLATE_DEBUG = DEBUG
 
-DB_USER = config("DB_USER")
-DB_PASS = config("DB_PASS")
+DB_USER = 'gg'
+DB_PASS = 'qwerty'
 
 STATICFILES_DIRS = (
     os.path.join(SITE_ROOT, "staticfiles"),   
@@ -33,10 +33,10 @@ MIDDLEWARE_CLASSES += (
 
 STATIC_ROOT = os.path.join(SITE_ROOT, 'static')
 
-# INSTALLED_APPS += (
-#    # 'debug_toolbar',   
-#     'compressor' ,
-# )
+INSTALLED_APPS += (
+   'debug_toolbar',   
+    # 'compressor' ,
+)
 
 # STATICFILES_FINDERS += (
 #     'compressor.finders.CompressorFinder',
@@ -50,3 +50,16 @@ STATIC_ROOT = os.path.join(SITE_ROOT, 'static')
 # COMPRESS_CSS_FILTERS = ['compressor.filters.css_default.CssAbsoluteFilter','compressor.filters.cssmin.CSSMinFilter']
 # COMPRESS_JS_FILTERS = ["compressor.filters.jsmin.JSMinFilter"]
 
+
+CACHE_TTL = 60
+
+CACHES = {
+    "default": {
+        "BACKEND": "django_redis.cache.RedisCache",
+        "LOCATION": "redis://localhost:6379/2",
+        "OPTIONS": {
+            "CLIENT_CLASS": "django_redis.client.DefaultClient",
+        },
+        "KEY_PREFIX": ENTIDAD_DB
+    }
+}

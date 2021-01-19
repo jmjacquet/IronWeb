@@ -21,6 +21,8 @@ from django.http import JsonResponse
 
 import json
 
+from ggcontable.local import CACHE_TTL
+from django.core.cache import cache
 
 class EntidadVerView(VariablesMixin,DetailView):
     model = egr_entidad
@@ -44,10 +46,23 @@ class ClientesView(VariablesMixin,ListView):
         return super(ClientesView, self).dispatch(*args, **kwargs)
 
     def get_queryset(self):        
-        entidades = egr_entidad.objects.filter(tipo_entidad=1,empresa=empresa_actual(self.request))
+        empr=empresa_actual(self.request)
+        key='clientes:%s'%empr
+        if key in cache:
+            entidades=cache.get(key)
+        else:
+            entidades = egr_entidad.objects.filter(tipo_entidad=1,empresa=empr)
+            cache.set(key,entidades,CACHE_TTL)
+
         usuario = usuario_actual(self.request)
         if habilitado_contador(usuario.tipoUsr):
-            entidades = egr_entidad.objects.filter(tipo_entidad=1,empresa__id__in=empresas_habilitadas(self.request))
+            emprs=empresas_habilitadas(self.request)
+            key='clientes:%s'%emprs
+            if key in cache:
+                entidades=cache.get(key)
+            else: 
+                entidades = egr_entidad.objects.filter(tipo_entidad=1,empresa__id__in=emprs)
+                cache.set(key,entidades,CACHE_TTL)
         return entidades
 
 

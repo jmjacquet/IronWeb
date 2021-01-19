@@ -18,6 +18,9 @@ import math
 from general.forms import get_pv_defecto
 
 
+from ggcontable.local import CACHE_TTL
+from django.core.cache import cache
+
 class EntidadModelChoiceField(forms.ModelChoiceField):
     def label_from_instance(self, obj):
 		entidad=u'%s' % obj.apellido_y_nombre.upper()
@@ -182,7 +185,12 @@ class CPBVentaDetalleForm(forms.ModelForm):
 		super(CPBVentaDetalleForm, self).__init__(*args, **kwargs)
 		try:
 			empresa = empresa_actual(request)			
-			self.fields['producto'].queryset = prod_productos.objects.filter(baja=False,mostrar_en__in=(1,3),empresa__id__in=empresas_habilitadas(request)).order_by('nombre')			
+			key='ventas:producto:%s'%empresa.pk
+			if key in cache:
+				self.fields['producto'].queryset = cache.get(key)
+			else:                
+				self.fields['producto'].queryset = prod_productos.objects.filter(baja=False,mostrar_en__in=(1,3),empresa__id__in=empresas_habilitadas(request)).order_by('nombre')			
+				cache.set(key,self.fields['producto'].queryset,CACHE_TTL)
 			self.fields['lista_precios'].queryset = prod_lista_precios.objects.filter(baja=False,empresa__id__in=empresas_habilitadas(request))		
 			self.fields['origen_destino'].queryset = prod_ubicacion.objects.filter(baja=False,empresa__id__in=empresas_habilitadas(request))		
 			#Si es modo EDICION le cargo lso datos de coeficientes

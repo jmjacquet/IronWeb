@@ -24,6 +24,11 @@ from usuarios.views import tiene_permiso,ver_permisos
 from django.db.models import DecimalField,Func
 from django.core.serializers.json import DjangoJSONEncoder
 
+
+from ggcontable.local import CACHE_TTL
+from django.core.cache import cache
+
+
 ##############################################
 #   Mixin para cargar las Vars de sistema    #
 ##############################################
@@ -456,7 +461,13 @@ def recargar_proveedores(request):
 @login_required 
 def recargar_productos(request,tipo):
     context={}
-    productos = prod_productos.objects.filter(baja=False,mostrar_en__in=(tipo,3),empresa__id__in=empresas_habilitadas(request)).distinct().order_by('nombre','codigo')          
+    key='recarga:productos:%s'%tipo
+    if key in cache:
+        productos = cache.get(key)
+        print "cache prods"
+    else:              
+        productos = prod_productos.objects.filter(baja=False,mostrar_en__in=(tipo,3),empresa__id__in=empresas_habilitadas(request)).distinct().order_by('nombre','codigo')          
+        cache.set(key,productos,CACHE_TTL)
     prods = [{'detalle':p.get_prod_busqueda(),'id':p.pk} for p in productos]
     context["productos"]= prods
     return HttpResponse(json.dumps(context))

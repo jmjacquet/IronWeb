@@ -8,6 +8,9 @@ from django.views.generic import TemplateView,ListView,CreateView,UpdateView
 from .forms import *
 
 
+from ggcontable.local import CACHE_TTL
+from django.core.cache import cache
+
 # def ver_permisos(id_app,id_usuario=None):
 #     if id_usuario:
 #         permisos = UsuUsuario.objects.filter(permisos__app__id_app=id_app,id_usuario=id_usuario.pk).values_list('permisos__permiso_name', flat=True).distinct()
@@ -21,11 +24,16 @@ def ver_permisos(request):
     try:
         if request:
             usuario=request.user.userprofile.id_usuario           
-            if usuario.grupo.pk == 0:
-                permisos = UsuPermiso.objects.all().values_list('permiso_name', flat=True).distinct()
-            else:
-                # permisos = UsuPermiso.objects.filter(grupo=usuario.grupo).values_list('permiso_name', flat=True).distinct()               
-                permisos = usuario.permisos.values_list('permiso_name', flat=True).distinct()
+            key='permisos:%s'%usuario.pk
+            if key in cache:
+                permisos=cache.get(key)
+            else:                
+                if usuario.grupo.pk == 0:
+                    permisos = UsuPermiso.objects.all().values_list('permiso_name', flat=True).distinct()
+                else:
+                    # permisos = UsuPermiso.objects.filter(grupo=usuario.grupo).values_list('permiso_name', flat=True).distinct()               
+                    permisos = usuario.permisos.values_list('permiso_name', flat=True).distinct()
+                cache.set(key,permisos,CACHE_TTL)
         else:
             permisos = []
     except:
