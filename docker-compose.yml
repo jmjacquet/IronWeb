@@ -1,18 +1,11 @@
 version: '3.5'
 services:        
-  django:        
-    tty: true        # docker run -t
+  django:            
     build: .
+    tty: true        # docker run -t
     container_name: django-ironweb       
     volumes:
      - .:/ironweb
     ports:
      - "8000:8000"
-    networks:
-      - repo_default
-    links:
-       - mysql5:mysql5
-
-networks:
-  repo_default:
-    external: true
+    

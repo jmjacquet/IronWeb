@@ -204,12 +204,18 @@ class PrincipalView(VariablesMixin,TemplateView):
         fecha_hoy = hoy()
         pvs = pto_vta_habilitados_list(self.request)
         empresas = empresas_habilitadas(self.request)
+        empresa = empresa_actual(self.request)        
         
-        comprobantes = cpb_comprobante.objects.filter(estado__in=[1,2]).filter(fecha_cpb__range=[fecha_desde, fecha_hoy],empresa=empresa_actual(self.request))
+        comprobantes = cpb_comprobante.objects.filter(estado__in=[1,2]).filter(fecha_cpb__range=[fecha_desde, fecha_hoy],empresa=empresa)
         
-        ventas = comprobantes.filter(cpb_tipo__compra_venta='V',pto_vta__in=pvs,cpb_tipo__tipo__in=[1,2,3,9,21,22,23])
-        total_ventas_mensual = ventas.filter(fecha_cpb__range=[inicioMes(), fecha_hoy])
-        total_ventas_mensual = total_ventas_mensual.aggregate(sum=Sum(F('importe_total')*F('cpb_tipo__signo_ctacte'), output_field=DecimalField()))['sum'] or 0 
+
+        key='ventas_inicio:%s'%empresa.pk
+        if key in cache:
+            ventas=cache.get(key)
+        else:                
+            ventas = comprobantes.filter(cpb_tipo__compra_venta='V',pto_vta__in=pvs,cpb_tipo__tipo__in=[1,2,3,9,21,22,23])
+            cache.set(key,ventas,CACHE_TTL)
+        total_ventas_mensual = ventas.filter(fecha_cpb__range=[inicioMes(), fecha_hoy]).aggregate(sum=Sum(F('importe_total')*F('cpb_tipo__signo_ctacte'), output_field=DecimalField()))['sum'] or 0 
         total_ventas = ventas.aggregate(sum=Sum(F('importe_total')*F('cpb_tipo__signo_ctacte'), output_field=DecimalField()))['sum'] or 0 
         context['total_ventas'] = total_ventas            
         context['total_ventas_mensual'] = total_ventas_mensual
@@ -229,7 +235,13 @@ class PrincipalView(VariablesMixin,TemplateView):
         context['porc_cobrar_mensual'] = porc_cobrar_mensual
         context['porc_cobrar_total'] = porc_cobrar_total
         
-        compras = comprobantes.filter(cpb_tipo__compra_venta='C',cpb_tipo__tipo__in=[1,2,3,9,21,22,23])
+        key='compras_inicio:%s'%empresa.pk
+        if key in cache:
+            compras=cache.get(key)
+        else:                
+            compras = comprobantes.filter(cpb_tipo__compra_venta='C',cpb_tipo__tipo__in=[1,2,3,9,21,22,23])
+            cache.set(key,compras,CACHE_TTL)
+
         total_compras = compras.aggregate(sum=Sum(F('importe_total')*F('cpb_tipo__signo_ctacte'), output_field=DecimalField()))['sum'] or 0 
         context['total_compras'] = total_compras
         total_compras_mensual = compras.filter(fecha_cpb__range=[inicioMes(), fecha_hoy]).aggregate(sum=Sum(F('importe_total')*F('cpb_tipo__signo_ctacte'), output_field=DecimalField()))['sum'] or 0 
@@ -273,21 +285,26 @@ class PrincipalView(VariablesMixin,TemplateView):
         compras_deuda = list()
         compras_pagos = list()
         
+        ventas = comprobantes.filter(cpb_tipo__compra_venta='V').annotate(pendiente=Sum(F('saldo')*F('cpb_tipo__signo_ctacte'),output_field=DecimalField()),saldado=Sum((F('importe_total')-F('saldo'))*F('cpb_tipo__signo_ctacte'),output_field=DecimalField())).order_by(F('anio'),F('m'))
+        compras = comprobantes.filter(cpb_tipo__compra_venta='C').annotate(pendiente=Sum(F('saldo')*F('cpb_tipo__signo_ctacte'),output_field=DecimalField()),saldado=Sum((F('importe_total')-F('saldo'))*F('cpb_tipo__signo_ctacte'),output_field=DecimalField())).order_by(F('anio'),F('m'))
+
         for m in meses_cpbs:                        
             meses.append(MESES[m[0]-1][1]+' '+str(m[1])[2:4]+"'")
-            ventas = comprobantes.filter(cpb_tipo__compra_venta='V',anio=m[1],m=m[0]).annotate(pendiente=Sum(F('saldo')*F('cpb_tipo__signo_ctacte'),output_field=DecimalField()),saldado=Sum((F('importe_total')-F('saldo'))*F('cpb_tipo__signo_ctacte'),output_field=DecimalField())).order_by(F('anio'),F('m'))
-            compras = comprobantes.filter(cpb_tipo__compra_venta='C',anio=m[1],m=m[0]).annotate(pendiente=Sum(F('saldo')*F('cpb_tipo__signo_ctacte'),output_field=DecimalField()),saldado=Sum((F('importe_total')-F('saldo'))*F('cpb_tipo__signo_ctacte'),output_field=DecimalField())).order_by(F('anio'),F('m'))
-            if ventas:
-                ventas_deuda.append(ventas[0].get('pendiente',Decimal(0.00)))
-                ventas_pagos.append(ventas[0].get('saldado',Decimal(0.00)))
-            else:
+            #ventas = comprobantes.filter(cpb_tipo__compra_venta='V',anio=m[1],m=m[0]).annotate(pendiente=Sum(F('saldo')*F('cpb_tipo__signo_ctacte'),output_field=DecimalField()),saldado=Sum((F('importe_total')-F('saldo'))*F('cpb_tipo__signo_ctacte'),output_field=DecimalField())).order_by(F('anio'),F('m'))            
+            #compras = comprobantes.filter(cpb_tipo__compra_venta='C',anio=m[1],m=m[0]).annotate(pendiente=Sum(F('saldo')*F('cpb_tipo__signo_ctacte'),output_field=DecimalField()),saldado=Sum((F('importe_total')-F('saldo'))*F('cpb_tipo__signo_ctacte'),output_field=DecimalField())).order_by(F('anio'),F('m'))
+            v = [d for d in ventas if (d['anio']==m[1])and(d['m']==m[0])]
+            c = [d for d in compras if (d['anio']==m[1])and(d['m']==m[0])]
+            try:
+                ventas_deuda.append(v[0].get('pendiente',Decimal(0.00)))
+                ventas_pagos.append(v[0].get('saldado',Decimal(0.00)))
+            except:
                 ventas_deuda.append(Decimal(0.00))
                 ventas_pagos.append(Decimal(0.00))
             
-            if compras:
-                compras_deuda.append(compras[0].get('pendiente',Decimal(0.00)))
-                compras_pagos.append(compras[0].get('saldado',Decimal(0.00)))            
-            else:
+            try:
+                compras_deuda.append(c[0].get('pendiente',Decimal(0.00)))
+                compras_pagos.append(c[0].get('saldado',Decimal(0.00)))            
+            except:
                 compras_deuda.append(Decimal(0.00))
                 compras_pagos.append(Decimal(0.00))
             

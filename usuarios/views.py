@@ -8,7 +8,7 @@ from django.views.generic import TemplateView,ListView,CreateView,UpdateView
 from .forms import *
 
 
-from ggcontable.local import CACHE_TTL
+from ggcontable.local import CACHE_TTL_PERMISOS
 from django.core.cache import cache
 
 # def ver_permisos(id_app,id_usuario=None):
@@ -33,7 +33,7 @@ def ver_permisos(request):
                 else:
                     # permisos = UsuPermiso.objects.filter(grupo=usuario.grupo).values_list('permiso_name', flat=True).distinct()               
                     permisos = usuario.permisos.values_list('permiso_name', flat=True).distinct()
-                cache.set(key,permisos,CACHE_TTL)
+                cache.set(key,permisos,CACHE_TTL_PERMISOS)
         else:
             permisos = []
     except:

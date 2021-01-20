@@ -52,6 +52,7 @@ INSTALLED_APPS += (
 
 
 CACHE_TTL = 60
+CACHE_TTL_PERMISOS = 60 * 60
 
 CACHES = {
     "default": {
