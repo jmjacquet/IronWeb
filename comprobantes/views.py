@@ -658,8 +658,8 @@ from general.base64 import encodestring,b64encode
 import StringIO
 
 def armarCodBar(cod):
-    #qr = GenerarImagen(codigo=cod)
-    qr = GenerarQR()
+    qr = GenerarImagen(codigo=cod)
+    #qr = GenerarQR()
     output = StringIO.StringIO()
     qr.save(output,format="PNG")
     data = encodestring(output.getvalue())
@@ -759,7 +759,8 @@ def imprimirFactura(request,id,pdf=None):
         codbar = armarCodBar(cod)
         codigo = cod
   
-    template = 'general/facturas/facturaQR.html'                        
+    #template = 'general/facturas/facturaQR.html'                        
+    template = 'general/facturas/factura.html'                        
     if pdf:
         return render_to_pdf(template,locals())
     return render_to_pdf_response(request, template, locals())
