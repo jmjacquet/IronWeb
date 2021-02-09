@@ -7,7 +7,7 @@ class MovInternosTest(TestCase):
 	def setUp(self):		
 		self.credentials = {
 		'username': 'demo',
-		'password': 'dem'}
+		'password': 'demo'}
 		self.c = Client()
 		self.user = User.objects.create_user(username="demo", email="test@test.com", password="demo")
 		print self.c.login(username='demo', password='demo')

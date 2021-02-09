@@ -33,6 +33,17 @@ MIDDLEWARE_CLASSES += (
 
 STATIC_ROOT = os.path.join(SITE_ROOT, 'static')
 
+
+import sys
+TESTING = len(sys.argv) > 1 and sys.argv[1] == 'test'
+if TESTING: #Covers regular testing and django-coverage
+    DATABASES = {
+        'default': {
+            'ENGINE': 'django.db.backends.sqlite3', #
+            'NAME': 'test.db', # Ruta al archivo de la base de datos
+            }
+        }
+        
 # INSTALLED_APPS += (
 #    # 'debug_toolbar',   
 #     'compressor' ,

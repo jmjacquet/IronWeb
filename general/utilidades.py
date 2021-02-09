@@ -12,6 +12,14 @@ from decimal import *
 from django.core.files.storage import default_storage
 
 
+
+# URL_API = "https://soa.afip.gob.ar/sr-padron/v2/persona/"
+URL_API = "http://afip.grupoguadalupe.com.ar/?cuit="
+URL_API_QR = "https://www.afip.gob.ar/fe/qr/?p=%s"
+EMAIL_CONTACTO = 'contacto@ironweb.com.ar'
+
+
+
 label_todos = 'Todos/as'
 
 SINO = (    
@@ -292,9 +300,6 @@ TIPO_RETENCIONES = (
 (6,'Otros'),
 )
 
-# URL_API = "https://soa.afip.gob.ar/sr-padron/v2/persona/"
-URL_API = "http://afip.grupoguadalupe.com.ar/?cuit="
-EMAIL_CONTACTO = 'contacto@ironweb.com.ar'
 
 def usuario_actual(request):    
     return request.user.userprofile.id_usuario
@@ -606,3 +611,71 @@ MESSAGE_TAGS = {message_constants.DEBUG: 'debug',
                 message_constants.ERROR: 'danger',}
 
 
+
+def GenerarQR(ver=1,
+                  fecha="2020-10-13",
+                  cuit=30000000007,
+                  pto_vta=10, tipo_cmp=1, nro_cmp=94,
+                  importe=12100, moneda="PES", ctz=1.000,
+                  tipo_doc_rec=80, nro_doc_rec=20000000001,
+                  tipo_cod_aut="E", cod_aut=70417054367476,
+                  ):
+    "Generar una imágen con el código QR"
+    # basado en: https://www.afip.gob.ar/fe/qr/especificaciones.asp
+    import qrcode
+    from general.base64 import encodestring,b64encode
+    from PIL import Image
+   
+    # qrencode default parameters:
+    qr_ver = 1
+    box_size = 10
+    border = 4
+    error_correction = qrcode.constants.ERROR_CORRECT_L
+    
+    datos_cmp = {
+        "ver": int(ver),
+        "fecha": fecha,
+        "cuit": int(cuit),
+        "ptoVta": int(pto_vta),
+        "tipoCmp": int(tipo_cmp),
+        "nroCmp": int(nro_cmp),
+        "importe": float(importe),
+        "moneda": moneda,
+        "ctz": float(ctz),
+        "tipoDocRec": int(tipo_doc_rec),
+        "nroDocRec": int(nro_doc_rec),
+        "tipoCodAut": tipo_cod_aut,
+        "codAut": int(cod_aut),
+        }
+
+    # convertir a representación json y codificar en base64:
+    datos_cmp_json = json.dumps(datos_cmp)
+    url = URL_API_QR % (b64encode(datos_cmp_json))
+
+    qr = qrcode.QRCode(
+        version=qr_ver,
+        error_correction=error_correction,
+        box_size=box_size,
+        border=border,
+    )
+    qr.add_data(url)
+    qr.make(fit=True)
+
+    img = qr.make_image(fill_color="black", back_color="white")
+    return img
+    #qrcode_img = qrcode.make(self.name)
+    # canvas = Image.new('RGB', (290, 290), 'white')
+    # canvas.paste(qr)   
+
+    # return canvas
+
+
+# url = pyqr.GenerarImagen(ver, fecha, cuit, pto_vta, tipo_cmp, nro_cmp,
+#                                 importe, moneda, ctz, tipo_doc_rec, nro_doc_rec,
+#                                 tipo_cod_aut, cod_aut)
+
+# print "url generada:", url
+
+# if "--prueba" in sys.argv:
+#     qr_data_test = json.loads(base64.b64decode(TEST_QR_DATA))
+#     qr_data_gen = json.loads(base64.b64decode(url[33:]))    
