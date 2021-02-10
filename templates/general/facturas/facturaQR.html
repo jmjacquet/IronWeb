@@ -20,7 +20,7 @@
                         margin-left: 0.5cm; 
                                               
                         {%if facturado %}
-                          height: 3cm;
+                          height: 3.8cm;
                           bottom:0.5cm;
                         {% else %}
                           height: 2.5cm;
@@ -186,22 +186,23 @@
         {% if facturado %}
         <table width="100%" align="center">
           <tr>
-          <td valign="middle">            
-            <div align="center">
-              <img  src="{% static 'images/logo_afip.png' %}" alt="afip" width="80" height="20" align="center" />
-              <span class="cae_autorizado" align="right">Comprobante Autorizado</span>
-            </div>
-            <span class="cae_leyenda">La Administración Federal no se responsabiliza por los datos ingresados en el detalle de la operación</span>
-            <div align="center">
-              <span align="texto_izq">CAE Nº:{{cpb.cae}}</span>
-              <span align="texto_der">Fecha Vto.CAE:{{cpb.cae_vto|date:'d/m/Y'}}</span>
-            </div>
-            <img src="data:image/png;base64,{{codbar}}" alt="afip" width="100%" height="25"  ><br>    
-              {{codigo}} 
-                        
-            
-          </td>
-          </tr>      
+            <td width="30%" rowspan="3" align="center">
+              <img src="data:image/png;base64,{{qrcode}}" alt="afip" />
+            </td>
+            <td width="70%" align="left"> <img  src="{% static 'images/logo_afip.png' %}" alt="afip" width="100" height="40" align="absmiddle" /></td>
+          </tr> 
+          <tr>
+            <td align="left" ><span class="cae_autorizado">Comprobante Autorizado</span></td>
+          </tr>   
+          <tr>
+             <td  align="left" >
+                <span class="texto_izq">CAE Nº:{{cpb.cae}}</span>
+                <span class="texto_der">Fecha Vto.CAE:{{cpb.cae_vto|date:'d/m/Y'}}</span>              
+            </td>
+          </tr>  
+          <tr>
+             <td colspan="2" class="texto_cen" ><span class="cae_leyenda">Esta Administración Federal no se responsabiliza por los datos ingresados en el detalle de la operación</span></td>
+          </tr>  
         </table>
         {% endif %}
 

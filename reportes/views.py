@@ -368,17 +368,9 @@ def generarCITI(cpbs,ventas_compras,tipo_archivo,libro_iva_dig=False):
             linea += str(c.numero).encode('utf-8').rjust(20, "0") #NRO CPB
             linea += str(c.numero).encode('utf-8').rjust(20, "0") #NRO CPB HASTA
             
-            tipo_doc=c.entidad.tipo_doc
-            nro_doc=c.entidad.nro_doc
-            if tipo_doc == 99:
-                if not c.entidad.nro_doc:
-                    nro_doc = 0                
-            elif tipo_doc == 96:
-                nro_doc = c.entidad.nro_doc
-            elif tipo_doc == 80:    
-                nro_doc = c.entidad.fact_cuit
-            else:
-                nro_doc = c.entidad.fact_cuit
+            #tipo_doc=c.entidad.tipo_doc
+            nro_doc,tipo_doc=c.entidad.get_nro_doc_afip()
+            
             linea += str(tipo_doc).encode('utf-8').rjust(2, "0") #TIPO DOC
             linea += str(nro_doc)[:20].encode('utf-8').rjust(20, "0") #nro DOC/cuit
             nombre = unicodedata.normalize('NFKD', (c.entidad.apellido_y_nombre)[:30]).encode('ASCII', 'ignore')
@@ -468,15 +460,9 @@ def generarCITI(cpbs,ventas_compras,tipo_archivo,libro_iva_dig=False):
             linea += str(c.pto_vta).encode('utf-8').rjust(5, "0") #PTO VTA
             linea += str(c.numero).encode('utf-8').rjust(20, "0") #NRO CPB
             linea += str('').encode('utf-8').ljust(16, " ") #NRO DESPACHO IMPORTACION            
-            tipo_doc=c.entidad.tipo_doc
-            if tipo_doc == 99:
-                nro_doc = 0
-            elif tipo_doc == 96:
-                nro_doc = c.entidad.nro_doc
-            elif tipo_doc == 80:    
-                nro_doc = c.entidad.fact_cuit
-            else:
-                nro_doc = c.entidad.fact_cuit            
+            #tipo_doc=c.entidad.tipo_doc
+            nro_doc,tipo_doc = c.entidad.get_nro_doc_afip()
+            
             linea += str(tipo_doc).encode('utf-8').rjust(2, "0") #TIPO DOC
             linea += str(nro_doc)[:20].encode('utf-8').rjust(20, "0") #nro DOC/cuit            
             nombre = unicodedata.normalize('NFKD', (c.entidad.apellido_y_nombre)[:30]).encode('ASCII', 'ignore')
@@ -545,15 +531,8 @@ def generarCITI(cpbs,ventas_compras,tipo_archivo,libro_iva_dig=False):
             if nafip==None:
                 continue
             cpb_iva = cpb_comprobante_tot_iva.objects.filter(cpb_comprobante=c)
-            tipo_doc=c.entidad.tipo_doc
-            if tipo_doc == 99:
-                nro_doc = 0
-            elif tipo_doc == 96:
-                nro_doc = c.entidad.nro_doc
-            elif tipo_doc == 80:    
-                nro_doc = c.entidad.fact_cuit
-            else:
-                nro_doc = c.entidad.fact_cuit
+            nro_doc,tipo_doc = c.entidad.get_nro_doc_afip()
+            
             for ci in cpb_iva:            
                 linea="" 
                 linea += str(nafip).encode('utf-8').rjust(3, "0") #CODIGO CPB AFIP

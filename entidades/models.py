@@ -150,6 +150,20 @@ class egr_entidad(models.Model):
 		
 		total = cpb_comprobante.objects.filter(entidad=self,cpb_tipo__usa_ctacte=True,cpb_tipo__compra_venta=cpbCV,estado__in=[1,2]).aggregate(saldo=Sum(F('importe_total')*F('cpb_tipo__signo_ctacte'), output_field=DecimalField()))['saldo'] or 0
 		return total
+
+	def get_nro_doc_afip(self):
+		try:
+			if self.tipo_doc in (96,99):
+				nro_doc = self.nro_doc
+			elif self.tipo_doc == 80:    
+				nro_doc = self.fact_cuit
+			else:
+				nro_doc = self.fact_cuit
+		except:
+			nro_doc = self.nro_doc
+		if not nro_doc:
+			nro_doc = 0
+		return nro_doc,self.tipo_doc
 		
 
 	
