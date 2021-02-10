@@ -613,18 +613,17 @@ MESSAGE_TAGS = {message_constants.DEBUG: 'debug',
 
 
 def GenerarQR(ver=1,
-                  fecha="2020-10-13",
-                  cuit=30000000007,
-                  pto_vta=10, tipo_cmp=1, nro_cmp=94,
-                  importe=12100, moneda="PES", ctz=1.000,
-                  tipo_doc_rec=80, nro_doc_rec=20000000001,
-                  tipo_cod_aut="E", cod_aut=70417054367476,
-                  ):
+              fecha="2020-10-13",
+              cuit=30000000007,
+              pto_vta=10, tipo_cmp=1, nro_cmp=94,
+              importe=12100, moneda="PES", ctz=1.000,
+              tipo_doc_rec=80, nro_doc_rec=20000000001,
+              tipo_cod_aut="E", cod_aut=70417054367476,
+              ):
     "Generar una imágen con el código QR"
     # basado en: https://www.afip.gob.ar/fe/qr/especificaciones.asp
     import qrcode
-    from general.base64 import encodestring,b64encode
-    from PIL import Image
+    from general.base64 import b64encode
    
     # qrencode default parameters:
     qr_ver = 1
@@ -647,7 +646,7 @@ def GenerarQR(ver=1,
         "tipoCodAut": tipo_cod_aut,
         "codAut": int(cod_aut),
         }
-
+    print datos_cmp
     # convertir a representación json y codificar en base64:
     datos_cmp_json = json.dumps(datos_cmp)
     url = URL_API_QR % (b64encode(datos_cmp_json))
@@ -662,7 +661,7 @@ def GenerarQR(ver=1,
     qr.make(fit=True)
 
     img = qr.make_image(fill_color="black", back_color="white")
-    return img
+    return img,url
     #qrcode_img = qrcode.make(self.name)
     # canvas = Image.new('RGB', (290, 290), 'white')
     # canvas.paste(qr)   

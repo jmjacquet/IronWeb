@@ -550,7 +550,6 @@ def facturarAFIP(request,idCpb):
     authserver_status = ''
     try:
         
-        fecha = datetime.now().strftime("%Y%m%d")
         wsfev1 = WSFEv1()
         wsfev1.Conectar(wsdl=WSDL)        
 
@@ -607,21 +606,14 @@ def facturarAFIP(request,idCpb):
     try:
         fecha = datetime.now().strftime("%Y%m%d")
         concepto = 3 #Productos y Servicios
-        tipo_doc = f.entidad.tipo_doc
-
+        #tipo_doc = f.entidad.tipo_doc
+        nro_doc,tipo_doc = f.entidad.get_nro_doc_afip()
 
         if not tipo_doc:
             data['errores']=u'¡Debe cargar un tipo de Documento válido!'
             return data         
         
-        if tipo_doc == 99:
-            nro_doc = 0
-        elif tipo_doc == 96:
-            nro_doc = f.entidad.nro_doc
-        elif tipo_doc == 80:    
-            nro_doc = f.entidad.fact_cuit
-        else:
-            nro_doc = f.entidad.fact_cuit
+        
 
         if nro_doc == '':
             data['errores']=u'¡Debe cargar un Nº de Documento válido!'

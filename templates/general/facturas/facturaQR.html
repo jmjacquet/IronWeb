@@ -180,24 +180,24 @@
   </table>
 {% endif %}
 <div id="page-footer">
-  <table id="tabla_totales" width="100%"  align="middle" >    
+  <table id="tabla_totales" width="100%"  align="center" >    
     <tr>
-      <td width="50%" rowspan="4" align="middle" class="borde_izq borde_arriba borde_abajo">
+      <td width="50%" rowspan="4" align="center" class="borde_izq borde_arriba borde_abajo">
         {% if facturado %}
-        <table width="100%" align="middle">
+        <table width="100%" align="center">
           <tr>
-            <td width="30%" rowspan="3" align="middle">
-              <img src="data:image/png;base64,{{codbar}}" alt="afip" />
+            <td width="30%" rowspan="3" align="center">
+              <img src="data:image/png;base64,{{qrcode}}" alt="afip" />
             </td>
-            <td width="70%" align="left"> <img  src="{% static 'images/logo_afip.png' %}" alt="afip" width="100" height="40" align="middle" /></td>
+            <td width="70%" align="left"> <img  src="{% static 'images/logo_afip.png' %}" alt="afip" width="100" height="40" align="absmiddle" /></td>
           </tr> 
           <tr>
             <td align="left" ><span class="cae_autorizado">Comprobante Autorizado</span></td>
           </tr>   
           <tr>
              <td  align="left" >
-                <span align="texto_izq">CAE Nº:{{cpb.cae}}</span>
-                <span align="texto_der">Fecha Vto.CAE:{{cpb.cae_vto|date:'d/m/Y'}}</span>              
+                <span class="texto_izq">CAE Nº:{{cpb.cae}}</span>
+                <span class="texto_der">Fecha Vto.CAE:{{cpb.cae_vto|date:'d/m/Y'}}</span>              
             </td>
           </tr>  
           <tr>

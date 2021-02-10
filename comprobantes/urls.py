@@ -35,7 +35,7 @@ urlpatterns = patterns('comprobantes.views',
     url(r'^formapago/formapago_editar/(?P<id>\d+)/$', FPEditView.as_view(), name="formapago_editar"),
     url(r'^formapago/formapago_eliminar/(?P<id>[\w-]+)/$', FPDeleteView, name="formapago_eliminar"),
 
-    url(r'^imprimirFactura/(?P<id>\d+)/$',imprimirFactura,name="imprimirFactura"),
+    url(r'^imprimirFactura/(?P<id>\d+)/$',imprimirFacturaQR,name="imprimirFactura"),
     url(r'^imprimirRemito/(?P<id>\d+)/$',imprimirRemito,name="imprimirRemito"),
     url(r'^imprimirPresupuesto/(?P<id>\d+)/$',imprimirPresupuesto,name="imprimirPresupuesto"),
     url(r'^imprimirCobranza/(?P<id>\d+)/$',imprimirCobranza,name="imprimirCobranza"),
