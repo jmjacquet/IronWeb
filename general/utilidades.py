@@ -28,7 +28,10 @@ SINO = (
     (2, u'N'),
 )
 
-
+SINO_ = (    
+    (1, u'S'),
+    (2, u'N'),
+)
 
 TIPO_USR = (
     (0, u'Administrador'),
@@ -646,7 +649,6 @@ def GenerarQR(ver=1,
         "tipoCodAut": tipo_cod_aut,
         "codAut": int(cod_aut),
         }
-    print datos_cmp
     # convertir a representación json y codificar en base64:
     datos_cmp_json = json.dumps(datos_cmp)
     url = URL_API_QR % (b64encode(datos_cmp_json))
