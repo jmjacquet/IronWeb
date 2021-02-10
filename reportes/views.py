@@ -32,22 +32,30 @@ from django.db.models.expressions import RawSQL
 
 ################################################################
 def cuenta_corriente(request,compra_venta,entidad,fdesde,fhasta,estado,empresa):
-    #Cta_cte Clientes
-    
-    cpbs = cpb_comprobante.objects.filter(cpb_tipo__usa_ctacte=True,cpb_tipo__compra_venta=compra_venta,empresa=empresa).select_related('estado','cpb_tipo','entidad').order_by('entidad__apellido_y_nombre','fecha_cpb','cpb_tipo__tipo')
-    if entidad:
-               cpbs= cpbs.filter(entidad=entidad)    
-    if int(estado) == 0:                
-        cpbs=cpbs.filter(estado__in=[1,2])                
-    elif int(estado) == 2:                
-        cpbs=cpbs.filter(estado__in=[3])
-    else:                
-        cpbs=cpbs.filter(estado__in=[1,2,3])
-    if fdesde:                
-        cpbs=cpbs.filter(fecha_cpb__gte=fdesde)          
-    if fhasta:                
-        cpbs=cpbs.filter(fecha_cpb__lte=fhasta) 
+    #Cta_cte Clientes    
+    cpbs = cpb_comprobante.objects.filter(cpb_tipo__usa_ctacte=True,cpb_tipo__compra_venta=compra_venta,empresa=empresa).select_related('estado','cpb_tipo','entidad').order_by('entidad__apellido_y_nombre','fecha_cpb','cpb_tipo__tipo')    
 
+    filters = {}
+    if entidad:
+        filters['entidad']=entidad
+        # cpbs= cpbs.filter(entidad=entidad)    
+    if int(estado) == 0:                
+        filters['estado__in']=[1,2]
+        # cpbs=cpbs.filter(estado__in=[1,2])                
+    elif int(estado) == 2:
+        filters['estado__in']=[1,2]
+        # cpbs=cpbs.filter(estado__in=[3])
+    else:                
+        filters['estado__in']=[1,2,3]
+        # cpbs=cpbs.filter(estado__in=[1,2,3])
+    if fdesde:                
+        filters['fecha_cpb__gte']=fdesde
+        # cpbs=cpbs.filter(fecha_cpb__gte=fdesde)          
+    if fhasta:                
+        filters['fecha_cpb__lte']=fhasta
+        # cpbs=cpbs.filter(fecha_cpb__lte=fhasta) 
+    
+    cpbs=cpbs.filter(**filters)
     return cpbs
 
 @login_required 
