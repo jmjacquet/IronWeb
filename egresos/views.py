@@ -80,7 +80,6 @@ class CPBCompraViewList(VariablesMixin,ListView):
         else:            
             cpbs= cpb_comprobante.objects.filter(cpb_tipo__tipo__in=[1,2,3,9,21,22,23],fecha_cpb__gte=inicioMesAnt(),fecha_cpb__lte=finMes()\
                                 ,estado__in=[1,2],cpb_tipo__compra_venta='C',empresa=empresa).select_related('estado','cpb_tipo','entidad','vendedor')
-            print len(cpbs)
             if len(cpbs)==0:
                 cpbs = comprobantes.filter(estado__in=[1,2])[:20]            
             comprobantes=cpbs
@@ -209,7 +208,7 @@ class CPBCompraEditView(VariablesMixin,SuccessMessageMixin,UpdateView):
     def dispatch(self, *args, **kwargs):            
         if not tiene_permiso(self.request,'cpb_compras_abm'):
             return redirect(reverse('principal'))
-        if not puedeEditarCPB(self.get_object().pk):
+        if not puedeEditarCPB(self.get_object()):
             messages.error(self.request, u'¡No puede editar un Comprobante con Pagos/Saldado!')
             return redirect(reverse('cpb_compra_listado'))
         return super(CPBCompraEditView, self).dispatch(*args, **kwargs)
@@ -572,7 +571,7 @@ class CPBPagoEditView(VariablesMixin,CreateView):
     def dispatch(self, *args, **kwargs):            
         if not tiene_permiso(self.request,'cpb_pagos_abm'):
             return redirect(reverse('principal'))
-        if not puedeEditarCPB(self.get_object().pk):
+        if not puedeEditarCPB(self.get_object()):
             messages.error(self.request, u'¡No puede editar un Comprobante asociado!')
             return redirect(reverse('cpb_pago_listado'))
         return super(CPBPagoEditView, self).dispatch(*args, **kwargs)
