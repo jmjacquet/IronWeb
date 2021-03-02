@@ -20,7 +20,6 @@ def log_parser():
 		ruta = ''
 		with open('errores.log') as in_file:
 			for line in in_file:
-				
 				if encabezado(line):
 					fecha,ruta = line.split("ERROR [django.request:256] Internal Server Error:")
 					dicc[ruta] = []

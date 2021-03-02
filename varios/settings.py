@@ -9,7 +9,8 @@ SITE_ROOT = PROJECT_ROOT
 
 
 ADMINS = (
-    ('JuanMa', 'errores_web@grupoguadalupe.com.ar'),
+    ('JuanMa', 'ironweb@grupogua.opalstacked.com'),
+    ('JuanManuel', 'jmjacquet@gmail.com'),
 )
 
 MANAGERS = ADMINS
@@ -179,14 +180,15 @@ LOGGING = {
             'level': 'ERROR',
             'propagate': False,
         },
-        # 'xhtml2pdf': {
-        #     'handlers': ['console'],
-        #     'level': 'DEBUG',
-        # },
+         'xhtml2pdf': {
+             'handlers': ['logfile'],
+             'level': 'ERROR',
+             'propagate':False,
+         },
         
         'general': {
             'handlers': ['logfile'],
-            'level': 'DEBUG',
+            'level': 'ERROR',
             'propagate': False,
         },
     }
