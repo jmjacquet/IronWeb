@@ -1259,7 +1259,7 @@ def mandarEmail(request,id):
         elif cpb.cpb_tipo.tipo == 6:
             post_pdf = imprimirPresupuesto(request,id,True)  
         else:
-            post_pdf = imprimirFactura(request,id,True)  
+            post_pdf = imprimirFacturaQR(request,id,True)  
             
         fecha = datetime.now()              
         nombre = "%s" % cpb
@@ -1277,7 +1277,7 @@ def mandarEmail(request,id):
         messages.success(request, 'El comprobante fué enviado con éxito!')
         return HttpResponseRedirect(cpb.get_listado())
     except Exception as e:
-        messages.error(request, 'El comprobante no pudo ser enviado! (verifique la dirección de correo del destinatario)')  
+        messages.error(request, 'El comprobante no pudo ser enviado! (verifique la dirección de correo del destinatario) '+str(e))  
         return HttpResponseRedirect(cpb.get_listado())
 
 #************* BANCOS **************
