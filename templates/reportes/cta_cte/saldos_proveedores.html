@@ -17,10 +17,14 @@
                     </div>
                 </div> 
             </div>                    
-            <div class="btn-group " style="float:left;margin-right:20px;margin-bottom:10px;"> 
+            <div class="btn-group " style="float:left;margin-right:20px;margin-top:0px;"> 
                     <form class="form form-inline" accept-charset="UTF-8" role="form" action="" method="post">
                     {% csrf_token %}                                         
-                       <div class="barra_busqueda"> {% bootstrap_field form.entidad  %} <button class="btn btn-sm blue-hoki" style="margin-left:20px;margin-top:0px;" type="submit">Buscar</button></div>
+                       <div class="barra_busqueda col-sm-12">                                                                                       
+                        <div class="col-sm-8">{% bootstrap_field form.entidad  %}</div>                                                                                                      
+                        <div class="col-sm-2">{% bootstrap_field form.fhasta  %}</div>                                    
+                        <div class="col-sm-1"><button class="btn btn-sm blue-hoki" type="submit">Buscar</button></div>
+                        </div>
                     </form>    
             </div>
 
@@ -69,6 +73,23 @@ $(document).ready(function() {
           placeholder_text_single:"Seleccione un Cliente",
           allow_single_deselect: true,
       });       
+
+$.fn.datepicker.dates['es'] = {
+    days: ["Domingo", "Lunes", "Martes", "Miércoles", "Jueves", "Viernes", "Sábado", "Domingo"],
+    daysShort: ["Dom", "Lun", "Mar", "Mié", "Jue", "Vie", "Sáb", "Dom"],
+    daysMin: ["Do", "Lu", "Ma", "Mi", "Ju", "Vi", "Sa", "Do"],
+    months: ["Enero", "Febrero", "Marzo", "Abril", "Mayo", "Junio", "Julio", "Agosto", "Septiembre", "Octubre", "Noviembre", "Diciembre"],
+    monthsShort: ["Ene", "Feb", "Mar", "Abr", "May", "Jun", "Jul", "Ago", "Sep", "Oct", "Nov", "Dic"],
+    today: "Hoy"
+  };
+  
+   $('.datepicker').datepicker({
+          format: "dd/mm/yyyy",
+          language: "es",
+          autoclose: true,
+          todayHighlight: true
+    }); 
+
 moment.locale('es');
 $.fn.dataTable.moment('DD/MM/YYYY'); 
 var tabla = $('#dataTables-cpb_venta').DataTable({
