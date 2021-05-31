@@ -37,6 +37,7 @@ class ConsultaCtaCteCliente(forms.Form):
 
 class ConsultaSaldosClientes(forms.Form):               
     entidad = chosenforms.ChosenModelChoiceField(label='Cliente',queryset=egr_entidad.objects.filter(tipo_entidad=1,baja=False),empty_label=label_todos,required = False) 
+    fhasta =  forms.DateField(label='Fecha Hasta',widget=forms.DateInput(attrs={'class': 'form-control datepicker','autocomplete':'off'}),initial=hoy(),required = True)
     def __init__(self, *args, **kwargs):
 		empresa = kwargs.pop('empresa', None)  
 		request = kwargs.pop('request', None) 
@@ -64,6 +65,7 @@ class ConsultaCtaCteProv(forms.Form):
 
 class ConsultaSaldosProv(forms.Form):               
     entidad = chosenforms.ChosenModelChoiceField(label='Proveedor',queryset=egr_entidad.objects.filter(tipo_entidad=2,baja=False),empty_label=label_todos,required = False) 
+    fhasta =  forms.DateField(label='Fecha Hasta',widget=forms.DateInput(attrs={'class': 'form-control datepicker','autocomplete':'off'}),initial=hoy(),required = True)
     def __init__(self, *args, **kwargs):
 		empresa = kwargs.pop('empresa', None)  
 		request = kwargs.pop('request', None) 
