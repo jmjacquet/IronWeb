@@ -21,10 +21,10 @@
                                               
                         {%if facturado %}
                           height: 3.5cm;
-                          bottom:0.5cm;
+                          bottom:{% if leyenda_afip %}1{% else %}0.5{% endif %}cm;
                         {% else %}
                           height: 2.5cm;
-                          bottom:0.4cm;
+                          bottom:0.{% if leyenda_afip %}6{% else %}4{% endif %}cm;    
                         {% endif %}                       
                     }
          @frame footer {
@@ -179,7 +179,11 @@
       </tr>
   </table>
 {% endif %}
+
 <div id="page-footer">
+  {% if leyenda_afip %}
+        <p class="leyenda">{{leyenda_afip}}</p>
+  {% endif %}
   <table id="tabla_totales" width="100%"  align="center" >    
     <tr>
       <td width="50%" rowspan="4" align="center" class="borde_izq borde_arriba borde_abajo">

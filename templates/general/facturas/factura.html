@@ -150,6 +150,7 @@
   <tr class="borde_izq borde_der borde_arriba borde_abajo ">
     <td colspan="5" class="tabla_footer">Subtotal: ${{total_bruto|default_if_none:0|floatformat:2|intcomma}}</td>
   </tr>
+
 </table>
 {% if config.firma_facturas %}
 <br>
@@ -176,8 +177,11 @@
         <td width="20%" class=" "></td>
         <td width="30%" class="texto_firma">Firma y Aclaración</td>
         <td width="10%"></td>  
-      </tr>
+      </tr>      
   </table>
+{% endif %}
+{% if leyenda_afip %}
+        <p class="leyenda">{{leyenda_afip}}</p>
 {% endif %}
 <div id="page-footer">
   <table id="tabla_totales" width="100%"  align="center" >    
