@@ -178,7 +178,8 @@ class CPBCompraCreateView(VariablesMixin,CreateView):
             nro = ultimoNro(12,self.object.pto_vta,"X",self.object.entidad)
             op = cpb_comprobante(cpb_tipo=tipo_cpb,entidad=self.object.entidad,pto_vta=self.object.pto_vta,letra="X",
                 numero=nro,fecha_cpb=self.object.fecha_cpb,importe_iva=self.object.importe_iva,
-                importe_total=self.object.importe_total,estado=estado,usuario=self.object.usuario,empresa = self.object.empresa)
+                importe_total=self.object.importe_total,estado=estado,usuario=self.object.usuario,
+                fecha_imputacion=self.object.fecha_cpb,empresa = self.object.empresa)
             op.save()
             cobranza = cpb_cobranza(cpb_comprobante=op,cpb_factura=self.object,importe_total=self.object.importe_total,desc_rec=0)
             cobranza.save()

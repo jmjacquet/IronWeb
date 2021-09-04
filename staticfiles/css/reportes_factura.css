@@ -221,8 +221,8 @@ td {
 }
 
 .logo_factura{
-  width: 220px;
-  height: 150px;
+  width: auto;  
+  height: 120px;
 }
 
 .logo_reporte{

@@ -43,6 +43,7 @@ div.dataTables_wrapper div.dataTables_info{white-space:nowrap;text-align:right;f
 table .icono{display:inline-block;margin-top:1px;margin-right:3px;margin-left:1px;font-size:12px;line-height:14px; color:#7795bb;-webkit-font-smoothing:antialiased;text-decoration:none;}
 table .icono2{display:inline-block;margin-top:1px;margin-right:3px;margin-left:1px;font-size:12px;line-height:14px;-webkit-font-smoothing:antialiased;text-decoration:none;}
 div.dt-buttons{position:relative;float:right !important;text-align: center;width: auto;margin-left:5px; }
+div.dt-button-collection .dt-button {text-align: left;width: auto;margin-right: 2px; }
 div.dataTables_wrapper div.dataTables_filter{text-align:right;}
 /*div.dataTables_wrapper div.dataTables_filter label{margin-right:10px;}*/
 div.dataTables_wrapper div.dataTables_filter input{margin-left:0.5em;display:inline-block;}
