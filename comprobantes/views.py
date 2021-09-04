@@ -830,13 +830,15 @@ def imprimirFacturaQR(request,id,pdf=None):
     except gral_empresa.DoesNotExist:
         config = None 
     
-    sujeto_retencion = None
+    sujeto_retencion, leyenda_afip = None, None
     
 
     if cpb.cpb_tipo.usa_pto_vta == True:
         c = cpb.get_pto_vta()  
         if c.leyenda and discrimina_iva:
           sujeto_retencion = u"OPERACIÓN SUJETA A RETENCIÓN"      
+          leyenda_afip = u"El crédito fiscal discriminado en el presente comprobante, sólo podrá ser computado a efectos del Régimen de Sostenimiento \
+                            e Inclusión Fiscal para Pequeños Contribuyentes de la Ley Nº 27.618"      
     else:
         c = config
     

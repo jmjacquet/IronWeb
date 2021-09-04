@@ -337,7 +337,7 @@ def facturacion_cliente_letra(letra, cliente_categ,empresa_categ):
         if cliente_categ==1:
             return (letra in ['A','E','M'])
         else:
-            return (letra in ['B'])
+            return (letra in ['A', 'B'])
     else:
         return (letra in ['C'])
 
