@@ -124,9 +124,8 @@ EMAIL_HOST_PASSWORD = config('EMAIL_HOST_PASSWORD', default='')
 EMAIL_HOST_USER = config('EMAIL_HOST_USER', default='')
 
 
-
-SERVER_EMAIL = 'errores_web@grupoguadalupe.com.ar'
-DEFAULT_FROM_EMAIL = 'errores_web@grupoguadalupe.com.ar'
+SERVER_EMAIL = config('SERVER_EMAIL', default='')
+DEFAULT_FROM_EMAIL = config('DEFAULT_FROM_EMAIL', default='')
 
 LOGGING = {
     'version': 1,
