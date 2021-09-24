@@ -1241,7 +1241,7 @@ class CPBPresupViewList(VariablesMixin,ListView):
         except gral_empresa.DoesNotExist:
             empresa = None 
         form = ConsultaCpbsCompras(self.request.POST or None,empresa=empresa,request=self.request)   
-        comprobantes = cpb_comprobante.objects.filter(cpb_tipo__tipo=6,empresa=empresa,estado__in=[1,2,4],pto_vta__in=pto_vta_habilitados_list(self.request)).select_related('estado','presup_aprobacion','cpb_tipo','entidad')
+
         if form.is_valid():                                
             entidad = form.cleaned_data['entidad']                                                              
             fdesde = form.cleaned_data['fdesde']   
@@ -1250,8 +1250,12 @@ class CPBPresupViewList(VariablesMixin,ListView):
             vendedor = form.cleaned_data['vendedor']                                                 
             estado = form.cleaned_data['estado']
 
-            if int(estado) == 1:                
-                comprobantes = cpb_comprobante.objects.filter(cpb_tipo__tipo=6,empresa=empresa,estado__in=[1,2,3,4]).select_related('estado','presup_aprobacion','cpb_tipo','entidad')
+            if int(estado) == 1:
+                comprobantes = cpb_comprobante.objects.filter(cpb_tipo__tipo=6,empresa=empresa)
+            elif int(estado) == 0:
+                comprobantes = cpb_comprobante.objects.filter(cpb_tipo__tipo=6, estado__in=[1, 2, 4], empresa=empresa)
+            elif int(estado) == 2:
+                comprobantes = cpb_comprobante.objects.filter(cpb_tipo__tipo=6, estado__in=[3], empresa=empresa)
             if fdesde:
                 comprobantes= comprobantes.filter(Q(fecha_cpb__gte=fdesde))
             if fhasta:
@@ -1262,14 +1266,18 @@ class CPBPresupViewList(VariablesMixin,ListView):
                 comprobantes= comprobantes.filter(Q(vendedor=vendedor))
             if pto_vta:
                 comprobantes= comprobantes.filter(Q(pto_vta=pto_vta)) 
-        else:            
-            cpbs= comprobantes.filter(fecha_cpb__gte=inicioMesAnt(),fecha_cpb__lte=finMes())
+        else:
+            cpbs = cpb_comprobante.objects.filter(fecha_cpb__gte=inicioMesAnt(),fecha_cpb__lte=finMes())
             if len(cpbs)==0:
-                cpbs = comprobantes[:20]            
-            comprobantes=cpbs
+                cpbs = cpb_comprobante.objects.filter(
+                cpb_tipo__tipo=6,
+                empresa=empresa,
+                estado__in=[1, 2, 4],
+                pto_vta__in=pto_vta_habilitados_list(self.request))[:20]
+            comprobantes = cpbs
 
         context['form'] = form
-        context['comprobantes'] = comprobantes
+        context['comprobantes'] = comprobantes.select_related('estado', 'presup_aprobacion', 'cpb_tipo', 'entidad')
         return context
     
     def post(self, *args, **kwargs):
