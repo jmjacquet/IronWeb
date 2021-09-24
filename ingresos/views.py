@@ -1267,7 +1267,7 @@ class CPBPresupViewList(VariablesMixin,ListView):
             if pto_vta:
                 comprobantes= comprobantes.filter(Q(pto_vta=pto_vta)) 
         else:
-            cpbs = cpb_comprobante.objects.filter(fecha_cpb__gte=inicioMesAnt(),fecha_cpb__lte=finMes())
+            cpbs = cpb_comprobante.objects.filter(cpb_tipo__tipo=6, fecha_cpb__gte=inicioMesAnt(),fecha_cpb__lte=finMes(),estado__in=[1, 2, 4])
             if len(cpbs)==0:
                 cpbs = cpb_comprobante.objects.filter(
                 cpb_tipo__tipo=6,
