@@ -51,8 +51,7 @@ def recalcular_cpbs(request):
 
 @login_required 
 def recalcular_cobranzas(request):
-
-    comprobantes = cpb_comprobante.objects.filter(cpb_tipo__tipo__in = [4,7,8])    
+    comprobantes = cpb_comprobante.objects.filter(cpb_tipo__tipo__in = [4,7,8])
     for c in comprobantes:
         recalcular_saldos_cobranzas(c.id)
 
@@ -1279,7 +1278,7 @@ def mandarEmail(request,id):
         messages.success(request, 'El comprobante fué enviado con éxito!')
         return HttpResponseRedirect(cpb.get_listado())
     except Exception as e:
-        messages.error(request, 'El comprobante no pudo ser enviado! '+str(e))  
+        messages.error(request, 'El comprobante no pudo ser enviado! '+str(e))
         return HttpResponseRedirect(cpb.get_listado())
 
 #************* BANCOS **************

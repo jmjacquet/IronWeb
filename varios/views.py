@@ -113,7 +113,7 @@ def recalcular_presupuestos(request):
 
     return HttpResponseRedirect(reverse('cpb_presup_listado'))
 
-def puedeEditarCPB(cpb):    
+def puedeEditarCPB(cpb):
     #cpb=cpb_comprobante.objects.get(pk=idCpb)
     #Si es factura NC ND o Recibo
     puede=(cpb.estado.id<3)
@@ -658,21 +658,21 @@ from general.base64 import encodestring,b64encode
 import StringIO
 
 def armarCodBar(cod):
-    barcode = GenerarImagen(codigo=cod)    
+    barcode = GenerarImagen(codigo=cod)
     output = StringIO.StringIO()
     barcode.save(output,format="PNG")
     data = encodestring(output.getvalue())
     return format(data)
 
-def armarQR(qr_data):    
+def armarQR(qr_data):
     qr,url = GenerarQR(**qr_data)
     output = StringIO.StringIO()
     qr.save(output,format="PNG")
     data = encodestring(output.getvalue())
     return format(data),url
 
-@login_required 
-def imprimirFactura_CB(request,id,pdf=None):   
+@login_required
+def imprimirFactura_CB(request,id,pdf=None):
     cpb = cpb_comprobante.objects.get(id=id)        
     #puedeVerPadron(request,c.id_unidad.pk)    
     
@@ -770,57 +770,57 @@ def imprimirFactura_CB(request,id,pdf=None):
         return render_to_pdf(template,locals())
     return render_to_pdf_response(request, template, locals())
 
-@login_required 
-def imprimirFacturaQR(request,id,pdf=None):   
-    cpb = cpb_comprobante.objects.get(id=id)        
-    #puedeVerPadron(request,c.id_unidad.pk)    
-    
+@login_required
+def imprimirFacturaQR(request,id,pdf=None):
+    cpb = cpb_comprobante.objects.get(id=id)
+    #puedeVerPadron(request,c.id_unidad.pk)
+
     if not cpb:
-      raise Http404            
+      raise Http404
 
     detalle_comprobante = cpb_comprobante_detalle.objects.filter(cpb_comprobante=cpb)
-    detalle_totales_iva = cpb_comprobante_tot_iva.objects.filter(cpb_comprobante=cpb)    
-    
+    detalle_totales_iva = cpb_comprobante_tot_iva.objects.filter(cpb_comprobante=cpb)
+
     discrimina_iva = cpb.letra == 'A'
 
     if cpb.condic_pago == 2:
         cobranzas = cpb_comprobante_fp.objects.filter(cpb_comprobante__cpb_cobranza_cpb__cpb_factura=cpb,cpb_comprobante__estado__pk__lt=3)
-        cantidad = cobranzas.count()    
+        cantidad = cobranzas.count()
     else:
         cobranzas = None
         cantidad = 0
-    
+
     try:
-        cod_cpb = cpb_nro_afip.objects.get(cpb_tipo=cpb.cpb_tipo.tipo,letra=cpb.letra).numero_afip    
+        cod_cpb = cpb_nro_afip.objects.get(cpb_tipo=cpb.cpb_tipo.tipo,letra=cpb.letra).numero_afip
         codigo_letra = '{0:0{width}}'.format(cod_cpb,width=2)
     except:
         codigo_letra = '000'
 
     if cpb.letra == 'X':
-        codigo_letra = '000'        
+        codigo_letra = '000'
         tipo_cpb =  'REMITO X'
         leyenda = u'DOCUMENTO NO VÁLIDO COMO FACTURA'
-           
+
     facturado = (cpb.cae!=None)
 
     cantidad = detalle_comprobante.count() + cantidad
     total_exng = cpb.importe_exento + cpb.importe_no_gravado + cpb.importe_perc_imp
     if discrimina_iva:
-        total_bruto = cpb.importe_subtotal        
+        total_bruto = cpb.importe_subtotal
     else:
-        total_bruto = cpb.importe_total        
-    
+        total_bruto = cpb.importe_total
+
     renglones = 20 - cantidad
     if renglones < 0:
         renglones = 0
     renglones = range(renglones)
-    context = Context()    
+    context = Context()
     fecha = hoy()
 
     try:
       total_imp1 = cpb.importe_tasa1
       total_imp2 = cpb.importe_tasa2
-      total_imp = total_imp1 + total_imp2      
+      total_imp = total_imp1 + total_imp2
     except:
       total_imp1=0
       total_imp2=0
@@ -828,20 +828,20 @@ def imprimirFacturaQR(request,id,pdf=None):
     try:
         config = empresa_actual(request)
     except gral_empresa.DoesNotExist:
-        config = None 
-    
+        config = None
+
     sujeto_retencion, leyenda_afip = None, None
-    
+
 
     if cpb.cpb_tipo.usa_pto_vta == True:
-        c = cpb.get_pto_vta()  
+        c = cpb.get_pto_vta()
         if c.leyenda and discrimina_iva:
-          sujeto_retencion = u"OPERACIÓN SUJETA A RETENCIÓN"      
+          sujeto_retencion = u"OPERACIÓN SUJETA A RETENCIÓN"
           leyenda_afip = u"El crédito fiscal discriminado en el presente comprobante, sólo podrá ser computado a efectos del Régimen de Sostenimiento \
-                            e Inclusión Fiscal para Pequeños Contribuyentes de la Ley Nº 27.618"      
+                            e Inclusión Fiscal para Pequeños Contribuyentes de la Ley Nº 27.618"
     else:
         c = config
-    
+
     tipo_logo_factura = c.tipo_logo_factura
     cuit = c.cuit
     ruta_logo = c.ruta_logo
@@ -853,9 +853,9 @@ def imprimirFacturaQR(request,id,pdf=None):
     iibb = c.iibb
     categ_fiscal = c.categ_fiscal
     fecha_inicio_activ = c.fecha_inicio_activ
-    
-         
-    if facturado:                        
+
+
+    if facturado:
         #fecha="2020-10-13",cuit=30000000007, pto_vta=10, tipo_cmp=1, nro_cmp=94,
         # importe=12100, moneda="PES", ctz=1.000,tipo_doc_rec=80, nro_doc_rec=20000000001,
         # tipo_cod_aut="E", cod_aut=70417054367476
@@ -874,15 +874,15 @@ def imprimirFacturaQR(request,id,pdf=None):
           "nro_doc_rec": int(nro_doc),
           "cod_aut": int(cpb.cae),
           }
-        qrcode,url = armarQR(datos_cmp)              
-  
-    template = 'general/facturas/facturaQR.html'                        
-    #template = 'general/facturas/factura.html'                        
+        qrcode,url = armarQR(datos_cmp)
+
+    template = 'general/facturas/facturaQR.html'
+    #template = 'general/facturas/factura.html'
     if pdf:
         return render_to_pdf(template,locals())
     return render_to_pdf_response(request, template, locals())
 
-@login_required 
+@login_required
 def imprimirFacturaHTML(request,id,pdf=None):   
     cpb = cpb_comprobante.objects.get(id=id)        
     #puedeVerPadron(request,c.id_unidad.pk)    

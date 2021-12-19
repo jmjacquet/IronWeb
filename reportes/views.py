@@ -9,6 +9,8 @@ from django.db import connection
 from datetime import datetime, date, timedelta
 from django.utils import timezone
 from dateutil.relativedelta import *
+
+from general.models import gral_empresa
 from .forms import *
 from django.http import HttpResponseRedirect, HttpResponseForbidden, HttpResponse
 from django.db.models import Q, Sum, Count, FloatField, Func
@@ -34,7 +36,10 @@ from django.db.models.expressions import RawSQL
 def cuenta_corriente(request, compra_venta, entidad, fdesde, fhasta, estado, empresa):
     # Cta_cte Clientes
     cpbs = (
-        cpb_comprobante.objects.filter(cpb_tipo__usa_ctacte=True, cpb_tipo__compra_venta=compra_venta, empresa=empresa)
+        cpb_comprobante.objects.filter(
+            cpb_tipo__usa_ctacte=True,
+            cpb_tipo__compra_venta=compra_venta,
+            empresa=empresa)
         .select_related("estado", "cpb_tipo", "entidad")
         .order_by("entidad__apellido_y_nombre", "fecha_cpb", "cpb_tipo__tipo")
     )
@@ -227,7 +232,12 @@ class saldos_clientes(VariablesMixin, ListView):
                 cpbs = cpbs.filter(entidad=entidad)
             totales = cpbs.extra(
                 select={
-                    "ultimo_pago": "SELECT MAX(cpb.fecha_imputacion) FROM cpb_comprobante cpb WHERE ((cpb.empresa=cpb_comprobante.empresa)AND(cpb.estado_id IN (1,2))AND(cpb.entidad=cpb_comprobante.entidad)AND(cpb.cpb_tipo=7))"
+                    "ultimo_pago": """SELECT MAX(cpb.fecha_imputacion) 
+                    FROM cpb_comprobante cpb 
+                    WHERE ((cpb.empresa=cpb_comprobante.empresa)
+                    AND(cpb.estado_id IN (1,2))
+                    AND(cpb.entidad=cpb_comprobante.entidad)
+                    AND(cpb.cpb_tipo=7))""""
                 }
             )
             totales = (
@@ -287,15 +297,7 @@ def cta_cte_proveedores(request, id=None):
             fhasta = form.cleaned_data["fhasta"]
             estado = form.cleaned_data["estado"]
 
-        # cpbs = cpb_comprobante.objects.filter(entidad=entidad,cpb_tipo__usa_ctacte=True,cpb_tipo__compra_venta='C',empresa=empresa).select_related('cpb_tipo','entidad','pto_vta').order_by('entidad__apellido_y_nombre','fecha_cpb','cpb_tipo__tipo')
         cpbs = cuenta_corriente(request, "C", entidad, None, None, estado, empresa)
-
-        # if int(estado) == 0:
-        #     cpbs=cpbs.filter(estado__in=[1,2])
-        # elif int(estado) == 2:
-        #     cpbs=cpbs.filter(estado__in=[3])
-        # else:
-        #     cpbs=cpbs.filter(estado__in=[1,2,3])
 
         try:
             total_haber = (
@@ -419,7 +421,13 @@ class saldos_proveedores(VariablesMixin, ListView):
                 cpbs = cpbs.filter(entidad=entidad)
             totales = cpbs.extra(
                 select={
-                    "ultimo_pago": "SELECT MAX(cpb.fecha_imputacion) FROM cpb_comprobante cpb WHERE ((cpb.empresa=cpb_comprobante.empresa)AND(cpb.estado_id IN (1,2))AND(cpb.entidad=cpb_comprobante.entidad)AND(cpb.cpb_tipo=12))"
+                    "ultimo_pago": """SELECT MAX(cpb.fecha_imputacion) 
+                                   FROM cpb_comprobante cpb 
+                                   WHERE ((cpb.empresa=cpb_comprobante.empresa)
+                                   AND(cpb.estado_id IN (1,2))
+                                   AND(cpb.entidad=cpb_comprobante.entidad)
+                                   AND(cpb.cpb_tipo=12))
+                                   """
                 }
             )
             totales = (
