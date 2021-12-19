@@ -163,6 +163,8 @@ class CPBCompraCreateView(VariablesMixin,CreateView):
         self.object.usuario = usuario_actual(self.request)
         if not self.object.fecha_vto:
             self.object.fecha_vto=self.object.fecha_cpb
+        if not self.object.fecha_imputacion:
+            self.object.fecha_imputacion=self.object.fecha_cpb
         self.object.save()
         compras_detalle.instance = self.object
         compras_detalle.cpb_comprobante = self.object.id        
@@ -179,7 +181,8 @@ class CPBCompraCreateView(VariablesMixin,CreateView):
             op = cpb_comprobante(cpb_tipo=tipo_cpb,entidad=self.object.entidad,pto_vta=self.object.pto_vta,letra="X",
                 numero=nro,fecha_cpb=self.object.fecha_cpb,importe_iva=self.object.importe_iva,
                 importe_total=self.object.importe_total,estado=estado,usuario=self.object.usuario,
-                fecha_imputacion=self.object.fecha_cpb,empresa = self.object.empresa)
+                fecha_imputacion=self.object.fecha_imputacion or self.object.fecha_cpb,
+                empresa = self.object.empresa)
             op.save()
             cobranza = cpb_cobranza(cpb_comprobante=op,cpb_factura=self.object,importe_total=self.object.importe_total,desc_rec=0)
             cobranza.save()
@@ -265,6 +268,8 @@ class CPBCompraEditView(VariablesMixin,SuccessMessageMixin,UpdateView):
         self.object = form.save(commit=False)        
         if not self.object.fecha_vto:
             self.object.fecha_vto=self.object.fecha_cpb
+        if not self.object.fecha_imputacion:
+            self.object.fecha_imputacion=self.object.fecha_cpb
         self.object.save()
         compras_detalle.instance = self.object
         compras_detalle.cpb_comprobante = self.object.id        
@@ -318,7 +323,8 @@ class CPBCompraClonarCreateView(VariablesMixin,CreateView):
             for c in detalles:            
                 det.append({'producto': c.producto,'cantidad':c.cantidad,'detalle':c.detalle,'porc_dcto':c.porc_dcto,'tasa_iva':c.tasa_iva,
                     'coef_iva':c.coef_iva,'lista_precios':c.lista_precios,'importe_costo':c.importe_costo,'importe_unitario':c.importe_unitario,
-                    'importe_subtotal':c.importe_subtotal,'importe_iva':c.importe_iva,'importe_total':c.importe_total,'origen_destino':c.origen_destino,'importe_tasa1':c.importe_tasa1,'importe_tasa2':c.importe_tasa2})                        
+                    'importe_subtotal':c.importe_subtotal,'importe_iva':c.importe_iva,'importe_total':c.importe_total,'origen_destino':c.origen_destino,
+                    'importe_tasa1':c.importe_tasa1,'importe_tasa2':c.importe_tasa2})
             CPBDetalleFormSet = inlineformset_factory(cpb_comprobante, cpb_comprobante_detalle,form=CPBCompraDetalleForm,fk_name='cpb_comprobante',formset=CPBCompraDetalleFormSet, can_delete=True,extra=0,min_num=len(det))
         else:
             detalles = None       
@@ -357,6 +363,8 @@ class CPBCompraClonarCreateView(VariablesMixin,CreateView):
         self.object.usuario = usuario_actual(self.request)
         if not self.object.fecha_vto:
             self.object.fecha_vto=self.object.fecha_cpb
+        if not self.object.fecha_imputacion:
+            self.object.fecha_imputacion=self.object.fecha_cpb
         self.object.save()
         compras_detalle.instance = self.object
         compras_detalle.cpb_comprobante = self.object.id        
@@ -372,7 +380,9 @@ class CPBCompraClonarCreateView(VariablesMixin,CreateView):
             nro = ultimoNro(12,self.object.pto_vta,"X",self.object.entidad)
             op = cpb_comprobante(cpb_tipo=tipo_cpb,entidad=self.object.entidad,pto_vta=self.object.pto_vta,letra="X",
                 numero=nro,fecha_cpb=self.object.fecha_cpb,importe_iva=self.object.importe_iva,
-                importe_total=self.object.importe_total,estado=estado,empresa = empresa_actual(self.request))
+                importe_total=self.object.importe_total,estado=estado,
+                fecha_imputacion=self.object.fecha_imputacion or self.object.fecha_cpb,
+                empresa = empresa_actual(self.request))
             op.save()
             cobranza = cpb_cobranza(cpb_comprobante=op,cpb_factura=self.object,importe_total=self.object.importe_total,desc_rec=0)
             cobranza.save()
@@ -536,7 +546,8 @@ class CPBPagoCreateView(VariablesMixin,CreateView):
         self.object.cpb_tipo=tipo
         self.object.empresa = empresa_actual(self.request)
         self.object.usuario = usuario_actual(self.request)
-        self.object.fecha_imputacion=self.object.fecha_cpb
+        if not self.object.fecha_imputacion:
+            self.object.fecha_imputacion = self.object.fecha_cpb
         if not self.object.fecha_vto:
             self.object.fecha_vto=self.object.fecha_cpb
         self.object.save()
@@ -620,8 +631,9 @@ class CPBPagoEditView(VariablesMixin,CreateView):
             return self.form_invalid(form, cpb_fp,cpbs,cpb_ret)        
 
     def form_valid(self, form, cpb_fp,cpbs,cpb_ret):
-        self.object = form.save(commit=False)        
-        self.object.fecha_imputacion=self.object.fecha_cpb
+        self.object = form.save(commit=False)
+        if not self.object.fecha_imputacion:
+            self.object.fecha_imputacion = self.object.fecha_cpb
         if not self.object.fecha_vto:
             self.object.fecha_vto=self.object.fecha_cpb
         self.object.save()
@@ -659,23 +671,15 @@ def CPBPagoDeleteView(request, id):
         cpb = get_object_or_404(cpb_comprobante, id=id)
         if not tiene_permiso(request,'cpb_pagos_abm'):
             return redirect(reverse('principal'))
-            
         fps = cpb_comprobante_fp.objects.filter(cpb_comprobante=cpb,mdcp_salida__isnull=False).values_list('mdcp_salida',flat=True)
-    
         if (len(fps)>0):
             messages.error(request, u'¡El Comprobante posee movimientos de cobranza/depósito de Cheques asociados!. Verifique')
-            return HttpResponseRedirect(cpb.get_listado())    
-
-        # if (cpb.tiene_cobranzasREC_OP()):
-        #     messages.error(request, u'¡El Comprobante posee movimientos de cobro/pago asociados!.Verifique')
-        #     return HttpResponseRedirect(cpb.get_listado())
-            
+            return HttpResponseRedirect(cpb.get_listado())
         else:
             #traigo los fps de los recibos asociados        
             pagos = cpb_comprobante_fp.objects.filter(cpb_comprobante=cpb).values_list('id',flat=True)
             id_pagos = [int(x) for x in pagos]            
             cpbs = cpb_comprobante_fp.objects.filter(mdcp_salida__in=id_pagos)
-
             for c in cpbs:
                 c.mdcp_salida = None
                 c.save()            
@@ -764,7 +768,8 @@ class CPBPagarCreateView(VariablesMixin,CreateView):
         self.object.cpb_tipo=tipo
         self.object.empresa = empresa_actual(self.request)
         self.object.usuario = usuario_actual(self.request)
-        self.object.fecha_imputacion=self.object.fecha_cpb
+        if not self.object.fecha_imputacion:
+            self.object.fecha_imputacion = self.object.fecha_cpb
         if not self.object.fecha_vto:
             self.object.fecha_vto=self.object.fecha_cpb
         self.object.save()
@@ -973,7 +978,8 @@ class CPBRemitoCCreateView(VariablesMixin,CreateView):
         self.object.empresa = empresa_actual(self.request)        
         self.object.usuario = usuario_actual(self.request)
         self.object.letra = 'X'
-        self.object.fecha_imputacion=self.object.fecha_cpb
+        if not self.object.fecha_imputacion:
+            self.object.fecha_imputacion = self.object.fecha_cpb
         if not self.object.fecha_vto:
             self.object.fecha_vto=self.object.fecha_cpb
         self.object.cpb_tipo=tipo
@@ -1032,8 +1038,9 @@ class CPBRemitoCEditView(VariablesMixin,UpdateView):
         return self.render_to_response(self.get_context_data(form=form,remito_detalle = remito_detalle))
 
     def form_valid(self, form, remito_detalle):
-        self.object = form.save(commit=False)        
-        self.object.fecha_imputacion=self.object.fecha_cpb
+        self.object = form.save(commit=False)
+        if not self.object.fecha_imputacion:
+            self.object.fecha_imputacion = self.object.fecha_cpb
         if not self.object.fecha_vto:
             self.object.fecha_vto=self.object.fecha_cpb
         self.object.save()

@@ -170,8 +170,9 @@ class CPBVentaCreateView(VariablesMixin,CreateView):
     def form_valid(self, form, ventas_detalle,ventas_pi,cpb_fp):
         self.object = form.save(commit=False)        
         estado=cpb_estado.objects.get(pk=1)
-        self.object.estado=estado   
-        self.object.fecha_imputacion=self.object.fecha_cpb
+        self.object.estado=estado
+        if not self.object.fecha_imputacion:
+            self.object.fecha_imputacion = self.object.fecha_cpb
         self.object.empresa = empresa_actual(self.request)        
         self.object.usuario = usuario_actual(self.request)       
         if not self.object.fecha_vto:
@@ -192,7 +193,9 @@ class CPBVentaCreateView(VariablesMixin,CreateView):
             recibo = cpb_comprobante(cpb_tipo=tipo_cpb,entidad=self.object.entidad,pto_vta=self.object.pto_vta,letra="X",
                 numero=nro,fecha_cpb=self.object.fecha_cpb,importe_iva=self.object.importe_iva,
                 importe_total=self.object.importe_total,estado=estado,usuario=self.object.usuario,
-                fecha_vto=self.object.fecha_cpb,fecha_imputacion=self.object.fecha_cpb,empresa = self.object.empresa)
+                fecha_vto=self.object.fecha_cpb,
+                fecha_imputacion=self.object.fecha_imputacion or self.object.fecha_cpb,
+                empresa = self.object.empresa)
             recibo.save()
             cobranza = cpb_cobranza(cpb_comprobante=recibo,cpb_factura=self.object,importe_total=self.object.importe_total,desc_rec=0)
             cobranza.save()
@@ -304,13 +307,14 @@ class CPBVentaPresupCreateView(VariablesMixin,CreateView):
             estado=cpb_estado.objects.get(pk=2)
             tipo_cpb=cpb_tipo.objects.get(pk=7)
             recibo = cpb_comprobante(cpb_tipo=tipo_cpb,entidad=self.object.entidad,pto_vta=self.object.pto_vta,letra="X",numero=ultimoNro(7,self.object.pto_vta,"X"),id_cpb_padre=self.object,
-                fecha_cpb=self.object.fecha_cpb,importe_iva=self.object.importe_iva,importe_total=self.object.importe_total,estado=estado,usuario=self.object.usuario,fecha_vto=self.object.fecha_cpb,empresa=empresa_actual(self.request))
+                fecha_cpb=self.object.fecha_cpb,importe_iva=self.object.importe_iva,importe_total=self.object.importe_total,estado=estado,usuario=self.object.usuario,
+                fecha_vto=self.object.fecha_cpb, fecha_imputacion=self.object.fecha_imputacion or self.object.fecha_cpb,
+                empresa=empresa_actual(self.request))
             recibo.save()
             cobranza = cpb_cobranza(cpb_comprobante=recibo,cpb_factura=self.object,importe_total=self.object.importe_total,desc_rec=0)
             cobranza.save()
             cpb_fp.instance = recibo
-            cpb_fp.cpb_comprobante = recibo.id 
-            
+            cpb_fp.cpb_comprobante = recibo.id
             self.object.estado=estado
             cpb_fp.save() 
             self.object.save()
@@ -439,7 +443,10 @@ class CPBVentaNCCreateView(VariablesMixin,CreateView):
             estado=cpb_estado.objects.get(pk=2)
             tipo_cpb=cpb_tipo.objects.get(pk=7)
             recibo = cpb_comprobante(cpb_tipo=tipo_cpb,entidad=self.object.entidad,pto_vta=self.object.pto_vta,letra="X",numero=ultimoNro(7,self.object.pto_vta,"X"),id_cpb_padre=self.object,
-                fecha_cpb=self.object.fecha_cpb,importe_iva=self.object.importe_iva,importe_total=self.object.importe_total,estado=estado,usuario=self.object.usuario,fecha_vto=self.object.fecha_cpb,)
+                fecha_cpb=self.object.fecha_cpb,importe_iva=self.object.importe_iva,importe_total=self.object.importe_total,estado=estado,
+                usuario=self.object.usuario,
+                fecha_imputacion=self.object.fecha_imputacion or self.object.fecha_cpb,
+                fecha_vto=self.object.fecha_cpb,)
             recibo.save()
             cobranza = cpb_cobranza(cpb_comprobante=recibo,cpb_factura=self.object,importe_total=self.object.importe_total,desc_rec=0)
             cobranza.save()
@@ -670,7 +677,10 @@ class CPBVentaUnificarView(VariablesMixin,CreateView):
             estado=cpb_estado.objects.get(pk=2)
             tipo_cpb=cpb_tipo.objects.get(pk=7)
             recibo = cpb_comprobante(cpb_tipo=tipo_cpb,entidad=self.object.entidad,pto_vta=self.object.pto_vta,letra="X",numero=ultimoNro(7,self.object.pto_vta,"X"),id_cpb_padre=self.object,
-                fecha_cpb=self.object.fecha_cpb,importe_iva=self.object.importe_iva,importe_total=self.object.importe_total,estado=estado,usuario=self.object.usuario,fecha_vto=self.object.fecha_cpb,)
+                fecha_cpb=self.object.fecha_cpb,importe_iva=self.object.importe_iva,importe_total=self.object.importe_total,estado=estado,usuario=self.object.usuario,
+                fecha_vto=self.object.fecha_cpb,
+                fecha_imputacion=self.object.fecha_imputacion or self.object.fecha_cpb,
+            )
             recibo.save()
             cobranza = cpb_cobranza(cpb_comprobante=recibo,cpb_factura=self.object,importe_total=self.object.importe_total,desc_rec=0)
             cobranza.save()
@@ -893,7 +903,10 @@ class CPBVentaClonarCreateView(VariablesMixin,CreateView):
             estado=cpb_estado.objects.get(pk=2)
             tipo_cpb=cpb_tipo.objects.get(pk=7)
             recibo = cpb_comprobante(cpb_tipo=tipo_cpb,entidad=self.object.entidad,pto_vta=self.object.pto_vta,letra="X",numero=ultimoNro(7,self.object.pto_vta,"X"),id_cpb_padre=self.object,
-                fecha_cpb=self.object.fecha_cpb,importe_iva=self.object.importe_iva,importe_total=self.object.importe_total,estado=estado,usuario=self.object.usuario,fecha_vto=self.object.fecha_cpb,empresa=empresa_actual(self.request))
+                fecha_cpb=self.object.fecha_cpb,importe_iva=self.object.importe_iva,importe_total=self.object.importe_total,estado=estado,usuario=self.object.usuario,
+                fecha_vto=self.object.fecha_cpb,
+                fecha_imputacion=self.object.fecha_imputacion or self.object.fecha_cpb,
+                empresa=empresa_actual(self.request))
             recibo.save()
             cobranza = cpb_cobranza(cpb_comprobante=recibo,cpb_factura=self.object,importe_total=self.object.importe_total,desc_rec=0)
             cobranza.save()
@@ -1848,7 +1861,8 @@ class CPBCobrarCreateView(VariablesMixin,CreateView):
         self.object.cpb_tipo=tipo
         self.object.empresa = empresa_actual(self.request)
         self.object.usuario = usuario_actual(self.request)
-        self.object.fecha_imputacion=self.object.fecha_cpb
+        if not self.object.fecha_imputacion:
+            self.object.fecha_imputacion=self.object.fecha_cpb
         if not self.object.fecha_vto:
             self.object.fecha_vto=self.object.fecha_cpb
         self.object.save()
@@ -1984,7 +1998,8 @@ class CPBLiqProdCreateView(VariablesMixin,CreateView):
         self.object.usuario = usuario_actual(self.request)
         if not self.object.fecha_vto:
             self.object.fecha_vto=self.object.fecha_cpb
-        self.object.fecha_imputacion=self.object.fecha_cpb
+        if not self.object.fecha_imputacion:
+            self.object.fecha_imputacion = self.object.fecha_cpb
         self.object.condic_pago = 1
         self.object.save()
         liqprod_detalle.instance = self.object
@@ -2064,7 +2079,9 @@ class CPBLiqProdEditView(VariablesMixin,SuccessMessageMixin,UpdateView):
     def form_valid(self, form, liqprod_detalle,liqprod_pi):
         self.object = form.save(commit=False)        
         if not self.object.fecha_vto:
-            self.object.fecha_vto=self.object.fecha_cpb        
+            self.object.fecha_vto=self.object.fecha_cpb
+        if not self.object.fecha_imputacion:
+            self.object.fecha_imputacion=self.object.fecha_cpb
         self.object.save()
         liqprod_detalle.instance = self.object
         liqprod_detalle.cpb_comprobante = self.object.id        

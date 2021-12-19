@@ -237,7 +237,7 @@ class saldos_clientes(VariablesMixin, ListView):
                     WHERE ((cpb.empresa=cpb_comprobante.empresa)
                     AND(cpb.estado_id IN (1,2))
                     AND(cpb.entidad=cpb_comprobante.entidad)
-                    AND(cpb.cpb_tipo=7))""""
+                    AND(cpb.cpb_tipo=7))"""
                 }
             )
             totales = (

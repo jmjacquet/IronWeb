@@ -1453,7 +1453,8 @@ class MovInternosCreateView(VariablesMixin,CreateView):
         self.object.cpb_tipo=tipo
         self.object.empresa = empresa_actual(self.request)
         self.object.usuario = usuario_actual(self.request)        
-        self.object.fecha_imputacion=self.object.fecha_cpb
+        if not self.object.fecha_imputacion:
+            self.object.fecha_imputacion=self.object.fecha_cpb
         self.object.save()
         cpb_fp.instance = self.object
         cpb_fp.cpb_comprobante = self.object.id               
@@ -1502,8 +1503,9 @@ class MovInternosEditView(VariablesMixin,UpdateView):
             return self.form_invalid(form, cpb_fp)        
 
     def form_valid(self, form, cpb_fp):
-        self.object = form.save(commit=False)                
-        self.object.fecha_imputacion=self.object.fecha_cpb
+        self.object = form.save(commit=False)
+        if not self.object.fecha_imputacion:
+            self.object.fecha_imputacion = self.object.fecha_cpb
         self.object.save()
         cpb_fp.instance = self.object
         cpb_fp.cpb_comprobante = self.object.id        
