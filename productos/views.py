@@ -953,9 +953,10 @@ def importar_productos(request):
             csv_file = form.cleaned_data['archivo']
             sobreescribir = form.cleaned_data['sobreescribir'] == 'S'
             empresa = form.cleaned_data['empresa']
-            if not csv_file.name.endswith('.csv'):
-                messages.error(request,'¡El archivo debe tener extensión .CSV!')
-                return HttpResponseRedirect(reverse("importar_empleados"))
+            lista_precios = form.cleaned_data['lista_precios']
+            # if not csv_file.name.endswith('.csv'):
+            #     messages.error(request,'¡El archivo debe tener extensión .CSV!')
+            #     return HttpResponseRedirect(reverse("importar_empleados"))
             
             if csv_file.multiple_chunks():
                 messages.error(request,"El archivo es demasiado grande (%.2f MB)." % (csv_file.size/(1000*1000),))
@@ -964,83 +965,100 @@ def importar_productos(request):
             decoded_file = csv_file.read().decode("latin1").replace(",", "").replace("'", "")
             io_string = io.StringIO(decoded_file)
             reader = unicode_csv_reader(io_string)                
-            #Id;Nombre;Tipo de Producto;Proveedor;C¢digo;Stock;PC;IVA;MARGEN;;Precio de Venta;EFECTIVO
+            #codigo;Producto;Categoria;Stock;PC;PC+IVA;C.Gan;Precio de Venta
             cant=0
             next(reader) #Omito el Encabezado                            
             for index,line in enumerate(reader):                      
-                campos = line[0].split(";")               
-                
-                nombre = campos[1].strip().upper()
-                if nombre=='':
-                    continue #Salta al siguiente     
-                
-                codbar = campos[4].strip()
-                if codbar=='':
-                    cod = str(ultimoNroId(prod_productos)+1).zfill(12)
-                    cod += str(digVerificador(cod))                                       
-                    codbar = cod
-                cod = codbar
+                campos = line[0].split(";")
+                cant_campos = len(campos)
+                if cant_campos != 8:
+                    raise Exception(
+                        u'La cantidad de campos para el registro es incorrecta!(verifique que no existan ";" ni ")')
 
-                                  
+                codigo = campos[0].strip()
+                if codigo == '':
+                    codigo = '{0:0{width}}'.format((ultimoNroId(prod_productos)+1),width=4)
+
+                nombre = campos[1].strip().upper()
+                if nombre == '':
+                    continue #Salta al siguiente     
+
+                codbar = str(ultimoNroId(prod_productos)+1).zfill(15)
+                codbar += str(digVerificador(codbar))
+
+                categ = campos[2].strip().upper()
                 try:
-                    categoria = prod_categoria.objects.get(nombre=campos[2].strip().upper())
+                    categoria = prod_categoria.objects.get_or_create(nombre=categ)[0]
                 except:
                     categoria = None
-                    #import pdb; pdb.set_trace()
-                
                 try:
-                    stock = int(campos[5].strip())
+                    stock = int(campos[3].strip())
                 except:                
                     stock=0
                 try:
-                    pcosto = Decimal(campos[6].strip())
+                    pcosto = Decimal(campos[4].strip())
                 except:
                     pcosto = Decimal(0)
-
                 try:
-                    piva = Decimal(campos[7].strip())
+                    piva = Decimal(campos[5].strip())
                 except:
                     piva = Decimal(0)
-
                 try:
-                    pventa1 = Decimal(campos[10].strip())
+                    coef_ganancia = Decimal(campos[6].strip())
                 except:
-                    pventa1 = Decimal(0)                                        
+                    coef_ganancia = Decimal(1)
                 try:
-                    pventa2 = Decimal(campos[11].strip())
+                    pventa = Decimal(campos[7].strip())
                 except:
-                    pventa2 = Decimal(0)    
+                    pventa = piva * coef_ganancia
                 
                 pimp = pcosto + piva
-                
                 
                 try:
                     tasa_iva = gral_tipo_iva.objects.get(id=5)
                 except:
                     tasa_iva = None
 
-                prod = prod_productos.objects.create(codigo=cod,categoria=categoria,empresa=empresa,
-                    nombre=nombre,codigo_barras=codbar,tipo_producto=1,mostrar_en=3,unidad=0,llevar_stock=False,
-                    stock_negativo=True,tasa_iva=tasa_iva)
+                try:
+                    prod = prod_productos.objects.get_or_create(
+                            codigo=codigo,
+                            categoria=categoria,
+                            empresa=empresa,
+                            nombre=nombre,
+                            defaults={
+                                'codigo_barras':codbar,
+                                'tipo_producto':1,
+                                'mostrar_en':3,
+                                'unidad':0,
+                                'llevar_stock':False,
+                                'stock_negativo':True,
+                                'tasa_iva':tasa_iva,
+                            }
+                        )[0]
+                except prod_productos.MultipleObjectsReturned:
+                    prod = prod_productos.objects.filter(
+                        codigo=codigo,
+                        categoria=categoria,
+                        empresa=empresa,
+                        nombre=nombre).first()
+
 
                 if prod:
-                    lp1 = prod_lista_precios.objects.filter(pk=1).first()
-                    lp2 = prod_lista_precios.objects.filter(pk=2).first()
-                    prod_producto_lprecios.objects.create(producto=prod,lista_precios=lp1,precio_costo=pcosto,precio_cimp=pimp,
-                        precio_venta=pventa1)
-                    prod_producto_lprecios.objects.create(producto=prod,lista_precios=lp2,precio_costo=pcosto,precio_cimp=pimp,
-                        precio_venta=pventa2)
-
-                    ubi = prod_ubicacion.objects.filter(default=True).first()                    
-                    prod_producto_ubicac.objects.create(producto=prod,ubicacion=ubi,punto_pedido=0.00)
-
-                    actualizar_stock(request,prod,ubi,21,stock) 
-
-
-
-
-                cant+=1                       
-            messages.success(request, u'Se importó el archivo con éxito!<br>(%s Productos creados/actualizados)'% cant )
+                    prod_producto_lprecios.objects.update_or_create(
+                        producto=prod,
+                        coef_ganancia=coef_ganancia,
+                        lista_precios=lista_precios,
+                        defaults={
+                            'precio_costo':pcosto,
+                            'precio_cimp':pimp,
+                            'precio_venta':pventa,
+                        }
+                    )
+                    ubi = prod_ubicacion.objects.filter(default=True).first()
+                    prod_producto_ubicac.objects.update_or_create(producto=prod, ubicacion=ubi, defaults={'punto_pedido':0.00})
+                    actualizar_stock(request, prod, ubi, 21, stock)
+                cant += 1
+            messages.success(request, u'Se importó el archivo con éxito! ({} Productos creados/actualizados)'.format(cant))
             
     else:
         form = ImportarProductosForm(None,None,request=request)

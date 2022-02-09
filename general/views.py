@@ -29,7 +29,10 @@ from django.core.serializers.json import DjangoJSONEncoder
 ##############################################
 
 def ultimoNroId(tabla):
-    ultimo = tabla.objects.latest('id').id
+    try:
+        ultimo = tabla.objects.latest('id').id
+    except tabla.DoesNotExist:
+        return 0
     return ultimo
 
 @login_required 
