@@ -988,7 +988,7 @@ def importar_productos(request):
 
                 categ = campos[2].strip().upper()
                 try:
-                    categoria = prod_categoria.objects.get_or_create(nombre=categ)[0]
+                    categoria = prod_categoria.objects.get_or_create(nombre=categ, empresa=empresa)[0]
                 except:
                     categoria = None
                 try:
