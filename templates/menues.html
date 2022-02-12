@@ -178,9 +178,10 @@
                         <a href="#" id="prod_buscar_datos"><i class="fa fa-list-alt"></i>Consulta Productos</a>
                       </li>
                       {% if 'prod_productos_abm' in permisos_grupo %}
+                        <li class="divider"></li>
                         <li>
                         <a href="{% url 'importar_productos' %}"><i class="fa fa-tags"></i>Importar Productos/Servicios</a>
-                      </li>
+                        </li>
                       {% endif %}
                                    
                     </ul>
