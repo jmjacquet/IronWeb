@@ -1010,9 +1010,9 @@ def importar_productos(request):
                 try:
                     pventa = Decimal(campos[7].strip())
                 except:
-                    pventa = piva * coef_ganancia
+                    pventa = Decimal(piva * coef_ganancia)
                 
-                pimp = pcosto + piva
+                pimp = Decimal(pcosto + piva)
                 
                 try:
                     tasa_iva = gral_tipo_iva.objects.get(id=5)
