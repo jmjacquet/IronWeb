@@ -154,7 +154,6 @@ class prod_producto_lprecios(models.Model):
     def get_codbar(self):
         from comprobantes.views import armarCodBar
         return armarCodBar(self.producto.codigo_barras)
-        
 
 from comprobantes.models import cpb_comprobante_detalle
 class prod_producto_ubicac(models.Model):

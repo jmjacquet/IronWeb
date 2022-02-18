@@ -6,6 +6,8 @@ from django.conf import settings
 from django.contrib.messages import constants as message_constants
 from django.forms import Widget
 from django.utils.safestring import mark_safe
+import qrcode
+from general.base64 import b64encode
 import json
 from decimal import *
 # from settings import ENTIDAD_DIR,MEDIA_ROOT,PROJECT_ROOT
@@ -614,7 +616,6 @@ MESSAGE_TAGS = {message_constants.DEBUG: 'debug',
                 message_constants.ERROR: 'danger',}
 
 
-
 def GenerarQR(ver=1,
               fecha="2020-10-13",
               cuit=30000000007,
@@ -625,8 +626,7 @@ def GenerarQR(ver=1,
               ):
     "Generar una imágen con el código QR"
     # basado en: https://www.afip.gob.ar/fe/qr/especificaciones.asp
-    import qrcode
-    from general.base64 import b64encode
+
    
     # qrencode default parameters:
     qr_ver = 1

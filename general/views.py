@@ -1,6 +1,8 @@
 # -*- coding: utf-8 -*-
 from django.template import RequestContext,Context
 from django.shortcuts import *
+from easy_pdf.rendering import render_to_pdf_response, render_to_pdf
+
 from .models import *
 from .utilidades import *
 from django.views.generic import TemplateView,ListView,CreateView,UpdateView,FormView
@@ -491,6 +493,15 @@ def chequear_email(request,id):
 
 def codbar(request):
     cod = "272211991410600037040117046218920201016"
-    dv1= str(digVerificador(cod))   
-   
+    dv1= str(digVerificador(cod))
     return HttpResponse(dv1)
+
+
+def codqr(request):
+    from general.qr_generator import QRCodeGenerator
+    cod = "www.google.com"
+    qrcode, qrdata = QRCodeGenerator(data=cod).get_qrcode()
+    template = 'general/facturas/QR_test.html'
+    # return render_to_pdf(template, locals())
+    return render_to_pdf_response(request, template, locals())
+

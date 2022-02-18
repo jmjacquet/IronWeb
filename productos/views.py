@@ -1,6 +1,10 @@
 # -*- coding: utf-8 -*-
 from django.template import RequestContext,Context
 from django.shortcuts import *
+from easy_pdf.rendering import render_to_pdf_response
+
+from comprobantes.views import armarCodBar
+from general.qr_generator import QRCodeGenerator
 from .models import *
 from django.views.generic import TemplateView,ListView,CreateView,UpdateView,FormView,DetailView
 from django.conf import settings
@@ -723,6 +727,11 @@ def prod_precios_imprimirCBS(request):
                 mostrar_detalle = False
             
             precios = prod_producto_lprecios.objects.filter(id__in=lista).exclude(Q(producto__codigo_barras__isnull=True)|Q(producto__codigo_barras__exact=''))
+            lista_precios = []
+            for p in precios:
+                code_bar = armarCodBar(p.producto.codigo_barras)
+                lista_precios.append({'codbar': code_bar, 'datos': p.producto.codigo_barras,
+                                      'detalle': p.producto.__unicode__(), 'precio': p.precio_venta})
             lista_precios = [{'codbar':p.get_codbar,'codigo_barras':p.producto.codigo_barras,'detalle':p.producto.__unicode__(),'precio':p.precio_venta} for p in precios]
             lista_precios = [x for x in lista_precios for i in range(cantidad)] 
             context = {}
@@ -733,17 +742,52 @@ def prod_precios_imprimirCBS(request):
             fecha = datetime.now()
             context['fecha'] = fecha             
             template = 'productos/precios_codbars.html'                                    
-            from easy_pdf.rendering import render_to_pdf_response
-            return render_to_pdf_response(request, template, context)   
+            return render_to_pdf_response(request, template, context)
     except:
         messages.error(request, u'¡No se pudieron imprimir los CBs seleccionados!')        
         return HttpResponseRedirect(reverse('prod_precios_listado'))
 
-       
 
-    
-    
-   
+@login_required
+def prod_precios_imprimir_qrs(request):
+    limpiar_sesion(request)
+    lista = request.GET.getlist('id')
+    try:
+        initial_url = reverse("prod_buscar_datos")
+        cantidad = int(request.GET.get('cantidad', 0))
+        if cantidad > 0:
+            mostrar_precio = False
+            mostrar_detalle = False
+            try:
+                empresa = empresa_actual(request)
+                mostrar_precio = empresa.codbar_precio
+                mostrar_detalle = empresa.codbar_detalle
+            except:
+                empresa = None
+                mostrar_precio = False
+                mostrar_detalle = False
+
+            precios = prod_producto_lprecios.objects.filter(id__in=lista).exclude(
+                Q(producto__codigo_barras__isnull=True) | Q(producto__codigo_barras__exact=''))
+            lista_precios = []
+            for p in precios:
+                final_url = "{}?id={}".format(initial_url, p.producto.id)
+                qrcode, qrdata = QRCodeGenerator(data=final_url).get_qrcode()
+                lista_precios.append({'codbar': qrcode, 'datos': qrdata,
+                              'detalle': p.producto.__unicode__(), 'precio': p.precio_venta})
+            lista_precios = [x for x in lista_precios for i in range(cantidad)]
+            context = {}
+            context = getVariablesMixin(request)
+            context['precios'] = lista_precios
+            context['mostrar_precio'] = mostrar_precio
+            context['mostrar_detalle'] = mostrar_detalle
+            fecha = datetime.now()
+            context['fecha'] = fecha
+            template = 'productos/precios_qrs.html'
+            return render_to_pdf_response(request, template, context)
+    except:
+        messages.error(request, u'¡No se pudieron imprimir los QRs seleccionados!')
+        return HttpResponseRedirect(reverse('prod_precios_listado'))
 
 
 #************* PRods Stock **************
