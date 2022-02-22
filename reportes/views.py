@@ -773,7 +773,6 @@ def libro_iva_compras(request):
 
         cpbs = (
             cpb_comprobante.objects.filter(
-                cpb_tipo__libro_iva=True,
                 cpb_tipo__tipo__in=[1, 2, 3, 9, 21, 22, 23],
                 cpb_tipo__compra_venta="C",
                 empresa=empresa,
