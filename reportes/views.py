@@ -686,7 +686,6 @@ def libro_iva_ventas(request):
                 fecha_imputacion__gte=fdesde,
                 fecha_imputacion__lte=fhasta,
             )
-            .exclude(letra="X")
             .filter(Q(pto_vta__in=pto_vta_habilitados_list(request)) | Q(cpb_tipo__tipo=14))
             .select_related("cpb_tipo", "entidad")
         )
@@ -822,7 +821,7 @@ def libro_iva_compras(request):
             cpbs = cpbs.filter(pto_vta=pto_vta)
 
         if int(fact_x) == 1:
-            cpbs = cpbs.filter(cpb_tipo__libro_iva=True).exclude(letra="X")
+            cpbs = cpbs.filter(cpb_tipo__libro_iva=True)
 
         id_cpbs = [c.pk for c in cpbs]
         alicuotas = (
