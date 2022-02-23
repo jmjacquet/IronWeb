@@ -102,5 +102,32 @@ $('#btnImprimirCBS').click(function(){
 
 });
 
-      
+$('#btnImprimirQRS').click(function(){
+    //console.log(cpbs)
+    if (lista.length==0)
+      {
+           alertify.errorAlert("¡Debe seleccionar algún Producto!");
+           return true;
+      }
+    else {
+        alertify.prompt('IMPRESIÓN DE CÓDIGOS QR','Ingrese la Cantidad de cada Producto:','',
+        function(evt, value)
+        {
+            var cant = value;
+            if ((cant<=0)||(cant>50))
+            {
+                 alertify.errorAlert("La cantidad ingresada no es válida!");
+                 return true;
+            }
+            else{
+            window.open('/productos/prod_precios_imprimir_qrs?'+$('#btnActualizar').val()+'&cantidad='+cant);
+            return true;
+          }
+
+        },
+        function(){} ).set('labels', {ok:'Aceptar', cancel:'Cancelar'}).set('type', 'number');
+
+    }
+
+});
 });
