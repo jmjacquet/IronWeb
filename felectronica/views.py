@@ -74,7 +74,7 @@ def verificar_existencia_cae(request):
     from copy import deepcopy
 
     context = {}
-    context = getVariablesMixin(request) 
+    context = VariablesMixin().get_context_data(request=request)
     resultado = []
     if request.method == 'POST':
         form = ImportarCPBSForm(request.POST,request.FILES,request=request)

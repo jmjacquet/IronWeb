@@ -79,7 +79,7 @@ def cambiar_password(request):
         return render_to_response("general/varios/cambiar_password.html", variables)
 
 from django.views.generic import TemplateView,ListView
-from general.views import VariablesMixin,getVariablesMixin
+from general.views import VariablesMixin
 from django.utils.decorators import method_decorator
 from django.contrib.auth.decorators import login_required
 
@@ -116,12 +116,8 @@ def UsuarioCreateView(request):
     if not tiene_permiso(request,'gral_configuracion'):
             return redirect(reverse('usuarios'))
     context = {}
-    context = getVariablesMixin(request)    
-    try:
-        empresa = empresa_actual(request)
-    except gral_empresa.DoesNotExist:
-        empresa = None 
-      
+    context = VariablesMixin().get_context_data(request=request)
+    empresa = context['empresa']
     usuario = usuario_actual(request)
     if request.method == 'POST':
         form = UsuarioForm(request,usuario,request.POST,request.FILES)
@@ -142,12 +138,9 @@ def UsuarioEditView(request,id):
     if not tiene_permiso(request,'gral_configuracion'):
             return redirect(reverse('usuarios'))
     context = {}
-    context = getVariablesMixin(request)    
-    try:
-        empresa = empresa_actual(request)
-    except gral_empresa.DoesNotExist:
-        empresa = None 
-    usuario = usuario_actual(request)
+    context = VariablesMixin().get_context_data(request=request)
+    empresa = context['empresa']
+    usuario = context['usuario']
     
     usr = get_object_or_404(usu_usuario, id_usuario=id)
 

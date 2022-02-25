@@ -20,7 +20,7 @@ from decimal import *
 from modal.views import AjaxCreateView, AjaxUpdateView, AjaxDeleteView
 from django.contrib import messages
 from general.utilidades import *
-from general.views import VariablesMixin, getVariablesMixin
+from general.views import VariablesMixin
 from general.forms import pto_vta_habilitados, pto_vta_habilitados_list
 from usuarios.views import tiene_permiso
 from django.forms.models import inlineformset_factory, BaseInlineFormSet, formset_factory
@@ -74,14 +74,9 @@ def cta_cte_clientes(request, id=None):
     if not tiene_permiso(request, "rep_cta_cte_clientes"):
         return redirect(reverse("principal"))
     context = {}
-    context = getVariablesMixin(request)
-    try:
-        empresa = empresa_actual(request)
-    except gral_empresa.DoesNotExist:
-        empresa = None
-
+    context = VariablesMixin().get_context_data(request=request)
+    empresa = context['empresa']
     form = ConsultaCtaCteCliente(request.POST or None, empresa=empresa, id=id, request=request)
-
     cpbs = None
     total_debe = 0
     total_haber = 0
@@ -267,11 +262,8 @@ def cta_cte_proveedores(request, id=None):
         return redirect(reverse("principal"))
 
     context = {}
-    context = getVariablesMixin(request)
-    try:
-        empresa = empresa_actual(request)
-    except gral_empresa.DoesNotExist:
-        empresa = None
+    context = VariablesMixin().get_context_data(request=request)
+    empresa = context['empresa']
     form = ConsultaCtaCteProv(request.POST or None, empresa=empresa, id=id, request=request)
     cpbs = None
     total_debe = 0
@@ -660,11 +652,8 @@ def libro_iva_ventas(request):
     if not tiene_permiso(request, "rep_libro_iva"):
         return redirect(reverse("principal"))
     context = {}
-    context = getVariablesMixin(request)
-    try:
-        empresa = empresa_actual(request)
-    except gral_empresa.DoesNotExist:
-        empresa = None
+    context = VariablesMixin().get_context_data(request=request)
+    empresa = context['empresa']
     form = ConsultaLibroIVAVentas(request.POST or None, request=request)
     fecha = date.today()
     cpbs = None
@@ -754,11 +743,8 @@ def libro_iva_compras(request):
     if not tiene_permiso(request, "rep_libro_iva"):
         return redirect(reverse("principal"))
     context = {}
-    context = getVariablesMixin(request)
-    try:
-        empresa = empresa_actual(request)
-    except gral_empresa.DoesNotExist:
-        empresa = None
+    context = VariablesMixin().get_context_data(request=request)
+    empresa = context['empresa']
     form = ConsultaLibroIVACompras(request.POST or None, request=request)
     fecha = date.today()
     cpbs = None
@@ -1886,14 +1872,10 @@ def reporte_retenciones_imp(request):
     if not tiene_permiso(request, "rep_retenciones_imp"):
         return redirect(reverse("principal"))
     context = {}
-    context = getVariablesMixin(request)
-    try:
-        empresa = empresa_actual(request)
-    except gral_empresa.DoesNotExist:
-        empresa = None
+    context = VariablesMixin().get_context_data(request=request)
+    empresa = context['empresa']
     form = ConsultaRepRetencImp(request.POST or None, request=request)
     fecha = date.today()
-
     cpbs = rets = impuestos = None
     if form.is_valid():
         entidad = form.cleaned_data["entidad"]

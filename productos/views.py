@@ -15,7 +15,7 @@ from django.db import connection
 from django.core.urlresolvers import reverse
 from django.shortcuts import render_to_response,redirect
 from django.contrib import messages
-from general.views import VariablesMixin,ultimoNroId,getVariablesMixin
+from general.views import VariablesMixin,ultimoNroId
 from modal.views import AjaxCreateView,AjaxUpdateView,AjaxDeleteView
 from .forms import *
 from django.forms.models import inlineformset_factory,BaseInlineFormSet,formset_factory
@@ -715,14 +715,15 @@ def prod_precios_imprimirCBS(request):
     try:
         cantidad = int(request.GET.get('cantidad',0))
         if cantidad>0:
+            context = {}
+            context = VariablesMixin().get_context_data(request=request)
+            empresa = context['empresa']
             mostrar_precio = False
             mostrar_detalle = False
             try:
-                empresa = empresa_actual(request)
                 mostrar_precio = empresa.codbar_precio
                 mostrar_detalle = empresa.codbar_detalle
             except:
-                empresa = None 
                 mostrar_precio = False
                 mostrar_detalle = False
             
@@ -733,9 +734,7 @@ def prod_precios_imprimirCBS(request):
                 lista_precios.append({'codbar': code_bar, 'datos': p.producto.codigo_barras,
                                       'detalle': p.producto.__unicode__(), 'precio': p.precio_venta})
             lista_precios = [{'codbar':p.get_codbar,'codigo_barras':p.producto.codigo_barras,'detalle':p.producto.__unicode__(),'precio':p.precio_venta} for p in precios]
-            lista_precios = [x for x in lista_precios for i in range(cantidad)] 
-            context = {}
-            context = getVariablesMixin(request)          
+            lista_precios = [x for x in lista_precios for i in range(cantidad)]
             context['precios'] = lista_precios        
             context['mostrar_precio'] = mostrar_precio        
             context['mostrar_detalle'] = mostrar_detalle        
@@ -756,14 +755,15 @@ def prod_precios_imprimir_qrs(request):
         initial_url = reverse("prod_buscar_datos")
         cantidad = int(request.GET.get('cantidad', 0))
         if cantidad > 0:
+            context = {}
+            context = VariablesMixin().get_context_data(request=request)
+            empresa = context['empresa']
             mostrar_precio = False
             mostrar_detalle = False
             try:
-                empresa = empresa_actual(request)
                 mostrar_precio = empresa.codbar_precio
                 mostrar_detalle = empresa.codbar_detalle
             except:
-                empresa = None
                 mostrar_precio = False
                 mostrar_detalle = False
 
@@ -776,8 +776,6 @@ def prod_precios_imprimir_qrs(request):
                 lista_precios.append({'codbar': qrcode, 'datos': qrdata,
                               'detalle': p.producto.__unicode__(), 'precio': p.precio_venta})
             lista_precios = [x for x in lista_precios for i in range(cantidad)]
-            context = {}
-            context = getVariablesMixin(request)
             context['precios'] = lista_precios
             context['mostrar_precio'] = mostrar_precio
             context['mostrar_detalle'] = mostrar_detalle
@@ -990,7 +988,7 @@ def utf_8_encoder(unicode_csv_data):
 @login_required 
 def importar_productos(request):               
     context = {}
-    context = getVariablesMixin(request) 
+    context = VariablesMixin().get_context_data(request=request)
     if request.method == 'POST':
         form = ImportarProductosForm(request.POST,request.FILES,request=request)
         if form.is_valid(): 

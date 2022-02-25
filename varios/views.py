@@ -21,7 +21,7 @@ from modal.views import AjaxCreateView,AjaxUpdateView,AjaxDeleteView
 from django.contrib import messages
 from general.utilidades import *
 from general.models import gral_empresa
-from general.views import VariablesMixin,getVariablesMixin
+from general.views import VariablesMixin
 from usuarios.views import tiene_permiso
 from django.forms.models import inlineformset_factory,BaseInlineFormSet,modelformset_factory
 from productos.models import prod_productos,prod_producto_ubicac,prod_producto_lprecios
@@ -2232,7 +2232,7 @@ def imprimir_detalles(request):
     id_cpbs = [int(x) for x in request.GET.getlist('id_cpb')]        
     cpbs_detalles = cpb_comprobante_detalle.objects.filter(cpb_comprobante__id__in=id_cpbs,cpb_comprobante__empresa = empresa_actual(request)).order_by('cpb_comprobante__fecha_cpb','producto__nombre')
     context = {}
-    context = getVariablesMixin(request)  
+    context = VariablesMixin().get_context_data(request)
     context['cpbs_detalles'] = cpbs_detalles
     fecha = datetime.now()        
     context['fecha'] = fecha 

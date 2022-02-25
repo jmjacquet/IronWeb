@@ -11,7 +11,7 @@ from django.db import connection
 from django.core.urlresolvers import reverse
 from django.shortcuts import render_to_response,redirect
 from django.contrib import messages
-from general.views import VariablesMixin,ultimoNroId,getVariablesMixin
+from general.views import VariablesMixin,ultimoNroId
 from usuarios.views import tiene_permiso
 from general.utilidades import *
 from modal.views import AjaxCreateView,AjaxUpdateView,AjaxDeleteView
@@ -358,7 +358,7 @@ def utf_8_encoder(unicode_csv_data):
 @login_required 
 def importar_entidades(request):               
     context = {}
-    context = getVariablesMixin(request) 
+    context = VariablesMixin().get_context_data(request=request)
     if request.method == 'POST':
         form = ImportarEntidadesForm(request.POST,request.FILES,request=request)
         if form.is_valid(): 
