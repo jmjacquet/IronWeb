@@ -44,15 +44,16 @@ class CPBSVentasList(VariablesMixin,ListView):
 
     def get_context_data(self, **kwargs):
         context = super(CPBSVentasList, self).get_context_data(**kwargs)
-        try:
-            empresa = empresa_actual(self.request)
-        except gral_empresa.DoesNotExist:
-            empresa = None 
-        form = ConsultaCpbs(self.request.POST or None,empresa=empresa,request=self.request)   
-        comprobantes = cpb_comprobante.objects.filter(cpb_tipo__tipo__in=[1,2,3,9,14,21,22,23],cpb_tipo__compra_venta='V'\
-            ,empresa=empresa).filter(Q(pto_vta__in=pto_vta_habilitados_list(self.request)) | Q(cpb_tipo__tipo=14))
+        empresa = context['empresa']
+        form = ConsultaCpbs(self.request.POST or None,empresa=empresa,request=self.request)
+
+        comprobantes = cpb_comprobante.objects.filter(cpb_tipo__tipo__in=[1, 2, 3, 9, 14, 21, 22, 23],
+                                                      cpb_tipo__compra_venta='V',
+                                                      empresa=empresa)\
+            .filter(Q(pto_vta__in=pto_vta_habilitados_list(self.request)) | Q(cpb_tipo__tipo=14))
+
         comprobantes = comprobantes.annotate(cobranzas=Count('cpb_cobranza_factura'))\
-                        .select_related('estado','cpb_tipo','entidad','vendedor','id_cpb_padre')                        
+            .select_related('estado', 'cpb_tipo', 'entidad', 'vendedor', 'id_cpb_padre')
 
         if form.is_valid():                                
             entidad = form.cleaned_data['entidad']                                                              
@@ -66,11 +67,11 @@ class CPBSVentasList(VariablesMixin,ListView):
 
             
             if int(estado) == 1:                
-                comprobantes = comprobantes.filter(estado__in=[1,2,3])
+                comprobantes = comprobantes.filter(estado__in=[1, 2, 3])
             elif int(estado) == 2:
                 comprobantes = comprobantes.filter(estado__in=[3])
             else:
-                comprobantes = comprobantes.filter(estado__in=[1,2])
+                comprobantes = comprobantes.filter(estado__in=[1, 2])
 
             if int(cae)!=0:
                 no_tiene = (cae=='2')                
@@ -89,14 +90,15 @@ class CPBSVentasList(VariablesMixin,ListView):
             if letra:
                 comprobantes= comprobantes.filter(letra=letra) 
         else:
-            cpbs= comprobantes.filter(fecha_cpb__gte=inicioMesAnt(),fecha_cpb__lte=finMes(),estado__in=[1,2])            
-            if len(cpbs)==0:
-                cpbs = comprobantes.filter(estado__in=[1,2])[:20]                         
+            cpbs= comprobantes.filter(fecha_cpb__gte=inicioMesAnt(), fecha_cpb__lte=finMes(), estado__in=[1, 2])
+            if not cpbs.exists():
+                cpbs = comprobantes.filter(estado__in=[1, 2])[:20]
             comprobantes=cpbs
 
         context['form'] = form
         context['comprobantes'] = comprobantes
         return context
+
     def post(self, *args, **kwargs):
         return self.get(*args, **kwargs)
 
@@ -988,7 +990,7 @@ class CPBRemitoViewList(VariablesMixin,ListView):
                 comprobantes= comprobantes.filter(Q(pto_vta=pto_vta)) 
         else:            
             cpbs= comprobantes.filter(fecha_cpb__gte=inicioMesAnt(),fecha_cpb__lte=finMes())
-            if len(cpbs)==0:
+            if not cpbs.exists():
                 cpbs = comprobantes[:20]            
             comprobantes=cpbs
 

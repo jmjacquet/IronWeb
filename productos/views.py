@@ -752,7 +752,6 @@ def prod_precios_imprimir_qrs(request):
     limpiar_sesion(request)
     lista = request.GET.getlist('id')
     try:
-        initial_url = reverse("prod_buscar_datos")
         cantidad = int(request.GET.get('cantidad', 0))
         if cantidad > 0:
             context = {}
@@ -771,7 +770,9 @@ def prod_precios_imprimir_qrs(request):
                 Q(producto__codigo_barras__isnull=True) | Q(producto__codigo_barras__exact=''))
             lista_precios = []
             for p in precios:
-                final_url = "{}?id={}".format(initial_url, p.producto.id)
+                final_url = request.build_absolute_uri(
+                    reverse("producto_detalle_qr", kwargs={"id": p.producto.id})
+                )
                 qrcode, qrdata = QRCodeGenerator(data=final_url).get_qrcode()
                 lista_precios.append({'codbar': qrcode, 'datos': qrdata,
                               'detalle': p.producto.__unicode__(), 'precio': p.precio_venta})
@@ -1184,5 +1185,25 @@ def prod_consultar_detalles(request):
    # struct = json.loads(data)
    # d['prod_stock']= json.dumps(struct[0])
 
-   return HttpResponse( json.dumps(d,cls=DjangoJSONEncoder), content_type='application/json' ) 
-    
+   return HttpResponse( json.dumps(d,cls=DjangoJSONEncoder), content_type='application/json' )
+
+
+class ProductosDetalleQRView(VariablesMixin, DetailView):
+    model = prod_productos
+    pk_url_kwarg = 'id'
+    context_object_name = 'producto'
+    template_name = 'productos/detalle_producto_qr.html'
+
+    def get_context_data(self, **kwargs):
+        context = super(ProductosDetalleQRView, self).get_context_data(**kwargs)
+        try:
+            prod_stock = prod_producto_ubicac.objects.filter(producto=self.object)
+        except prod_stock.DoesNotExist:
+            prod_stock = None
+        try:
+            prod_precios = prod_producto_lprecios.objects.filter(producto=self.object)
+        except prod_precios.DoesNotExist:
+            prod_precios = None
+        context['prod_precios'] = prod_precios
+        context['prod_stock'] = prod_stock
+        return context

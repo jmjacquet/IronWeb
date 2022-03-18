@@ -52,5 +52,6 @@ urlpatterns = patterns('productos.views',
 
     url(r'^prod_buscar_datos/$', prod_buscar_datos, name="prod_buscar_datos"),
     url(r'^prod_consultar_detalles/$', 'prod_consultar_detalles', name='prod_consultar_detalles'),
+    url(r'^producto_detalle_qr/(?P<id>\d+)/$', ProductosDetalleQRView.as_view(), name="producto_detalle_qr"),
 
-    )
+)

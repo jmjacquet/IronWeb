@@ -44,10 +44,10 @@ if TESTING: #Covers regular testing and django-coverage
             }
         }
         
-# INSTALLED_APPS += (
-#    # 'debug_toolbar',   
-#     'compressor' ,
-# )
+INSTALLED_APPS += (
+   'debug_toolbar',
+    # 'compressor' ,
+)
 
 # STATICFILES_FINDERS += (
 #     'compressor.finders.CompressorFinder',
