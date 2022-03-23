@@ -259,6 +259,7 @@ var tabla = $('#dataTables-percep').DataTable({
               footer: false
               },
             responsive: false,
+
             //dom: 'Bfrtlip',
             dom: "Bf<'row'<'col-sm-12'tr>>"+"<'row'<'col-sm-3'l><'col-sm-9'ip>>",
             buttons: [
@@ -388,11 +389,12 @@ var tabla = $('#dataTables-percep').DataTable({
             };
             pageTotal = api.column(6, { page: 'current'} ).data().reduce( function (a, b) {return floatVal(a) + floatVal(b);}, 0 );
             $( api.column(6).footer() ).html('$'+pageTotal.toLocaleString(undefined,{minimumFractionDigits:2}));      
-        }
+        },
+
         });
 
 
-var tabla = $('#dataTables-retenc').DataTable({
+var tabla2 = $('#dataTables-retenc').DataTable({
             "language": {
                 "decimal": ",",
                 "thousands": ".",                
@@ -568,7 +570,7 @@ var tabla = $('#dataTables-retenc').DataTable({
         }
         });
 {% if empresa.usa_impuestos %}
-var tabla = $('#dataTables-impuestos').DataTable({
+var tabla3 = $('#dataTables-impuestos').DataTable({
             "language": {
                 "decimal": ",",
                 "thousands": ".",                

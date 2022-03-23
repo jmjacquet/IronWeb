@@ -679,4 +679,4 @@ def GenerarQR(ver=1,
 
 # if "--prueba" in sys.argv:
 #     qr_data_test = json.loads(base64.b64decode(TEST_QR_DATA))
-#     qr_data_gen = json.loads(base64.b64decode(url[33:]))    
+#     qr_data_gen = json.loads(base64.b64decode(url[33:]))

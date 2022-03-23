@@ -178,7 +178,11 @@ LOGGING = {
         #     'handlers': ['console'],
         #     'level': 'DEBUG',
         # },
-        
+        # 'django.db.backends': {
+        #     'level': 'DEBUG',
+        #     'handlers': ['console', ],
+        # },
+
         'general': {
             'handlers': ['logfile'],
             'level': 'DEBUG',
@@ -207,3 +211,16 @@ MESSAGE_TAGS = {message_constants.DEBUG: 'debug',
                 message_constants.SUCCESS: 'success',
                 message_constants.WARNING: 'warning',
                 message_constants.ERROR: 'error',} 
+
+#
+# CACHES = {
+#     'default': {
+#         'BACKEND': 'django.core.cache.backends.memcached.MemcachedCache',
+#         # 'LOCATION': 'unix:/home/grupogua/apps/server_apache/memcached.sock',
+#         # 'LOCATION': 'cache:11211',
+#         'LOCATION': 'unix:/tmp/memcached.sock',
+#         'KEY_PREFIX': ENTIDAD_DB+'_'
+#
+#     }
+# }
+

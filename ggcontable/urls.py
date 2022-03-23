@@ -7,7 +7,7 @@ from usuarios.views import *
 from .views import login,logout,volverHome,alive
 
 
-urlpatterns = [    
+urlpatterns = [
     url(r'^', include('general.urls')),    
     url(r'^felectronica/', include('felectronica.urls')),
     url(r'^usuarios/', include('usuarios.urls')),
