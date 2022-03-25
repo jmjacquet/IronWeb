@@ -49,6 +49,7 @@
                                 <th class="no-sort text-center" data-priority="1"></th>
                                 <th class="no-sort text-center" data-priority="1"> <input type="checkbox" id="checkall" title="Seleccionar Todas"/></th>
                                 <th class="imprimir" data-priority="1">Producto</th>
+                                <th class="imprimir" data-priority="3">CodBar</th>
                                 <th class="imprimir" data-priority="3">Categoría</th>
                                 <th class="imprimir" data-priority="3">TipoProd.</th>                                                                
                                 <th class="imprimir text-right" data-priority="1">Costo</th>
@@ -81,8 +82,9 @@
                                         <input class="hidden" value="{{pp.pk|safe}}" id="chk_{{forloop.counter0}}_id" /><input type="checkbox" class='tildado precios' id="chk_{{forloop.counter0}}"/>
                                     </td> 
                                     <td title="{{pp.producto}}"><a href="{% url 'producto_ver' id=pp.producto.pk %}" class="modal-detail" data-modal-head="DETALLE PRODUCTO {{pp.producto.codigo}}" data-modal-callback="reload"><strong>{{pp.producto|truncatechars:60}}</strong></a></td>
-                                    <td>{{ pp.producto.categoria|default_if_none:''|truncatechars:40 }}</td>                                
-                                    <td>{{ pp.producto.get_tipo_producto_display|default_if_none:'' }}</td>                                                                    
+                                    <td>{{ pp.producto.codigo_barras|default_if_none:''|truncatechars:40 }}</td>
+                                    <td>{{ pp.producto.categoria|default_if_none:''|truncatechars:40 }}</td>
+                                    <td>{{ pp.producto.get_tipo_producto_display|default_if_none:'' }}</td>
                                     <td class="importe">${{pp.precio_costo|default_if_none:0|floatformat:2}}</td>                                                                     
                                     <td class="importe">${{pp.precio_cimp|default_if_none:0|floatformat:2}}</td>                                                                     
                                     <td class="importe">{{pp.coef_ganancia|default_if_none:0|floatformat:2}}</td>                                                                     
@@ -97,6 +99,7 @@
                         <tfoot>
                             <tr>
                                 <th></th> 
+                                <th></th>
                                 <th></th>
                                 <th></th>
                                 <th></th>
@@ -264,7 +267,7 @@ var tabla = $('#dataTables-lprecios').DataTable({
             },
             initComplete: function () {
                // this.api().columns().every( function () {[0, 1, 9]
-                this.api().columns([3,4]).every( function () {
+                this.api().columns([4,5]).every( function () {
                     var column = this;
                     var select = $('<select class="form-control"><option value="">Todos</option></select>')
                         .appendTo( $(column.footer()).empty() )
@@ -316,24 +319,12 @@ var tabla = $('#dataTables-lprecios').DataTable({
                 }
             };
                         
-            
-            pageTotal = api.column(5, { page: 'current'} ).data().reduce( function (a, b) {return floatVal(a) + floatVal(b);}, 0 );            
-            $( api.column(5).footer() ).html('$'+pageTotal.toLocaleString(undefined,{minimumFractionDigits:2}));
-            
-            pageTotal = api.column(6, { page: 'current'} ).data().reduce( function (a, b) {return floatVal(a) + floatVal(b);}, 0 );            
-            $( api.column(6).footer() ).html('$'+pageTotal.toLocaleString(undefined,{minimumFractionDigits:2}));
+            let col_tot_sum =[6, 7, 9 {% if empresa.usa_impuestos %},10, 11{% endif %}]
+            col_tot_sum.forEach(function (col_number) {
+                pageTotal = api.column(col_number, { page: 'current'} ).data().reduce( function (a, b) {return floatVal(a) + floatVal(b);}, 0 );
+                $( api.column(col_number).footer() ).html('$'+pageTotal.toLocaleString(undefined,{minimumFractionDigits:2}));
+            });
 
-            pageTotal = api.column(8, { page: 'current'} ).data().reduce( function (a, b) {return floatVal(a) + floatVal(b);}, 0 );            
-            $( api.column(8).footer() ).html('$'+pageTotal.toLocaleString(undefined,{minimumFractionDigits:2}));
-            {% if empresa.usa_impuestos %}
-            pageTotal = api.column(9, { page: 'current'} ).data().reduce( function (a, b) {return floatVal(a) + floatVal(b);}, 0 );            
-            $( api.column(9).footer() ).html('$'+pageTotal.toLocaleString(undefined,{minimumFractionDigits:2}));
-
-            pageTotal = api.column(10, { page: 'current'} ).data().reduce( function (a, b) {return floatVal(a) + floatVal(b);}, 0 );            
-            $( api.column(10).footer() ).html('$'+pageTotal.toLocaleString(undefined,{minimumFractionDigits:2}));
-
-            {% endif %}
-            
         }
         });
 

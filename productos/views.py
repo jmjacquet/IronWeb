@@ -762,18 +762,19 @@ def prod_precios_imprimir_qrs(request):
             try:
                 mostrar_precio = empresa.codbar_precio
                 mostrar_detalle = empresa.codbar_detalle
+                qr_codbar = empresa.codbar_tipo == "prod_codbar" or not empresa.codbar_tipo
             except:
                 mostrar_precio = False
                 mostrar_detalle = False
+                qr_codbar = True
 
             precios = prod_producto_lprecios.objects.filter(id__in=lista).exclude(
                 Q(producto__codigo_barras__isnull=True) | Q(producto__codigo_barras__exact=''))
             lista_precios = []
             for p in precios:
-                final_url = request.build_absolute_uri(
-                    reverse("producto_detalle_qr", kwargs={"id": p.producto.id})
-                )
-                qrcode, qrdata = QRCodeGenerator(data=final_url).get_qrcode()
+                tipo_qr = TipoQR(p.producto)
+                qr_content = tipo_qr.get_codbar() if qr_codbar else tipo_qr.get_qr_url(request)
+                qrcode, qrdata = QRCodeGenerator(data=qr_content).get_qrcode()
                 lista_precios.append({'codbar': qrcode, 'datos': qrdata,
                               'detalle': p.producto.__unicode__(), 'precio': p.precio_venta})
             lista_precios = [x for x in lista_precios for i in range(cantidad)]

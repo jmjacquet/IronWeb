@@ -4,6 +4,7 @@ import calendar
 from django.contrib import messages
 from django.conf import settings
 from django.contrib.messages import constants as message_constants
+from django.core.urlresolvers import reverse
 from django.forms import Widget
 from django.utils.safestring import mark_safe
 import qrcode
@@ -24,7 +25,20 @@ EMAIL_CONTACTO = 'contacto@ironweb.com.ar'
 
 label_todos = 'Todos/as'
 
-SINO = (    
+
+class TipoQR:
+    def __init__(self, prod):
+        self.producto = prod
+
+    def get_codbar(self):
+        return self.producto.codigo_barras or ""
+
+    def get_qr_url(self, request):
+        return request.build_absolute_uri(
+                    reverse("producto_detalle_qr", kwargs={"id": self.producto.id})
+                )
+
+SINO = (
     (0, u''),
     (1, u'S'),
     (2, u'N'),

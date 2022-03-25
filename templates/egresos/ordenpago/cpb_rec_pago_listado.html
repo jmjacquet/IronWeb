@@ -289,12 +289,11 @@ var tabla = $('#dataTables-pagos').DataTable({
                     return 0
                 }
             };
-            pageTotal = api.column(4, { page: 'current'} ).data().reduce( function (a, b) {return floatVal(a) + floatVal(b);}, 0 );            
-            $( api.column(4).footer() ).html('$'+pageTotal.toLocaleString(undefined,{minimumFractionDigits:2}));
-            pageTotal = api.column(5, { page: 'current'} ).data().reduce( function (a, b) {return floatVal(a) + floatVal(b);}, 0 );            
-            $( api.column(5).footer() ).html('$'+pageTotal.toLocaleString(undefined,{minimumFractionDigits:2}));
-            pageTotal = api.column(6, { page: 'current'} ).data().reduce( function (a, b) {return floatVal(a) + floatVal(b);}, 0 );            
-            $( api.column(6).footer() ).html('$'+pageTotal.toLocaleString(undefined,{minimumFractionDigits:2}));
+            let col_tot_sum =[4, 5, 6]
+            col_tot_sum.forEach(function (col_number) {
+                pageTotal = api.column(col_number, { page: 'current'} ).data().reduce( function (a, b) {return floatVal(a) + floatVal(b);}, 0 );
+                $( api.column(col_number).footer() ).html('$'+pageTotal.toLocaleString(undefined,{minimumFractionDigits:2}));
+            });
         }
         });
 

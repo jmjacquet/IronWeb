@@ -200,20 +200,12 @@ var tabla = $('#dataTables-cpb_compra').DataTable({
                     return 0
                 }
             };
-            pageTotal = api.column(8, { page: 'current'} ).data().reduce( function (a, b) {return floatVal(a) + floatVal(b);}, 0 );            
-            $( api.column(8).footer() ).html('$'+pageTotal.toLocaleString(undefined,{minimumFractionDigits:2}));
-            
-            pageTotal = api.column(9, { page: 'current'} ).data().reduce( function (a, b) {return floatVal(a) + floatVal(b);}, 0 );            
-            $( api.column(9).footer() ).html('$'+pageTotal.toLocaleString(undefined,{minimumFractionDigits:2}));
+            let col_tot_sum =[8, 9, 10, 11, 12]
+            col_tot_sum.forEach(function (col_number) {
+                pageTotal = api.column(col_number, { page: 'current'} ).data().reduce( function (a, b) {return floatVal(a) + floatVal(b);}, 0 );
+                $( api.column(col_number).footer() ).html('$'+pageTotal.toLocaleString(undefined,{minimumFractionDigits:2}));
+            });
 
-            pageTotal = api.column(10, { page: 'current'} ).data().reduce( function (a, b) {return floatVal(a) + floatVal(b);}, 0 );            
-            $( api.column(10).footer() ).html('$'+pageTotal.toLocaleString(undefined,{minimumFractionDigits:2}));
-
-            pageTotal = api.column(11, { page: 'current'} ).data().reduce( function (a, b) {return floatVal(a) + floatVal(b);}, 0 );            
-            $( api.column(11).footer() ).html('$'+pageTotal.toLocaleString(undefined,{minimumFractionDigits:2}));
-
-            pageTotal = api.column(12, { page: 'current'} ).data().reduce( function (a, b) {return floatVal(a) + floatVal(b);}, 0 );            
-            $( api.column(12).footer() ).html('$'+pageTotal.toLocaleString(undefined,{minimumFractionDigits:2}));
 
             }
         });

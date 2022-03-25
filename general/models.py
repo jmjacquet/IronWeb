@@ -13,6 +13,11 @@ from django.core.files.storage import default_storage
 
 #Tabla de la Base de Configuracion
 
+TIPO_CODBAR = (
+    ("Barcode", "Barcode"),
+    ("QRCode", "QRCode"),
+)
+
 
 class gral_afip_categorias(models.Model):
     id = models.AutoField(primary_key=True,db_index=True)    
@@ -76,6 +81,7 @@ class gral_empresa(models.Model):
 
     codbar_precio = models.BooleanField(u'Precio en Etiquetas CB',default=False)
     codbar_detalle = models.BooleanField(u'Detalle en Etiquetas CB',default=False)
+    codbar_tipo = models.CharField('Tipo CodBar',max_length=20,blank=True, null=True) # prod_codbar or prod_url
     
     cbu = models.CharField('CBU',max_length=100, blank=True)
     #cbu_alias = models.CharField('Alias CBU',max_length=20, blank=True)
@@ -84,7 +90,7 @@ class gral_empresa(models.Model):
         db_table = 'gral_empresa'
 
     def __unicode__(self):
-        return u'%s' % (self.nombre_fantasia)
+        return u'%s' % self.nombre_fantasia
 
     def get_dias_venc(self):
         if self.dias_vencimiento_cpbs:

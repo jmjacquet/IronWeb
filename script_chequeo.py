@@ -4,9 +4,9 @@
 # import the MySQLdb and sys modules
 import MySQLdb
 import sys
-host = "web594.webfaction.com"
-user = "gg"
-passwd = "battlehome"
+host = "opal3.opalstack.com"
+user = "gg_ironweb"
+passwd = "Sarasa9090!"
 UPDATE_DELETE = True
 # BASES_EXCEPTUADAS = ('gg_gestion','gg_configuracion','gg_multeo')
 # LISTA_BASES = "SELECT SCHEMA_NAME FROM `SCHEMATA` WHERE (SCHEMA_NAME LIKE 'gg_%') AND (SCHEMA_NAME NOT IN "+str(BASES_EXCEPTUADAS)+");"
@@ -21,7 +21,9 @@ connection = MySQLdb.connect (host = host, user = user, passwd = passwd, db = "i
 # # close the connection
 # connection.close ()
 # lista_dbs = list(row)
-lista_dbs = ['ironweb_410','ironweb_411','ironweb_412','ironweb_413','ironweb_414','ironweb_415','ironweb_416','ironweb_417','ironweb_418','ironweb_419','ironweb_420']
+lista_dbs = ['ironweb_prueba', 'ironweb_brolcazsrl', 'ironweb_cirugiamf', 'ironweb_cornercorto',
+			 'ironweb_digra', 'ironweb_estudioguarrera', 'ironweb_labartoladeco',
+			 'ironweb_laboralsaludsf', 'ironweb_sucec']
 
 #SCRIPT_EJECUCION = "INSERT INTO `configuracion_vars` VALUES(1, 'pago_online', 'Variable de PAGO ONLine a Cajero24', NULL, 'N', NULL);"
 #SCRIPT_EJECUCION =INSERT INTO `configuracion_vars` VALUES(2, 'NoComercio', 'Variable de Entidad para Cajero24 ', NULL, NULL, NULL);"
@@ -30,7 +32,8 @@ lista_dbs = ['ironweb_410','ironweb_411','ironweb_412','ironweb_413','ironweb_41
 #SCRIPT_EJECUCION = "INSERT INTO `configuracion_vars` VALUES(5, 'dri_cartel_inicio', 'Cartel que aparece al Liquidar DReI', NULL, NULL, NULL);"
 #SCRIPT_EJECUCION = "DELETE FROM `django_session`;"
 #SCRIPT_EJECUCION = "ALTER TABLE tributo ADD COLUMN CORRER_VENC_FDESDE DATE NULL;"
-SCRIPT_EJECUCION = "ALTER TABLE `gral_empresa` ADD `cbu_alias` VARCHAR(20) NULL;"
+SCRIPT_EJECUCION = "ALTER TABLE `gral_empresa` ADD `codbar_tipo` VARCHAR(20) NULL;"
+# SCRIPT_EJECUCION = "SELECT nombre FROM `gral_empresa`;"
 
 print "##############################################"
 print SCRIPT_EJECUCION

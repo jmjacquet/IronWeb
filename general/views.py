@@ -65,30 +65,30 @@ def buscarDatosAPICUIT(request):
     d= []
    return HttpResponse( json.dumps(d), content_type='application/json' ) 
 
+
 @login_required 
 def buscarDatosEmpresa(request):      
-   d= {}
-   try:
-       empresa = empresa_actual(request)   
-       d['nombre']= empresa.nombre
-       d['categ_fiscal']= empresa.categ_fiscal
-       d['cuit']= empresa.cuit
-       d['iibb']= empresa.iibb
-       d['fecha_inicio_activ']= str(empresa.fecha_inicio_activ)
-       d['domicilio']= empresa.domicilio
-       d['provincia']= empresa.provincia
-       d['localidad']= empresa.localidad
-       d['cod_postal']= empresa.cod_postal
-       d['email']= empresa.email
-       d['telefono']= empresa.telefono
-       d['celular']= empresa.celular
-
-       d['nombre_fantasia']= empresa.nombre_fantasia
-       d['ruta_logo']= empresa.ruta_logo
-       d['tipo_logo_factura']= empresa.tipo_logo_factura
-   except:
-       pass
-   return HttpResponse( json.dumps(d,cls=DecimalEncoder), content_type='application/json' ) 
+    d = {}
+    try:
+        empresa = empresa_actual(request)
+        d['nombre']= empresa.nombre
+        d['categ_fiscal']= empresa.categ_fiscal
+        d['cuit']= empresa.cuit
+        d['iibb']= empresa.iibb
+        d['fecha_inicio_activ']= str(empresa.fecha_inicio_activ)
+        d['domicilio']= empresa.domicilio
+        d['provincia']= empresa.provincia
+        d['localidad']= empresa.localidad
+        d['cod_postal']= empresa.cod_postal
+        d['email']= empresa.email
+        d['telefono']= empresa.telefono
+        d['celular']= empresa.celular
+        d['nombre_fantasia']= empresa.nombre_fantasia
+        d['ruta_logo']= empresa.ruta_logo
+        d['tipo_logo_factura']= empresa.tipo_logo_factura
+    except Exception as e:
+        d = e.message
+    return HttpResponse(json.dumps(d, cls=DecimalEncoder), content_type='application/json' )
 
 
 
