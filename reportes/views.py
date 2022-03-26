@@ -1294,10 +1294,39 @@ class vencimientos_cpbs(VariablesMixin, ListView):
         form = ConsultaVencimientos(self.request.POST or None, empresa=empresa, request=self.request)
         fecha = date.today()
 
-        comprobantes = (
-            cpb_comprobante.objects.filter(cpb_tipo__tipo__in=[1, 2, 3, 4, 5, 6, 7, 9, 14], empresa=empresa)
-            .order_by("-fecha_vto", "-fecha_cpb", "-id")
-            .select_related("estado", "entidad", "cpb_tipo", "vendedor")
+        if form.is_valid():
+            entidad = form.cleaned_data["entidad"]
+            fdesde = form.cleaned_data["fdesde"]
+            fhasta = form.cleaned_data["fhasta"]
+            pto_vta = form.cleaned_data["pto_vta"]
+            estado = form.cleaned_data["estado"]
+            tipo_cpb = form.cleaned_data["tipo_cpb"]
+            cae = form.cleaned_data["cae"]
+            filtros = {}
+            if int(estado) == 0:
+                filtros["estado__in"]=[1, 2]
+            elif int(estado) == 2:
+                filtros["estado__in"]=[3]
+            else:
+                filtros["estado__in"]=[1, 2, 3]
+            if tipo_cpb:
+                filtros["tipo_cpb"] = tipo_cpb
+            if fdesde:
+                filtros["fecha_cpb__gte"] = fdesde
+            if fhasta:
+                filtros["fecha_cpb__lte"] = fhasta
+            if entidad:
+                filtros["entidad__apellido_y_nombre__icontains"] = entidad
+            if pto_vta:
+                filtros["pto_vta"] = pto_vta
+            if int(cae) != 0:
+                filtros["cae_vto__isnull"] = cae == "2"
+
+            comprobantes = cpb_comprobante.objects.filter(cpb_tipo__tipo__in=[1, 2, 3, 4, 5, 6, 7, 9, 14],
+                                           empresa=empresa,
+                                           **filtros
+            ).order_by("-fecha_vto", "-fecha_cpb", "-id")\
+            .select_related("estado", "entidad", "cpb_tipo", "vendedor")\
             .only(
                 "id",
                 "pto_vta",
@@ -1324,39 +1353,6 @@ class vencimientos_cpbs(VariablesMixin, ListView):
                 "entidad__nro_doc",
                 "entidad__fact_categFiscal",
             )
-        )
-
-        if form.is_valid():
-            entidad = form.cleaned_data["entidad"]
-            fdesde = form.cleaned_data["fdesde"]
-            fhasta = form.cleaned_data["fhasta"]
-            pto_vta = form.cleaned_data["pto_vta"]
-            estado = form.cleaned_data["estado"]
-            tipo_cpb = form.cleaned_data["tipo_cpb"]
-            cae = form.cleaned_data["cae"]
-
-            if int(estado) == 0:
-                comprobantes = comprobantes.filter(estado__in=[1, 2])
-            elif int(estado) == 2:
-                comprobantes = comprobantes.filter(estado__in=[3])
-            else:
-                comprobantes = comprobantes.filter(estado__in=[1, 2, 3])
-
-            if tipo_cpb:
-                comprobantes = comprobantes.filter(cpb_tipo=tipo_cpb)
-
-            if fdesde:
-                comprobantes = comprobantes.filter(fecha_cpb__gte=fdesde)
-            if fhasta:
-                comprobantes = comprobantes.filter(fecha_cpb__lte=fhasta)
-            if entidad:
-                comprobantes = comprobantes.filter(entidad__apellido_y_nombre__icontains=entidad)
-            if pto_vta:
-                comprobantes = comprobantes.filter(pto_vta=pto_vta)
-
-            if int(cae) != 0:
-                no_tiene = cae == "2"
-                comprobantes = comprobantes.filter(cae_vto__isnull=no_tiene)
         else:
             comprobantes = None
 
@@ -1477,7 +1473,7 @@ class ProdHistoricoView(VariablesMixin, ListView):
 
         form = ConsultaHistStockProd(self.request.POST or None)
 
-        movimientos = cpb_comprobante_detalle.objects.none()
+        movimientos = None
         # movimientos = cpb_comprobante_detalle.objects.filter(cpb_comprobante__empresa=empresa,cpb_comprobante__fecha_cpb=hoy()).select_related('producto','cpb_comprobante').order_by('producto')
 
         if form.is_valid():
@@ -1491,14 +1487,14 @@ class ProdHistoricoView(VariablesMixin, ListView):
                 cpb_comprobante__empresa=empresa,
                 cpb_comprobante__fecha_cpb__gte=fdesde,
                 cpb_comprobante__fecha_cpb__lte=fhasta,
-            ).order_by("-cpb_comprobante__fecha_cpb", "-cpb_comprobante__id", "-producto")
+            )
 
             if producto:
                 movimientos = movimientos.filter(Q(producto__nombre__icontains=producto))
 
             movimientos = movimientos.select_related(
                 "cpb_comprobante", "cpb_comprobante__cpb_tipo", "producto", "producto__categoria"
-            )
+            ).order_by("-cpb_comprobante__fecha_cpb", "-cpb_comprobante__id", "-producto")
 
         context["form"] = form
         context["movimientos"] = movimientos
@@ -1725,7 +1721,7 @@ class costo_producto_vendidoView(VariablesMixin, ListView):
 
         form = ConsultaHistStockProd(self.request.POST or None)
 
-        movimientos = cpb_comprobante_detalle.objects.none()
+        movimientos = None
         # movimientos = cpb_comprobante_detalle.objects.filter(cpb_comprobante__empresa=empresa,cpb_comprobante__fecha_cpb=hoy()).select_related('producto','cpb_comprobante').order_by('producto')
 
         if form.is_valid():
@@ -1740,14 +1736,10 @@ class costo_producto_vendidoView(VariablesMixin, ListView):
                 cpb_comprobante__empresa=empresa,
                 cpb_comprobante__fecha_cpb__gte=fdesde,
                 cpb_comprobante__fecha_cpb__lte=fhasta,
-            ).order_by("-cpb_comprobante__fecha_cpb", "-cpb_comprobante__id", "-producto")
+            ).select_related("cpb_comprobante", "cpb_comprobante__cpb_tipo", "producto", "producto__categoria")
 
             if producto:
                 movimientos = movimientos.filter(Q(producto__nombre__icontains=producto))
-
-            movimientos = movimientos.select_related(
-                "cpb_comprobante", "cpb_comprobante__cpb_tipo", "producto", "producto__categoria"
-            )
 
         context["form"] = form
         context["movimientos"] = movimientos

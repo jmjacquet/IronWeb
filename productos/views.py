@@ -874,6 +874,7 @@ class ProdStockCreateView(VariablesMixin,AjaxCreateView):
         initial = super(ProdStockCreateView, self).get_initial()               
         return initial  
 
+
 class ProdStockEditView(VariablesMixin,AjaxUpdateView):
     form_class = Producto_StockForm
     model = prod_producto_ubicac

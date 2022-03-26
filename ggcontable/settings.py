@@ -41,9 +41,9 @@ DATE_INPUT_FORMATS = ('%d/%m/%Y',)
 MEDIA_URL = '/media/'
 STATIC_URL = '/static/'
 
-TEMPLATE_DIRS = (
-    os.path.join(SITE_ROOT, 'templates'),
-)
+# TEMPLATE_DIRS = (
+#     os.path.join(SITE_ROOT, 'templates'),
+# )
 MEDIA_ROOT = os.path.join(SITE_ROOT, 'media')
 
 
@@ -53,23 +53,52 @@ STATICFILES_FINDERS = (
     'django.contrib.staticfiles.finders.AppDirectoriesFinder',
 #    'django.contrib.staticfiles.finders.DefaultStorageFinder',    
 )
-TEMPLATE_CONTEXT_PROCESSORS =   (
-    'django.contrib.auth.context_processors.auth',
-    'django.core.context_processors.debug',
-    'django.core.context_processors.i18n',
-    'django.core.context_processors.media',
-    'django.core.context_processors.static',
-    'django.core.context_processors.request',
-    'django.contrib.messages.context_processors.messages',
-)
+# TEMPLATE_CONTEXT_PROCESSORS =   (
+#     'django.contrib.auth.context_processors.auth',
+#     'django.core.context_processors.debug',
+#     'django.core.context_processors.i18n',
+#     'django.core.context_processors.media',
+#     'django.core.context_processors.static',
+#     'django.core.context_processors.request',
+#     'django.contrib.messages.context_processors.messages',
+# )
 
 SECRET_KEY = config('SECRET_KEY')
 
-TEMPLATE_LOADERS = (
-    'django.template.loaders.filesystem.Loader',
-    'django.template.loaders.app_directories.Loader',
-#     'django.template.loaders.eggs.Loader',
-)
+# TEMPLATE_LOADERS = (
+#     'django.template.loaders.filesystem.Loader',
+#     'django.template.loaders.app_directories.Loader',
+# #     'django.template.loaders.eggs.Loader',
+# )
+
+TEMPLATES = [
+    {
+        "BACKEND": "django.template.backends.django.DjangoTemplates",
+        "DIRS": [
+            os.path.join(SITE_ROOT, "templates"),
+        ],
+        # "APP_DIRS": True,
+        "OPTIONS": {
+            "context_processors": [
+                'django.contrib.auth.context_processors.auth',
+                'django.core.context_processors.debug',
+                'django.core.context_processors.i18n',
+                'django.core.context_processors.media',
+                'django.core.context_processors.static',
+                'django.core.context_processors.request',
+                'django.contrib.messages.context_processors.messages',
+            ],
+            'loaders': [
+                ('django.template.loaders.cached.Loader', [
+                    'django.template.loaders.filesystem.Loader',
+                    'django.template.loaders.app_directories.Loader',
+                ]),
+            ],
+        },
+    },
+]
+
+
 MIDDLEWARE_CLASSES = (
     'django.middleware.common.CommonMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
@@ -178,10 +207,10 @@ LOGGING = {
         #     'handlers': ['console'],
         #     'level': 'DEBUG',
         # },
-        # 'django.db.backends': {
-        #     'level': 'DEBUG',
-        #     'handlers': ['console', ],
-        # },
+        'django.db.backends': {
+            'level': 'DEBUG',
+            'handlers': ['console', ],
+        },
 
         'general': {
             'handlers': ['logfile'],

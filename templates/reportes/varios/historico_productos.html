@@ -49,8 +49,27 @@
                         <tr  {% if m.producto.baja %} class='danger' {% endif %}>                                                                                                        
                             <td class="text-center">{{m.cpb_comprobante.fecha_cpb|date:'d/m/Y'}}</td>
                             {% with cpb=m.cpb_comprobante %}                            
-                            <td class="text-left" title="{{ cpb.cpb_tipo|default_if_none:'' }}">{% include "general/varios/cpb_ver.html" %}{{ cpb}}</td>
-                            <td class="">{{ cpb.cpb_tipo|default_if_none:'' }}</td>
+                                <td class="text-left" title="{{ cpb.cpb_tipo|default_if_none:'' }}">
+                                    <a
+                                        {% if cpb.cpb_tipo.tipo == 4 or cpb.cpb_tipo.tipo == 7 %}
+                                            href="{% url 'recibo_ver' id=cpb.id %}"
+                                        {% elif cpb.cpb_tipo.tipo == 2 or cpb.cpb_tipo.tipo == 3 %}
+                                            href="{% url 'ncredndeb_ver' id=cpb.id %}"
+                                        {% elif cpb.cpb_tipo.tipo == 5 %}
+                                            href="{% url 'remito_ver' id=cpb.id %}"
+                                        {% elif cpb.cpb_tipo.tipo == 6 %}
+                                            href="{% url 'presup_ver' id=cpb.id %}"
+                                        {% elif c.tipo.tipo == 8 %}
+                                            href="{% url 'movim_ver' id=c.cpb_id %}"
+                                        {% else %}
+                                            href="{% url 'comprobante_ver' id=cpb.id %}"
+                                        {% endif %}
+                                        title="Ver Detalle" class="modal-detail" data-modal-head="DETALLE {{cpb.cpb_tipo.nombre|upper}} {{cpb.get_cpb}} - Fecha:{{cpb.fecha_cpb|date:'d/m/Y'}} - Vencimiento:{{cpb.fecha_vto|date:'d/m/Y'}}" data-modal-callback="reload">
+                                        <i class="fa fa-list-alt text-primary"></i>
+                                    </a>
+                                    {{ cpb }}
+                                </td>
+                                <td class="">{{ cpb.cpb_tipo|default_if_none:'' }}</td>
                             {% endwith %}                            
                             <td {% if m.producto.baja %} title='DADO DE BAJA' {% endif %}>{% if m.producto %} <a href="{% url 'producto_ver' id=m.producto.pk %}" class="modal-detail" data-modal-head="DETALLE PRODUCTO {{m.producto.codigo}}" data-modal-callback="reload">{% endif %}
                             <strong>{{m.producto|default_if_none:''|truncatechars:60}}</strong></a></td>                                                                 

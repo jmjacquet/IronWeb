@@ -51,13 +51,21 @@
                         <tr  {% if m.producto.baja %} class='danger' {% endif %}>                                                                                                        
                             <td class="text-center">{{m.cpb_comprobante.fecha_cpb|date:'d/m/Y'}}</td>
                             {% with cpb=m.cpb_comprobante %}                            
-                            <td class="text-left" title="{{ cpb.cpb_tipo|default_if_none:'' }}">{% include "general/varios/cpb_ver.html" %}{{ cpb}}</td>                            
-                            <td class="text-center" title="{{ cpb.cpb_tipo|default_if_none:'' }}">{{ cpb.cpb_tipo.codigo|default_if_none:'' }}</td>
+                                <td class="text-left" title="{{ cpb.cpb_tipo|default_if_none:'' }}">
+                                    <a href="{% url 'comprobante_ver' id=cpb.id %}"	title="Ver Detalle"
+                                       class="modal-detail"
+                                       data-modal-head="DETALLE {{cpb.cpb_tipo.nombre|upper}} {{cpb.get_cpb}} - Fecha:{{cpb.fecha_cpb|date:'d/m/Y'}} - Vencimiento:{{cpb.fecha_vto|date:'d/m/Y'}}"
+                                       data-modal-callback="reload"> <i class="fa fa-list-alt text-primary"></i> {{cpb}}
+                                    </a>
+                                </td>
+                                <td class="text-center" title="{{ cpb.cpb_tipo|default_if_none:'' }}">{{ cpb.cpb_tipo.codigo|default_if_none:'' }}</td>
                             {% endwith %}                            
-                            <td {% if m.producto.baja %} title='DADO DE BAJA' {% endif %}>{% if m.producto %} <a href="{% url 'producto_ver' id=m.producto.pk %}" class="modal-detail" data-modal-head="DETALLE PRODUCTO {{m.producto.codigo}}" data-modal-callback="reload">{% endif %}
+                            <td {% if m.producto.baja %} title='DADO DE BAJA' {% endif %}>
+                                {% if m.producto %} <a href="{% url 'producto_ver' id=m.producto.pk %}" class="modal-detail" data-modal-head="DETALLE PRODUCTO {{m.producto.codigo}}"
+                                                       data-modal-callback="reload">{% endif %}
                             <strong>{{m.producto|default_if_none:''|truncatechars:60}}</strong></a></td>           
                             <td>{{ m.producto.categoria|default_if_none:'' }}</td>
-                            <td class="">{{m.cantidad|default_if_none:0|floatformat:2}}[{{m.producto.get_unidad_display|default_if_none:''}}]</td>                                                        
+                            <td class="importe">{{m.cantidad|default_if_none:0|floatformat:2}}[{{m.producto.get_unidad_display|default_if_none:''}}]</td>
                             <td class="importe">${{m.get_costo_total|default_if_none:0|floatformat:2}}</td>
                             <td class="importe">${{m.importe_subtotal|default_if_none:0|floatformat:2}}</td>
                             <td class="importe">${{m.get_utilidad_total|default_if_none:0|floatformat:2}}</td>
@@ -71,7 +79,7 @@
                         <th></th>
                         <th></th>                                                                 
                         <th></th>                        
-                        <th></th>
+                        <th class="importe"></th>
                         <th class="importe"></th>   
                         <th class="importe"></th>   
                         <th class="importe"></th>                                   
@@ -141,7 +149,11 @@ var tabla = $('#dataTables-historico').DataTable({
            "paging":   true,
            "lengthMenu": [[20,50, -1], [20,50, "Todos"]],
            "autoWidth": false,           
-           "order": [],
+           "aaSorting": [
+			    [0, "desc"],
+			    [1, "desc"],
+                [3, "desc"],
+		    ],
            "colReorder": true,
            "searching": true,
             fixedHeader: {
