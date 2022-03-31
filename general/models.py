@@ -72,7 +72,8 @@ class gral_empresa(models.Model):
 
     #ruta_logo = models.ImageField(upload_to=get_image_name,db_column='ruta_logo', max_length=100,null=True, blank=True) # Field name made lowercase.    
     ruta_logo = models.CharField(db_column='ruta_logo', max_length=100,null=True, blank=True) # Field name made lowercase.    
-    tipo_logo_factura = models.IntegerField(u'Tipo Logotipo',choices=TIPO_LOGOTIPO, blank=True, null=True)  
+    ruta_empresa_media = models.CharField(db_column='ruta_empresa_media', max_length=100,null=True, blank=True) # Field name made lowercase.
+    tipo_logo_factura = models.IntegerField(u'Tipo Logotipo',choices=TIPO_LOGOTIPO, blank=True, null=True)
 
     usa_impuestos = models.BooleanField(u'Utiliza Impuestos Adicionales',default=False)
     describe_impuestos = models.BooleanField(u'Impuestos en Detalle Factura',default=False)

@@ -56,20 +56,24 @@ class ProductosView(VariablesMixin,ListView):
         try:
             empresa = empresa_actual(self.request)
         except gral_empresa.DoesNotExist:
-            empresa = None 
-        form = ConsultaProds(self.request.POST or None)   
-        productos = prod_productos.objects.filter(empresa__id__in=empresas_habilitadas(self.request),baja=False).select_related('categoria','tasa_iva')
-        if form.is_valid():                                
-            nombre = form.cleaned_data['nombre']                                                              
+            empresa = None
+        form = ConsultaProds(self.request.POST or None)
+
+        productos = prod_productos.objects.filter(empresa__id__in=empresas_habilitadas(self.request),baja=False) \
+            .select_related('categoria','tasa_iva') \
+            .order_by('nombre','codigo','empresa')
+
+        if form.is_valid():
+            nombre = form.cleaned_data['nombre']
             estado = form.cleaned_data['estado']
 
-            if int(estado) == 1:                
+            if int(estado) == 1:
                 productos = prod_productos.objects.all().select_related('categoria','tasa_iva')
             if nombre:
                 productos= productos.filter(Q(nombre__icontains=nombre))
-            
+
         context['form'] = form
-        context['productos'] = productos.order_by('nombre','codigo','empresa')
+        context['productos'] = productos
         return context
     
     def post(self, *args, **kwargs):
@@ -762,7 +766,7 @@ def prod_precios_imprimir_qrs(request):
             try:
                 mostrar_precio = empresa.codbar_precio
                 mostrar_detalle = empresa.codbar_detalle
-                qr_codbar = empresa.codbar_tipo == "prod_codbar" or not empresa.codbar_tipo
+                qr_codbar = empresa.codbar_tipo == "CODBAR" or not empresa.codbar_tipo
             except:
                 mostrar_precio = False
                 mostrar_detalle = False
@@ -1206,6 +1210,10 @@ class ProductosDetalleQRView(VariablesMixin, DetailView):
             prod_precios = prod_producto_lprecios.objects.filter(producto=self.object)
         except prod_precios.DoesNotExist:
             prod_precios = None
+
+        context['ruta_header'] = "/media/empresa/{}/{}".format(settings.ENTIDAD_DIR, "product_detail_header.png")
+        context['ruta_footer'] = "/media/empresa/{}/{}".format(settings.ENTIDAD_DIR, "product_detail_footer.png")
+        context['is_logged'] = self.request.user.is_authenticated()
         context['prod_precios'] = prod_precios
         context['prod_stock'] = prod_stock
         return context

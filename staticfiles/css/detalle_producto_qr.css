@@ -1,0 +1,31 @@
+body{
+    padding-top: 50px;
+    padding-bottom: 40px;
+}
+.fixed-header, .fixed-footer{
+    width: 100%;
+    background: #262626;
+    padding:0;
+    color: #fff;
+    margin: 0 auto;
+}
+.fixed-header{
+    top: 0;
+    margin-bottom:10px;
+}
+.fixed-footer{
+    bottom: 0;
+    position: fixed;
+}
+.container{
+    width: 100%;
+    margin: 0 auto; /* Center the DIV horizontally */
+    padding: 0 auto;
+    text-align: center;
+}
+
+.header_img, .footer_img{
+    width: 30em;
+    height:6em;
+    margin: 0 auto;
+}

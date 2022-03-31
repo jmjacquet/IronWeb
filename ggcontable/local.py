@@ -8,8 +8,14 @@ DEBUG = True
 
 TEMPLATE_DEBUG = DEBUG
 
-DB_USER = config("DB_USER")
-DB_PASS = config("DB_PASS")
+DB_USER = 'gg'
+DB_PASS = 'battlehome'
+DB_HOST = '127.0.0.1'
+DB_PORT = '3306'
+
+# DB_USER = 'gg_ironweb'
+# DB_PASS = 'Sarasa9090!'
+# DB_PORT = '3307'
 
 STATICFILES_DIRS = (
     os.path.join(SITE_ROOT, "staticfiles"),   
@@ -22,8 +28,8 @@ DATABASES = {
             'NAME': os.environ.get('ENTIDAD_DB'),           # Or path to database file if using sqlite3.
             'USER':  DB_USER,    
             'PASSWORD':  DB_PASS,             # Not used with sqlite3.
-            'HOST':  '127.0.0.1',                      # Set to empty string for localhost. Not used with sqlite3.
-            'PORT': '',      
+            'HOST':  DB_HOST,                      # Set to empty string for localhost. Not used with sqlite3.
+            'PORT': DB_PORT,
         },
     }
 

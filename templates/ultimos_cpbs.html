@@ -38,9 +38,15 @@
                                 <tbody>
                                     {% for cpb in ultimas_ventas %}
                                     <tr>   
-                                        <td class="text-center">{% include "general/varios/cpb_ver.html" %} </td>
+                                        <td class="text-center">
+                                            <a href="{% url 'comprobante_ver' id=cpb.id %}" title="Ver Detalle" class="modal-detail"
+                                               data-modal-head="DETALLE {{cpb.cpb_tipo.nombre|upper}} {{cpb.get_cpb}} - Fecha:{{cpb.fecha_cpb|date:'d/m/Y'}} - Vencimiento:{{cpb.fecha_vto|date:'d/m/Y'}}"
+                                               data-modal-callback="reload"><i class="fa fa-list-alt text-primary"></i>
+                                            </a>
+                                        </td>
                                         <td class="listado_estado {{cpb.estado_color}}">{{cpb.estado}}</td>
-                                        <td {% if cpb.cae %}title="Nº CAE: {{cpb.cae}} Vencimiento: {{cpb.cae_vto|date:'d/m/Y'}}"{% endif %} class="text-center">{% if cpb.cae %}<a target="_blank" href="{% url 'imprimirFactura' id=cpb.pk %}"><strong><i class="glyphicon glyphicon-paperclip text-primary"></strong></a>{% endif %}</td>
+                                        <td {% if cpb.cae %}title="Nº CAE: {{cpb.cae}} Vencimiento: {{cpb.cae_vto|date:'d/m/Y'}}"{% endif %} class="text-center">{% if cpb.cae %}<a target="_blank" href="{% url 'imprimirFactura' id=cpb.pk %}">
+                                            <strong><i class="glyphicon glyphicon-paperclip text-primary"></strong></a>{% endif %}</td>
                                         <td class="text-center">{{cpb.fecha_cpb|date:'d/m/Y'}}</td>
                                         <td class="text-center" title="{{ cpb.cpb_tipo|default_if_none:'' }}"><strong>{{ cpb.cpb_tipo.codigo|default_if_none:'' }}</strong></td>
                                         <td>{{ cpb}}</td>                                
@@ -77,7 +83,12 @@
                                 <tbody>
                                     {% for cpb in ultimas_compras %}
                                     <tr>
-                                        <td class="text-center">{% include "general/varios/cpb_ver.html" %}</td>
+                                        <td class="text-center">
+                                            <a href="{% url 'comprobante_ver' id=cpb.id %}" title="Ver Detalle" class="modal-detail"
+                                               data-modal-head="DETALLE {{cpb.cpb_tipo.nombre|upper}} {{cpb.get_cpb}} - Fecha:{{cpb.fecha_cpb|date:'d/m/Y'}} - Vencimiento:{{cpb.fecha_vto|date:'d/m/Y'}}"
+                                               data-modal-callback="reload"><i class="fa fa-list-alt text-primary"></i>
+                                            </a>
+                                        </td>
                                         <td class="listado_estado {{cpb.estado_color}}">{{cpb.estado}}</td>
                                         <td class="text-center">{{cpb.fecha_cpb|date:'d/m/Y'}}</td>
                                         <td class="text-center" title="{{ cpb.cpb_tipo|default_if_none:'' }}"><strong>{{ cpb.cpb_tipo.codigo|default_if_none:'' }}</strong></td>

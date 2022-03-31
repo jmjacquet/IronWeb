@@ -6,7 +6,7 @@
     {% if tipo_logo_factura == 3 %} 
        <td align="center" rowspan="5" width="20%" valign="middle" class="borde_izq borde_arriba borde_abajo">
            {% if ruta_logo|existe_img %} 
-          <img src="/media/{{ruta_logo|existe_img}}" alt="logo" class="logo_factura" /> 
+          <img src="/media/{{ruta_logo}}" alt="logo" class="logo_factura" />
           {% endif %} 
       </td>
       <td align="center" rowspan="5" width="26%" valign="middle" class="borde_arriba borde_abajo">       
@@ -19,7 +19,7 @@
     {% elif tipo_logo_factura == 2 %}
       <td align="center" rowspan="5" width="46%" valign="middle" class="borde_izq borde_arriba borde_abajo">
         {% if ruta_logo|existe_img %} 
-          <img src="/media/{{ruta_logo|existe_img}}" alt="logo" class="logo_factura" /> {% else %}
+          <img src="/media/{{ruta_logo}}" alt="logo" class="logo_factura" /> {% else %}
           <h1 class="empresa">{{nombre_fantasia}}</h1>          
           <h3>{{domicilio}}</h3>
           <h3>{{email}}</h3>

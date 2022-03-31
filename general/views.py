@@ -102,7 +102,7 @@ class VariablesMixin(ContextMixin):
         context = {}
         context['ENTIDAD_ID'] = settings.ENTIDAD_ID
         context['ENTIDAD_DIR'] = settings.ENTIDAD_DIR
-        usr= request.user
+        usr = request.user
         try:
             context['usuario'] = usuario_actual(request)
         except:
@@ -115,7 +115,7 @@ class VariablesMixin(ContextMixin):
             empresa = empresa_actual(request)
             context['empresa'] = empresa
             context['homologacion'] = empresa.homologacion
-        except gral_empresa.DoesNotExist:
+        except:
             context['empresa'] = None
             context['homologacion'] = True
         try:

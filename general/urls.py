@@ -1,9 +1,7 @@
 # -*- coding: utf-8 -*-
 from django.conf.urls import *
 from django.conf import settings
-import os
 from views import *
-from django.views.generic import RedirectView,TemplateView
 from django.contrib import admin
 
 # Uncomment the next two lines to enable the admin:

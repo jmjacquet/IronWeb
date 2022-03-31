@@ -118,7 +118,10 @@
                                 <td class="text-center" title="Fecha Creación: {{cpb.fecha_creacion|date:'d/m/Y H:i'}}">{{cpb.fecha_cpb|date:'d/m/Y'}}</td>
                                 <td class="text-center" title="{{ cpb.cpb_tipo|default_if_none:'' }}">{{ cpb.cpb_tipo.codigo|default_if_none:'' }}</td>
                                 <td>{{ cpb}}</td>                                
-                                <td  title="{{ cpb.entidad}}" >{% include "entidades/proveedor_ver.html" %}</td>                               
+                                <td  title="{{ cpb.entidad}}" >
+                                    <a href="{% url 'proveedor_ver' id=cpb.entidad.id %}"  title="{{ cpb.entidad}}" class="modal-detail" data-modal-head="DETALLE PROVEEDOR {{cpb.entidad.codigo}}"
+                                       data-modal-callback="reload"> <strong>{{ cpb.entidad|truncatechars:50 }}</strong></a>
+                                </td>
                                 <td class="importe">${{cpb.get_saldo|default_if_none:0|floatformat:2}}</td>                                
                                 <td class="importe">${{cpb.get_importe_total|default_if_none:0|floatformat:2}}</td>
                                 <td class="importe">${{cpb.get_importe_subtotal|default_if_none:0|floatformat:2}}<input class="hidden" value="{{ item.importe_total }}" 

@@ -1,0 +1,5 @@
+[tool.black]
+line-length = 110
+target-version = ['py27']
+include = '\.pyi?$'
+exclude = ''''''

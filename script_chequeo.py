@@ -7,7 +7,7 @@ import sys
 host = "opal3.opalstack.com"
 user = "gg_ironweb"
 passwd = "Sarasa9090!"
-UPDATE_DELETE = True
+UPDATE_DELETE =  True
 # BASES_EXCEPTUADAS = ('gg_gestion','gg_configuracion','gg_multeo')
 # LISTA_BASES = "SELECT SCHEMA_NAME FROM `SCHEMATA` WHERE (SCHEMA_NAME LIKE 'gg_%') AND (SCHEMA_NAME NOT IN "+str(BASES_EXCEPTUADAS)+");"
 
@@ -32,8 +32,8 @@ lista_dbs = ['ironweb_prueba', 'ironweb_brolcazsrl', 'ironweb_cirugiamf', 'ironw
 #SCRIPT_EJECUCION = "INSERT INTO `configuracion_vars` VALUES(5, 'dri_cartel_inicio', 'Cartel que aparece al Liquidar DReI', NULL, NULL, NULL);"
 #SCRIPT_EJECUCION = "DELETE FROM `django_session`;"
 #SCRIPT_EJECUCION = "ALTER TABLE tributo ADD COLUMN CORRER_VENC_FDESDE DATE NULL;"
-SCRIPT_EJECUCION = "ALTER TABLE `gral_empresa` ADD `codbar_tipo` VARCHAR(20) NULL;"
-# SCRIPT_EJECUCION = "SELECT nombre FROM `gral_empresa`;"
+SCRIPT_EJECUCION = "ALTER TABLE `gral_empresa` DROP COLUMN  `ruta_empresa_media` "
+# SCRIPT_EJECUCION = "SELECT count(*) FROM `cpb_comprobante`;"
 
 print "##############################################"
 print SCRIPT_EJECUCION

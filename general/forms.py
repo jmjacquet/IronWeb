@@ -106,6 +106,12 @@ class ConsultaCpbsCompras(forms.Form):
 		empresa = kwargs.pop('empresa', None)  
 		super(ConsultaCpbsCompras, self).__init__(*args, **kwargs)				
 
+
+TIPO_CODBAR_QR_CHOICE = (
+	('CODBAR', 'Código Barras'),
+	('URL_DETALLE_PROD', 'URL Detalle')
+)
+
 class EmpresaForm(forms.ModelForm):
 	# observaciones = forms.CharField(label='Observaciones / Datos adicionales',widget=forms.Textarea(attrs={ 'rows': 3}),required = False)		
 	cuit = ARCUITField(label='CUIT',required = False,widget=PostPendWidgetBuscar(attrs={'class':'form-control','autofocus':'autofocus'},
@@ -118,7 +124,8 @@ class EmpresaForm(forms.ModelForm):
 	barra_busq_meses_atras =  forms.IntegerField(label=u'Meses Búsquedas atrás',required = True,initial=2)
 	pto_vta_defecto = forms.ModelChoiceField(label='Pto.Vta. por Defecto',queryset=cpb_pto_vta.objects.filter(baja=False),empty_label=None,required = True)
 	mail_cuerpo = forms.CharField(label=u'Cuerpo Email (envío de Comprobantes)',widget=forms.Textarea(attrs={ 'class':'form-control2','rows': 3}),required = False)				
-	mail_password = forms.CharField(widget=forms.PasswordInput(render_value = True),max_length=20,label=u'Contraseña')     	
+	mail_password = forms.CharField(widget=forms.PasswordInput(render_value = True),max_length=20,label=u'Contraseña')
+	codbar_tipo = forms.ChoiceField(label=u'Contenido del QR',required=False,choices=TIPO_CODBAR_QR_CHOICE)
 	class Meta:
 			model = gral_empresa
 			exclude = ['id','baja','fecha_creacion',]	
