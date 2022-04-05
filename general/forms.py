@@ -126,6 +126,7 @@ class EmpresaForm(forms.ModelForm):
 	mail_cuerpo = forms.CharField(label=u'Cuerpo Email (envío de Comprobantes)',widget=forms.Textarea(attrs={ 'class':'form-control2','rows': 3}),required = False)				
 	mail_password = forms.CharField(widget=forms.PasswordInput(render_value = True),max_length=20,label=u'Contraseña')
 	codbar_tipo = forms.ChoiceField(label=u'Contenido del QR',required=False,choices=TIPO_CODBAR_QR_CHOICE)
+	qr_size = forms.IntegerField(label=u'Tamaño QR (mm)', required=True, initial=40)
 	class Meta:
 			model = gral_empresa
 			exclude = ['id','baja','fecha_creacion',]	

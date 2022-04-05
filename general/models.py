@@ -82,6 +82,7 @@ class gral_empresa(models.Model):
     codbar_precio = models.BooleanField(u'Precio en Etiquetas CB',default=False)
     codbar_detalle = models.BooleanField(u'Detalle en Etiquetas CB',default=False)
     codbar_tipo = models.CharField('Tipo CodBar',max_length=20,blank=True, null=True) # prod_codbar or prod_url
+    qr_size = models.IntegerField(u'Tamaño QR', blank=True, null=True, default=40)
     
     cbu = models.CharField('CBU',max_length=100, blank=True)
     #cbu_alias = models.CharField('Alias CBU',max_length=20, blank=True)

@@ -29,10 +29,10 @@ lista_dbs = ['ironweb_prueba', 'ironweb_brolcazsrl', 'ironweb_cirugiamf', 'ironw
 #SCRIPT_EJECUCION =INSERT INTO `configuracion_vars` VALUES(2, 'NoComercio', 'Variable de Entidad para Cajero24 ', NULL, NULL, NULL);"
 #SCRIPT_EJECUCION =INSERT INTO `configuracion_vars` VALUES(3, 'modif_bases_imp', 'Modificación de Bases Imponibles de Períodos pagados', NULL, 'N', NULL);"
 #SCRIPT_EJECUCION ="INSERT INTO `configuracion_vars` VALUES(4, 'dri_retenciones', 'Modificación del campo label de Retenciones en Liquidación y Boleta DReI', NULL, NULL, NULL);"
-#SCRIPT_EJECUCION = "INSERT INTO `configuracion_vars` VALUES(5, 'dri_cartel_inicio', 'Cartel que aparece al Liquidar DReI', NULL, NULL, NULL);"
 #SCRIPT_EJECUCION = "DELETE FROM `django_session`;"
-#SCRIPT_EJECUCION = "ALTER TABLE tributo ADD COLUMN CORRER_VENC_FDESDE DATE NULL;"
-SCRIPT_EJECUCION = "ALTER TABLE `gral_empresa` DROP COLUMN  `ruta_empresa_media` "
+SCRIPT_EJECUCION = "UPDATE `gral_empresa` set qr_size=70;"
+# SCRIPT_EJECUCION = "ALTER TABLE gral_empresa ADD COLUMN qr_size INTEGER NULL;"
+# SCRIPT_EJECUCION = "ALTER TABLE `gral_empresa` DROP COLUMN  `ruta_empresa_media` "
 # SCRIPT_EJECUCION = "SELECT count(*) FROM `cpb_comprobante`;"
 
 print "##############################################"

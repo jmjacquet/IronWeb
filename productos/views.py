@@ -855,6 +855,7 @@ def prod_precios_imprimir_qrs(request):
                 )
             lista_precios = [x for x in lista_precios for i in range(cantidad)]
             context["precios"] = lista_precios
+            context["qr_size"] = empresa.qr_size or 40
             context["mostrar_precio"] = mostrar_precio
             context["mostrar_detalle"] = mostrar_detalle
             fecha = datetime.now()
