@@ -248,36 +248,49 @@ $( "#GuardarRec" ).click(function() {
       total_cpbs = parseFloat($("#id_importe_cpbs").val())};
 
 
-      if (total==0){
-        alertify.errorAlert("¡El importe total debe ser distinto a cero!");
-         $("#GuardarRec").prop("disabled", false);
-         return false;
-      };
+      if (total==0 && total_cpbs==0){
+         alerta = alertify.dialog('confirm').set({'labels':{ok:'Aceptar', cancel:'Cancelar'},
+            'message': '¿Desea pagar/cobrar el Comprobante con la Nota de Crédito Seleccionada?',
+             transition:'fade',
+            'onok': function(){
+                guardarCPB()
+            },
+            'oncancel': function(){
+                $("#GuardarRec").prop("disabled", false);
+                return true;
+            }
+         });
+         alerta.setting('modal', true);
+         alerta.setHeader('Pago/Cobro con NC');
+         alerta.show();
+         return true;
+      }else{
+          if (total==0){
+            alertify.errorAlert("¡El importe total debe ser distinto a cero!");
+             $("#GuardarRec").prop("disabled", false);
+             return false;
+          };
 
-      if (total_cpbs>0){
-        if (total!=total_cpbs){
-          alertify.errorAlert("¡El importe total no coincide con los comprobantes seleccionados!");
-          $("#GuardarRec").prop("disabled", false);
-          return false;
-        }
-      };   
-             
+          if (total_cpbs>0){
+            if (total!=total_cpbs){
+              alertify.errorAlert("¡El importe total no coincide con los comprobantes seleccionados!");
+              $("#GuardarRec").prop("disabled", false);
+              return false;
+            }
+          };
+      }
 
-       $("#form-alta:disabled").removeAttr('disabled');
-        $('#id_pto_vta').removeAttr('disabled');                          
-        $("#id_numero").removeAttr('disabled'); 
-        $("#id_entidad").removeAttr('disabled'); 
-       
-
-        $("#GuardarRec").prop("disabled", true);
-    
-
-        $( "#form-alta" ).submit();         
-      
-    
-
+      guardarCPB();
   });
 
+function guardarCPB(){
+    $("#form-alta:disabled").removeAttr('disabled');
+    $('#id_pto_vta').removeAttr('disabled');
+    $("#id_numero").removeAttr('disabled');
+    $("#id_entidad").removeAttr('disabled');
+    $("#GuardarRec").prop("disabled", true);
+    $( "#form-alta" ).submit();
+}
 
 
 function ultimoNumCPB(cpb_tipo,letra,pto_vta){
