@@ -1153,7 +1153,7 @@ class saldos_cuentas(VariablesMixin, ListView):
                     .select_related(
                         "cpb_comprobante", "cpb_comprobante__cpb_tipo", "cta_egreso", "cta_ingreso", "tipo_forma_pago"
                     )
-                    .order_by("cpb_comprobante__fecha_cpb", "id")
+                    .order_by("mdcp_fecha", "cpb_comprobante__fecha_cpb", "id")
                 )
                 if pto_vta:
                     cpbs = cpbs.filter(cpb_comprobante__pto_vta=pto_vta)
@@ -1170,7 +1170,7 @@ class saldos_cuentas(VariablesMixin, ListView):
                 haber = cpbs_haber.aggregate(sum=Sum(F("importe"), output_field=DecimalField()))["sum"] or 0
 
                 cpbs = cpbs_debe | cpbs_haber
-                cpbs = cpbs.order_by("cpb_comprobante__fecha_cpb")
+                cpbs = cpbs.order_by("mdcp_fecha", "cpb_comprobante__fecha_cpb", "id")
 
                 # cpbs = cpbs.filter(cpb_comprobante__fecha_cpb__gte=fdesde)
                 cpbs_anteriores = cpbs.filter(mdcp_fecha__lt=fdesde)
@@ -1310,7 +1310,7 @@ class vencimientos_cpbs(VariablesMixin, ListView):
             else:
                 filtros["estado__in"]=[1, 2, 3]
             if tipo_cpb:
-                filtros["tipo_cpb"] = tipo_cpb
+                filtros["cpb_tipo"] = tipo_cpb
             if fdesde:
                 filtros["fecha_cpb__gte"] = fdesde
             if fhasta:
