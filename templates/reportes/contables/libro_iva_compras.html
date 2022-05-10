@@ -60,7 +60,9 @@
                                                     <th class="text-center">F.Imputac.</th>  
                                                     <th ></th>
                                                     <th >Comprobante</th>
-                                                    <th >Proveedor</th>                                                                    
+                                                    <th >Proveedor</th>
+                                                    <th >DNI/CUIT</th>
+                                                    <th >Condic.</th>
                                                     <th class="text-right">Gravado</th>
                                                     <th class="text-right">IVA</th>                                
                                                     <th class="text-right">Perc/Imp.</th>                                                                  
@@ -77,7 +79,9 @@
                                                     <td title="{{cpb.pk|safe}}" class="text-center">{{ cpb.fecha_imputacion|date:'d/m/Y' }}</td>
                                                     <td title="{{ cpb.cpb_tipo}}">{{ cpb.cpb_tipo.codigo|default_if_none:'' }}</td>
                                                     <td >{{ cpb.get_cpb}}</td>                                
-                                                    <td  title="{{ cpb.entidad}}" ><strong>{{ cpb.entidad|truncatechars:60 }}</strong></td>
+                                                    <td  title="{{ cpb.entidad}}" ><strong>{{ cpb.entidad.apellido_y_nombre|truncatechars:60 }}</strong></td>
+                                                    <td ><strong>{{ cpb.entidad.get_nro_doc_cuit|default_if_none:'' }}</strong></td>
+                                                    <td ><strong>{{ cpb.entidad.get_categFiscal|default_if_none:'' }}</strong></td>
                                                     <td class="importe">${{cpb.get_importe_gravado|default_if_none:0|floatformat:2}}</td>
                                                     <td class="importe">${{cpb.get_importe_iva|default_if_none:0|floatformat:2}}</td>
                                                     <td class="importe">${{cpb.get_importe_perc_imp|default_if_none:0|floatformat:2}}</td>
@@ -94,7 +98,9 @@
                                                     <th></th>
                                                     <th></th> 
                                                     <th></th> 
-                                                    <th></th>                                                                 
+                                                    <th></th>
+                                                    <th></th>
+                                                    <th></th>
                                                     <th class="importe"></th>                                 
                                                     <th class="importe"></th>                                 
                                                     <th class="importe"></th>                                 
@@ -125,7 +131,9 @@
                                                     <th class="text-center">F.Imputac.</th>  
                                                     <th></th>
                                                     <th >Comprobante</th>
-                                                    <th >Proveedor</th> 
+                                                    <th >Proveedor</th>
+                                                    <th >DNI/CUIT</th>
+                                                    <th >Condic.</th>
                                                     <th class="text-right">Importe</th>
                                                     <th class="text-right">% IVA</th>                                                                
                                                     <th class="text-right">Total</th>                                                                      
@@ -137,7 +145,9 @@
                                                     <td title="{{cpb.pk|safe}}" class="text-center">{{ a.cpb_comprobante.fecha_imputacion|date:'d/m/Y' }}</td>
                                                     <td class="text-center" title="{{ a.cpb_comprobante.cpb_tipo}}">{{ a.cpb_comprobante.cpb_tipo.codigo|default_if_none:'' }}</td>
                                                     <td >{{ a.cpb_comprobante.get_cpb}}</td>                                
-                                                    <td  title="{{ a.cpb_comprobante.entidad}}" ><strong>{{ a.cpb_comprobante.entidad|truncatechars:60 }}</strong></td>
+                                                    <td  title="{{ a.cpb_comprobante.entidad}}" ><strong>{{ a.cpb_comprobante.entidad.apellido_y_nombre|truncatechars:60 }}</strong></td>
+                                                    <td ><strong>{{ a.cpb_comprobante.entidad.get_nro_doc_cuit|default_if_none:'' }}</strong></td>
+                                                    <td ><strong>{{ a.cpb_comprobante.entidad.get_categFiscal|default_if_none:'' }}</strong></td>
                                                     <td class="importe">${{a.importe|default_if_none:0|floatformat:2}}</td>
                                                     <td class="importe">{{a.get_iva|default_if_none:0|floatformat:2}}</td>
                                                     <td class="importe">${{a.importe_final|default_if_none:0|floatformat:2}}</td>
@@ -149,7 +159,9 @@
                                                     <th></th>
                                                     <th></th>    
                                                     <th></th>    
-                                                    <th></th>                                                               
+                                                    <th></th>
+                                                    <th></th>
+                                                    <th></th>
                                                     <th class="importe"></th>                                 
                                                     <th class="importe"></th>                                 
                                                     <th class="importe"></th>                                                                 
@@ -375,7 +387,7 @@ var tabla = $('#dataTables-cpb_venta').DataTable({
                     return 0
                 }
             };
-            let col_tot_sum =[4, 5, 6, 7 , 8, 9{% if empresa.usa_impuestos %}, 10, 11{% endif %}]
+            let col_tot_sum =[ 6, 7 , 8, 9, 10, 11{% if empresa.usa_impuestos %}, 12, 13{% endif %}]
             col_tot_sum.forEach(function (col_number) {
                 pageTotal = api.column(col_number, { page: 'current'} ).data().reduce( function (a, b) {return floatVal(a) + floatVal(b);}, 0 );
                 $( api.column(col_number).footer() ).html('$'+pageTotal.toLocaleString(undefined,{minimumFractionDigits:2}));
@@ -555,10 +567,10 @@ var tabla = $('#dataTables-cpb_venta_alic').DataTable({
                     return 0
                 }
             };            
-            pageTotal = api.column(4, { page: 'current'} ).data().reduce( function (a, b) {return floatVal(a) + floatVal(b);}, 0 );
-            $( api.column(4).footer() ).html('$'+pageTotal.toLocaleString(undefined,{minimumFractionDigits:2}));      
             pageTotal = api.column(6, { page: 'current'} ).data().reduce( function (a, b) {return floatVal(a) + floatVal(b);}, 0 );
-            $( api.column(6).footer() ).html('$'+pageTotal.toLocaleString(undefined,{minimumFractionDigits:2}));      
+            $( api.column(6).footer() ).html('$'+pageTotal.toLocaleString(undefined,{minimumFractionDigits:2}));
+            pageTotal = api.column(8, { page: 'current'} ).data().reduce( function (a, b) {return floatVal(a) + floatVal(b);}, 0 );
+            $( api.column(8).footer() ).html('$'+pageTotal.toLocaleString(undefined,{minimumFractionDigits:2}));
             
                              
         }

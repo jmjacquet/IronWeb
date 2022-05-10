@@ -199,3 +199,8 @@ class egr_entidad(models.Model):
         if not nro_doc:
             nro_doc = 0
         return nro_doc, self.tipo_doc
+
+    def get_nro_doc_cuit(self):
+        ndoc, _ = self.get_nro_doc_afip()
+        return ndoc
+

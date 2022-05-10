@@ -68,8 +68,24 @@ def eliminar_detalles_fp_huerfanos(request):
     # for c in detalles
     #     recalcular_saldo_cpb(c.id)
 
-    return HttpResponse( json.dumps(list(detalles), cls=DjangoJSONEncoder), content_type='application/json' )     
-  
+    return HttpResponse( json.dumps(list(detalles), cls=DjangoJSONEncoder), content_type='application/json' )
+
+
+@login_required
+def eliminar_detalles_prods_huerfanos(request):
+    empresa = empresa_actual(request)
+    ids = prod_productos.objects.all().values_list('id', flat=True)
+    ids = [int(x) for x in ids]
+
+    detalles = cpb_comprobante_detalle.objects.filter(cpb_comprobante__empresa=empresa).exclude(
+        producto__id__in=ids).values_list('producto__id', flat=True)
+
+    # for c in detalles
+    #     recalcular_saldo_cpb(c.id)
+
+    return HttpResponse(json.dumps(list(detalles), cls=DjangoJSONEncoder), content_type='application/json')
+
+
 @login_required 
 def recalcular_compras(request):
     usr= request.user     

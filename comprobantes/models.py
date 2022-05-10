@@ -470,6 +470,9 @@ class cpb_comprobante_detalle(models.Model):
     def __unicode__(self):
         return u'%s-%s' % (self.producto, self.cantidad)
 
+    def __repr__(self):
+        return u'{}-{}-{}'.format(self.id, self.producto, self.cantidad)
+
     def get_precio_unit_iva(self):
         # return self.importe_unitario * (1+self.coef_iva)
         return self.importe_unitario
@@ -483,8 +486,12 @@ class cpb_comprobante_detalle(models.Model):
         return self.cantidad*self.importe_costo
 
     @property
+    def get_costo_cimp_total(self):
+        return self.cantidad * self.importe_costo * (1 + self.coef_iva)
+
+    @property
     def get_utilidad_total(self):
-        return (self.importe_subtotal-(self.cantidad*self.importe_costo))
+        return self.importe_total - self.get_costo_cimp_total
 
     @property
     def get_itc(self):

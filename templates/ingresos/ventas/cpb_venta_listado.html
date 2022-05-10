@@ -78,7 +78,13 @@
                                             <i class="icon-settings"> </i> <span class="caret"></span>
                                           </button>
                                           <ul class="dropdown-menu dropdown-menu-default">
-                                            <li>{% include "general/varios/cpb_ver_dropdown.html" %}</li>
+                                            <li><a href="{% url 'comprobante_ver' id=cpb.id %}" title="Ver Detalle"
+                                               class="modal-detail"
+                                               data-modal-head="DETALLE {{cpb.cpb_tipo.nombre|upper}} {{cpb}}   Fecha: {{cpb.fecha_cpb|date:'d/m/Y'}}"
+                                               data-modal-callback="reload">
+                                               <i class="icon-screen-desktop"></i> Ver Detalle
+                                                </a>
+                                            </li>
                                             <li><a target="_blank" href="{% url 'imprimirFactura' id=cpb.pk %}"><i class=" icon-printer"></i> Imprimir</a></li>
                                             <li><a href="#" name='mandarEmail' value="{{cpb.pk|safe}}"><i class="icon-envelope-open"></i> Enviar por Email</a></li>
                                             <li role="separator" class="divider"></li>
@@ -166,7 +172,7 @@
                                     </td>
                                     <td  class="listado_estado {{cpb.estado_color}}">{{cpb.estado}}</td>
                                     <td {% if cpb.cae %}title="Nº CAE: {{cpb.cae}} Vencimiento: {{cpb.cae_vto|date:'d/m/Y'}}"{% endif %} class="text-center">{% if cpb.cae %}<a target="_blank" href="{% url 'imprimirFactura' id=cpb.pk %}"><strong><i class="glyphicon glyphicon-paperclip text-primary"></strong></a>{% endif %}</td>
-                                    <td class="text-center" title="Fecha Creación: {{cpb.fecha_creacion|date:'d/m/Y H:i'}}">{{cpb.fecha_cpb|date:'d/m/Y'}}</td>
+                                    <td class="text-center fecha" title="Fecha Creación: {{cpb.fecha_creacion|date:'d/m/Y H:i'}}">{{cpb.fecha_cpb|date:'d/m/Y'}}</td>
                                     <td class="text-center" title="{{ cpb.cpb_tipo|default_if_none:'' }}">{{ cpb.cpb_tipo.codigo|default_if_none:'' }}</td>
                                     <td>{{cpb}}</td>                                
                                     <td  title="{{ cpb.entidad}}" >

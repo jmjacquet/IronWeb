@@ -1736,7 +1736,7 @@ class costo_producto_vendidoView(VariablesMixin, ListView):
                 cpb_comprobante__empresa=empresa,
                 cpb_comprobante__fecha_cpb__gte=fdesde,
                 cpb_comprobante__fecha_cpb__lte=fhasta,
-            ).select_related("cpb_comprobante", "cpb_comprobante__cpb_tipo", "producto", "producto__categoria")
+            ).select_related("cpb_comprobante", "cpb_comprobante__cpb_tipo", "producto", "producto__categoria", "cpb_comprobante__entidad")
 
             if producto:
                 movimientos = movimientos.filter(Q(producto__nombre__icontains=producto))
