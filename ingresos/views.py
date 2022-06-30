@@ -326,8 +326,8 @@ class CPBVentaPresupCreateView(VariablesMixin, CreateView):
                 fk_name="cpb_comprobante",
                 formset=CPBVentaDetalleFormSet,
                 can_delete=True,
-                extra=0,
-                min_num=len(det),
+                extra=len(det),
+                min_num=1,
             )
         else:
             detalles = None
@@ -507,8 +507,8 @@ class CPBVentaNCCreateView(VariablesMixin, CreateView):
                 fk_name="cpb_comprobante",
                 formset=CPBVentaDetalleFormSet,
                 can_delete=True,
-                extra=0,
-                min_num=cant_det,
+                extra=cant_det,
+                min_num=1,
             )
 
             perc_imp = cpb_comprobante_perc_imp.objects.filter(cpb_comprobante=cpb)
@@ -526,8 +526,8 @@ class CPBVentaNCCreateView(VariablesMixin, CreateView):
                 fk_name="cpb_comprobante",
                 formset=CPBVentaPIFormSet,
                 can_delete=True,
-                extra=0,
-                min_num=cant_pi,
+                extra=cant_pi,
+                min_num=1,
             )
         else:
             detalles = None
@@ -698,8 +698,8 @@ class CPBVentaOPCreateView(VariablesMixin, CreateView):
                 fk_name="cpb_comprobante",
                 formset=CPBVentaDetalleFormSet,
                 can_delete=True,
-                extra=0,
-                min_num=len(det),
+                extra=len(det),
+                min_num=1,
             )
         else:
             detalles = None
@@ -869,8 +869,8 @@ class CPBVentaUnificarView(VariablesMixin, CreateView):
                 fk_name="cpb_comprobante",
                 formset=CPBVentaDetalleFormSet,
                 can_delete=True,
-                extra=0,
-                min_num=len(det),
+                extra=len(det),
+                min_num=1,
             )
         else:
             return redirect(reverse("cpb_venta_listado"))
@@ -1111,6 +1111,8 @@ class CPBVentaClonarCreateView(VariablesMixin, CreateView):
         form_class = self.get_form_class()
         form = self.get_form(form_class)
         cpb = self.get_object()
+        detalles = None
+        perc_imp = None
         if cpb:
             form.fields["id_cpb_padre"].initial = cpb.pk
             form.fields["pto_vta"].initial = cpb.pto_vta
@@ -1149,8 +1151,8 @@ class CPBVentaClonarCreateView(VariablesMixin, CreateView):
                 fk_name="cpb_comprobante",
                 formset=CPBVentaDetalleFormSet,
                 can_delete=True,
-                extra=0,
-                min_num=len(det),
+                extra=len(det),
+                min_num=1,
             )
 
             perc_imp = cpb_comprobante_perc_imp.objects.filter(cpb_comprobante=cpb)
@@ -1164,13 +1166,9 @@ class CPBVentaClonarCreateView(VariablesMixin, CreateView):
                 fk_name="cpb_comprobante",
                 formset=CPBVentaPIFormSet,
                 can_delete=True,
-                extra=0,
-                min_num=len(pi),
+                extra=len(pi),
+                min_num=1,
             )
-        else:
-            detalles = None
-            perc_imp = None
-
         CPBDetalleFormSet.form = staticmethod(curry(CPBVentaDetalleForm, request=request, clonacion=True))
         ventas_detalle = CPBDetalleFormSet(prefix="formDetalle", initial=det)
 
@@ -1417,9 +1415,8 @@ class CPBRemitoCreateView(VariablesMixin, CreateView):
             form=CPBRemitoDetalleForm,
             formset=CPBRemitoDetalleFormSet,
             can_delete=True,
-            max_num=len(det),
             extra=len(det),
-            min_num=len(det),
+            min_num=1,
         )
 
         CPBRemitoDetalleFS.form = staticmethod(curry(CPBRemitoDetalleForm, request=request))
@@ -2163,7 +2160,7 @@ class CPBRecCobranzaEditView(VariablesMixin, CreateView):
             formset=CPBReciboCPBFormSet,
             can_delete=False,
             extra=len(cpbs_cobro),
-            max_num=len(cpbs_cobro),
+            min_num=1,
         )
         d = []
         for cpb in cpbs_cobro:
