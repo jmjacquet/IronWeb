@@ -58,8 +58,8 @@
   <tr>
     <td class="texto_der borde_izq borde_abajo">Tel./Cel.:</td>
     <td class="texto_izq borde_abajo">{{pedido.cliente.fact_telefono|default_if_none:''|upper}}</td>
-    <td class="texto_der borde_abajo">CUIT:</td>
-    <td class="texto_izq borde_der borde_abajo">{{pedido.cliente.fact_cuit|default_if_none:''}}</td>
+    <td class="texto_der borde_abajo">{{pedido.cliente.get_tipo_doc_display|default_if_none:'CUIT/DNI'}}:</td>
+    <td class="texto_izq borde_der borde_abajo">{{pedido.cliente.get_nro_doc_cuit|default_if_none:''}}</td>
   </tr> 
   <tr>
     <td class="texto_der borde_izq ">Muestra Enviada:</td>

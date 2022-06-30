@@ -57,9 +57,9 @@
   <tr>
     <td class="texto_der borde_izq borde_abajo">I.V.A.:</td>
     <td class="texto_izq borde_abajo">{{cpb.entidad.get_fact_categFiscal_display|default_if_none:''|upper}}</td>
-    <td class="texto_der borde_abajo">CUIT:</td>
-    <td class="texto_izq borde_der borde_abajo">{{cpb.entidad.fact_cuit|default_if_none:''|upper}}</td>
-  </tr> 
+    <td class="texto_der borde_abajo">{{cpb.entidad.get_tipo_doc_display|default_if_none:'CUIT/DNI'|upper}}:</td>
+    <td class="texto_izq borde_der borde_abajo">{{cpb.entidad.get_nro_doc_cuit|default_if_none:''|upper}}</td>
+  </tr>
   <tr>
     <td class="texto_der borde_izq">Observaciones:</span></td>
     <td colspan="3" rowspan="2" valign="top" class="texto_izq borde_der borde_abajo">{{cpb.observacion|default_if_none:''}}</td>
