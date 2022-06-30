@@ -526,7 +526,7 @@ class CPBVentaNCCreateView(VariablesMixin, CreateView):
                 fk_name="cpb_comprobante",
                 formset=CPBVentaPIFormSet,
                 can_delete=True,
-                extra=cant_pi,
+                extra=0,
                 min_num=1,
             )
         else:
