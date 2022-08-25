@@ -33,7 +33,7 @@
            </tr>
            <tr>
           {% endif %}
-          <td align="center" class="" width="100">
+          <td align="center" class="qr_borde_punteado" width="100">
             <img src="data:image/png;base64,{{c.codbar}}" alt="qrcode" width="100%" height= {{ qr_size }}>
                 {% if mostrar_detalle %}<br><span class="pie_sistema">{{c.detalle}}</span>{% endif %}
                 {% if mostrar_precio %}<br>${{c.precio}}{% endif %}

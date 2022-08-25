@@ -248,3 +248,7 @@ td {
   font-style: italic;
   padding-bottom: 0px;
 }
+
+.qr_borde_punteado{
+  border: 1px solid #9dacbd;
+}
