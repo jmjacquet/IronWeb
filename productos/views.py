@@ -679,6 +679,7 @@ class ProdLPreciosEditView(VariablesMixin, AjaxUpdateView):
 
 def actualizar_precios(tipo_op, tipo_precio, valor, porc, coef, lista, recalcular):
     try:
+        cant = 0
         if lista:
             precios = prod_producto_lprecios.objects.filter(id__in=lista)
         else:
@@ -721,11 +722,12 @@ def actualizar_precios(tipo_op, tipo_precio, valor, porc, coef, lista, recalcula
                     coef_iva = p.producto.tasa_iva.coeficiente + 1
                 else:
                     coef_iva = 1
+
                 if tipo_precio == 1:
                     p.precio_cimp = p.precio_costo * coef_iva
-                    p.precio_venta = p.precio_costo * coef_iva * (p.coef_ganancia + 1)
+                    p.precio_venta = p.precio_costo * (p.coef_ganancia + 1) + (p.precio_cimp - p.precio_costo)
                 elif tipo_precio == 2:
-                    p.precio_venta = p.precio_cimp * (p.coef_ganancia + 1)
+                    p.precio_venta = p.precio_costo * (p.coef_ganancia + 1) + (p.precio_cimp - p.precio_costo)
                 p.save()
 
     except:

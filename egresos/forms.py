@@ -267,7 +267,7 @@ class CPBFPForm(forms.ModelForm):
 
 class CPBRemitoForm(forms.ModelForm):
 	entidad = forms.ModelChoiceField(label='Cliente',queryset=egr_entidad.objects.filter(tipo_entidad=2,baja=False),empty_label='---',required = True)		
-	fecha_cpb = forms.DateField(required = True,widget=forms.DateInput(attrs={'class': 'datepicker'}),initial=hoy())	
+	fecha_cpb = forms.DateField(required = True,widget=forms.DateInput(attrs={'class': 'form-control datepicker'}),initial=hoy())
 	observacion = forms.CharField(label='Detalle',widget=forms.Textarea(attrs={ 'class':'form-control2','rows': 5}),required = False)						
 	letra = forms.ChoiceField(label='Letra',choices=COMPROB_FISCAL_X,required=False,initial=1)	
 	pto_vta = forms.IntegerField(label='Pto. Vta.',required = True)

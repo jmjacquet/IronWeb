@@ -90,8 +90,9 @@ function recalcular(){
              var $precio_costo = parseFloat($("input[name='formPrecios-"+j+"-precio_costo']").val())|| 0;  
              var $coef_ganancia = parseFloat($("input[name='formPrecios-"+j+"-coef_ganancia']").val())|| 0;
              var coef = parseFloat($("#id_coef_iva").val())|| 0;  
-             var $precio_cimp = $precio_costo * (coef+1);  
-             var $precio_venta = $precio_cimp * ($coef_ganancia+1);   
+             var $precio_cimp = $precio_costo * (coef+1);
+             var monto_iva = $precio_cimp - $precio_costo;
+             var $precio_venta = $precio_costo * ($coef_ganancia+1) + monto_iva;
              $("input[name='formPrecios-"+j+"-precio_cimp']").val($precio_cimp.toFixed(2));  
              $("input[name='formPrecios-"+j+"-precio_venta']").val($precio_venta.toFixed(2));
            });
@@ -99,16 +100,18 @@ function recalcular(){
             var $precio_costo = parseFloat($("input[name='formPrecios-"+j+"-precio_costo']").val())|| 0;  
             var $coef_ganancia = parseFloat($("input[name='formPrecios-"+j+"-coef_ganancia']").val())|| 0;
             var coef = parseFloat($("#id_coef_iva").val())|| 0;  
-            var $precio_cimp = $precio_costo * (coef+1);  
-            var $precio_venta = $precio_cimp * ($coef_ganancia+1); 
+            var $precio_cimp = $precio_costo * (coef+1);
+            var monto_iva = $precio_cimp - $precio_costo;
+            var $precio_venta = $precio_costo * ($coef_ganancia+1) + monto_iva;
             $("input[name='formPrecios-"+j+"-precio_venta']").val($precio_venta.toFixed(2));
            });
         $("input[name='formPrecios-"+j+"-coef_ganancia']").change(function(){
             var $precio_costo = parseFloat($("input[name='formPrecios-"+j+"-precio_costo']").val())|| 0;  
             var $coef_ganancia = parseFloat($("input[name='formPrecios-"+j+"-coef_ganancia']").val())|| 0;
             var coef = parseFloat($("#id_coef_iva").val())|| 0;  
-            var $precio_cimp = $precio_costo * (coef+1);  
-            var $precio_venta = $precio_cimp * ($coef_ganancia+1); 
+            var $precio_cimp = $precio_costo * (coef+1);
+            var monto_iva = $precio_cimp - $precio_costo;
+            var $precio_venta = $precio_costo * ($coef_ganancia+1) + monto_iva;
             $("input[name='formPrecios-"+j+"-precio_venta']").val($precio_venta.toFixed(2));
            });        
         
