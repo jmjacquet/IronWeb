@@ -10,7 +10,7 @@ errores.log
 /node_modules
 /dist
 requirements.txt
-/media/certificados
+.idea/
 *.bkp
 /varios
 /pyafipws/cache

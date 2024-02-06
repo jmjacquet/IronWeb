@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<loginTicketResponse version="1.0">
+    <header>
+        <source>CN=wsaa, O=AFIP, C=AR, SERIALNUMBER=CUIT 33693450239</source>
+        <destination>SERIALNUMBER=CUIT 30716690152, CN=ironweb2020</destination>
+        <uniqueId>838641189</uniqueId>
+        <generationTime>2020-01-09T12:57:10.824-03:00</generationTime>
+        <expirationTime>2020-01-10T00:57:10.824-03:00</expirationTime>
+    </header>
+    <credentials>
+        <token>PD94bWwgdmVyc2lvbj0iMS4wIiBlbmNvZGluZz0iVVRGLTgiIHN0YW5kYWxvbmU9InllcyI/Pgo8c3NvIHZlcnNpb249IjIuMCI+CiAgICA8aWQgc3JjPSJDTj13c2FhLCBPPUFGSVAsIEM9QVIsIFNFUklBTE5VTUJFUj1DVUlUIDMzNjkzNDUwMjM5IiBkc3Q9IkNOPXdzZmUsIE89QUZJUCwgQz1BUiIgdW5pcXVlX2lkPSIyMzM1MzAxNTkiIGdlbl90aW1lPSIxNTc4NTg1MzcwIiBleHBfdGltZT0iMTU3ODYyODYzMCIvPgogICAgPG9wZXJhdGlvbiB0eXBlPSJsb2dpbiIgdmFsdWU9ImdyYW50ZWQiPgogICAgICAgIDxsb2dpbiBlbnRpdHk9IjMzNjkzNDUwMjM5IiBzZXJ2aWNlPSJ3c2ZlIiB1aWQ9IlNFUklBTE5VTUJFUj1DVUlUIDMwNzE2NjkwMTUyLCBDTj1pcm9ud2ViMjAyMCIgYXV0aG1ldGhvZD0iY21zIiByZWdtZXRob2Q9IjIyIj4KICAgICAgICAgICAgPHJlbGF0aW9ucz4KICAgICAgICAgICAgICAgIDxyZWxhdGlvbiBrZXk9IjMwNzE2NjkwMTUyIiByZWx0eXBlPSI0Ii8+CiAgICAgICAgICAgIDwvcmVsYXRpb25zPgogICAgICAgIDwvbG9naW4+CiAgICA8L29wZXJhdGlvbj4KPC9zc28+Cg==</token>
+        <sign>eTG7oXHfGq7IZPgfHYOhDp34hJ06LWCw3rLMaRcGIf3UbEwZXeTzUs1js0rcF1NEJFL2AkRpJomvdNT8y7LrhprVvLAYGFDxvss50tZpN4zK9Yr+X4T/GFF6IjCNlHaSo4gY16mNeFlV6FYQgKEuFbIoULDJGRZVvbd2caM1NFE=</sign>
+    </credentials>
+</loginTicketResponse>
