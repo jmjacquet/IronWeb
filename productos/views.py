@@ -725,9 +725,9 @@ def actualizar_precios(tipo_op, tipo_precio, valor, porc, coef, lista, recalcula
 
                 if tipo_precio == 1:
                     p.precio_cimp = p.precio_costo * coef_iva
-                    p.precio_venta = p.precio_costo * (p.coef_ganancia + 1) + (p.precio_cimp - p.precio_costo)
+                    p.precio_venta = p.precio_costo * (p.coef_ganancia + 1) + (p.precio_costo * (p.coef_ganancia + 1))* coef_iva
                 elif tipo_precio == 2:
-                    p.precio_venta = p.precio_costo * (p.coef_ganancia + 1) + (p.precio_cimp - p.precio_costo)
+                    p.precio_venta = p.precio_costo * (p.coef_ganancia + 1) + (p.precio_costo * (p.coef_ganancia + 1))* coef_iva
                 p.save()
 
     except:
