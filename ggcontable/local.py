@@ -67,3 +67,5 @@ INSTALLED_APPS += (
 # COMPRESS_CSS_FILTERS = ['compressor.filters.css_default.CssAbsoluteFilter','compressor.filters.cssmin.CSSMinFilter']
 # COMPRESS_JS_FILTERS = ["compressor.filters.jsmin.JSMinFilter"]
 
+
+STATICFILES_STORAGE = "django.contrib.staticfiles.storage.StaticFilesStorage"

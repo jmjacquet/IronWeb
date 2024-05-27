@@ -366,7 +366,7 @@ var tabla = $('#dataTables-cpb_compra').DataTable({
         }
     });
 
- $("a[name='mandarEmail']").click(function() {
+$("a[name='mandarEmail']", tabla.rows().nodes()).click(function() {
         var id = $(this).attr('value');
         datos = []
         $.ajax({

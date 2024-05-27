@@ -212,9 +212,12 @@ var tabla = $('#dataTables-cpb_venta').DataTable({
                 $( api.column(col_number).footer() ).html('$'+pageTotal.toLocaleString(undefined,{minimumFractionDigits:2}));
             });
 
-        }
-        });
+        },
 
+        });
+  // tabla.on('length.dt', function (e, settings, len) {
+  //   console.log('New page length: ' + len);
+  //   });
   var cpbs = [];
    
     $("input[class='tildado']" ,tabla.rows().nodes()).change(function() {                
@@ -478,7 +481,7 @@ var tabla = $('#dataTables-cpb_venta').DataTable({
     });
 
 
-    $("a[name='mandarEmail']").click(function() {
+   $("a[name='mandarEmail']", tabla.rows().nodes()).click(function() {
         var id = $(this).attr('value');
         datos = []
         $.ajax({
