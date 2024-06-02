@@ -215,12 +215,17 @@ var tabla = $('#dataTables-cpb_venta').DataTable({
         },
 
         });
-  // tabla.on('length.dt', function (e, settings, len) {
-  //       tabla.ajax.reload();
-  //     console.log('New page length: ' + len);
-  //   });
-  var cpbs = [];
-   
+
+    var cpbs = [];
+
+    $("#checkall").click(function() {
+        var checkedStatus = this.checked;
+        $("input[class='tildado']").each(function() {
+            $(this).prop("checked", checkedStatus);
+            $(this).change();
+        });
+    });
+
     $("input[class='tildado']" ,tabla.rows().nodes()).change(function() {                
         str1 = '/ingresos/cobranza/comprobantes/?';
         str2 = '';
@@ -253,6 +258,7 @@ var tabla = $('#dataTables-cpb_venta').DataTable({
         $('#btnAnular').val(str2);
                
     });
+
 
     $('#btnCobranza').click(function() {
         if (cpbs.length == 0) {

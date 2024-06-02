@@ -2247,7 +2247,8 @@ def CobrarDepositarChequesView(request):
 def imprimir_detalles(request):        
     limpiar_sesion(request)        
     id_cpbs = [int(x) for x in request.GET.getlist('id_cpb')]        
-    cpbs_detalles = cpb_comprobante_detalle.objects.filter(cpb_comprobante__id__in=id_cpbs,cpb_comprobante__empresa = empresa_actual(request)).order_by('cpb_comprobante__fecha_cpb','producto__nombre')
+    cpbs_detalles = (cpb_comprobante_detalle.objects.filter(cpb_comprobante_id__in=id_cpbs,cpb_comprobante__empresa_id = empresa_actual(request)).select_related("producto", "cpb_comprobante")
+                     .order_by('cpb_comprobante__fecha_cpb','producto__nombre'))
     context = {}
     context = VariablesMixin().get_context_data(request=request)
     context['cpbs_detalles'] = cpbs_detalles

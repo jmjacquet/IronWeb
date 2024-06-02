@@ -106,7 +106,7 @@ class gral_empresa(models.Model):
         d['mail_puerto']= int(self.mail_puerto) or int(settings.EMAIL_PORT)
         d['mail_usuario']= self.mail_usuario or settings.EMAIL_HOST_USER
         d['mail_password']= self.mail_password or settings.EMAIL_HOST_PASSWORD  
-        d['mail_origen']= self.email or d['mail_usuario']+'@ironweb.com.ar'
+        d['mail_origen']= self.email or d['mail_usuario']+'@ironwebgestion.com.ar'
             
         return d
 

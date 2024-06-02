@@ -19,7 +19,7 @@ from django.core.files.storage import default_storage
 # URL_API = "https://soa.afip.gob.ar/sr-padron/v2/persona/"
 URL_API = "http://afip.grupoguadalupe.com.ar/?cuit="
 URL_API_QR = "https://www.afip.gob.ar/fe/qr/?p=%s"
-EMAIL_CONTACTO = 'contacto@ironweb.com.ar'
+EMAIL_CONTACTO = 'contacto@ironwebgestion.com.ar'
 
 
 

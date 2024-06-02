@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Domain Moved</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f4f4;
+            color: #333;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+        }
+        .container {
+            text-align: center;
+            background: white;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        }
+        h1 {
+            color: #4CAF50;
+        }
+        p {
+            font-size: 1.2em;
+        }
+        a {
+            color: #4CAF50;
+            text-decoration: none;
+            font-weight: bold;
+        }
+        a:hover {
+            text-decoration: underline;
+        }
+    </style>
+    <script>
+        document.addEventListener("DOMContentLoaded", function() {
+            const currentUrl = window.location.hostname;
+            const subdomain = currentUrl.split('.')[0];
+            const newDomain = `https://${subdomain}.ironwebgestion.com.ar`;
+            document.getElementById("new-url").href = newDomain;
+            document.getElementById("new-url").textContent = newDomain;
+
+            setTimeout(function() {
+                window.location.href = newDomain;
+            }, 10000);
+        });
+    </script>
+</head>
+<body>
+    <div class="container">
+        <h1>Nos movimos! Pero todo sigue igual...</h1>
+        <p>Hubo un cambio de dominio, por lo tanto <su_negocio>.ironweb.com.ar pasó a ser <su_negocio>.ironwebgestion.com.ar. Será redirigido en 10 segundos.</p>
+        <p>En caso de ser necesario actualize los marcadores/favioritos de su navegador. Será redirigido al nuevo sitio en 10 segundos.</p>
+        <p>Si no es redirigido por favor haga click aqui  <a id="new-url" href="#"></a>.</p>
+    </div>
+</body>
+</html>
