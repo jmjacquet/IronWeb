@@ -215,11 +215,17 @@ var tabla = $('#dataTables-cpb_venta').DataTable({
         },
 
         });
-  // tabla.on('length.dt', function (e, settings, len) {
-  //   console.log('New page length: ' + len);
-  //   });
-  var cpbs = [];
-   
+
+    var cpbs = [];
+
+    $("#checkall").click(function() {
+        var checkedStatus = this.checked;
+        $("input[class='tildado']").each(function() {
+            $(this).prop("checked", checkedStatus);
+            $(this).change();
+        });
+    });
+
     $("input[class='tildado']" ,tabla.rows().nodes()).change(function() {                
         str1 = '/ingresos/cobranza/comprobantes/?';
         str2 = '';
@@ -252,42 +258,8 @@ var tabla = $('#dataTables-cpb_venta').DataTable({
         $('#btnAnular').val(str2);
                
     });
-   
-    //   function checkBoxClick1() {
 
-    //     cpbs = [];
-    //     cant = 0;
-    //     str1 = '/ingresos/cobranza/comprobantes/?'
-    //     str2 = ''
-    //     $("input[class='tildado']",tabla.rows().nodes()).each(function(index, checkbox) {
-           
 
-    //         if (checkbox.checked) {   
-
-    //             chk = document.getElementById(checkbox.id);
-
-    //             if (chk!=null){
-    //                 id_cpb = chk.value;
-    //                 cpbs.push(id_cpb);
-    //                 cant += 1;
-    //                 $(checkbox).closest('tr').toggleClass('selected', checkbox.checked);
-    //                 if (str2 == '') {
-    //                     str2 = str2 + 'id_cpb=' + id_cpb;
-    //                 } else {
-    //                     str2 = str2 + '&id_cpb=' + id_cpb;
-    //                 };
-    //             }
-    //         } else {
-    //             if ($(checkbox).closest('tr').hasClass('selected')) {
-    //                 $(checkbox).closest('tr').removeClass('selected');
-    //             }
-    //         };
-    //         $('#btnCobranza').val(str1 + str2)
-    //         $('#btnAnular').val(str2);
-       
-    //     });
-
-    // };
     $('#btnCobranza').click(function() {
         if (cpbs.length == 0) {
             alertify.errorAlert("¡Debe seleccionar algún comprobante!");
@@ -343,8 +315,8 @@ var tabla = $('#dataTables-cpb_venta').DataTable({
     });
 
     $('#btnImprimirDetalles').click(function() {    
-         if (cpbs.length == 0) {
-            alertify.errorAlert("¡Debe seleccionar algún comprobante!");
+         if (cpbs.length === 0 || cpbs.length > 50) {
+            alertify.errorAlert("¡La cantidad de comprobantes seleccionados no debe superar los 50!");
         } else {    
             alerta = alertify.dialog('confirm').set({
                 'labels': {
@@ -481,7 +453,7 @@ var tabla = $('#dataTables-cpb_venta').DataTable({
     });
 
 
-   $("a[name='mandarEmail']", tabla.rows().nodes()).click(function() {
+    $("a[name='mandarEmail']", tabla.rows().nodes()).click(function() {
         var id = $(this).attr('value');
         datos = []
         $.ajax({

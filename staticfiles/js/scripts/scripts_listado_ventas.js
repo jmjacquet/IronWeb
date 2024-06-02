@@ -315,8 +315,8 @@ var tabla = $('#dataTables-cpb_venta').DataTable({
     });
 
     $('#btnImprimirDetalles').click(function() {    
-         if (cpbs.length == 0) {
-            alertify.errorAlert("¡Debe seleccionar algún comprobante!");
+         if (cpbs.length === 0 || cpbs.length > 50) {
+            alertify.errorAlert("¡La cantidad de comprobantes seleccionados no debe superar los 50!");
         } else {    
             alerta = alertify.dialog('confirm').set({
                 'labels': {
