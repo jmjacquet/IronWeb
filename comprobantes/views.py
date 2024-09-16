@@ -31,6 +31,11 @@ from django.utils.functional import curry
 from django.forms.models import model_to_dict
 
 
+import logging
+
+logger = logging.getLogger(__name__)
+
+
 @login_required 
 def recalcular_precios(request):
     detalles = cpb_comprobante_detalle.objects.filter(cpb_comprobante__cpb_tipo__tipo__in=[1,2,3,9,14,21,22,23],cpb_comprobante__cpb_tipo__usa_stock=True)
@@ -1295,7 +1300,7 @@ def mandarEmail(request,id):
         return HttpResponseRedirect(cpb.get_listado())
     except Exception as e:
         messages.error(request, 'El comprobante no pudo ser enviado! '+str(e))
-        print(e)
+        logger.exception("Error sending Email:"+str(e))
         return_page = cpb.get_listado() if cpb else reverse('principal')
         return HttpResponseRedirect(return_page)
 
