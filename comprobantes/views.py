@@ -14,7 +14,6 @@ from .forms import MovimCuentasForm,BancosForm,MovimCuentasFPForm,PercImpForm,Fo
 from django.http import HttpResponseRedirect,HttpResponseForbidden,HttpResponse
 from django.db.models import Q,Sum,Count,F,DecimalField
 from .models import *
-import json
 import random
 from decimal import *
 from modal.views import AjaxCreateView,AjaxUpdateView,AjaxDeleteView
@@ -30,6 +29,7 @@ from django.core.serializers.json import DjangoJSONEncoder
 from general.forms import ConsultaCpbs,pto_vta_habilitados,pto_vta_habilitados_list,ConsultaCpbsCompras
 from django.utils.functional import curry 
 from django.forms.models import model_to_dict
+
 
 @login_required 
 def recalcular_precios(request):
@@ -1295,7 +1295,8 @@ def mandarEmail(request,id):
         return HttpResponseRedirect(cpb.get_listado())
     except Exception as e:
         messages.error(request, 'El comprobante no pudo ser enviado! '+str(e))
-        return HttpResponseRedirect(cpb.get_listado())
+        print(e)
+
 
 #************* BANCOS **************
 class BancosView(VariablesMixin,ListView):
