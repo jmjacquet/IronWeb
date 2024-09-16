@@ -1296,7 +1296,8 @@ def mandarEmail(request,id):
     except Exception as e:
         messages.error(request, 'El comprobante no pudo ser enviado! '+str(e))
         print(e)
-
+        return_page = cpb.get_listado() if cpb else reverse('principal')
+        return HttpResponseRedirect(return_page)
 
 #************* BANCOS **************
 class BancosView(VariablesMixin,ListView):
