@@ -1252,7 +1252,7 @@ def verifEmail(request):
 def mandarEmail(request,id):   
     try:
         email = str(request.GET.get('email',''))        
-        cpb = cpb_comprobante.objects.get(id=id)            
+        cpb = cpb_comprobante.objects.filter(id=id).first()
         mail_destino = []
         if not email:
           email=str(cpb.entidad.email)
@@ -1300,7 +1300,7 @@ def mandarEmail(request,id):
         return HttpResponseRedirect(cpb.get_listado())
     except Exception as e:
         messages.error(request, 'El comprobante no pudo ser enviado! '+str(e))
-        logger.exception("Error sending Email:"+str(e))
+        logger.error("Error sending Email: "+str(e), exc_info=1)
         return_page = cpb.get_listado() if cpb else reverse('principal')
         return HttpResponseRedirect(return_page)
 

@@ -9,7 +9,8 @@ SITE_ROOT = PROJECT_ROOT
 
 
 ADMINS = (
-    ('JuanMa', 'errores_web@grupoguadalupe.com.ar'),
+    ('JuanMa', 'ironweb@ironwebgestion.com.ar'),
+    ('JuanManuel', 'jmjacquet@gmail.com'),
 )
 
 MANAGERS = ADMINS
@@ -70,35 +71,6 @@ TEMPLATE_LOADERS = (
     'django.template.loaders.app_directories.Loader',
 #     'django.template.loaders.eggs.Loader',
 )
-
-# TEMPLATES = [
-#     {
-#         "BACKEND": "django.template.backends.django.DjangoTemplates",
-#         "DIRS": [
-#             os.path.join(SITE_ROOT, "templates"),
-#         ],
-#         # "APP_DIRS": True,
-#         "OPTIONS": {
-#             "context_processors": [
-#                 'django.contrib.auth.context_processors.auth',
-#                 'django.core.context_processors.debug',
-#                 'django.core.context_processors.i18n',
-#                 'django.core.context_processors.media',
-#                 'django.core.context_processors.static',
-#                 'django.core.context_processors.request',
-#                 'django.contrib.messages.context_processors.messages',
-#             ],
-#             # 'loaders': [
-#             #     ('django.template.loaders.cached.Loader', [
-#             #         'django.template.loaders.filesystem.Loader',
-#             #         'django.template.loaders.app_directories.Loader',
-#             #     ]),
-#             # ],
-#         },
-#     },
-# ]
-
-
 MIDDLEWARE_CLASSES = (
     'django.middleware.common.CommonMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
@@ -151,7 +123,7 @@ EMAIL_USE_TLS = True
 EMAIL_HOST = config('EMAIL_HOST', default='localhost')
 EMAIL_HOST_PASSWORD = config('EMAIL_HOST_PASSWORD', default='')
 EMAIL_HOST_USER = config('EMAIL_HOST_USER', default='')
-
+EMAIL_PORT = 587
 
 SERVER_EMAIL = config('SERVER_EMAIL', default='')
 DEFAULT_FROM_EMAIL = config('DEFAULT_FROM_EMAIL', default='')
@@ -189,6 +161,7 @@ LOGGING = {
         },
         'console': {
             'class': 'logging.StreamHandler',
+            'formatter': 'verbose'
         },
     },
     'loggers': {
@@ -215,6 +188,11 @@ LOGGING = {
         'general': {
             'handlers': ['logfile'],
             'level': 'DEBUG',
+            'propagate': False,
+        },
+        'comprobantes': {
+            'handlers': ['console'],
+            'level': 'ERROR',
             'propagate': False,
         },
     }
