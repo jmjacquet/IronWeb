@@ -3,32 +3,23 @@ from django.template import RequestContext,Context
 from django.shortcuts import render, redirect, get_object_or_404,render_to_response,HttpResponseRedirect,HttpResponse
 from django.template.loader import render_to_string,get_template
 from django.views.generic import TemplateView,ListView,CreateView,UpdateView,FormView,DetailView
-from django.core.urlresolvers import reverse
 from django.contrib.auth.decorators import login_required
 from django.utils.decorators import method_decorator
-from django.db import connection
-from datetime import datetime,date,timedelta
-from django.utils import timezone
-from dateutil.relativedelta import *
 from .forms import MovimCuentasForm,BancosForm,MovimCuentasFPForm,PercImpForm,FormaPagoForm,PtoVtaForm,DispoForm,SeguimientoForm,FormCheques,FormChequesCobro,PtoVtaEditForm,RetencForm
-from django.http import HttpResponseRedirect,HttpResponseForbidden,HttpResponse
+from django.http import HttpResponseRedirect, HttpResponseForbidden, HttpResponse, Http404
 from django.db.models import Q,Sum,Count,F,DecimalField
 from .models import *
 import random
-from decimal import *
 from modal.views import AjaxCreateView,AjaxUpdateView,AjaxDeleteView
-from django.contrib import messages
 from general.utilidades import *
 from general.models import gral_empresa
 from general.views import VariablesMixin
 from usuarios.views import tiene_permiso
 from django.forms.models import inlineformset_factory,BaseInlineFormSet,modelformset_factory
 from productos.models import prod_productos,prod_producto_ubicac,prod_producto_lprecios
-from django.contrib.messages.views import SuccessMessageMixin
 from django.core.serializers.json import DjangoJSONEncoder
 from general.forms import ConsultaCpbs,pto_vta_habilitados,pto_vta_habilitados_list,ConsultaCpbsCompras
 from django.utils.functional import curry 
-from django.forms.models import model_to_dict
 
 
 import logging
@@ -694,8 +685,7 @@ def armarQR(qr_data):
 @login_required 
 def imprimirFactura_CB(request,id,pdf=None):   
     cpb = cpb_comprobante.objects.get(id=id)        
-    #puedeVerPadron(request,c.id_unidad.pk)    
-    
+    #puedeVerPadron(request,c.id_unidad.pk)
     if not cpb:
       raise Http404            
 
@@ -992,9 +982,9 @@ def imprimirPresupuesto(request,id,pdf=None):
     try:
         config = empresa_actual(request)
     except gral_empresa.DoesNotExist:
-        config = None 
-    
-    c = config    
+        config = None
+
+    c = config
     tipo_logo_factura = c.tipo_logo_factura
     cuit = c.cuit
     ruta_logo = c.ruta_logo
@@ -1079,10 +1069,13 @@ def imprimirCobranza(request,id,pdf=None):
     try:
         config = empresa_actual(request)
     except gral_empresa.DoesNotExist:
-        config = None  
+        config = None
     
+    cobranzas = cpb_cobranza.objects.filter(cpb_comprobante=cpb)
+    factura = cobranzas.first() if cobranzas else None
     c = config
-    
+    if factura and factura.cpb_factura.cpb_tipo.usa_pto_vta:
+            c = factura.cpb_factura.get_pto_vta()
     tipo_logo_factura = c.tipo_logo_factura
     cuit = c.cuit
     ruta_logo = c.ruta_logo
@@ -1093,10 +1086,8 @@ def imprimirCobranza(request,id,pdf=None):
     celular = c.celular
     iibb = c.iibb
     categ_fiscal = c.categ_fiscal
-    fecha_inicio_activ = c.fecha_inicio_activ       
-    
-    cobranzas = cpb_cobranza.objects.filter(cpb_comprobante=cpb)    
-    retenciones = cpb_comprobante_retenciones.objects.filter(cpb_comprobante=cpb)    
+    fecha_inicio_activ = c.fecha_inicio_activ
+    retenciones = cpb_comprobante_retenciones.objects.filter(cpb_comprobante=cpb)
     leyenda = u'DOCUMENTO NO VÁLIDO COMO FACTURA'
     pagos = cpb_comprobante_fp.objects.filter(cpb_comprobante=cpb)    
     codigo_letra = '000'
@@ -2161,13 +2152,12 @@ def DispoDeleteView(request, id):
 
 @login_required 
 def dispo_baja_reactivar(request,id):
-    
     cuenta = cpb_cuenta.objects.get(pk=id)
     if not cuenta.modificable:
             return redirect(reverse('disponibilidades_listado')) 
     cuenta.baja = not cuenta.baja
     cuenta.save()               
-    messages.success(self.request, u'Los datos se guardaron con éxito!')
+    messages.success(request, u'Los datos se guardaron con éxito!')
     return HttpResponseRedirect(reverse("disponibilidades_listado"))
 
 @login_required 
