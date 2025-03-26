@@ -692,7 +692,7 @@ def imprimirFactura_CB(request,id,pdf=None):
     detalle_comprobante = cpb_comprobante_detalle.objects.filter(cpb_comprobante=cpb)
     detalle_totales_iva = cpb_comprobante_tot_iva.objects.filter(cpb_comprobante=cpb)    
     
-    discrimina_iva = cpb.letra == 'A'
+    discrimina_iva = cpb.letra in  ('A', 'B')
 
     if cpb.condic_pago == 2:
         cobranzas = cpb_comprobante_fp.objects.filter(cpb_comprobante__cpb_cobranza_cpb__cpb_factura=cpb,cpb_comprobante__estado__pk__lt=3)
@@ -791,7 +791,7 @@ def imprimirFacturaQR(request,id,pdf=None):
     detalle_comprobante = cpb_comprobante_detalle.objects.filter(cpb_comprobante=cpb)
     detalle_totales_iva = cpb_comprobante_tot_iva.objects.filter(cpb_comprobante=cpb)    
     
-    discrimina_iva = cpb.letra == 'A'
+    discrimina_iva = cpb.letra in ('A', 'B')
 
     if cpb.condic_pago == 2:
         cobranzas = cpb_comprobante_fp.objects.filter(cpb_comprobante__cpb_cobranza_cpb__cpb_factura=cpb,cpb_comprobante__estado__pk__lt=3)
@@ -902,7 +902,7 @@ def imprimirFacturaHTML(request,id,pdf=None):
     detalle_comprobante = cpb_comprobante_detalle.objects.filter(cpb_comprobante=cpb)
     detalle_totales_iva = cpb_comprobante_tot_iva.objects.filter(cpb_comprobante=cpb)    
     
-    discrimina_iva = cpb.letra == 'A'
+    discrimina_iva = cpb.letra in ('A', 'B')
 
     if cpb.condic_pago == 2:
         cobranzas = cpb_comprobante_fp.objects.filter(cpb_comprobante__cpb_cobranza_cpb__cpb_factura=cpb,cpb_comprobante__estado__pk__lt=3)
@@ -1006,7 +1006,7 @@ def imprimirPresupuesto(request,id,pdf=None):
     renglones = range(renglones)
     context = Context()    
     fecha = datetime.now()    
-    discrimina_iva = cpb.letra == 'A'
+    discrimina_iva = cpb.letra in ('A', 'B')
     factura_X = cpb.letra == 'X'
     if discrimina_iva:
         subtotal = cpb.importe_subtotal
@@ -1255,7 +1255,7 @@ def mandarEmail(request,id):
         try:
           config = empresa_actual(request)    
         except gral_empresa.DoesNotExist:
-             raise ValueError
+            raise ValueError
 
         datos = config.get_datos_mail()      
         mail_cuerpo = datos['mail_cuerpo']

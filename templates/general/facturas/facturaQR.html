@@ -205,7 +205,7 @@
             </td>
           </tr>  
           <tr>
-             <td colspan="2" class="texto_cen" ><span class="cae_leyenda">Esta Administración Federal no se responsabiliza por los datos ingresados en el detalle de la operación</span></td>
+             <td colspan="2" class="texto_izq" ><span class="cae_leyenda">Régimen de Transparencia Fiscal al Consumidor Ley 27.743</span></td>
           </tr>  
         </table>
         {% endif %}
@@ -233,7 +233,7 @@
       {% if discrimina_iva %}
         <td class="listado_final">
           {% for ti in detalle_totales_iva %}
-          <small>{% if forloop.first %}( {% endif %}  IVA {{ti.tasa_iva.nombre}}: ${{ti.importe_total}}</small> {% if forloop.last %} )&nbsp;&nbsp;&nbsp; Total IVA:{% else %}/{% endif %}
+          <small>{% if forloop.first %}( {% endif %}  IVA {{ti.tasa_iva.nombre}}: ${{ti.importe_total}}</small> {% if forloop.last %} )&nbsp;&nbsp;&nbsp; Total IVA Contenido:{% else %}/{% endif %}
          {% endfor detalle_totales_iva %} 
         </td>
         <td class="listado_final borde_der">$ {{cpb.importe_iva|default_if_none:0|floatformat:2|intcomma}}</td>
