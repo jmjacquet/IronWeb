@@ -6,6 +6,10 @@ API_KEY="21034553b13918172148e398395625194fbe6111"  # Replace with your actual A
 # Log file location
 LOG_FILE="apache_memory_check.log"
 
+# Cooldown file (to track last restart time)
+COOLDOWN_FILE="/tmp/apache_restart.lock"
+COOLDOWN_SECONDS=600  # 10 minutes (600 seconds)
+
 # Function to log messages with datetime
 log_message() {
   echo "$(date '+%Y-%m-%d %H:%M:%S') - $1"
@@ -17,8 +21,22 @@ restart_apache() {
   cd ~/apps/server_apache/apache2/bin/
   ./apachectl restart
   log_message "Apache server restarted."
-
+  # Save timestamp of restart
+  date +%s > "$COOLDOWN_FILE"
 }
+
+
+# Check if we're in cooldown
+if [ -f "$COOLDOWN_FILE" ]; then
+  last_restart=$(cat "$COOLDOWN_FILE")
+  now=$(date +%s)
+  elapsed=$(( now - last_restart ))
+
+  if [ "$elapsed" -lt "$COOLDOWN_SECONDS" ]; then
+    log_message "In cooldown period ($elapsed seconds since last restart). Skipping restart."
+    exit 0
+  fi
+fi
 
 # Get server information from the API
 response=$(curl -s -H "Authorization: Token $API_KEY" "$API_URL")
