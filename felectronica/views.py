@@ -202,10 +202,9 @@ def listar_cpbs_afip_faltantes(request):
               fin = int(cpbs.first().numero)
             else:
               fin = int(fin)
-            cpbs = list(set([int(x.numero) for x in cpbs]))
+            cpbs = list(set(cpbs.values_list('numero', flat=True)))
             lista_optima = range(inicio,fin+1)        
             lista_sistema = [int(x) for x in lista_optima if int(x) not in cpbs]
-            lista_facturas = [recuperar_cpb_afip]
         except:
             cpbs=None
         

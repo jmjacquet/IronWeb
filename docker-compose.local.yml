@@ -1,0 +1,80 @@
+version: "3.9"
+
+services:
+  ironweb_local:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: ironweb_local
+    restart: unless-stopped
+    environment:
+      PYTHONUNBUFFERED: 1
+      ENV: ${ENV:-local}
+      DEBUG: ${DEBUG:-True}
+      GUNICORN_WSGI: ${GUNICORN_WSGI:-ggcontable.wsgi_local:application}
+      DB_HOST: ${DB_HOST:-mariadb_ironweb_local}
+      DB_PORT: ${DB_PORT:-3306}
+      DB_USER: ${DB_USER:-root}
+      DB_PASS: ${DB_PASS:-rootpassword}
+      SECRET_KEY: ${SECRET_KEY:-dev-secret-key-change-in-production}
+      SESSION_COOKIE_NAME: ${SESSION_COOKIE_NAME:-ironweb_session_local}
+      SERVER_EMAIL: ${SERVER_EMAIL}
+      DEFAULT_FROM_EMAIL: ${DEFAULT_FROM_EMAIL}
+      GUNICORN_WORKERS: ${GUNICORN_WORKERS:-2}
+      GUNICORN_THREADS: ${GUNICORN_THREADS:-1}
+      GUNICORN_TIMEOUT: ${GUNICORN_TIMEOUT:-120}
+      GUNICORN_BIND: ${GUNICORN_BIND:-0.0.0.0:8000}
+      COLLECT_STATIC: ${COLLECT_STATIC:-true}
+      RUN_MIGRATIONS: ${RUN_MIGRATIONS:-true}
+    volumes:
+      - ironweb_local_static:/app/static
+      - ironweb_local_media:/app/media
+      - ironweb_local_logs:/app/logs
+    ports:
+      - "8000:8000"
+    networks:
+      - dokploy-network
+    labels:
+      - traefik.docker.network=dokploy-network
+      - traefik.enable=true
+
+  mariadb_ironweb_local:
+    image: mariadb:11
+    container_name: mariadb_ironweb_local
+    restart: always
+    environment:
+      MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD:-rootpassword}
+      MYSQL_DATABASE: ${MYSQL_DATABASE:-ironweb_prueba}
+      TZ: America/Argentina/Buenos_Aires
+    volumes:
+      - mariadb_ironweb_local_data:/var/lib/mysql
+      - ./conf.d:/etc/mysql/conf.d:ro
+    ports:
+      - "3307:3306"
+    networks:
+      - dokploy-network
+
+  adminer:
+    image: adminer
+    container_name: adminer_ironweb
+    restart: always
+    ports:
+      - "8080:8080"
+    depends_on:
+      - mariadb_ironweb_local
+    networks:
+      - dokploy-network
+
+volumes:
+  ironweb_local_static:
+    driver: local
+  ironweb_local_media:
+    driver: local
+  ironweb_local_logs:
+    driver: local
+  mariadb_ironweb_local_data:
+    driver: local
+
+networks:
+  dokploy-network:
+    external: true

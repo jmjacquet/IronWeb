@@ -1,0 +1,61 @@
+version: "3.9"
+
+services:
+  ironweb_dev:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: ironweb_dev
+    restart: unless-stopped
+    environment:
+      PYTHONUNBUFFERED: 1
+      ENV: ${ENV:-development}
+      DEBUG: ${DEBUG:-True}
+      GUNICORN_WSGI: ${GUNICORN_WSGI:-ggcontable.wsgi_dev:application}
+      DB_HOST: ${DB_HOST:-mariadb_shared}
+      DB_PORT: ${DB_PORT:-3306}
+      DB_USER: ${DB_USER}
+      DB_PASS: ${DB_PASS}
+      SECRET_KEY: ${SECRET_KEY}
+      SESSION_COOKIE_NAME: ${SESSION_COOKIE_NAME:-ironweb_session_dev}
+      SERVER_EMAIL: ${SERVER_EMAIL}
+      DEFAULT_FROM_EMAIL: ${DEFAULT_FROM_EMAIL}
+      GUNICORN_WORKERS: ${GUNICORN_WORKERS:-2}
+      GUNICORN_THREADS: ${GUNICORN_THREADS:-1}
+      GUNICORN_TIMEOUT: ${GUNICORN_TIMEOUT:-120}
+      GUNICORN_BIND: ${GUNICORN_BIND:-0.0.0.0:8000}
+      COLLECT_STATIC: ${COLLECT_STATIC:-true}
+      RUN_MIGRATIONS: ${RUN_MIGRATIONS:-true}
+    volumes:
+      - ironweb_dev_static:/app/static
+      - ironweb_dev_media:/app/media
+      - ironweb_dev_logs:/app/logs
+    ports:
+      - "8001:8000"
+    networks:
+      - dokploy-network
+    labels:
+      - traefik.docker.network=dokploy-network
+      - traefik.enable=true
+      - traefik.http.services.ironweb_dev.loadbalancer.server.port=8000
+      # Dev routing - Dockploy will assign a domain
+      # You can also add specific rules if needed
+      - traefik.http.routers.ironweb_dev.rule=HostRegexp(`{subdomain:.+}.ironwebgestion-dev.com.ar`, `ironwebgestion-dev.com.ar`)
+      - traefik.http.routers.ironweb_dev.entrypoints=websecure
+      - traefik.http.routers.ironweb_dev.tls=true
+      - traefik.http.routers.ironweb_dev.tls.certresolver=letsencrypt
+
+volumes:
+  ironweb_dev_static:
+    driver: local
+    name: ironweb_dev_static
+  ironweb_dev_media:
+    driver: local
+    name: ironweb_dev_media
+  ironweb_dev_logs:
+    driver: local
+    name: ironweb_dev_logs
+
+networks:
+  dokploy-network:
+    external: true

@@ -5,14 +5,30 @@ ENV DEBIAN_FRONTEND=noninteractive
 
 WORKDIR /app
 
+# Fix Debian Buster repositories (moved to archive after EOL)
+RUN echo "deb http://archive.debian.org/debian buster main" > /etc/apt/sources.list && \
+    echo "deb http://archive.debian.org/debian-security buster/updates main" >> /etc/apt/sources.list && \
+    echo "Acquire::Check-Valid-Until false;" > /etc/apt/apt.conf.d/99no-check-valid-until
+
 # Install system dependencies
 RUN apt-get update && \
     apt-get install -y --no-install-recommends \
     gcc \
-    default-libmysqlclient-dev \
+    g++ \
+    libffi-dev \
+    libssl-dev \
+    libmariadb-dev \
     pkg-config \
     curl \
     netcat-openbsd \
+    libjpeg-dev \
+    libpng-dev \
+    zlib1g-dev \
+    libfreetype6-dev \
+    liblcms2-dev \
+    libwebp-dev \
+    libtiff-dev \
+    libopenjp2-7-dev \
     && rm -rf /var/lib/apt/lists/*
 
 # Copy requirements and install Python packages
@@ -25,14 +41,13 @@ RUN pip install --no-cache-dir --upgrade pip && \
 COPY . /app/
 
 # Create necessary directories
-RUN mkdir -p /app/static /app/media /app/logs
+RUN mkdir -p /app/static /app/media /app/logs /app/staticfiles
 
 # Create entrypoint script
 COPY docker-entrypoint.sh /app/
 RUN chmod +x /app/docker-entrypoint.sh
 
-# Set default command
 EXPOSE 8000
 
 ENTRYPOINT ["/app/docker-entrypoint.sh"]
-CMD ["gunicorn", "--bind", "0.0.0.0:8000", "--workers", "6", "--threads", "3", "--timeout", "120", "--access-logfile", "-", "--error-logfile", "-", "ggcontable.wsgi:application"]
+CMD []

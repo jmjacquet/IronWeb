@@ -1,18 +1,56 @@
-version: '3.5'
-services:        
-  django:        
-    tty: true        # docker run -t
-    build: .
-    container_name: django-ironweb       
+version: "3.9"
+
+services:
+  ironweb:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: ironweb
+    restart: unless-stopped
+    environment:
+      PYTHONUNBUFFERED: 1
+      DEBUG: ${DEBUG:-False}
+      GUNICORN_WSGI: ${GUNICORN_WSGI:-ggcontable.wsgi:application}
+      DB_HOST: ${DB_HOST:-mariadb_ironweb}
+      DB_PORT: ${DB_PORT:-3306}
+      DB_USER: ${DB_USER}
+      DB_PASS: ${DB_PASS}
+      SECRET_KEY: ${SECRET_KEY}
+      SESSION_COOKIE_NAME: ${SESSION_COOKIE_NAME:-ironweb_session}
+      SERVER_EMAIL: ${SERVER_EMAIL}
+      DEFAULT_FROM_EMAIL: ${DEFAULT_FROM_EMAIL}
+      GUNICORN_WORKERS: ${GUNICORN_WORKERS:-6}
+      GUNICORN_THREADS: ${GUNICORN_THREADS:-3}
+      GUNICORN_TIMEOUT: ${GUNICORN_TIMEOUT:-120}
+      GUNICORN_BIND: ${GUNICORN_BIND:-0.0.0.0:8000}
+      COLLECT_STATIC: ${COLLECT_STATIC:-false}
     volumes:
-     - .:/ironweb
-    ports:
-     - "8000:8000"
+      - ironweb_static:/app/static
+      - ironweb_media:/app/media
+      - ironweb_logs:/app/logs
     networks:
-      - repo_default
-    links:
-       - mysql5:mysql5
+      - dokploy-network
+    labels:
+      - traefik.docker.network=dokploy-network
+      - traefik.enable=true
+      - traefik.http.services.ironweb.loadbalancer.server.port=8000
+      # Wildcard routing for all subdomains
+      - traefik.http.routers.ironweb.rule=HostRegexp(`{subdomain:.+}.ironwebgestion.com.ar`, `ironwebgestion.com.ar`)
+      - traefik.http.routers.ironweb.entrypoints=websecure
+      - traefik.http.routers.ironweb.tls=true
+      - traefik.http.routers.ironweb.tls.certresolver=letsencrypt
+
+volumes:
+  ironweb_static:
+    driver: local
+    name: ironweb_static
+  ironweb_media:
+    driver: local
+    name: ironweb_media
+  ironweb_logs:
+    driver: local
+    name: ironweb_logs
 
 networks:
-  repo_default:
+  dokploy-network:
     external: true

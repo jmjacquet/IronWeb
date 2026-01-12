@@ -1,4 +1,7 @@
 # -*- coding: utf-8 -*-
+"""
+Django settings for IronWeb project - PRODUCTION (Docker)
+"""
 from .settings import *
 from decouple import config
 import os
@@ -11,6 +14,7 @@ DB_HOST = config('DB_HOST', default='mariadb_ironweb')
 DB_PORT = config('DB_PORT', default='3306')
 
 # Database name is set dynamically by TenantMiddleware via ENTIDAD_DB env var
+# Default fallback for initial connection
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.mysql',
@@ -31,6 +35,7 @@ STATIC_ROOT = config('STATIC_ROOT', default=os.path.join(SITE_ROOT, 'static'))
 MEDIA_ROOT = config('MEDIA_ROOT', default=os.path.join(SITE_ROOT, 'media'))
 
 # CRITICAL: Add TenantMiddleware as FIRST middleware
+# This must be before any other middleware that might access the database
 MIDDLEWARE_CLASSES = (
     'ggcontable.middleware.TenantMiddleware',  # MUST be first!
 ) + MIDDLEWARE_CLASSES
@@ -38,3 +43,16 @@ MIDDLEWARE_CLASSES = (
 STATICFILES_DIRS = (
     os.path.join(SITE_ROOT, "staticfiles"),
 )
+
+# Email configuration
+EMAIL_USE_TLS = True
+EMAIL_HOST = config('EMAIL_HOST', default='localhost')
+EMAIL_HOST_PASSWORD = config('EMAIL_HOST_PASSWORD', default='')
+EMAIL_HOST_USER = config('EMAIL_HOST_USER', default='')
+EMAIL_PORT = 587
+SERVER_EMAIL = config('SERVER_EMAIL', default='')
+DEFAULT_FROM_EMAIL = config('DEFAULT_FROM_EMAIL', default='')
+
+# Session configuration
+SESSION_COOKIE_NAME = config('SESSION_COOKIE_NAME', default='ironweb_session')
+SESSION_EXPIRE_AT_BROWSER_CLOSE = True
