@@ -13,7 +13,7 @@ PROJECT_DIR = os.path.abspath(os.path.join(BASE_DIR, '..'))
 sys.path.append(PROJECT_DIR)
 
 # Set Django settings module for local development
-os.environ.setdefault("DJANGO_SETTINGS_MODULE", "ggcontable.docker_local")
+os.environ.setdefault("DJANGO_SETTINGS_MODULE", "ggcontable.local")
 
 from django.core.wsgi import get_wsgi_application
 
