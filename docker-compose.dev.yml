@@ -40,7 +40,7 @@ services:
       - traefik.http.services.ironweb_dev.loadbalancer.server.port=8000
       # Dev routing - Dockploy will assign a domain
       # You can also add specific rules if needed
-      - traefik.http.routers.ironweb_dev.rule=Host(`development.ironwebgestion.com.ar`, `wwww.development.ironwebgestion.com.ar`)
+      - traefik.http.routers.ironweb_dev.rule=Host(`development.ironwebgestion.com.ar`, `www.development.ironwebgestion.com.ar`)
       - traefik.http.routers.ironweb_dev.entrypoints=websecure
       - traefik.http.routers.ironweb_dev.tls=true
       - traefik.http.routers.ironweb_dev.tls.certresolver=letsencrypt
