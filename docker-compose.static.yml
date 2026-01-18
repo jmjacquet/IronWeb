@@ -39,7 +39,7 @@ services:
       - traefik.enable=true
       - traefik.http.services.ironweb-static-dev.loadbalancer.server.port=80
       # Route static/media paths to nginx with high priority
-      - traefik.http.routers.ironweb-static-dev.rule=HostRegexp(`{subdomain:.+}.ironwebgestion-dev.com.ar`, `ironwebgestion-dev.com.ar`) && (PathPrefix(`/static`) || PathPrefix(`/media`))
+      - traefik.http.routers.ironweb-static-dev.rule=HostRegexp(`{subdomain:.+}.ironwebgestion.com.ar`, `ironwebgestion.com.ar`) && (PathPrefix(`/static`) || PathPrefix(`/media`))
       - traefik.http.routers.ironweb-static-dev.entrypoints=websecure
       - traefik.http.routers.ironweb-static-dev.tls=true
       - traefik.http.routers.ironweb-static-dev.tls.certresolver=letsencrypt
