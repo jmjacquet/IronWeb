@@ -12,7 +12,7 @@ services:
       ENV: ${ENV:-development}
       DEBUG: ${DEBUG:-True}
       GUNICORN_WSGI: ${GUNICORN_WSGI:-ggcontable.wsgi_dev:application}
-      DB_HOST: ${DB_HOST:-mariadb_shared}
+      DB_HOST: ${DB_HOST:-mariadb-shared-2xk6mf}
       DB_PORT: ${DB_PORT:-3306}
       DB_USER: ${DB_USER}
       DB_PASS: ${DB_PASS}
