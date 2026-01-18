@@ -90,6 +90,16 @@ TENANT_MAP = {
         'ENTIDAD_DB': 'ironweb_cirugiamf',
         'ENTIDAD_DIR': 'cirugiamf',
     },
+    'development.ironwebgestion.com.ar': {
+        'ENTIDAD_ID': '9',
+        'ENTIDAD_DB': 'ironweb_development',
+        'ENTIDAD_DIR': 'development',
+    },
+    'www.development.ironwebgestion.com.ar': {
+        'ENTIDAD_ID': '9',
+        'ENTIDAD_DB': 'ironweb_development',
+        'ENTIDAD_DIR': 'development',
+    },
 }
 
 

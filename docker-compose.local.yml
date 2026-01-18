@@ -23,7 +23,7 @@ services:
       GUNICORN_WORKERS: ${GUNICORN_WORKERS:-2}
       GUNICORN_THREADS: ${GUNICORN_THREADS:-1}
       GUNICORN_TIMEOUT: ${GUNICORN_TIMEOUT:-120}
-      GUNICORN_BIND: ${GUNICORN_BIND:-0.0.0.0:8000}
+      GUNICORN_BIND: ${GUNICORN_BIND:-0.0.0.0:8001}
       COLLECT_STATIC: ${COLLECT_STATIC:-true}
       RUN_MIGRATIONS: ${RUN_MIGRATIONS:-true}
     volumes:
@@ -38,41 +38,12 @@ services:
       - traefik.docker.network=dokploy-network
       - traefik.enable=true
 
-  mariadb_ironweb_local:
-    image: mariadb:11
-    container_name: mariadb_ironweb_local
-    restart: always
-    environment:
-      MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD:-rootpassword}
-      MYSQL_DATABASE: ${MYSQL_DATABASE:-ironweb_prueba}
-      TZ: America/Argentina/Buenos_Aires
-    volumes:
-      - mariadb_ironweb_local_data:/var/lib/mysql
-      - ./conf.d:/etc/mysql/conf.d:ro
-    ports:
-      - "3307:3306"
-    networks:
-      - dokploy-network
-
-  adminer:
-    image: adminer
-    container_name: adminer_ironweb
-    restart: always
-    ports:
-      - "8080:8080"
-    depends_on:
-      - mariadb_ironweb_local
-    networks:
-      - dokploy-network
-
 volumes:
   ironweb_local_static:
     driver: local
   ironweb_local_media:
     driver: local
   ironweb_local_logs:
-    driver: local
-  mariadb_ironweb_local_data:
     driver: local
 
 networks:

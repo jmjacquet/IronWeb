@@ -10,7 +10,8 @@ RUN echo "deb http://archive.debian.org/debian buster main" > /etc/apt/sources.l
     echo "deb http://archive.debian.org/debian-security buster/updates main" >> /etc/apt/sources.list && \
     echo "Acquire::Check-Valid-Until false;" > /etc/apt/apt.conf.d/99no-check-valid-until
 
-# Install system dependencies
+# Install system dependencies including SWIG and OpenSSL dev for M2Crypto
+# Also install python-m2crypto from system package as fallback
 RUN apt-get update && \
     apt-get install -y --no-install-recommends \
     gcc \
@@ -29,12 +30,18 @@ RUN apt-get update && \
     libwebp-dev \
     libtiff-dev \
     libopenjp2-7-dev \
+    swig \
+    python-dev \
+    python-m2crypto \
     && rm -rf /var/lib/apt/lists/*
 
 # Copy requirements and install Python packages
+# Skip GRR-M2Crypto since we're using system package python-m2crypto
 COPY reqs.txt /app/
 RUN pip install --no-cache-dir --upgrade pip && \
-    pip install --no-cache-dir -r reqs.txt && \
+    pip install --no-cache-dir django-appconf==1.0.3 && \
+    grep -v "^GRR-M2Crypto" reqs.txt > reqs_no_m2crypto.txt && \
+    pip install --no-cache-dir -r reqs_no_m2crypto.txt && \
     pip install --no-cache-dir gunicorn==19.10.0
 
 # Copy application code
