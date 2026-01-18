@@ -46,13 +46,6 @@ if [ "$COLLECT_STATIC" = "true" ]; then
     echo "✓ Static files collected"
 fi
 
-# Run migrations if needed (note: migrations should be run per-tenant)
-if [ "$RUN_MIGRATIONS" = "true" ]; then
-    echo "Running migrations..."
-    python manage.py migrate --noinput || true
-    echo "✓ Migrations completed"
-fi
-
 # Determine WSGI file based on environment
 WSGI_MODULE=${GUNICORN_WSGI:-ggcontable.wsgi:application}
 

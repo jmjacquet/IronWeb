@@ -10,7 +10,7 @@ import json
 # Tenant configuration map (fallback if env vars not set)
 # Maps subdomain to tenant database and settings
 TENANT_MAP = {
-    'prueba.ironwebgestion.com.ar': {
+    'development.ironwebgestion.com.ar': {
         'ENTIDAD_ID': '1',
         'ENTIDAD_DB': 'ironweb_prueba',
         'ENTIDAD_DIR': 'prueba',
@@ -20,86 +20,86 @@ TENANT_MAP = {
         'ENTIDAD_DB': 'ironweb_prueba',
         'ENTIDAD_DIR': 'prueba',
     },
-    'sucec.ironwebgestion.com.ar': {
-        'ENTIDAD_ID': '2',
-        'ENTIDAD_DB': 'ironweb_sucec',
-        'ENTIDAD_DIR': 'sucec',
-    },
-    'www.sucec.ironwebgestion.com.ar': {
-        'ENTIDAD_ID': '2',
-        'ENTIDAD_DB': 'ironweb_sucec',
-        'ENTIDAD_DIR': 'sucec',
-    },
-    'digra.ironwebgestion.com.ar': {
-        'ENTIDAD_ID': '3',
-        'ENTIDAD_DB': 'ironweb_digra',
-        'ENTIDAD_DIR': 'digra',
-    },
-    'www.digra.ironwebgestion.com.ar': {
-        'ENTIDAD_ID': '3',
-        'ENTIDAD_DB': 'ironweb_digra',
-        'ENTIDAD_DIR': 'digra',
-    },
-    # 'brolcazsrl.ironwebgestion.com.ar': {
-    #     'ENTIDAD_ID': '4',
-    #     'ENTIDAD_DB': 'ironweb_brolcazsrl',
-    #     'ENTIDAD_DIR': 'brolcazsrl',
+    # 'sucec.ironwebgestion.com.ar': {
+    #     'ENTIDAD_ID': '2',
+    #     'ENTIDAD_DB': 'ironweb_sucec',
+    #     'ENTIDAD_DIR': 'sucec',
     # },
-    # 'www.brolcazsrl.ironwebgestion.com.ar': {
-    #     'ENTIDAD_ID': '4',
-    #     'ENTIDAD_DB': 'ironweb_brolcazsrl',
-    #     'ENTIDAD_DIR': 'brolcazsrl',
+    # 'www.sucec.ironwebgestion.com.ar': {
+    #     'ENTIDAD_ID': '2',
+    #     'ENTIDAD_DB': 'ironweb_sucec',
+    #     'ENTIDAD_DIR': 'sucec',
     # },
-    'cornercorto.ironwebgestion.com.ar': {
-        'ENTIDAD_ID': '5',
-        'ENTIDAD_DB': 'ironweb_cornercorto',
-        'ENTIDAD_DIR': 'cornercorto',
-    },
-    'www.cornercorto.ironwebgestion.com.ar': {
-        'ENTIDAD_ID': '5',
-        'ENTIDAD_DB': 'ironweb_cornercorto',
-        'ENTIDAD_DIR': 'cornercorto',
-    },
-    'laboralsaludsf.ironwebgestion.com.ar': {
-        'ENTIDAD_ID': '6',
-        'ENTIDAD_DB': 'ironweb_laboralsaludsf',
-        'ENTIDAD_DIR': 'laboralsaludsf',
-    },
-    'www.laboralsaludsf.ironwebgestion.com.ar': {
-        'ENTIDAD_ID': '6',
-        'ENTIDAD_DB': 'ironweb_laboralsaludsf',
-        'ENTIDAD_DIR': 'laboralsaludsf',
-    },
-    'labartoladeco.ironwebgestion.com.ar': {
-        'ENTIDAD_ID': '7',
-        'ENTIDAD_DB': 'ironweb_labartoladeco',
-        'ENTIDAD_DIR': 'labartoladeco',
-    },
-    'www.labartoladeco.ironwebgestion.com.ar': {
-        'ENTIDAD_ID': '7',
-        'ENTIDAD_DB': 'ironweb_labartoladeco',
-        'ENTIDAD_DIR': 'labartoladeco',
-    },
-    'cirugiamf.ironwebgestion.com.ar': {
-        'ENTIDAD_ID': '8',
-        'ENTIDAD_DB': 'ironweb_cirugiamf',
-        'ENTIDAD_DIR': 'cirugiamf',
-    },
-    'www.cirugiamf.ironwebgestion.com.ar': {
-        'ENTIDAD_ID': '8',
-        'ENTIDAD_DB': 'ironweb_cirugiamf',
-        'ENTIDAD_DIR': 'cirugiamf',
-    },
-    'development.ironwebgestion.com.ar': {
-        'ENTIDAD_ID': '9',
-        'ENTIDAD_DB': 'ironweb_development',
-        'ENTIDAD_DIR': 'development',
-    },
-    'www.development.ironwebgestion.com.ar': {
-        'ENTIDAD_ID': '9',
-        'ENTIDAD_DB': 'ironweb_development',
-        'ENTIDAD_DIR': 'development',
-    },
+    # 'digra.ironwebgestion.com.ar': {
+    #     'ENTIDAD_ID': '3',
+    #     'ENTIDAD_DB': 'ironweb_digra',
+    #     'ENTIDAD_DIR': 'digra',
+    # },
+    # 'www.digra.ironwebgestion.com.ar': {
+    #     'ENTIDAD_ID': '3',
+    #     'ENTIDAD_DB': 'ironweb_digra',
+    #     'ENTIDAD_DIR': 'digra',
+    # },
+    # # 'brolcazsrl.ironwebgestion.com.ar': {
+    # #     'ENTIDAD_ID': '4',
+    # #     'ENTIDAD_DB': 'ironweb_brolcazsrl',
+    # #     'ENTIDAD_DIR': 'brolcazsrl',
+    # # },
+    # # 'www.brolcazsrl.ironwebgestion.com.ar': {
+    # #     'ENTIDAD_ID': '4',
+    # #     'ENTIDAD_DB': 'ironweb_brolcazsrl',
+    # #     'ENTIDAD_DIR': 'brolcazsrl',
+    # # },
+    # 'cornercorto.ironwebgestion.com.ar': {
+    #     'ENTIDAD_ID': '5',
+    #     'ENTIDAD_DB': 'ironweb_cornercorto',
+    #     'ENTIDAD_DIR': 'cornercorto',
+    # },
+    # 'www.cornercorto.ironwebgestion.com.ar': {
+    #     'ENTIDAD_ID': '5',
+    #     'ENTIDAD_DB': 'ironweb_cornercorto',
+    #     'ENTIDAD_DIR': 'cornercorto',
+    # },
+    # 'laboralsaludsf.ironwebgestion.com.ar': {
+    #     'ENTIDAD_ID': '6',
+    #     'ENTIDAD_DB': 'ironweb_laboralsaludsf',
+    #     'ENTIDAD_DIR': 'laboralsaludsf',
+    # },
+    # 'www.laboralsaludsf.ironwebgestion.com.ar': {
+    #     'ENTIDAD_ID': '6',
+    #     'ENTIDAD_DB': 'ironweb_laboralsaludsf',
+    #     'ENTIDAD_DIR': 'laboralsaludsf',
+    # },
+    # 'labartoladeco.ironwebgestion.com.ar': {
+    #     'ENTIDAD_ID': '7',
+    #     'ENTIDAD_DB': 'ironweb_labartoladeco',
+    #     'ENTIDAD_DIR': 'labartoladeco',
+    # },
+    # 'www.labartoladeco.ironwebgestion.com.ar': {
+    #     'ENTIDAD_ID': '7',
+    #     'ENTIDAD_DB': 'ironweb_labartoladeco',
+    #     'ENTIDAD_DIR': 'labartoladeco',
+    # },
+    # 'cirugiamf.ironwebgestion.com.ar': {
+    #     'ENTIDAD_ID': '8',
+    #     'ENTIDAD_DB': 'ironweb_cirugiamf',
+    #     'ENTIDAD_DIR': 'cirugiamf',
+    # },
+    # 'www.cirugiamf.ironwebgestion.com.ar': {
+    #     'ENTIDAD_ID': '8',
+    #     'ENTIDAD_DB': 'ironweb_cirugiamf',
+    #     'ENTIDAD_DIR': 'cirugiamf',
+    # },
+    # 'development.ironwebgestion.com.ar': {
+    #     'ENTIDAD_ID': '9',
+    #     'ENTIDAD_DB': 'ironweb_development',
+    #     'ENTIDAD_DIR': 'development',
+    # },
+    # 'www.development.ironwebgestion.com.ar': {
+    #     'ENTIDAD_ID': '9',
+    #     'ENTIDAD_DB': 'ironweb_development',
+    #     'ENTIDAD_DIR': 'development',
+    # },
 }
 
 

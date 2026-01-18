@@ -271,27 +271,40 @@ class PrincipalView(VariablesMixin, TemplateView):
 
         for m in meses_cpbs:
             meses.append(MESES[m[0] - 1][1] + ' ' + str(m[1])[2:4] + "'")
-            ventas = comprobantes.filter(cpb_tipo__compra_venta='V', anio=m[1], m=m[0]).annotate(
-                pendiente=Sum(F('saldo') * F('cpb_tipo__signo_ctacte'), output_field=DecimalField()),
-                saldado=Sum((F('importe_total') - F('saldo')) * F('cpb_tipo__signo_ctacte'),
-                            output_field=DecimalField())).order_by(F('anio'), F('m'))
-            compras = comprobantes.filter(cpb_tipo__compra_venta='C', anio=m[1], m=m[0]).annotate(
-                pendiente=Sum(F('saldo') * F('cpb_tipo__signo_ctacte'), output_field=DecimalField()),
-                saldado=Sum((F('importe_total') - F('saldo')) * F('cpb_tipo__signo_ctacte'),
-                            output_field=DecimalField())).order_by(F('anio'), F('m'))
-            if ventas:
-                ventas_deuda.append(ventas[0].get('pendiente', Decimal(0.00)))
-                ventas_pagos.append(ventas[0].get('saldado', Decimal(0.00)))
-            else:
-                ventas_deuda.append(Decimal(0.00))
-                ventas_pagos.append(Decimal(0.00))
 
-            if compras:
-                compras_deuda.append(compras[0].get('pendiente', Decimal(0.00)))
-                compras_pagos.append(compras[0].get('saldado', Decimal(0.00)))
-            else:
-                compras_deuda.append(Decimal(0.00))
-                compras_pagos.append(Decimal(0.00))
+            # Create date range for the month
+            from datetime import date
+            import calendar
+
+            # Get first and last day of the month
+            first_day = date(m[1], m[0], 1)
+            last_day = date(m[1], m[0], calendar.monthrange(m[1], m[0])[1])
+
+            # Use aggregate to get totals for the month
+            ventas_agg = comprobantes.filter(
+                cpb_tipo__compra_venta='V',
+                fecha_cpb__gte=first_day,
+                fecha_cpb__lte=last_day
+            ).aggregate(
+                pendiente=Sum(F('saldo') * F('cpb_tipo__signo_ctacte'), output_field=DecimalField()),
+                saldado=Sum((F('importe_total') - F('saldo')) * F('cpb_tipo__signo_ctacte'),
+                            output_field=DecimalField())
+            )
+
+            compras_agg = comprobantes.filter(
+                cpb_tipo__compra_venta='C',
+                fecha_cpb__gte=first_day,
+                fecha_cpb__lte=last_day
+            ).aggregate(
+                pendiente=Sum(F('saldo') * F('cpb_tipo__signo_ctacte'), output_field=DecimalField()),
+                saldado=Sum((F('importe_total') - F('saldo')) * F('cpb_tipo__signo_ctacte'),
+                            output_field=DecimalField())
+            )
+
+            ventas_deuda.append(ventas_agg.get('pendiente') or Decimal(0.00))
+            ventas_pagos.append(ventas_agg.get('saldado') or Decimal(0.00))
+            compras_deuda.append(compras_agg.get('pendiente') or Decimal(0.00))
+            compras_pagos.append(compras_agg.get('saldado') or Decimal(0.00))
 
         context['meses'] = json.dumps(meses, cls=DecimalEncoder)
 

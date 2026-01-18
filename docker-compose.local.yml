@@ -31,7 +31,7 @@ services:
       - ironweb_local_media:/app/media
       - ironweb_local_logs:/app/logs
     ports:
-      - "8000:8000"
+      - "8001:8001"
     networks:
       - dokploy-network
     labels:
