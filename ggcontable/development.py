@@ -47,7 +47,7 @@ STATICFILES_DIRS = (
 # Debug toolbar configuration for development
 if DEBUG:
     INSTALLED_APPS += (
-        'debug_toolbar'
+        'debug_toolbar',
     )
 
     # Add debug toolbar middleware after TenantMiddleware
