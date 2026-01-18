@@ -47,12 +47,12 @@ services:
       - traefik.http.routers.ironweb-static-dev.service=ironweb-static-dev
 
 volumes:
-  ironweb_static:
-    external: true
-    name: ironweb_static
-  ironweb_media:
-    external: true
-    name: ironweb_media
+#  ironweb_static:
+#    external: true
+#    name: ironweb_static
+#  ironweb_media:
+#    external: true
+#    name: ironweb_media
   ironweb_dev_static:
     external: true
     name: ironweb_dev_static
