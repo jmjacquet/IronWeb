@@ -46,7 +46,13 @@
                                         <i class="icon-settings"> </i> <span class="caret"></span>
                                       </button>
                                       <ul class="dropdown-menu dropdown-menu-default">
-                                        <li><a href="{% url 'orden_pedido_ver' id=orden.pk %}"  title="VER" class="modal-detail" data-modal-head="DETALLE ORDEN DE PEDIDO Nº {{orden}}" data-modal-callback="reload"><i class="icon-screen-desktop"></i> Vista Previa</a></li>
+                                        <li><a href="{% url 'orden_pedido_ver' id=orden.pk %}"
+                                               title="Ver Detalle"
+                                               class="modal-detail"
+                                               data-modal-head="DETALLE ORDEN DE PEDIDO Nº {{orden}}"
+                                               data-modal-callback="reload">
+                                            <i class="icon-screen-desktop"></i> Ver Detalle</a>
+                                        </li>
                                         <li><a target="_blank" href="{% url 'imprimirNotaPedido' id=orden.pk %}"><i class=" icon-printer"></i> Imprimir</a></li>
                                         <li><a href="{% url 'orden_pedido_editar' id=orden.pk %}"  title="Editar" data-modal-callback="reload" ><i class="icon-note"></i> Editar</a></li>
                                        

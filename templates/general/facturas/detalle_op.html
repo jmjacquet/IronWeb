@@ -3,7 +3,9 @@
 {% load crispy_forms_tags %}
 {% load humanize %}
 {% block main %}    
-
+<div class=" col-sm-12 ">
+<div class="row">
+<div class=" col-sm-12 ">
 <table width="100%"  class="table table-striped compact table-hover table-no-bordered tabla_nueva nowrap">
   <tr>
     <td width="10%" class=" borde_izq texto_der">Entidad/Institución:</td>
@@ -22,57 +24,70 @@
     <td class="texto_izq borde_abajo">{{pedido.cliente.get_fact_categFiscal_display|default_if_none:''|upper}}</td>
     <td class="texto_der borde_abajo">CUIT:</td>
     <td class="texto_izq borde_der borde_abajo">{{pedido.cliente.fact_cuit|default_if_none:''|upper}}</td>
-  </tr> 
- 
-  
+  </tr>
+
 </table>
 <table width="100%" class="table table-striped compact table-hover table-no-bordered tabla_nueva nowrap">
   <thead>
-    <tr><th width="20%" class="borde_izq borde_arriba borde_abajo tabla_header">Pedido</th>
-    <th width="40%" class="borde_izq  borde_arriba borde_abajo tabla_header">Tipo Impresión</th>
-    <th width="40%" class="borde_izq borde_der  borde_arriba borde_abajo tabla_header">Terminación</th>    
+    <tr>
+      <th width="20%" class="borde_izq borde_arriba borde_abajo tabla_header">Pedido</th>
+      <th width="40%" class="borde_izq  borde_arriba borde_abajo tabla_header">Tipo Impresión</th>
+      <th width="40%" class="borde_izq borde_der  borde_arriba borde_abajo tabla_header">Terminación</th>
+    </tr>
   </thead>
-
-    <tr>      
+  <tbody>
+    <tr>
       <td class="borde_izq listado_centro">
         {% if pedido.ped_mostrador %}MOSTRADOR&nbsp;{% endif %}{% if pedido.ped_webface %}WEB/FACEB&nbsp;{% endif %}
-        {% if pedido.ped_comercial %}COMERCIAL&nbsp;{% endif %}{% if pedido.ped_email %}E-MAIL{% endif %}      </td>
+        {% if pedido.ped_comercial %}COMERCIAL&nbsp;{% endif %}{% if pedido.ped_email %}E-MAIL{% endif %}
+      </td>
       <td class="borde_izq listado_centro">
         {% if pedido.ped_mostrador %}LASER&nbsp;{% endif %}{% if pedido.ped_webface %}LATEX&nbsp;{% endif %}{% if pedido.ped_comercial %}ROTULADO{% endif %}
-     
+
         {% if pedido.impres_offset %}OFFSET&nbsp;{% endif %}{% if pedido.impres_corporeo %}CORPÓREO&nbsp;{% endif %}{% if pedido.impres_disenio %}DISEÑO{% endif %}
-      
+
         {% if pedido.impres_ploteo_papel %}PLOTEO PAPEL&nbsp;{% endif %}{% if pedido.impres_facturero %}FACTURERO&nbsp;{% endif %}{% if pedido.impres_sellos %}SELLOS&nbsp;{% endif %}{% if pedido.impres_imprbyn %}IMPR.B/N{% endif %}
       </td>
       <td class="borde_izq listado_centro borde_der">
         {% if pedido.term_cortado %}CORTADO&nbsp;{% endif %}{% if pedido.term_troquelado %} TROQUELADO&nbsp;{% endif %}{% if pedido.term_abrochado %}ABROCHADO&nbsp;{% endif %}
-     
+
         {% if pedido.term_engomado %}ENGOMADO&nbsp;{% endif %}{% if pedido.term_plegado %} PLEGADO&nbsp;{% endif %}{% if pedido.term_arandelas %}ARANDELAS&nbsp;{% endif %}
-      
+
         {% if pedido.term_bolsillos %}BOLSILLOS&nbsp;{% endif %}{% if pedido.term_plastificado %}PLASTIFICADO&nbsp;{% endif %}{% if pedido.term_imp_corte %}IMPyCORTE{% endif %}{% if pedido.term_anillado %}ANILLADO{% endif %}
       </td>
-    </tr>         
+    </tr>
+  </tbody>
 </table>
 <br/>
 <table width="100%" class="table table-striped compact table-hover table-no-bordered tabla_nueva nowrap">
   <thead>
-    <th class="borde_izq text-center borde_arriba borde_abajo tabla_header" width="15%">Cantidad</th>
-    <th class="  borde_arriba text-center borde_abajo tabla_header">Detalle</th>  
-    <th class="borde_der text-right borde_arriba borde_abajo tabla_header" width="25%">Subtotal</th>
+    <tr>
+      <th class="borde_izq text-center borde_arriba borde_abajo tabla_header" width="15%">Cantidad</th>
+      <th class="  borde_arriba text-center borde_abajo tabla_header">Detalle</th>
+      <th class="borde_der text-right borde_arriba borde_abajo tabla_header" width="25%">Subtotal</th>
+    </tr>
   </thead>
+  <tbody>
   {% for item in detalle_pedido %}
-    <tr>      
+    <tr>
       <td class="text-right borde_izq">{{item.cantidad|default_if_none:0|floatformat:2|intcomma}} {{item.producto.get_unidad_display}}</td>
-      <td class="listado_izq borde_izq">{{item.producto}} {% if item.detalle %} ({{item.detalle}}) {% endif %}</td>      
+      <td class="listado_izq borde_izq">{{item.producto}} {% if item.detalle %} ({{item.detalle}}) {% endif %}</td>
       <td class="text-right borde_der borde_izq">${{item.importe_total|default_if_none:0|floatformat:2|intcomma}}</td>
-    </tr>       
+    </tr>
   {% endfor detalle_pedido %}
+  </tbody>
   <tfoot>
    <tr>
-     <th colspan="3" class="tabla_footer text-right"><strong>Total Orden: ${{pedido.importe_total|default_if_none:0|floatformat:2|intcomma}}</strong></th>     
+     <th colspan="3" class="tabla_footer text-right"><strong>Total Orden: ${{pedido.importe_total|default_if_none:0|floatformat:2|intcomma}}</strong></th>
    </tr>
-  </tfoot>   
+  </tfoot>
 </table>
-<button data-dismiss="modal" class="btn pull-left btn red-flamingo" type="button"><i class="fa fa-times"></i>Cancelar</button>
-<a  class="btn pull-right blue-steel" target="_blank" href="{% url 'imprimirNotaPedido' id=pedido.pk %}">Imprimir</a>
+</div>
+
+  <div class=" col-sm-12 ">
+    <button data-dismiss="modal" class="btn pull-left btn-sm red-flamingo" type="button"><i class="fa fa-times"></i>Cancelar</button>
+    <a class="btn pull-right btn-sm blue-steel" target="_blank" href="{% url 'imprimirNotaPedido' id=pedido.pk %}">Imprimir</a>
+  </div>
+
+</div>
 {% endblock main %}      
