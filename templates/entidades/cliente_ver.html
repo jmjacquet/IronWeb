@@ -1,4 +1,5 @@
 {% if cpb.entidad %}
-<a href="{% url 'cliente_ver' id=cpb.entidad.id %}"  title="{{ cpb.detalle_entidad}}" class="modal-detail" data-modal-head="DETALLE CLIENTE {{cpb.entidad.codigo}}" data-modal-callback="reload">
-	<strong>{{ cpb.entidad|truncatechars:60 }}</strong></a>
+    <a href="{% url 'cliente_ver' id=cpb.entidad.id %}" title="{{ cpb.detalle_entidad }}" class="modal-detail"
+       data-modal-head="DETALLE CLIENTE {{ cpb.entidad.codigo }}" data-modal-callback="reload">
+        <strong>{{ cpb.entidad|truncatechars:60 }}</strong></a>
 {% endif %}	
