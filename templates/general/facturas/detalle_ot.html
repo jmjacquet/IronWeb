@@ -3,7 +3,9 @@
 {% load crispy_forms_tags %}
 
 {% block main %}    
-
+<div class=" col-sm-12 "> 
+<div class="row">
+<div class=" col-sm-12 "> 
 <table width="100%"  class="table table-striped compact table-hover table-no-bordered tabla_nueva nowrap">
   <tr>
     <td width="10%" class=" borde_izq texto_der">Entidad/Institución:</td>
@@ -32,8 +34,10 @@
 </table>
 <table width="100%" class="table table-striped compact table-hover table-no-bordered tabla_nueva nowrap">
   <thead>
-    <th class="borde_izq borde_arriba borde_abajo tabla_header" width="10%">Cantidad</th>     
-    <th class="borde_arriba borde_abajo tabla_header">Descripción</th>                 
+    <tr>
+      <th class="borde_izq borde_arriba borde_abajo tabla_header" width="10%">Cantidad</th>     
+      <th class="borde_arriba borde_abajo tabla_header">Descripción</th>                 
+    </tr>
   </thead>
   <tbody>
   {% for item in detalle %}
@@ -44,9 +48,12 @@
   {% endfor detalle_comprobante %}
   </tbody>
 </table>  
+</div>
 
+  <div class=" col-sm-12 "> 
+    <button data-dismiss="modal" class="btn pull-left btn-sm red-flamingo" type="button"><i class="fa fa-times"></i>Cancelar</button>
+    <a class="btn pull-right btn-sm blue-steel" target="_blank" href="{% url 'imprimirOrdenTrabajo' id=trabajo.pk %}">Imprimir</a>
+  </div>
 
-<button data-dismiss="modal" class="btn pull-left btn red-flamingo" type="button"><i class="fa fa-times"></i>Cancelar</button>
-<a class="btn pull-right blue-steel" target="_blank" href="{% url 'imprimirOrdenTrabajo' id=trabajo.pk %}">Imprimir</a>
-   
+</div>
 {% endblock main %}      
