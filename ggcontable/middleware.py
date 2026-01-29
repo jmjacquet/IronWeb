@@ -20,6 +20,16 @@ TENANT_MAP = {
         'ENTIDAD_DB': 'ironweb_prueba',
         'ENTIDAD_DIR': 'prueba',
     },
+    'mullertma.ironwebgestion.com.ar': {
+        'ENTIDAD_ID': '10',
+        'ENTIDAD_DB': 'ironweb_mullertma',
+        'ENTIDAD_DIR': 'mullertma',
+    },
+    'www.mullertma.ironwebgestion.com.ar': {
+        'ENTIDAD_ID': '10',
+        'ENTIDAD_DB': 'ironweb_mullertma',
+        'ENTIDAD_DIR': 'mullertma',
+    },
     # 'sucec.ironwebgestion.com.ar': {
     #     'ENTIDAD_ID': '2',
     #     'ENTIDAD_DB': 'ironweb_sucec',
