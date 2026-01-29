@@ -5,6 +5,7 @@
 errores.log
 /static
 *.conf
+!nginx-static.conf
 *.ini
 *.bat
 /node_modules
