@@ -1,6 +1,8 @@
 services:
   ironweb-static:
-    image: nginx:alpine
+    build:
+      context: .
+      dockerfile: Dockerfile.static
     container_name: ironweb_static
     restart: unless-stopped
     volumes:
