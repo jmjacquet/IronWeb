@@ -13,14 +13,21 @@ services:
       - traefik.docker.network=dokploy-network
       - traefik.enable=true
       - traefik.http.services.ironweb-static.loadbalancer.server.port=80
-      # Route static/media paths to nginx with high priority
-      # Match all subdomains for static files
+      # HTTPS (existing)
       - traefik.http.routers.ironweb-static.rule=(HostRegexp(`{subdomain:.+}.ironwebgestion.com.ar`, `ironwebgestion.com.ar`)) && (PathPrefix(`/static`) || PathPrefix(`/media`))
       - traefik.http.routers.ironweb-static.entrypoints=websecure
       - traefik.http.routers.ironweb-static.tls=true
       - traefik.http.routers.ironweb-static.tls.certresolver=letsencrypt
       - traefik.http.routers.ironweb-static.priority=100
       - traefik.http.routers.ironweb-static.service=ironweb-static
+      # HTTP → redirect to HTTPS for static
+      - traefik.http.middlewares.ironweb-static-redirect.redirectscheme.scheme=https
+      - traefik.http.middlewares.ironweb-static-redirect.redirectscheme.permanent=true
+      - traefik.http.routers.ironweb-static-http.rule=(HostRegexp(`{subdomain:.+}.ironwebgestion.com.ar`, `ironwebgestion.com.ar`)) && (PathPrefix(`/static`) || PathPrefix(`/media`))
+      - traefik.http.routers.ironweb-static-http.entrypoints=web
+      - traefik.http.routers.ironweb-static-http.middlewares=ironweb-static-redirect
+      - traefik.http.routers.ironweb-static-http.service=ironweb-static
+      - traefik.http.routers.ironweb-static-http.priority=100
 
 volumes:
   ironweb_static:
