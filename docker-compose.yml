@@ -33,14 +33,14 @@ services:
       - traefik.enable=true
       - traefik.http.services.ironweb.loadbalancer.server.port=8000
       # HTTPS (existing)
-      - traefik.http.routers.ironweb.rule=HostRegexp(`{subdomain:.+}.ironwebgestion.com.ar`, `ironwebgestion.com.ar`)
+      - traefik.http.routers.ironweb.rule=HostRegexp(`{host:([a-z0-9-]+\\.)?ironwebgestion\\.com\\.ar}`)
       - traefik.http.routers.ironweb.entrypoints=websecure
       - traefik.http.routers.ironweb.tls=true
       - traefik.http.routers.ironweb.tls.certresolver=letsencrypt
       # HTTP → redirect to HTTPS
       - traefik.http.middlewares.ironweb-redirect.redirectscheme.scheme=https
       - traefik.http.middlewares.ironweb-redirect.redirectscheme.permanent=true
-      - traefik.http.routers.ironweb-http.rule=HostRegexp(`{subdomain:.+}.ironwebgestion.com.ar`, `ironwebgestion.com.ar`)
+      - traefik.http.routers.ironweb-http.rule=HostRegexp(`{host:([a-z0-9-]+\\.)?ironwebgestion\\.com\\.ar}`)
       - traefik.http.routers.ironweb-http.entrypoints=web
       - traefik.http.routers.ironweb-http.middlewares=ironweb-redirect
       - traefik.http.routers.ironweb-http.service=ironweb
