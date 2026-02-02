@@ -8,7 +8,6 @@ from django.contrib import messages
 from general.models import gral_empresa
 from usuarios.models import UserProfile
 from django.db.models import Q
-from django.template import RequestContext
 from django.template.defaulttags import register
 from ggcontable.middleware import get_tenant_map
 
@@ -63,11 +62,12 @@ def logout(request):
     django_logout(request)
     return HttpResponseRedirect(LOGIN_URL)
 
-def volverHome(request):    
-    if not request.user.is_authenticated():
-      return HttpResponseRedirect(LOGIN_URL)
-    else:
-      return HttpResponseRedirect(ROOT_URL)
+def volverHome(request):
+    """Used as handler404/handler500 - request.user may not exist if exception occurred before AuthenticationMiddleware."""
+    user = getattr(request, 'user', None)
+    if user is None or not user.is_authenticated():
+        return HttpResponseRedirect(LOGIN_URL)
+    return HttpResponseRedirect(ROOT_URL)
 
 
 
@@ -80,31 +80,3 @@ def volverHome(request):
 
 def alive(request):
   return HttpResponse("Vive", status=200)
-
-
-@login_required
-def tenant_map(request):
-    """Show subdomain -> database mapping. Staff only."""
-    import os
-    tenant_map_data = get_tenant_map()
-    current_host = request.get_host().split(':')[0].lower()
-    current_db = getattr(request, 'tenant_db', os.environ.get('ENTIDAD_DB', 'ironweb_prueba'))
-
-    rows = []
-    for host, config in sorted(tenant_map_data.items()):
-        rows.append({
-            'host': host,
-            'db': config.get('ENTIDAD_DB', '-'),
-            'entidad_id': config.get('ENTIDAD_ID', '-'),
-            'dir': config.get('ENTIDAD_DIR', '-'),
-        })
-
-    return render_to_response(
-        'tenant_map.html',
-        {
-            'current_host': current_host,
-            'current_db': current_db,
-            'rows': rows,
-        },
-        context_instance=RequestContext(request)
-    )
