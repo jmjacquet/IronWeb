@@ -2,6 +2,7 @@
 from django.contrib.auth import login as django_login, authenticate, logout as django_logout
 from django.contrib.auth.decorators import login_required, user_passes_test
 from django.shortcuts import *
+from django.template import RequestContext
 from settings import *
 from django.core.urlresolvers import reverse
 from django.contrib import messages
@@ -80,3 +81,32 @@ def volverHome(request):
 
 def alive(request):
   return HttpResponse("Vive", status=200)
+
+
+@login_required
+@user_passes_test(lambda u: u.is_staff)
+def tenant_map(request):
+    """Show subdomain -> database mapping. Staff only."""
+    import os
+    tenant_map_data = get_tenant_map()
+    current_host = request.get_host().split(':')[0].lower()
+    current_db = getattr(request, 'tenant_db', os.environ.get('ENTIDAD_DB', 'ironweb_prueba'))
+
+    rows = []
+    for host, cfg in sorted(tenant_map_data.items()):
+        rows.append({
+            'host': host,
+            'db': cfg.get('ENTIDAD_DB', '-'),
+            'entidad_id': cfg.get('ENTIDAD_ID', '-'),
+            'dir': cfg.get('ENTIDAD_DIR', '-'),
+        })
+
+    return render_to_response(
+        'tenant_map.html',
+        {
+            'current_host': current_host,
+            'current_db': current_db,
+            'rows': rows,
+        },
+        context_instance=RequestContext(request)
+    )
