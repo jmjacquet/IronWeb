@@ -165,11 +165,16 @@ class TenantMiddleware(object):
             request.tenant_db = tenant_config['ENTIDAD_DB']
             request.tenant_dir = tenant_config['ENTIDAD_DIR']
         else:
-            # Default tenant if host not found (for development/testing)
-            if not os.environ.get('ENTIDAD_DB'):
-                os.environ['ENTIDAD_ID'] = os.environ.get('ENTIDAD_ID', '1')
-                os.environ['ENTIDAD_DB'] = os.environ.get('ENTIDAD_DB', 'ironweb_prueba')
-                os.environ['ENTIDAD_DIR'] = os.environ.get('ENTIDAD_DIR', 'prueba')
+            # Default tenant if host not found - ALWAYS set to avoid leaking from previous requests
+            default_id = '1'
+            default_db = 'ironweb_prueba'
+            default_dir = 'prueba'
+            os.environ['ENTIDAD_ID'] = default_id
+            os.environ['ENTIDAD_DB'] = default_db
+            os.environ['ENTIDAD_DIR'] = default_dir
+            request.tenant_id = default_id
+            request.tenant_db = default_db
+            request.tenant_dir = default_dir
 
         return None
 
