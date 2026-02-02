@@ -154,8 +154,9 @@ class TenantMiddleware(object):
 
     def process_request(self, request):
         """Process request and set tenant environment variables"""
-        # Get host from request (remove port if present)
-        host = request.get_host().split(':')[0].lower()
+        # Get host - use X-Forwarded-Host when behind Traefik/Nginx (original client host)
+        host = request.META.get('HTTP_X_FORWARDED_HOST') or request.get_host()
+        host = host.split(',')[0].strip().split(':')[0].lower()
 
         # Look up tenant configuration
         tenant_config = self.tenant_map.get(host)

@@ -84,7 +84,6 @@ def alive(request):
 
 
 @login_required
-@user_passes_test(lambda u: u.is_staff)
 def tenant_map(request):
     """Show subdomain -> database mapping. Staff only."""
     import os

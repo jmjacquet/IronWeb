@@ -8,6 +8,10 @@ import os
 
 DEBUG = config('DEBUG', default='False') == 'True'
 
+# Behind Traefik/Nginx - use forwarded headers for correct host/protocol
+USE_X_FORWARDED_HOST = True
+SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')
+
 DB_USER = config('DB_USER')
 DB_PASS = config('DB_PASS')
 DB_HOST = config('DB_HOST', default='mariadb_ironweb')
