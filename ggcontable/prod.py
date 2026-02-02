@@ -13,11 +13,11 @@ DB_PASS = config('DB_PASS')
 DB_HOST = config('DB_HOST', default='mariadb_ironweb')
 DB_PORT = config('DB_PORT', default='3306')
 
-# Base config for all tenant DBs (same host, user, etc.)
-def _db_config(name):
-    return {
+# Single default DB - TenantMiddleware switches connection per request based on Host header
+DATABASES = {
+    'default': {
         'ENGINE': 'django.db.backends.mysql',
-        'NAME': name,
+        'NAME': 'ironweb_prueba',  # Overwritten by middleware per request
         'USER': DB_USER,
         'PASSWORD': DB_PASS,
         'HOST': DB_HOST,
@@ -26,22 +26,9 @@ def _db_config(name):
             'init_command': "SET sql_mode='STRICT_TRANS_TABLES'",
             'charset': 'utf8mb4',
         },
-        'CONN_MAX_AGE': 300,  # Connection pooling per tenant
-    }
-
-# Collect all tenant DB names from TENANT_MAP
-from ggcontable.middleware import get_tenant_map
-_tenant_dbs = set()
-for tenant_config in get_tenant_map().values():
-    _tenant_dbs.add(tenant_config.get('ENTIDAD_DB', 'ironweb_prueba'))
-_tenant_dbs.add('ironweb_prueba')  # Always include default
-
-# One alias per tenant - each gets its own pooled connection
-DATABASES = {'default': _db_config('ironweb_prueba')}
-for db_name in _tenant_dbs:
-    DATABASES[db_name] = _db_config(db_name)
-
-DATABASE_ROUTERS = ['ggcontable.db_router.TenantRouter']
+        'CONN_MAX_AGE': 300,
+    },
+}
 
 STATIC_ROOT = config('STATIC_ROOT', default=os.path.join(SITE_ROOT, 'static'))
 MEDIA_ROOT = config('MEDIA_ROOT', default=os.path.join(SITE_ROOT, 'media'))

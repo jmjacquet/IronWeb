@@ -1,14 +1,17 @@
 # -*- coding: utf-8 -*-
 """
 Tenant Middleware for Multi-tenant Django Application
-Detects tenant from subdomain and sets environment variables
-Supports configuration via environment variables or hardcoded map
+Detects tenant from subdomain (Host header) and switches DB connection per request.
 
-Uses TenantRouter + per-tenant DATABASES aliases: each tenant gets its own
-connection pool (CONN_MAX_AGE), no connection churn, full query cache benefit.
+Works with Traefik/Nginx: all subdomains hit the same app; Host header determines tenant.
+Only closes connection when tenant changes (same-tenant requests reuse connection).
 """
 import os
 import json
+import threading
+
+# Track last tenant per thread - avoid closing when same tenant gets consecutive requests
+_last_tenant = threading.local()
 
 # Tenant configuration map (fallback if env vars not set)
 # Maps subdomain to tenant database and settings
@@ -168,22 +171,27 @@ class TenantMiddleware(object):
             request.tenant_db = tenant_config['ENTIDAD_DB']
             request.tenant_dir = tenant_config['ENTIDAD_DIR']
         else:
-            # Default tenant if host not found - ALWAYS set to avoid leaking from previous requests
-            default_id = '1'
-            default_db = 'ironweb_prueba'
-            default_dir = 'prueba'
-            os.environ['ENTIDAD_ID'] = default_id
-            os.environ['ENTIDAD_DB'] = default_db
-            os.environ['ENTIDAD_DIR'] = default_dir
-            request.tenant_id = default_id
-            request.tenant_db = default_db
-            request.tenant_dir = default_dir
+            # Host not in TENANT_MAP - return 404 (like Apache: no VirtualHost = no response)
+            from django.http import HttpResponseNotFound
+            return HttpResponseNotFound('Subdomain not configured')
 
-        # Tell TenantRouter which DB to use (thread-local, no connection churn)
-        from ggcontable.db_router import set_tenant_db
-        set_tenant_db(request.tenant_db)
+        # Switch DB connection for this request (only close when tenant changed)
+        self._switch_db(request.tenant_db)
 
         return None
+
+    def _switch_db(self, db_name):
+        """Switch default connection to tenant DB. Only close when tenant changed."""
+        last = getattr(_last_tenant, 'db', None)
+        if last == db_name:
+            return  # Same tenant, reuse connection
+        try:
+            from django.db import connection
+            connection.settings_dict['NAME'] = db_name
+            connection.close()
+            _last_tenant.db = db_name
+        except Exception:
+            pass  # Next request will retry
 
     def __call__(self, request):
         """Django 1.8+ compatibility"""
