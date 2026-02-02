@@ -18,7 +18,7 @@ services:
       - traefik.http.routers.ironweb-static.entrypoints=websecure
       - traefik.http.routers.ironweb-static.tls=true
       - traefik.http.routers.ironweb-static.tls.certresolver=letsencrypt
-      - traefik.http.routers.ironweb-static.priority=1000
+      - traefik.http.routers.ironweb-static.priority=99999
       - traefik.http.routers.ironweb-static.service=ironweb-static
       # HTTP → redirect to HTTPS for static
       - traefik.http.middlewares.ironweb-static-redirect.redirectscheme.scheme=https
@@ -27,7 +27,7 @@ services:
       - traefik.http.routers.ironweb-static-http.entrypoints=web
       - traefik.http.routers.ironweb-static-http.middlewares=ironweb-static-redirect
       - traefik.http.routers.ironweb-static-http.service=ironweb-static
-      - traefik.http.routers.ironweb-static-http.priority=1000
+      - traefik.http.routers.ironweb-static-http.priority=99999
 
 volumes:
   ironweb_static:
