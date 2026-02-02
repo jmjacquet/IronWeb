@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Subdomain → Database mapping</title>
+    <style>
+        body { font-family: sans-serif; margin: 2rem; }
+        h2 { color: #333; }
+        table { border-collapse: collapse; margin: 1rem 0; }
+        th, td { border: 1px solid #ccc; padding: 8px 12px; text-align: left; }
+        th { background: #eee; }
+        code { background: #f5f5f5; padding: 2px 6px; border-radius: 3px; }
+        .current { background: #e8f5e9; }
+        .fallback { color: #666; font-style: italic; margin-top: 1rem; }
+    </style>
+</head>
+<body>
+    <h2>Subdomain → Database mapping</h2>
+
+    <p><strong>Current request:</strong> {{ current_host }} → <code>{{ current_db }}</code></p>
+
+    <table>
+        <thead>
+            <tr>
+                <th>Host</th>
+                <th>Database</th>
+                <th>Entidad ID</th>
+                <th>Dir</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for row in rows %}
+            <tr{% if row.host == current_host %} class="current"{% endif %}>
+                <td>{{ row.host }}</td>
+                <td><code>{{ row.db }}</code></td>
+                <td>{{ row.entidad_id }}</td>
+                <td>{{ row.dir }}</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+
+    <p class="fallback">Fallback for unknown hosts: ironweb_prueba</p>
+</body>
+</html>

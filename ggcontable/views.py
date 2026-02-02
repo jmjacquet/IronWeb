@@ -1,5 +1,6 @@
 # -*- coding: utf-8 -*-
 from django.contrib.auth import login as django_login, authenticate, logout as django_logout
+from django.contrib.auth.decorators import login_required, user_passes_test
 from django.shortcuts import *
 from settings import *
 from django.core.urlresolvers import reverse
@@ -7,7 +8,9 @@ from django.contrib import messages
 from general.models import gral_empresa
 from usuarios.models import UserProfile
 from django.db.models import Q
+from django.template import RequestContext
 from django.template.defaulttags import register
+from ggcontable.middleware import get_tenant_map
 
 LOGIN_URL = '/login/'
 ROOT_URL = '/'
@@ -77,3 +80,32 @@ def volverHome(request):
 
 def alive(request):
   return HttpResponse("Vive", status=200)
+
+
+@login_required
+@user_passes_test(lambda u: u.is_staff)
+def tenant_map(request):
+    """Show subdomain -> database mapping. Staff only."""
+    import os
+    tenant_map_data = get_tenant_map()
+    current_host = request.get_host().split(':')[0].lower()
+    current_db = getattr(request, 'tenant_db', os.environ.get('ENTIDAD_DB', 'ironweb_prueba'))
+
+    rows = []
+    for host, config in sorted(tenant_map_data.items()):
+        rows.append({
+            'host': host,
+            'db': config.get('ENTIDAD_DB', '-'),
+            'entidad_id': config.get('ENTIDAD_ID', '-'),
+            'dir': config.get('ENTIDAD_DIR', '-'),
+        })
+
+    return render_to_response(
+        'tenant_map.html',
+        {
+            'current_host': current_host,
+            'current_db': current_db,
+            'rows': rows,
+        },
+        context_instance=RequestContext(request)
+    )

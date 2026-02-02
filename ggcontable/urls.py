@@ -4,7 +4,7 @@ from django.conf import settings
 from django.conf.urls.static import static
 from django.contrib.staticfiles.urls import staticfiles_urlpatterns
 from usuarios.views import *
-from .views import login,logout,volverHome,alive
+from .views import login, logout, volverHome, alive, tenant_map
 
 
 urlpatterns = [
@@ -20,9 +20,9 @@ urlpatterns = [
     url(r'^reportes/', include('reportes.urls')),      
     url(r'^login/$', login,name="login"),
     url(r'^logout/$', logout,name="logout"),
-    url(r'^alive/$', alive,name="alive"),
+    url(r'^alive/$', alive, name="alive"),
+    url(r'^tenant-map/$', tenant_map, name="tenant_map"),
 
-    
 
 ]+ static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
 
