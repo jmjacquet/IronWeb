@@ -3,6 +3,9 @@
 Tenant Middleware for Multi-tenant Django Application
 Detects tenant from subdomain and sets environment variables
 Supports configuration via environment variables or hardcoded map
+
+Uses TenantRouter + per-tenant DATABASES aliases: each tenant gets its own
+connection pool (CONN_MAX_AGE), no connection churn, full query cache benefit.
 """
 import os
 import json
@@ -175,6 +178,10 @@ class TenantMiddleware(object):
             request.tenant_id = default_id
             request.tenant_db = default_db
             request.tenant_dir = default_dir
+
+        # Tell TenantRouter which DB to use (thread-local, no connection churn)
+        from ggcontable.db_router import set_tenant_db
+        set_tenant_db(request.tenant_db)
 
         return None
 
