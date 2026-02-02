@@ -20,11 +20,11 @@
                         margin-left: 0.5cm; 
                                               
                         {%if facturado %}
-                          height: 3cm;
-                          bottom:0.5cm;
+                          height: 3.5cm;
+                          bottom:{% if leyenda_afip %}1{% else %}0.5{% endif %}cm;
                         {% else %}
                           height: 2.5cm;
-                          bottom:0.4cm;
+                          bottom:0.{% if leyenda_afip %}6{% else %}4{% endif %}cm;
                         {% endif %}                       
                     }
          @frame footer {
@@ -59,7 +59,7 @@
     <td class="texto_izq borde_abajo">{{cpb.entidad.get_fact_categFiscal_display|default_if_none:''|upper}}</td>
     <td class="texto_der borde_abajo">{{cpb.entidad.get_tipo_doc_display|default_if_none:'CUIT/DNI'|upper}}:</td>
     <td class="texto_izq borde_der borde_abajo">{{cpb.entidad.get_nro_doc_cuit|default_if_none:''|upper}}</td>
-  </tr> 
+  </tr>
   <tr>
     <td class="texto_der borde_izq">Observaciones:</span></td>
     <td colspan="3" rowspan="2" valign="top" class="texto_izq borde_der borde_abajo">{{cpb.observacion|default_if_none:''}}</td>
@@ -180,32 +180,34 @@
       </tr>      
   </table>
 {% endif %}
-{% if leyenda_afip %}
-        <p class="leyenda">{{leyenda_afip}}</p>
-{% endif %}
+
 <div id="page-footer">
+  {% if leyenda_afip %}
+        <p class="leyenda">{{leyenda_afip}}</p>
+  {% endif %}
   <table id="tabla_totales" width="100%"  align="center" >    
     <tr>
       <td width="50%" rowspan="4" align="center" class="borde_izq borde_arriba borde_abajo">
         {% if facturado %}
         <table width="100%" align="center">
           <tr>
-          <td valign="middle">            
-            <div align="center">
-              <img  src="{% static 'images/logo_afip.png' %}" alt="afip" width="80" height="20" align="center" />
-              <span class="cae_autorizado" align="right">Comprobante Autorizado</span>
-            </div>
-            <span class="cae_leyenda">Régimen de Transparencia Fiscal al Consumidor Ley 27.743</span>
-            <div align="center">
-              <span align="texto_izq">CAE Nº:{{cpb.cae}}</span>
-              <span align="texto_der">Fecha Vto.CAE:{{cpb.cae_vto|date:'d/m/Y'}}</span>
-            </div>
-            <img src="data:image/png;base64,{{codbar}}" alt="afip" width="100%" height="25"  ><br>    
-              {{codigo}} 
-                        
-            
-          </td>
-          </tr>      
+            <td width="30%" rowspan="3" align="center">
+              <img src="data:image/png;base64,{{qrcode}}" alt="afip" height="90" />
+            </td>
+            <td width="70%" align="left"> <img  src="{% static 'images/logo_afip.png' %}" alt="afip" width="80" height="30" align="absmiddle" /></td>
+          </tr>
+          <tr>
+            <td align="left" ><span class="cae_autorizado">Comprobante Autorizado</span></td>
+          </tr>
+          <tr>
+             <td  align="left" >
+                <span class="texto_izq">CAE Nº:{{cpb.cae}}</span>
+                <span class="texto_der">Fecha Vto.CAE:{{cpb.cae_vto|date:'d/m/Y'}}</span>
+            </td>
+          </tr>
+          <tr>
+             <td colspan="2" class="texto_izq" ><span class="cae_leyenda">Régimen de Transparencia Fiscal al Consumidor Ley 27.743</span></td>
+          </tr>
         </table>
         {% endif %}
 
@@ -232,7 +234,7 @@
       {% if discrimina_iva %}
         <td class="listado_final">
           {% for ti in detalle_totales_iva %}
-          <small>{% if forloop.first %}( {% endif %}  IVA {{ti.tasa_iva.nombre}}: ${{ti.importe_total}}</small> {% if forloop.last %} )&nbsp;&nbsp;&nbsp; Total IVA:{% else %}/{% endif %}
+          <small>{% if forloop.first %}( {% endif %}  IVA {{ti.tasa_iva.nombre}}: ${{ti.importe_total}}</small> {% if forloop.last %} )&nbsp;&nbsp;&nbsp; Total IVA Contenido:{% else %}/{% endif %}
          {% endfor detalle_totales_iva %} 
         </td>
         <td class="listado_final borde_der">$ {{cpb.importe_iva|default_if_none:0|floatformat:2|intcomma}}</td>
