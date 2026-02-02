@@ -32,8 +32,8 @@ def _db_config(name):
 # Collect all tenant DB names from TENANT_MAP
 from ggcontable.middleware import get_tenant_map
 _tenant_dbs = set()
-for config in get_tenant_map().values():
-    _tenant_dbs.add(config.get('ENTIDAD_DB', 'ironweb_prueba'))
+for tenant_config in get_tenant_map().values():
+    _tenant_dbs.add(tenant_config.get('ENTIDAD_DB', 'ironweb_prueba'))
 _tenant_dbs.add('ironweb_prueba')  # Always include default
 
 # One alias per tenant - each gets its own pooled connection
