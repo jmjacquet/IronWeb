@@ -56,3 +56,15 @@ DEFAULT_FROM_EMAIL = config('DEFAULT_FROM_EMAIL', default='')
 # Session configuration
 SESSION_COOKIE_NAME = config('SESSION_COOKIE_NAME', default='ironweb_session')
 SESSION_EXPIRE_AT_BROWSER_CLOSE = True
+
+USE_I18N = True
+USE_THOUSAND_SEPARATOR = False
+USE_L10N = False  # Disable localization
+DATE_FORMAT = "d/m/Y"
+DATETIME_FORMAT = "d/m/Y H:i"
+SHORT_DATE_FORMAT = "d/m/Y"
+USE_TZ = True
+DEFAULT_CHARSET = "utf-8"
+FILE_CHARSET = "utf-8"
+TIME_INPUT_FORMATS = ("%H:%M",)
+DATE_INPUT_FORMATS = ("%d/%m/%Y",)
