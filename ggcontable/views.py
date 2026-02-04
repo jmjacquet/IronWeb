@@ -7,7 +7,6 @@ from settings import *
 from django.core.urlresolvers import reverse
 from django.contrib import messages
 from general.models import gral_empresa
-from usuarios.models import UserProfile
 from django.db.models import Q
 from django.template.defaulttags import register
 from ggcontable.middleware import get_tenant_map

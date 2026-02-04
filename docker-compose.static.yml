@@ -14,7 +14,7 @@ services:
       - traefik.enable=true
       - traefik.http.services.ironweb-static.loadbalancer.server.port=80
       # HTTPS (existing)
-      - traefik.http.routers.ironweb-static.rule=(HostRegexp(`{host:([a-z0-9-]+\\.)?ironwebgestion\\.com\\.ar}`)) && (PathPrefix(`/static`) || PathPrefix(`/media`))
+      - traefik.http.routers.ironweb-static.rule=(HostRegexp(`{host:([a-z0-9-]+\\.)*ironwebgestion\\.com\\.ar}`)) && (PathPrefix(`/static`) || PathPrefix(`/media`))
       - traefik.http.routers.ironweb-static.entrypoints=websecure
       - traefik.http.routers.ironweb-static.tls=true
       - traefik.http.routers.ironweb-static.tls.certresolver=letsencrypt
@@ -23,7 +23,7 @@ services:
       # HTTP → redirect to HTTPS for static
       - traefik.http.middlewares.ironweb-static-redirect.redirectscheme.scheme=https
       - traefik.http.middlewares.ironweb-static-redirect.redirectscheme.permanent=true
-      - traefik.http.routers.ironweb-static-http.rule=(HostRegexp(`{host:([a-z0-9-]+\\.)?ironwebgestion\\.com\\.ar}`)) && (PathPrefix(`/static`) || PathPrefix(`/media`))
+      - traefik.http.routers.ironweb-static-http.rule=(HostRegexp(`{host:([a-z0-9-]+\\.)*ironwebgestion\\.com\\.ar}`)) && (PathPrefix(`/static`) || PathPrefix(`/media`))
       - traefik.http.routers.ironweb-static-http.entrypoints=web
       - traefik.http.routers.ironweb-static-http.middlewares=ironweb-static-redirect
       - traefik.http.routers.ironweb-static-http.service=ironweb-static

@@ -33,7 +33,7 @@ services:
       - traefik.enable=true
       - traefik.http.services.ironweb.loadbalancer.server.port=8000
       # Main app: *.ironwebgestion.com.ar (all paths except /static, /media)
-      - traefik.http.routers.ironweb.rule=HostRegexp(`{host:([a-z0-9-]+\\.)?ironwebgestion\\.com\\.ar}`)
+      - traefik.http.routers.ironweb.rule=HostRegexp(`{host:([a-z0-9-]+\\.)*ironwebgestion\\.com\\.ar}`)
       - traefik.http.routers.ironweb.entrypoints=websecure
       - traefik.http.routers.ironweb.tls=true
       - traefik.http.routers.ironweb.tls.certresolver=letsencrypt
