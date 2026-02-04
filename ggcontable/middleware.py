@@ -16,7 +16,7 @@ _last_tenant = threading.local()
 # Tenant configuration map (fallback if env vars not set)
 # Maps subdomain to tenant database and settings
 TENANT_MAP = {
-    'development.ironwebgestion.com.ar': {
+    'prueba.ironwebgestion.com.ar': {
         'ENTIDAD_ID': '1',
         'ENTIDAD_DB': 'ironweb_prueba',
         'ENTIDAD_DIR': 'prueba',
