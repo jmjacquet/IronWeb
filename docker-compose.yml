@@ -42,7 +42,7 @@ services:
       # HTTP → redirect to HTTPS
       - traefik.http.middlewares.ironweb-redirect.redirectscheme.scheme=https
       - traefik.http.middlewares.ironweb-redirect.redirectscheme.permanent=true
-      - traefik.http.routers.ironweb-http.rule=HostRegexp(`{host:([a-z0-9-]+\\.)?ironwebgestion\\.com\\.ar}`)
+      - traefik.http.routers.ironweb-http.rule=HostRegexp(`{host:([a-z0-9-]+\\.)*ironwebgestion\\.com\\.ar}`)
       - traefik.http.routers.ironweb-http.entrypoints=web
       - traefik.http.routers.ironweb-http.middlewares=ironweb-redirect
       - traefik.http.routers.ironweb-http.service=ironweb
