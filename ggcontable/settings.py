@@ -206,6 +206,8 @@ AUTHENTICATION_BACKENDS = ('django.contrib.auth.backends.ModelBackend','usuarios
 SESSION_EXPIRE_AT_BROWSER_CLOSE = True
 SESSION_COOKIE_NAME = config('SESSION_COOKIE_NAME', default='')
 
+SESSION_COOKIE_DOMAIN = '.ironwebgestion.com.ar'
+SESSION_COOKIE_SECURE = True  # You're on HTTPS
 
 #Dir de Cetificados de Facturacion Electronica
 CERTIFICADOS_PATH = os.path.join(MEDIA_ROOT,'certificados',)

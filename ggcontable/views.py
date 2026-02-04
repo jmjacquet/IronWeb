@@ -22,13 +22,15 @@ def get_item(dictionary, key):
 def login(request):
     error = None
     ROOT_URL='/'
-    request.session.clear()
-    if request.user.is_authenticated():
-      return HttpResponseRedirect(ROOT_URL)
-       
-    try:
-        empresa = gral_empresa.objects.get(id=ENTIDAD_ID)
-    except gral_empresa.DoesNotExist:
+    if not request.user.is_authenticated():
+        request.session.clear()
+    elif request.method == 'GET':
+        return HttpResponseRedirect(ROOT_URL)
+
+    entidad_id = getattr(request, 'tenant_id', None) or os.environ.get('ENTIDAD_ID')
+    if entidad_id:
+        empresa = gral_empresa.objects.get(id=int(entidad_id))
+    else:
         empresa = None
  
     # if empresa.mantenimiento == 1:

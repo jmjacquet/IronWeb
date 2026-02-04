@@ -99,8 +99,11 @@ class VariablesMixin(ContextMixin):
 
     def _get_variables_mixin(self, request):
         context = {}
-        context['ENTIDAD_ID'] = settings.ENTIDAD_ID
-        context['ENTIDAD_DIR'] = settings.ENTIDAD_DIR
+        entidad_id = getattr(request, 'tenant_id', None) or os.environ.get('ENTIDAD_ID')
+        entidad_dir = getattr(request, 'tenant_dir', None) or os.environ.get('ENTIDAD_DIR')
+
+        context['ENTIDAD_ID'] = entidad_id
+        context['ENTIDAD_DIR'] = entidad_dir
         usr = request.user
         try:
             context['usuario'] = usuario_actual(request)
