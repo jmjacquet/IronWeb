@@ -1,0 +1,1686 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Manual de Usuario - IronWeb</title>
+    <link rel="stylesheet" href="/media/manual/manual_usuario.css">
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>Manual de Usuario</h1>
+            <p>Sistema de Gestión IronWeb</p>
+            <p>Guía completa para el uso del sistema</p>
+        </header>
+
+        <div class="toc">
+            <h2>Índice de Contenidos</h2>
+            
+            <div class="toc-section">
+                <div class="toc-section-title">1. COMPROBANTES</div>
+                <ul>
+                    <li><a href="#seccion1-1">1.1 INGRESOS</a>
+                        <ul style="margin-left: 20px;">
+                            <li><a href="#seccion1-1-1">1.1.1 Comprobantes de Venta</a></li>
+                            <li><a href="#seccion1-1-2">1.1.2 Recibos de Cobranza</a></li>
+                            <li><a href="#seccion1-1-3">1.1.3 Remitos de Venta</a></li>
+                            <li><a href="#seccion1-1-4">1.1.4 Presupuestos</a></li>
+                        </ul>
+                    </li>
+                    <li><a href="#seccion1-2">1.2 EGRESOS</a>
+                        <ul style="margin-left: 20px;">
+                            <li><a href="#seccion1-2-1">1.2.1 Comprobantes de Compra</a></li>
+                            <li><a href="#seccion1-2-2">1.2.2 Órdenes de Pago</a></li>
+                            <li><a href="#seccion1-2-3">1.2.3 Remitos de Compra</a></li>
+                        </ul>
+                    </li>
+                    <li><a href="#seccion1-3">1.3 FINANZAS</a>
+                        <ul style="margin-left: 20px;">
+                            <li><a href="#seccion1-3-1">1.3.1 Movimientos entre Cuentas</a></li>
+                        </ul>
+                    </li>
+                </ul>
+            </div>
+
+            <div class="toc-section">
+                <div class="toc-section-title">2. PEDIDOS/TRABAJOS</div>
+                <ul>
+                    <li><a href="#seccion2-1">2.1 Orden de Pedido</a></li>
+                    <li><a href="#seccion2-2">2.2 Orden de Trabajo</a></li>
+                    <li><a href="#seccion2-3">2.3 Orden de Colocación</a></li>
+                </ul>
+            </div>
+
+            <div class="toc-section">
+                <div class="toc-section-title">3. ENTIDADES/PRODUCTOS</div>
+                <ul>
+                    <li><a href="#seccion3-1">3.1 ENTIDADES</a>
+                        <ul style="margin-left: 20px;">
+                            <li><a href="#seccion3-1-1">3.1.1 Clientes</a></li>
+                            <li><a href="#seccion3-1-2">3.1.2 Proveedores</a></li>
+                            <li><a href="#seccion3-1-3">3.1.3 Empleados/Vendedores</a></li>
+                        </ul>
+                    </li>
+                    <li><a href="#seccion3-2">3.2 PRODUCTOS/SERVICIOS</a>
+                        <ul style="margin-left: 20px;">
+                            <li><a href="#seccion3-2-1">3.2.1 Productos/Servicios</a></li>
+                            <li><a href="#seccion3-2-2">3.2.2 Actualización de Precios</a></li>
+                            <li><a href="#seccion3-2-3">3.2.3 Mantenimiento de Stock</a></li>
+                            <li><a href="#seccion3-2-4">3.2.4 Consulta de Productos</a></li>
+                            <li><a href="#seccion3-2-5">3.2.5 Importar Productos/Servicios</a></li>
+                        </ul>
+                    </li>
+                </ul>
+            </div>
+
+            <div class="toc-section">
+                <div class="toc-section-title">4. REPORTES</div>
+                <ul>
+                    <li><a href="#seccion4-1">4.1 Reportes Cuentas Corrientes</a>
+                        <ul style="margin-left: 20px;">
+                            <li><a href="#seccion4-1-1">4.1.1 Cuenta Corriente Clientes</a></li>
+                            <li><a href="#seccion4-1-2">4.1.2 Saldos Clientes</a></li>
+                            <li><a href="#seccion4-1-3">4.1.3 Cuenta Corriente Proveedores</a></li>
+                            <li><a href="#seccion4-1-4">4.1.4 Saldos Proveedores</a></li>
+                        </ul>
+                    </li>
+                    <li><a href="#seccion4-2">4.2 Reportes Contables</a>
+                        <ul style="margin-left: 20px;">
+                            <li><a href="#seccion4-2-1">4.2.1 Libro IVA Ventas</a></li>
+                            <li><a href="#seccion4-2-2">4.2.2 Libro IVA Compras</a></li>
+                            <li><a href="#seccion4-2-3">4.2.3 Reporte Retenciones/Percepciones/Impuestos</a></li>
+                        </ul>
+                    </li>
+                    <li><a href="#seccion4-3">4.3 Reportes Varios</a>
+                        <ul style="margin-left: 20px;">
+                            <li><a href="#seccion4-3-1">4.3.1 Consulta Comprobantes</a></li>
+                            <li><a href="#seccion4-3-2">4.3.2 Movimientos Productos/Stock</a></li>
+                            <li><a href="#seccion4-3-3">4.3.3 Estadísticas Ventas/Compras</a></li>
+                            <li><a href="#seccion4-3-4">4.3.4 Reporte Costos por Ventas</a></li>
+                            <li><a href="#seccion4-3-5">4.3.5 Comisiones por Ventas</a></li>
+                        </ul>
+                    </li>
+                    <li><a href="#seccion4-4">4.4 Reportes Finanzas</a>
+                        <ul style="margin-left: 20px;">
+                            <li><a href="#seccion4-4-1">4.4.1 Saldos Cuentas</a></li>
+                            <li><a href="#seccion4-4-2">4.4.2 Detalle Ingresos/Egresos</a></li>
+                            <li><a href="#seccion4-4-3">4.4.3 Caja Diaria</a></li>
+                            <li><a href="#seccion4-4-4">4.4.4 Seguimiento Cheques</a></li>
+                        </ul>
+                    </li>
+                </ul>
+            </div>
+
+            <div class="toc-section">
+                <div class="toc-section-title">5. CONFIGURACIÓN</div>
+                <ul>
+                    <li><a href="#seccion5-1">5.1 Comprobantes</a>
+                        <ul style="margin-left: 20px;">
+                            <li><a href="#seccion5-1-1">5.1.1 Puntos de Venta</a></li>
+                            <li><a href="#seccion5-1-2">5.1.2 Percepciones/Impuestos</a></li>
+                            <li><a href="#seccion5-1-3">5.1.3 Retenciones</a></li>
+                            <li><a href="#seccion5-1-4">5.1.4 Formas de Pago/Cobro</a></li>
+                            <li><a href="#seccion5-1-5">5.1.5 Bancos</a></li>
+                            <li><a href="#seccion5-1-6">5.1.6 Cuentas/Disponibilidades</a></li>
+                        </ul>
+                    </li>
+                    <li><a href="#seccion5-2">5.2 Productos/Servicios</a>
+                        <ul style="margin-left: 20px;">
+                            <li><a href="#seccion5-2-1">5.2.1 Listas de Precios</a></li>
+                            <li><a href="#seccion5-2-2">5.2.2 Categorías</a></li>
+                            <li><a href="#seccion5-2-3">5.2.3 Depósitos/Ubicación</a></li>
+                        </ul>
+                    </li>
+                </ul>
+            </div>
+        </div>
+
+        <!-- ============================================ -->
+        <!-- SECCIÓN 1: COMPROBANTES -->
+        <!-- ============================================ -->
+        
+        <section id="seccion1">
+            <h2>1. COMPROBANTES</h2>
+            <p>Los comprobantes son documentos que registran todas las operaciones comerciales del negocio. Se dividen en tres categorías principales: Ingresos, Egresos y Finanzas.</p>
+        </section>
+
+        <!-- SECCIÓN 1.1: INGRESOS -->
+        <section id="seccion1-1">
+            <h2>1.1 INGRESOS</h2>
+            <p>Los comprobantes de ingresos registran todas las operaciones de venta y cobranza.</p>
+        </section>
+
+        <!-- 1.1.1 Comprobantes de Venta -->
+        <section id="seccion1-1-1">
+            <h3>1.1.1 Comprobantes de Venta</h3>
+            
+            <div class="info">
+                <strong>¿Qué es y para qué sirve?</strong> Los comprobantes de venta son documentos que registran todas las operaciones de venta realizadas a los clientes. Incluyen facturas, notas de crédito, notas de débito y otros comprobantes fiscales. Permiten registrar las ventas, controlar el stock, gestionar la cuenta corriente de los clientes y generar la documentación fiscal requerida.
+            </div>
+            
+            <h4>Listado de Comprobantes de Venta</h4>
+            <div class="info">
+                <strong>¿Para qué sirve y qué puedo hacer?</strong> El listado muestra todos los comprobantes de venta del sistema. Desde aquí puede buscar, filtrar, ver detalles, imprimir, enviar por email, facturar (generar CAE), cobrar, anular y realizar otras acciones sobre los comprobantes. También permite realizar acciones masivas sobre múltiples comprobantes seleccionados.
+            </div>
+            
+            <div class="step">
+                <span class="step-number">1</span>
+                Acceda desde el menú: <strong>Comprobantes → Ingresos → Comprobantes de Venta</strong>
+            </div>
+            
+            <h4>Funcionalidades del Listado</h4>
+            <ul>
+                <li><strong>Búsqueda Avanzada:</strong> Filtre por fecha, cliente, punto de venta, estado, tipo y letra</li>
+                <li><strong>Acciones Individuales:</strong> Ver detalle, imprimir, enviar por email, clonar, editar, facturar (CAE), anular</li>
+                <li><strong>Acciones Masivas:</strong> Cobrar múltiples comprobantes, anular, unificar, imprimir detalles</li>
+            </ul>
+            
+            <h4>Crear un Comprobante de Venta</h4>
+            <div class="step">
+                <span class="step-number">1</span>
+                Desde el listado, haga clic en <span class="button-example">Nueva Venta</span>
+            </div>
+            
+            <div class="step">
+                <span class="step-number">2</span>
+                Complete el encabezado:
+                <ul>
+                    <li>Seleccione el <strong>Cliente</strong></li>
+                    <li>Seleccione el <strong>Tipo de CPB</strong> (Factura, Nota de Crédito, Nota de Débito)</li>
+                    <li>Seleccione el <strong>Punto de Venta</strong></li>
+                    <li>La <strong>Letra</strong> se determina automáticamente según categorías fiscales</li>
+                    <li>El <strong>Número</strong> se genera automáticamente</li>
+                    <li>Seleccione la <strong>Condición de Pago</strong> (Contado o Cuenta Corriente)</li>
+                </ul>
+            </div>
+            
+            <div class="step">
+                <span class="step-number">3</span>
+                Agregue productos/servicios:
+                <ul>
+                    <li>Haga clic en "Agregar Fila"</li>
+                    <li>Seleccione el producto</li>
+                    <li>Ingrese cantidad y precio (se carga automáticamente según lista de precios)</li>
+                    <li>Si aplica, ingrese descuento porcentual</li>
+                    <li>Seleccione ubicación (para control de stock)</li>
+                </ul>
+            </div>
+            
+            <div class="step">
+                <span class="step-number">4</span>
+                Si la condición de pago es <strong>Contado</strong>, complete la forma de pago
+            </div>
+            
+            <div class="step">
+                <span class="step-number">5</span>
+                Haga clic en <span class="button-example">Guardar</span>
+            </div>
+            
+            <h4>Cobrar Comprobantes de Venta</h4>
+            <p>Vea la sección <a href="#seccion1-1-2">1.1.2 Recibos de Cobranza</a> para información detallada.</p>
+            
+            <h4>Imprimir y Generar CAE</h4>
+            <p>Vea la sección <a href="#seccion1-1-1-cae">Generar CAE</a> más abajo.</p>
+            
+            <div id="seccion1-1-1-cae">
+                <h4>Generar CAE (Facturar)</h4>
+                <div class="step">
+                    <span class="step-number">1</span>
+                    Desde el listado, localice el comprobante sin CAE
+                </div>
+                
+                <div class="step">
+                    <span class="step-number">2</span>
+                    Haga clic en el menú <code>⚙️</code> y seleccione <strong>"Facturar (CAE)"</strong>
+                </div>
+                
+                <div class="step">
+                    <span class="step-number">3</span>
+                    El sistema se comunica con AFIP y asigna el CAE si es exitoso
+                </div>
+                
+                <div class="warning">
+                    <strong>Requisitos:</strong> El comprobante debe estar completo, el punto de venta debe tener certificados AFIP configurados, y debe haber conexión a internet.
+                </div>
+            </div>
+        </section>
+
+        <!-- 1.1.2 Recibos de Cobranza -->
+        <section id="seccion1-1-2">
+            <h3>1.1.2 Recibos de Cobranza</h3>
+            
+            <div class="info">
+                <strong>¿Qué es y para qué sirve?</strong> Los recibos de cobranza son documentos que registran el cobro de comprobantes de venta pendientes. Permiten registrar los pagos recibidos de los clientes, actualizar automáticamente los saldos de los comprobantes, y mantener un historial completo de cobranzas. Puede cobrar uno o varios comprobantes en un mismo recibo.
+            </div>
+            
+            <h4>Listado de Recibos</h4>
+            <div class="info">
+                <strong>¿Para qué sirve y qué puedo hacer?</strong> El listado muestra todos los recibos de cobranza registrados. Desde aquí puede ver el detalle de cada recibo, ver qué comprobantes fueron cobrados, imprimir recibos, y buscar recibos por fecha, cliente u otros criterios.
+            </div>
+            
+            <div class="step">
+                <span class="step-number">1</span>
+                Acceda desde el menú: <strong>Comprobantes → Ingresos → Recibos Cobranzas</strong>
+            </div>
+            
+            <h4>Crear un Recibo de Cobranza</h4>
+            <div class="info">
+                <strong>¿Para qué sirve y qué puedo hacer?</strong> Permite crear un nuevo recibo para registrar el cobro de uno o varios comprobantes de venta. Puede seleccionar los comprobantes a cobrar, modificar los importes si es necesario, y registrar la forma de pago recibida (efectivo, cheque, transferencia, etc.).
+            </div>
+            <div class="step">
+                <span class="step-number">1</span>
+                Desde el listado, haga clic en <span class="button-example">Nueva Cobranza</span>
+            </div>
+            
+            <div class="step">
+                <span class="step-number">2</span>
+                Complete los datos:
+                <ul>
+                    <li><strong>Cliente:</strong> Seleccione el cliente</li>
+                    <li><strong>Fecha:</strong> Fecha del recibo</li>
+                    <li><strong>Punto de Venta:</strong> Seleccione el punto de venta</li>
+                </ul>
+            </div>
+            
+            <div class="step">
+                <span class="step-number">3</span>
+                En <strong>Comprobantes a Cobrar</strong>:
+                <ul>
+                    <li>El sistema muestra automáticamente los comprobantes pendientes del cliente</li>
+                    <li>Seleccione los comprobantes a cobrar</li>
+                    <li>Puede modificar el importe a cobrar de cada uno (por defecto se cobra el saldo completo)</li>
+                </ul>
+            </div>
+            
+            <div class="step">
+                <span class="step-number">4</span>
+                Complete la <strong>Forma de Pago</strong>:
+                <ul>
+                    <li>Seleccione el tipo (Efectivo, Cheque, Transferencia, etc.)</li>
+                    <li>Ingrese el importe</li>
+                    <li>Seleccione la cuenta de ingreso</li>
+                    <li>Si es cheque, complete: banco, número, fecha de vencimiento</li>
+                </ul>
+            </div>
+            
+            <div class="step">
+                <span class="step-number">5</span>
+                Haga clic en <span class="button-example">Guardar</span>
+            </div>
+            
+            <div class="info">
+                <strong>Información:</strong> Al guardar, el sistema actualiza automáticamente los saldos de los comprobantes cobrados y marca como "Saldado" aquellos que se cobraron completamente.
+            </div>
+            
+            <h4>Cobrar desde el Listado de Comprobantes de Venta</h4>
+            <div class="step">
+                <span class="step-number">1</span>
+                Desde el listado de comprobantes de venta, seleccione uno o varios comprobantes usando los checkboxes
+            </div>
+            
+            <div class="step">
+                <span class="step-number">2</span>
+                Haga clic en el botón <span class="button-example">Cobrar</span>
+            </div>
+            
+            <div class="step">
+                <span class="step-number">3</span>
+                Se abrirá el formulario de cobranza con los comprobantes pre-seleccionados
+            </div>
+            
+            <div class="warning">
+                <strong>Importante:</strong> Solo puede seleccionar comprobantes del mismo cliente para una cobranza unificada.
+            </div>
+        </section>
+
+        <!-- 1.1.3 Remitos de Venta -->
+        <section id="seccion1-1-3">
+            <h3>1.1.3 Remitos de Venta</h3>
+            
+            <div class="info">
+                <strong>¿Qué es y para qué sirve?</strong> Los remitos de venta son documentos que registran la entrega de mercadería a los clientes. Permiten controlar qué productos se entregaron, cuándo y a quién. Al crear un remito, el sistema descuenta automáticamente el stock de los productos en la ubicación seleccionada. Los remitos pueden generarse desde presupuestos aprobados o crearse desde cero.
+            </div>
+            
+            <h4>Listado de Remitos</h4>
+            <div class="info">
+                <strong>¿Para qué sirve y qué puedo hacer?</strong> El listado muestra todos los remitos de venta registrados. Desde aquí puede ver el detalle de cada remito, ver qué productos se entregaron, imprimir remitos, y buscar por fecha, cliente u otros criterios.
+            </div>
+            
+            <div class="step">
+                <span class="step-number">1</span>
+                Acceda desde el menú: <strong>Comprobantes → Ingresos → Remitos de Venta</strong>
+            </div>
+            
+            <h4>Crear un Remito</h4>
+            <div class="info">
+                <strong>¿Para qué sirve y qué puedo hacer?</strong> Permite crear un nuevo remito para registrar la entrega de productos. Puede crear un remito desde cero o generar uno automáticamente desde un presupuesto aprobado. Al guardar, el sistema actualiza el stock de los productos.
+            </div>
+            <div class="step">
+                <span class="step-number">1</span>
+                Puede crear un remito de dos formas:
+                <ul>
+                    <li><strong>Desde cero:</strong> Haga clic en "Nuevo Remito" (vacío)</li>
+                    <li><strong>Desde un Presupuesto:</strong> Desde el listado de presupuestos, seleccione uno y use "Generar Remito"</li>
+                </ul>
+            </div>
+            
+            <div class="step">
+                <span class="step-number">2</span>
+                Complete los datos:
+                <ul>
+                    <li><strong>Cliente:</strong> Seleccione el cliente</li>
+                    <li><strong>Fecha:</strong> Fecha del remito</li>
+                    <li><strong>Productos:</strong> Agregue los productos a remitir</li>
+                    <li><strong>Ubicación:</strong> Seleccione la ubicación de origen</li>
+                </ul>
+            </div>
+            
+            <div class="step">
+                <span class="step-number">3</span>
+                Haga clic en <span class="button-example">Guardar</span>
+            </div>
+            
+            <div class="warning">
+                <strong>Importante:</strong> Los remitos afectan el stock. Al guardar, se descuenta el stock de los productos en la ubicación seleccionada.
+            </div>
+        </section>
+
+        <!-- 1.1.4 Presupuestos -->
+        <section id="seccion1-1-4">
+            <h3>1.1.4 Presupuestos</h3>
+            
+            <div class="info">
+                <strong>¿Qué es y para qué sirve?</strong> Los presupuestos son documentos que registran cotizaciones de productos o servicios para clientes. Permiten enviar propuestas comerciales con precios, condiciones de pago y tiempos de entrega. Los presupuestos pueden tener diferentes estados (pendiente, aprobado, rechazado, vencido) y pueden convertirse posteriormente en facturas o remitos cuando son aprobados por el cliente.
+            </div>
+            
+            <h4>Listado de Presupuestos</h4>
+            <div class="info">
+                <strong>¿Para qué sirve y qué puedo hacer?</strong> El listado muestra todos los presupuestos creados. Desde aquí puede ver el estado de cada presupuesto, cambiar su estado (aprobado/rechazado), generar facturas o remitos desde presupuestos aprobados, imprimir presupuestos, y buscar por fecha, cliente, estado u otros criterios.
+            </div>
+            
+            <div class="step">
+                <span class="step-number">1</span>
+                Acceda desde el menú: <strong>Comprobantes → Ingresos → Presupuestos</strong>
+            </div>
+            
+            <h4>Crear un Presupuesto</h4>
+            <div class="info">
+                <strong>¿Para qué sirve y qué puedo hacer?</strong> Permite crear un nuevo presupuesto con los productos/servicios cotizados, precios, condiciones de pago y tiempo de entrega. Puede establecer una fecha de vencimiento y luego cambiar el estado cuando el cliente aprueba o rechaza la propuesta.
+            </div>
+            <div class="step">
+                <span class="step-number">1</span>
+                Desde el listado, haga clic en <span class="button-example">Nuevo Presupuesto</span>
+            </div>
+            
+            <div class="step">
+                <span class="step-number">2</span>
+                Complete los datos:
+                <ul>
+                    <li><strong>Cliente:</strong> Seleccione el cliente</li>
+                    <li><strong>Fecha:</strong> Fecha del presupuesto</li>
+                    <li><strong>Fecha de Vencimiento:</strong> Fecha hasta la cual el presupuesto es válido</li>
+                    <li><strong>Tiempo de Entrega:</strong> Tiempo estimado de entrega</li>
+                    <li><strong>Forma de Pago:</strong> Condiciones de pago propuestas</li>
+                    <li><strong>Productos:</strong> Agregue los productos/servicios cotizados</li>
+                </ul>
+            </div>
+            
+            <div class="step">
+                <span class="step-number">3</span>
+                Estados del Presupuesto:
+                <ul>
+                    <li><strong>Pendiente:</strong> En espera de aprobación</li>
+                    <li><strong>Aprobado:</strong> Aprobado por el cliente</li>
+                    <li><strong>Rechazado:</strong> Rechazado</li>
+                    <li><strong>Vencido:</strong> Superó la fecha de vencimiento</li>
+                </ul>
+            </div>
+            
+            <h4>Convertir Presupuesto en Factura o Remito</h4>
+            <div class="step">
+                <span class="step-number">1</span>
+                Desde el listado, seleccione un presupuesto aprobado
+            </div>
+            
+            <div class="step">
+                <span class="step-number">2</span>
+                Use el menú de acciones para:
+                <ul>
+                    <li><strong>Generar Factura:</strong> Crea una factura basada en el presupuesto</li>
+                    <li><strong>Generar Remito:</strong> Crea un remito basado en el presupuesto</li>
+                </ul>
+            </div>
+        </section>
+
+        <!-- SECCIÓN 1.2: EGRESOS -->
+        <section id="seccion1-2">
+            <h2>1.2 EGRESOS</h2>
+            <p>Los comprobantes de egresos registran todas las operaciones de compra y pago.</p>
+        </section>
+
+        <!-- 1.2.1 Comprobantes de Compra -->
+        <section id="seccion1-2-1">
+            <h3>1.2.1 Comprobantes de Compra</h3>
+            
+            <div class="info">
+                <strong>¿Qué es y para qué sirve?</strong> Los comprobantes de compra registran todas las operaciones de compra realizadas a proveedores. Incluyen facturas de compra, notas de crédito y notas de débito recibidas. Permiten registrar las compras, actualizar el stock (incrementar), gestionar la cuenta corriente con proveedores, y llevar el control de los gastos e insumos del negocio.
+            </div>
+            
+            <h4>Listado de Comprobantes de Compra</h4>
+            <div class="info">
+                <strong>¿Para qué sirve y qué puedo hacer?</strong> El listado muestra todos los comprobantes de compra registrados. Desde aquí puede ver el detalle de cada comprobante, ver el saldo pendiente de pago, crear órdenes de pago para pagar los comprobantes, imprimir comprobantes, y buscar por fecha, proveedor, estado u otros criterios.
+            </div>
+            
+            <div class="step">
+                <span class="step-number">1</span>
+                Acceda desde el menú: <strong>Comprobantes → Egresos → Comprobantes de Compra</strong>
+            </div>
+            
+            <h4>Crear un Comprobante de Compra</h4>
+            <div class="info">
+                <strong>¿Para qué sirve y qué puedo hacer?</strong> Permite registrar una factura o comprobante recibido de un proveedor. Debe ingresar el número del comprobante del proveedor, los productos/servicios comprados, y si el pago es contado, el sistema crea automáticamente una orden de pago asociada.
+            </div>
+            <div class="step">
+                <span class="step-number">1</span>
+                Desde el listado, haga clic en <span class="button-example">Nueva Compra</span>
+            </div>
+            
+            <div class="step">
+                <span class="step-number">2</span>
+                Complete los datos:
+                <ul>
+                    <li><strong>Proveedor:</strong> Seleccione el proveedor</li>
+                    <li><strong>Tipo de CPB:</strong> Factura, Nota de Crédito, Nota de Débito</li>
+                    <li><strong>Número:</strong> Ingrese el número del comprobante del proveedor</li>
+                    <li><strong>Fecha:</strong> Fecha del comprobante</li>
+                    <li><strong>Condición de Pago:</strong> Contado (genera automáticamente Orden de Pago) o Cuenta Corriente</li>
+                </ul>
+            </div>
+            
+            <div class="step">
+                <span class="step-number">3</span>
+                Agregue productos/servicios comprados y complete la forma de pago si es contado
+            </div>
+            
+            <div class="info">
+                <strong>Información:</strong> Si selecciona "Contado", el sistema crea automáticamente una Orden de Pago asociada.
+            </div>
+        </section>
+
+        <!-- 1.2.2 Órdenes de Pago -->
+        <section id="seccion1-2-2">
+            <h3>1.2.2 Órdenes de Pago</h3>
+            
+            <div class="info">
+                <strong>¿Qué es y para qué sirve?</strong> Las órdenes de pago son documentos que registran los pagos realizados a proveedores. Permiten pagar uno o varios comprobantes de compra pendientes, registrar la forma de pago utilizada (efectivo, cheque, transferencia, etc.), aplicar retenciones si corresponde, y mantener un historial completo de pagos. Al pagar un comprobante, el sistema actualiza automáticamente su saldo.
+            </div>
+            
+            <h4>Listado de Órdenes de Pago</h4>
+            <div class="info">
+                <strong>¿Para qué sirve y qué puedo hacer?</strong> El listado muestra todas las órdenes de pago registradas. Desde aquí puede ver el detalle de cada orden, ver qué comprobantes fueron pagados, imprimir órdenes de pago, y buscar por fecha, proveedor u otros criterios.
+            </div>
+            
+            <div class="step">
+                <span class="step-number">1</span>
+                Acceda desde el menú: <strong>Comprobantes → Egresos → Órdenes de Pago</strong>
+            </div>
+            
+            <h4>Crear una Orden de Pago</h4>
+            <div class="info">
+                <strong>¿Para qué sirve y qué puedo hacer?</strong> Permite crear una nueva orden de pago para registrar el pago de uno o varios comprobantes de compra. Puede seleccionar los comprobantes a pagar, modificar los importes si es necesario, registrar la forma de pago utilizada, y aplicar retenciones si corresponde.
+            </div>
+            <div class="step">
+                <span class="step-number">1</span>
+                Puede crear una orden de pago de dos formas:
+                <ul>
+                    <li><strong>Desde Comprobantes Pendientes:</strong> Seleccione comprobantes de compra y use "Pagar"</li>
+                    <li><strong>Manual:</strong> Desde el listado, haga clic en "Nueva Orden de Pago"</li>
+                </ul>
+            </div>
+            
+            <div class="step">
+                <span class="step-number">2</span>
+                Complete:
+                <ul>
+                    <li><strong>Proveedor:</strong> Seleccione el proveedor</li>
+                    <li><strong>Comprobantes a Pagar:</strong> Seleccione los comprobantes pendientes</li>
+                    <li><strong>Forma de Pago:</strong> Complete el tipo de pago y cuenta de egreso</li>
+                    <li><strong>Retenciones:</strong> Si aplica, complete las retenciones</li>
+                </ul>
+            </div>
+        </section>
+
+        <!-- 1.2.3 Remitos de Compra -->
+        <section id="seccion1-2-3">
+            <h3>1.2.3 Remitos de Compra</h3>
+            
+            <div class="info">
+                <strong>¿Qué es y para qué sirve?</strong> Los remitos de compra son documentos que registran la recepción de mercadería de proveedores. Permiten controlar qué productos se recibieron, cuándo y de qué proveedor. Al crear un remito de compra, el sistema incrementa automáticamente el stock de los productos en la ubicación seleccionada. Son útiles para registrar la recepción de mercadería antes de recibir la factura del proveedor.
+            </div>
+            
+            <h4>Listado de Remitos de Compra</h4>
+            <div class="info">
+                <strong>¿Para qué sirve y qué puedo hacer?</strong> El listado muestra todos los remitos de compra registrados. Desde aquí puede ver el detalle de cada remito, ver qué productos se recibieron, imprimir remitos, y buscar por fecha, proveedor u otros criterios.
+            </div>
+            
+            <div class="step">
+                <span class="step-number">1</span>
+                Acceda desde el menú: <strong>Comprobantes → Egresos → Remitos de Compra</strong>
+            </div>
+            
+            <h4>Crear un Remito de Compra</h4>
+            <div class="info">
+                <strong>¿Para qué sirve y qué puedo hacer?</strong> Permite crear un nuevo remito para registrar la recepción de productos de un proveedor. Al guardar, el sistema incrementa el stock de los productos en la ubicación de destino seleccionada.
+            </div>
+            <div class="step">
+                <span class="step-number">1</span>
+                Desde el listado, haga clic en <span class="button-example">Nuevo Remito</span>
+            </div>
+            
+            <div class="step">
+                <span class="step-number">2</span>
+                Complete:
+                <ul>
+                    <li><strong>Proveedor:</strong> Seleccione el proveedor</li>
+                    <li><strong>Productos:</strong> Agregue los productos recibidos</li>
+                    <li><strong>Ubicación:</strong> Seleccione la ubicación de destino</li>
+                </ul>
+            </div>
+            
+            <div class="warning">
+                <strong>Importante:</strong> Los remitos de compra incrementan el stock en la ubicación seleccionada.
+            </div>
+        </section>
+
+        <!-- SECCIÓN 1.3: FINANZAS -->
+        <section id="seccion1-3">
+            <h2>1.3 FINANZAS</h2>
+        </section>
+
+        <!-- 1.3.1 Movimientos entre Cuentas -->
+        <section id="seccion1-3-1">
+            <h3>1.3.1 Movimientos entre Cuentas</h3>
+            
+            <div class="info">
+                <strong>¿Qué es y para qué sirve?</strong> Los movimientos entre cuentas son registros que documentan las transferencias de fondos entre diferentes cuentas del negocio (por ejemplo, de caja a banco, entre bancos, etc.). Permiten mantener un control preciso de los fondos en cada cuenta y rastrear todos los movimientos de dinero entre cuentas.
+            </div>
+            
+            <h4>Listado de Movimientos</h4>
+            <div class="info">
+                <strong>¿Para qué sirve y qué puedo hacer?</strong> El listado muestra todos los movimientos entre cuentas registrados. Desde aquí puede ver el detalle de cada movimiento, ver qué cuentas se afectaron, imprimir movimientos, y buscar por fecha, cuenta u otros criterios.
+            </div>
+            
+            <div class="step">
+                <span class="step-number">1</span>
+                Acceda desde el menú: <strong>Comprobantes → Finanzas → Movimientos entre Cuentas</strong>
+            </div>
+            
+            <h4>Crear un Movimiento</h4>
+            <div class="info">
+                <strong>¿Para qué sirve y qué puedo hacer?</strong> Permite crear un nuevo movimiento para registrar una transferencia de fondos entre cuentas. Debe especificar la cuenta de origen (egreso), la cuenta de destino (ingreso), el importe y la forma de pago utilizada.
+            </div>
+            <div class="step">
+                <span class="step-number">1</span>
+                Desde el listado, haga clic en <span class="button-example">Nuevo Movimiento</span>
+            </div>
+            
+            <div class="step">
+                <span class="step-number">2</span>
+                Complete:
+                <ul>
+                    <li><strong>Fecha:</strong> Fecha del movimiento</li>
+                    <li><strong>Forma de Pago:</strong> Seleccione el tipo de movimiento</li>
+                    <li><strong>Cuenta de Egreso:</strong> Cuenta de origen</li>
+                    <li><strong>Cuenta de Ingreso:</strong> Cuenta de destino</li>
+                    <li><strong>Importe:</strong> Monto a transferir</li>
+                </ul>
+            </div>
+        </section>
+
+        <!-- ============================================ -->
+        <!-- SECCIÓN 2: PEDIDOS/TRABAJOS -->
+        <!-- ============================================ -->
+        
+        <section id="seccion2">
+            <h2>2. PEDIDOS/TRABAJOS</h2>
+            <p>Este módulo gestiona las órdenes de pedido, trabajo y colocación.</p>
+        </section>
+
+        <!-- 2.1 Orden de Pedido -->
+        <section id="seccion2-1">
+            <h3>2.1 Orden de Pedido</h3>
+            
+            <div class="info">
+                <strong>¿Qué es y para qué sirve?</strong> Las órdenes de pedido son documentos que registran los pedidos realizados por los clientes antes de generar facturas o remitos. Permiten llevar un control de los pedidos recibidos, asignar vendedores, registrar observaciones y luego convertir esos pedidos en facturas o remitos cuando se procesan.
+            </div>
+            
+            <h4>Listado de Órdenes de Pedido</h4>
+            <div class="info">
+                <strong>¿Para qué sirve y qué puedo hacer?</strong> El listado muestra todas las órdenes de pedido registradas. Desde aquí puede ver el detalle de cada orden, ver qué productos fueron pedidos, ver el estado de cada pedido, y buscar por fecha, cliente, vendedor u otros criterios.
+            </div>
+            
+            <div class="step">
+                <span class="step-number">1</span>
+                Acceda desde el menú: <strong>Pedidos/Trabajos → Orden de Pedido</strong>
+            </div>
+            
+            <h4>Crear una Orden de Pedido</h4>
+            <div class="info">
+                <strong>¿Para qué sirve y qué puedo hacer?</strong> Permite crear una nueva orden de pedido para registrar un pedido de un cliente. Debe especificar el cliente, los productos solicitados, el vendedor responsable y cualquier observación relevante.
+            </div>
+            <div class="step">
+                <span class="step-number">1</span>
+                Desde el listado, haga clic en <span class="button-example">Nueva Orden de Pedido</span>
+            </div>
+            
+            <div class="step">
+                <span class="step-number">2</span>
+                Complete:
+                <ul>
+                    <li><strong>Cliente:</strong> Seleccione el cliente</li>
+                    <li><strong>Fecha:</strong> Fecha de la orden</li>
+                    <li><strong>Vendedor:</strong> Seleccione el vendedor responsable</li>
+                    <li><strong>Productos:</strong> Agregue los productos solicitados</li>
+                    <li><strong>Observaciones:</strong> Notas adicionales</li>
+                </ul>
+            </div>
+        </section>
+
+        <!-- 2.2 Orden de Trabajo -->
+        <section id="seccion2-2">
+            <h3>2.2 Orden de Trabajo</h3>
+            
+            <div class="info">
+                <strong>¿Qué es y para qué sirve?</strong> Las órdenes de trabajo son documentos que registran trabajos o servicios que se realizarán para los clientes. Permiten gestionar el ciclo completo de un trabajo: desde la solicitud del cliente hasta la finalización, incluyendo el seguimiento del estado, los materiales necesarios y las observaciones del trabajo realizado.
+            </div>
+            
+            <h4>Listado de Órdenes de Trabajo</h4>
+            <div class="info">
+                <strong>¿Para qué sirve y qué puedo hacer?</strong> El listado muestra todas las órdenes de trabajo registradas. Desde aquí puede ver el detalle de cada orden, ver el estado de cada trabajo, ver qué servicios o productos están involucrados, y buscar por fecha, cliente, estado u otros criterios.
+            </div>
+            
+            <div class="step">
+                <span class="step-number">1</span>
+                Acceda desde el menú: <strong>Pedidos/Trabajos → Orden de Trabajo</strong>
+            </div>
+            
+            <h4>Crear una Orden de Trabajo</h4>
+            <div class="info">
+                <strong>¿Para qué sirve y qué puedo hacer?</strong> Permite crear una nueva orden de trabajo para registrar un trabajo o servicio a realizar. Debe especificar el cliente, los servicios/productos involucrados, el vendedor responsable y las observaciones del trabajo.
+            </div>
+            <div class="step">
+                <span class="step-number">1</span>
+                Desde el listado, haga clic en <span class="button-example">Nueva Orden de Trabajo</span>
+            </div>
+            
+            <div class="step">
+                <span class="step-number">2</span>
+                Complete los datos similares a una orden de pedido, pero enfocada en trabajos o servicios a realizar
+            </div>
+        </section>
+
+        <!-- 2.3 Orden de Colocación -->
+        <section id="seccion2-3">
+            <h3>2.3 Orden de Colocación</h3>
+            
+            <div class="info">
+                <strong>¿Qué es y para qué sirve?</strong> Las órdenes de colocación son documentos que registran la colocación o instalación de productos para los clientes. Permiten gestionar el proceso de instalación, desde la planificación hasta la finalización, incluyendo el seguimiento del estado de la colocación, los productos a instalar y las observaciones del trabajo realizado.
+            </div>
+            
+            <h4>Listado de Órdenes de Colocación</h4>
+            <div class="info">
+                <strong>¿Para qué sirve y qué puedo hacer?</strong> El listado muestra todas las órdenes de colocación registradas. Desde aquí puede ver el detalle de cada orden, ver el estado de cada colocación, ver qué productos se están colocando, y buscar por fecha, cliente, estado u otros criterios.
+            </div>
+            
+            <div class="step">
+                <span class="step-number">1</span>
+                Acceda desde el menú: <strong>Pedidos/Trabajos → Orden de Colocación</strong>
+            </div>
+            
+            <h4>Crear una Orden de Colocación</h4>
+            <div class="info">
+                <strong>¿Para qué sirve y qué puedo hacer?</strong> Permite crear una nueva orden de colocación para registrar la colocación o instalación de productos. Debe especificar el cliente, los productos a colocar, y las observaciones relacionadas con la colocación.
+            </div>
+            <div class="step">
+                <span class="step-number">1</span>
+                Desde el listado, haga clic en <span class="button-example">Nueva Orden de Colocación</span>
+            </div>
+            
+            <div class="step">
+                <span class="step-number">2</span>
+                Complete los datos relacionados con la colocación de productos o servicios
+            </div>
+        </section>
+
+        <!-- ============================================ -->
+        <!-- SECCIÓN 3: ENTIDADES/PRODUCTOS -->
+        <!-- ============================================ -->
+        
+        <section id="seccion3">
+            <h2>3. ENTIDADES/PRODUCTOS</h2>
+            <p>Este módulo gestiona clientes, proveedores, vendedores y productos/servicios.</p>
+        </section>
+
+        <!-- SECCIÓN 3.1: ENTIDADES -->
+        <section id="seccion3-1">
+            <h2>3.1 ENTIDADES</h2>
+        </section>
+
+        <!-- 3.1.1 Clientes -->
+        <section id="seccion3-1-1">
+            <h3>3.1.1 Clientes</h3>
+            
+            <div class="info">
+                <strong>¿Qué es y para qué sirve?</strong> Los clientes son las personas o empresas a las que se les vende productos o servicios. El módulo de clientes permite mantener una base de datos completa con información personal, de contacto, fiscal y comercial de cada cliente. Esta información se utiliza automáticamente al crear comprobantes de venta, y permite gestionar la cuenta corriente, aplicar descuentos, y usar listas de precios específicas.
+            </div>
+            
+            <h4>Listado de Clientes</h4>
+            <div class="info">
+                <strong>¿Para qué sirve y qué puedo hacer?</strong> El listado muestra todos los clientes registrados en el sistema. Desde aquí puede buscar clientes, ver su información completa, ver el saldo de cuenta corriente, ver el historial de comprobantes, crear nuevos clientes, editar información existente, y acceder rápidamente a crear comprobantes para un cliente específico.
+            </div>
+            
+            <div class="step">
+                <span class="step-number">1</span>
+                Acceda desde el menú: <strong>Entidades/Productos → Entidades → Clientes</strong>
+            </div>
+            
+            <h4>Crear un Cliente</h4>
+            <div class="info">
+                <strong>¿Para qué sirve y qué puedo hacer?</strong> Permite registrar un nuevo cliente en el sistema con toda su información. Al crear un cliente, puede configurar sus datos fiscales, comerciales (lista de precios, descuentos), y límites de cuenta corriente. Esta información se utilizará automáticamente al crear comprobantes de venta para ese cliente.
+            </div>
+            <div class="step">
+                <span class="step-number">1</span>
+                Desde el listado, use el botón para crear un nuevo cliente
+            </div>
+            
+            <div class="step">
+                <span class="step-number">2</span>
+                Complete los datos:
+                <ul>
+                    <li><strong>Datos Personales:</strong> Apellido y Nombre, DNI/CUIT</li>
+                    <li><strong>Datos de Contacto:</strong> Domicilio, Teléfono, Email</li>
+                    <li><strong>Datos Fiscales:</strong> Razón Social, CUIT, Categoría Fiscal, Condición IVA</li>
+                    <li><strong>Datos Comerciales:</strong> Lista de precios por defecto, Descuento general, Tope cuenta corriente</li>
+                </ul>
+            </div>
+            
+            <h4>Ver Detalle de Cliente</h4>
+            <div class="step">
+                <span class="step-number">1</span>
+                Desde el listado, haga clic en "Ver" del cliente deseado
+            </div>
+            
+            <div class="step">
+                <span class="step-number">2</span>
+                En el detalle podrá ver:
+                <ul>
+                    <li>Información completa del cliente</li>
+                    <li>Historial de comprobantes</li>
+                    <li>Saldo de cuenta corriente</li>
+                    <li>Comprobantes pendientes</li>
+                </ul>
+            </div>
+        </section>
+
+        <!-- 3.1.2 Proveedores -->
+        <section id="seccion3-1-2">
+            <h3>3.1.2 Proveedores</h3>
+            
+            <div class="info">
+                <strong>¿Qué es y para qué sirve?</strong> Los proveedores son las personas o empresas de las que se compran productos o servicios. El módulo de proveedores permite mantener una base de datos completa con información de contacto, fiscal y comercial de cada proveedor. Esta información se utiliza automáticamente al crear comprobantes de compra, y permite gestionar la cuenta corriente y llevar el control de los pagos pendientes.
+            </div>
+            
+            <h4>Listado de Proveedores</h4>
+            <div class="info">
+                <strong>¿Para qué sirve y qué puedo hacer?</strong> El listado muestra todos los proveedores registrados en el sistema. Desde aquí puede buscar proveedores, ver su información completa, ver el saldo de cuenta corriente, ver el historial de comprobantes de compra, crear nuevos proveedores, editar información existente, y acceder rápidamente a crear comprobantes de compra para un proveedor específico.
+            </div>
+            
+            <div class="step">
+                <span class="step-number">1</span>
+                Acceda desde el menú: <strong>Entidades/Productos → Entidades → Proveedores</strong>
+            </div>
+            
+            <h4>Crear un Proveedor</h4>
+            <div class="info">
+                <strong>¿Para qué sirve y qué puedo hacer?</strong> Permite registrar un nuevo proveedor en el sistema con toda su información. Al crear un proveedor, puede configurar sus datos fiscales y comerciales. Esta información se utilizará automáticamente al crear comprobantes de compra para ese proveedor.
+            </div>
+            <div class="step">
+                <span class="step-number">1</span>
+                Similar a crear un cliente, pero con datos específicos de proveedor
+            </div>
+            
+            <div class="step">
+                <span class="step-number">2</span>
+                Complete los datos fiscales y comerciales del proveedor
+            </div>
+        </section>
+
+        <!-- 3.1.3 Empleados/Vendedores -->
+        <section id="seccion3-1-3">
+            <h3>3.1.3 Empleados/Vendedores</h3>
+            
+            <div class="info">
+                <strong>¿Qué es y para qué sirve?</strong> Los empleados/vendedores son las personas que realizan las ventas o trabajan en la empresa. El módulo permite mantener información de cada empleado/vendedor y asignarlos a los comprobantes de venta, órdenes de pedido y trabajos. Esto permite realizar reportes de comisiones, estadísticas de ventas por vendedor, y llevar un control del desempeño de cada vendedor.
+            </div>
+            
+            <h4>Listado de Empleados/Vendedores</h4>
+            <div class="info">
+                <strong>¿Para qué sirve y qué puedo hacer?</strong> El listado muestra todos los empleados/vendedores registrados en el sistema. Desde aquí puede ver la información de cada empleado, ver sus ventas asociadas, crear nuevos empleados/vendedores, editar información existente, y acceder a reportes de comisiones por vendedor.
+            </div>
+            
+            <div class="step">
+                <span class="step-number">1</span>
+                Acceda desde el menú: <strong>Entidades/Productos → Entidades → Empleados/Vendedores</strong>
+            </div>
+            
+            <h4>Crear un Empleado/Vendedor</h4>
+            <div class="info">
+                <strong>¿Para qué sirve y qué puedo hacer?</strong> Permite registrar un nuevo empleado o vendedor en el sistema con su información personal y laboral. Una vez creado, puede asignarlo a comprobantes de venta, órdenes de pedido y trabajos para llevar el control de sus actividades.
+            </div>
+            <div class="step">
+                <span class="step-number">1</span>
+                Complete los datos personales y laborales del empleado/vendedor
+            </div>
+        </section>
+
+        <!-- SECCIÓN 3.2: PRODUCTOS/SERVICIOS -->
+        <section id="seccion3-2">
+            <h2>3.2 PRODUCTOS/SERVICIOS</h2>
+        </section>
+
+        <!-- 3.2.1 Productos/Servicios -->
+        <section id="seccion3-2-1">
+            <h3>3.2.1 Productos/Servicios</h3>
+            
+            <div class="info">
+                <strong>¿Qué es y para qué sirve?</strong> Los productos/servicios son los artículos o servicios que se venden o compran en el negocio. El módulo permite mantener un catálogo completo con información de cada producto: códigos, descripciones, categorías, precios en diferentes listas, stock por ubicación, tasas de IVA, y más. Esta información se utiliza automáticamente al crear comprobantes, y permite llevar un control preciso del inventario y los precios.
+            </div>
+            
+            <h4>Listado de Productos</h4>
+            <div class="info">
+                <strong>¿Para qué sirve y qué puedo hacer?</strong> El listado muestra todos los productos/servicios registrados en el sistema. Desde aquí puede buscar productos, ver su información completa, ver el stock disponible, ver los precios en diferentes listas, crear nuevos productos, editar información existente, y acceder rápidamente a usar un producto en un comprobante.
+            </div>
+            
+            <div class="step">
+                <span class="step-number">1</span>
+                Acceda desde el menú: <strong>Entidades/Productos → Productos/Servicios → Productos/Servicios</strong>
+            </div>
+            
+            <h4>Crear un Producto/Servicio</h4>
+            <div class="info">
+                <strong>¿Para qué sirve y qué puedo hacer?</strong> Permite registrar un nuevo producto o servicio en el sistema. Debe completar la información básica (código, nombre, descripción), configurar los precios en las diferentes listas de precios, establecer el stock inicial por ubicación, y configurar la tasa de IVA y otros parámetros. Esta información se utilizará automáticamente al agregar el producto a cualquier comprobante.
+            </div>
+            <div class="step">
+                <span class="step-number">1</span>
+                Desde el listado, haga clic en <span class="button-example">+</span> o el botón de nuevo producto
+            </div>
+            
+            <div class="step">
+                <span class="step-number">2</span>
+                Complete los datos:
+                <ul>
+                    <li><strong>Datos Básicos:</strong> Código, Nombre, Descripción</li>
+                    <li><strong>Categoría:</strong> Seleccione la categoría del producto</li>
+                    <li><strong>Tasa de IVA:</strong> Seleccione la tasa de IVA aplicable</li>
+                    <li><strong>Unidad de Medida:</strong> Unidad, Kilo, Litro, etc.</li>
+                    <li><strong>Control de Stock:</strong> Indique si el producto tiene control de stock</li>
+                </ul>
+            </div>
+            
+            <div class="step">
+                <span class="step-number">3</span>
+                Complete las <strong>Listas de Precios</strong>:
+                <ul>
+                    <li>Para cada lista de precios, ingrese:
+                        <ul>
+                            <li>Precio de venta</li>
+                            <li>Precio de costo</li>
+                            <li>Precios de impuestos (ITC, Tasa Hídrica) si aplica</li>
+                        </ul>
+                    </li>
+                </ul>
+            </div>
+            
+            <div class="step">
+                <span class="step-number">4</span>
+                Complete el <strong>Stock por Ubicación</strong>:
+                <ul>
+                    <li>Para cada ubicación/depósito, ingrese el stock inicial</li>
+                    <li>Configure el punto de reposición si aplica</li>
+                </ul>
+            </div>
+        </section>
+
+        <!-- 3.2.2 Actualización de Precios -->
+        <section id="seccion3-2-2">
+            <h3>3.2.2 Actualización de Precios</h3>
+            
+            <div class="info">
+                <strong>¿Qué es y para qué sirve?</strong> La actualización de precios es una herramienta que permite modificar masivamente los precios de los productos en las diferentes listas de precios. Es especialmente útil para realizar aumentos porcentuales generales, actualizar precios según inflación, aplicar descuentos masivos, o ajustar precios de un grupo específico de productos sin tener que editarlos uno por uno.
+            </div>
+            
+            <h4>Acceso</h4>
+            <div class="info">
+                <strong>¿Para qué sirve y qué puedo hacer?</strong> Desde esta sección puede seleccionar productos específicos o todos los productos, elegir la lista de precios a actualizar, y aplicar aumentos o descuentos porcentuales o establecer nuevos precios. El sistema actualiza automáticamente todos los precios seleccionados según los criterios especificados.
+            </div>
+            
+            <div class="step">
+                <span class="step-number">1</span>
+                Acceda desde el menú: <strong>Entidades/Productos → Productos/Servicios → Actualización Precios</strong>
+            </div>
+            
+            <h4>Funcionalidad</h4>
+            <p>Esta herramienta permite actualizar masivamente los precios de los productos en las diferentes listas de precios.</p>
+        </section>
+
+        <!-- 3.2.3 Mantenimiento de Stock -->
+        <section id="seccion3-2-3">
+            <h3>3.2.3 Mantenimiento de Stock</h3>
+            
+            <div class="info">
+                <strong>¿Qué es y para qué sirve?</strong> El mantenimiento de stock es una herramienta que permite ajustar manualmente el stock de productos en las diferentes ubicaciones. Es útil para realizar inventarios físicos, corregir diferencias entre el stock real y el registrado en el sistema, ajustar stock por roturas o pérdidas, y realizar cualquier corrección necesaria en los niveles de inventario.
+            </div>
+            
+            <h4>Acceso</h4>
+            <div class="info">
+                <strong>¿Para qué sirve y qué puedo hacer?</strong> Desde esta sección puede ver el stock actual de productos por ubicación, realizar ajustes de stock (aumentar o disminuir), registrar diferencias encontradas en inventarios, y mantener el control preciso del inventario en cada ubicación o depósito.
+            </div>
+            
+            <div class="step">
+                <span class="step-number">1</span>
+                Acceda desde el menú: <strong>Entidades/Productos → Productos/Servicios → Mantenimiento Stock</strong>
+            </div>
+            
+            <h4>Funcionalidad</h4>
+            <p>Esta herramienta permite ajustar el stock de productos en las diferentes ubicaciones.</p>
+        </section>
+
+        <!-- 3.2.4 Consulta de Productos -->
+        <section id="seccion3-2-4">
+            <h3>3.2.4 Consulta de Productos</h3>
+            
+            <div class="info">
+                <strong>¿Qué es y para qué sirve?</strong> La consulta de productos es una herramienta de búsqueda y consulta avanzada que permite acceder rápidamente a información detallada de los productos. Permite buscar productos por múltiples criterios, ver información completa incluyendo precios, stock, movimientos, y realizar consultas rápidas sin tener que navegar por el listado completo.
+            </div>
+            
+            <h4>Acceso</h4>
+            <div class="info">
+                <strong>¿Para qué sirve y qué puedo hacer?</strong> Desde esta sección puede buscar productos rápidamente, ver información detallada de un producto específico, consultar precios en diferentes listas, ver stock disponible por ubicación, ver historial de movimientos, y acceder a toda la información relacionada con un producto de forma rápida y eficiente.
+            </div>
+            
+            <div class="step">
+                <span class="step-number">1</span>
+                Acceda desde el menú: <strong>Entidades/Productos → Productos/Servicios → Consulta Productos</strong>
+            </div>
+            
+            <h4>Funcionalidad</h4>
+            <p>Herramienta de búsqueda y consulta avanzada de productos con información detallada.</p>
+        </section>
+
+        <!-- 3.2.5 Importar Productos/Servicios -->
+        <section id="seccion3-2-5">
+            <h3>3.2.5 Importar Productos/Servicios</h3>
+            
+            <div class="info">
+                <strong>¿Qué es y para qué sirve?</strong> La importación de productos permite cargar masivamente productos/servicios desde un archivo Excel o CSV. Es especialmente útil cuando se tiene una gran cantidad de productos para cargar, cuando se migra desde otro sistema, o cuando se necesita actualizar información de múltiples productos de forma eficiente.
+            </div>
+            
+            <h4>Acceso</h4>
+            <div class="info">
+                <strong>¿Para qué sirve y qué puedo hacer?</strong> Desde esta sección puede preparar un archivo con los datos de los productos y cargarlos masivamente al sistema. El sistema procesa el archivo y crea o actualiza los productos según la información proporcionada. Permite ahorrar tiempo significativo al no tener que cargar productos uno por uno.
+            </div>
+            
+            <div class="step">
+                <span class="step-number">1</span>
+                Acceda desde el menú: <strong>Entidades/Productos → Productos/Servicios → Importar Productos/Servicios</strong>
+            </div>
+            
+            <h4>Importar desde Archivo</h4>
+            <div class="info">
+                <strong>¿Para qué sirve y qué puedo hacer?</strong> Permite seleccionar un archivo Excel o CSV con los datos de los productos y procesarlo para crear o actualizar productos en el sistema. Debe seguir el formato requerido y el sistema le guiará a través del proceso de importación.
+            </div>
+            <div class="step">
+                <span class="step-number">1</span>
+                Prepare un archivo Excel o CSV con los datos de los productos
+            </div>
+            
+            <div class="step">
+                <span class="step-number">2</span>
+                Seleccione el archivo y siga el asistente de importación
+            </div>
+            
+            <div class="warning">
+                <strong>Importante:</strong> Verifique el formato del archivo antes de importar. Consulte con el administrador el formato requerido.
+            </div>
+        </section>
+
+        <!-- ============================================ -->
+        <!-- SECCIÓN 4: REPORTES -->
+        <!-- ============================================ -->
+        
+        <section id="seccion4">
+            <h2>4. REPORTES</h2>
+            <p>El módulo de reportes proporciona información detallada sobre las operaciones del negocio.</p>
+        </section>
+
+        <!-- SECCIÓN 4.1: REPORTES CUENTAS CORRIENTES -->
+        <section id="seccion4-1">
+            <h2>4.1 Reportes Cuentas Corrientes</h2>
+        </section>
+
+        <!-- 4.1.1 Cuenta Corriente Clientes -->
+        <section id="seccion4-1-1">
+            <h3>4.1.1 Cuenta Corriente Clientes</h3>
+            
+            <div class="info">
+                <strong>¿Qué es y para qué sirve?</strong> El reporte de cuenta corriente de clientes muestra el detalle completo de todos los movimientos de cuenta corriente de un cliente específico o de todos los clientes. Incluye comprobantes de venta (debe), recibos de cobranza (haber), saldos anteriores, y el saldo actual. Es esencial para el seguimiento de los pagos pendientes y la gestión de cobranzas.
+            </div>
+            
+            <h4>Acceso y Uso</h4>
+            <div class="info">
+                <strong>¿Para qué sirve y qué puedo hacer?</strong> Desde este reporte puede ver el historial completo de movimientos de cuenta corriente, identificar comprobantes pendientes de cobro, ver el saldo total adeudado por cada cliente, filtrar por fechas para ver períodos específicos, e imprimir el reporte para presentarlo al cliente o para uso interno.
+            </div>
+            
+            <div class="step">
+                <span class="step-number">1</span>
+                Acceda desde el menú: <strong>Reportes → Reportes Cuentas Corrientes → Cta.Cte.Clientes</strong>
+            </div>
+            
+            <div class="step">
+                <span class="step-number">2</span>
+                Complete los filtros:
+                <ul>
+                    <li>Cliente (opcional)</li>
+                    <li>Fecha desde / hasta</li>
+                    <li>Estado (Pendiente, Saldado, Todos)</li>
+                </ul>
+            </div>
+            
+            <div class="step">
+                <span class="step-number">3</span>
+                El reporte muestra:
+                <ul>
+                    <li>Movimientos de cuenta corriente del cliente</li>
+                    <li>Saldo anterior</li>
+                    <li>Total debe y haber</li>
+                    <li>Saldo actual</li>
+                </ul>
+            </div>
+        </section>
+
+        <!-- 4.1.2 Saldos Clientes -->
+        <section id="seccion4-1-2">
+            <h3>4.1.2 Saldos Clientes</h3>
+            
+            <div class="info">
+                <strong>¿Qué es y para qué sirve?</strong> El reporte de saldos de clientes muestra un resumen consolidado de los saldos pendientes de todos los clientes. Permite ver rápidamente qué clientes tienen deuda, cuánto deben, y tener una visión general del total de cuentas por cobrar. Es útil para la gestión de cobranzas y el análisis financiero.
+            </div>
+            
+            <h4>Acceso y Uso</h4>
+            <div class="info">
+                <strong>¿Para qué sirve y qué puedo hacer?</strong> Desde este reporte puede ver un listado de todos los clientes con sus saldos pendientes, identificar clientes con mayores deudas, filtrar por rango de saldos, ordenar por monto adeudado, e imprimir el reporte para análisis o gestión de cobranzas.
+            </div>
+            
+            <div class="step">
+                <span class="step-number">1</span>
+                Acceda desde el menú: <strong>Reportes → Reportes Cuentas Corrientes → Saldos Clientes</strong>
+            </div>
+        </section>
+
+        <!-- 4.1.3 Cuenta Corriente Proveedores -->
+        <section id="seccion4-1-3">
+            <h3>4.1.3 Cuenta Corriente Proveedores</h3>
+            
+            <div class="info">
+                <strong>¿Qué es y para qué sirve?</strong> El reporte de cuenta corriente de proveedores muestra el detalle completo de todos los movimientos de cuenta corriente con un proveedor específico o con todos los proveedores. Incluye comprobantes de compra (debe), órdenes de pago (haber), saldos anteriores, y el saldo actual. Es esencial para el seguimiento de los pagos pendientes y la gestión de pagos a proveedores.
+            </div>
+            
+            <h4>Acceso y Uso</h4>
+            <div class="info">
+                <strong>¿Para qué sirve y qué puedo hacer?</strong> Desde este reporte puede ver el historial completo de movimientos de cuenta corriente con proveedores, identificar comprobantes pendientes de pago, ver el saldo total adeudado a cada proveedor, filtrar por fechas para ver períodos específicos, e imprimir el reporte para planificación de pagos.
+            </div>
+            
+            <div class="step">
+                <span class="step-number">1</span>
+                Acceda desde el menú: <strong>Reportes → Reportes Cuentas Corrientes → Cta.Cte.Proveedores</strong>
+            </div>
+        </section>
+
+        <!-- 4.1.4 Saldos Proveedores -->
+        <section id="seccion4-1-4">
+            <h3>4.1.4 Saldos Proveedores</h3>
+            
+            <div class="info">
+                <strong>¿Qué es y para qué sirve?</strong> El reporte de saldos de proveedores muestra un resumen consolidado de los saldos pendientes con todos los proveedores. Permite ver rápidamente qué proveedores tienen facturas sin pagar, cuánto se les debe, y tener una visión general del total de cuentas por pagar. Es útil para la planificación de pagos y el análisis financiero.
+            </div>
+            
+            <h4>Acceso y Uso</h4>
+            <div class="info">
+                <strong>¿Para qué sirve y qué puedo hacer?</strong> Desde este reporte puede ver un listado de todos los proveedores con sus saldos pendientes, identificar proveedores con mayores deudas, filtrar por rango de saldos, ordenar por monto adeudado, e imprimir el reporte para planificación de pagos o análisis financiero.
+            </div>
+            
+            <div class="step">
+                <span class="step-number">1</span>
+                Acceda desde el menú: <strong>Reportes → Reportes Cuentas Corrientes → Saldos Proveedores</strong>
+            </div>
+        </section>
+
+        <!-- SECCIÓN 4.2: REPORTES CONTABLES -->
+        <section id="seccion4-2">
+            <h2>4.2 Reportes Contables</h2>
+        </section>
+
+        <!-- 4.2.1 Libro IVA Ventas -->
+        <section id="seccion4-2-1">
+            <h3>4.2.1 Libro IVA Ventas</h3>
+            
+            <div class="info">
+                <strong>¿Qué es y para qué sirve?</strong> El libro IVA de ventas es un reporte contable que muestra todos los comprobantes de venta con IVA discriminado, organizados según la normativa fiscal vigente. Incluye información de comprobantes gravados, no gravados, exentos, y los totales de IVA. Es requerido para la presentación de declaraciones juradas y el cumplimiento de obligaciones fiscales.
+            </div>
+            
+            <h4>Acceso y Uso</h4>
+            <div class="info">
+                <strong>¿Para qué sirve y qué puedo hacer?</strong> Desde este reporte puede generar el libro IVA de ventas para un período específico, ver todos los comprobantes con su desglose de IVA, exportar el reporte para presentación fiscal, verificar que todos los comprobantes estén correctamente registrados, e imprimir el libro completo.
+            </div>
+            
+            <div class="step">
+                <span class="step-number">1</span>
+                Acceda desde el menú: <strong>Reportes → Reportes Contables → Libro IVA Ventas</strong>
+            </div>
+            
+            <div class="step">
+                <span class="step-number">2</span>
+                Complete los filtros de fecha y genere el reporte
+            </div>
+        </section>
+
+        <!-- 4.2.2 Libro IVA Compras -->
+        <section id="seccion4-2-2">
+            <h3>4.2.2 Libro IVA Compras</h3>
+            
+            <div class="info">
+                <strong>¿Qué es y para qué sirve?</strong> El libro IVA de compras es un reporte contable que muestra todos los comprobantes de compra con IVA discriminado, organizados según la normativa fiscal vigente. Incluye información de comprobantes gravados, no gravados, exentos, y los totales de IVA. Es requerido para la presentación de declaraciones juradas y el cálculo del crédito fiscal.
+            </div>
+            
+            <h4>Acceso y Uso</h4>
+            <div class="info">
+                <strong>¿Para qué sirve y qué puedo hacer?</strong> Desde este reporte puede generar el libro IVA de compras para un período específico, ver todos los comprobantes de compra con su desglose de IVA, calcular el crédito fiscal disponible, exportar el reporte para presentación fiscal, e imprimir el libro completo.
+            </div>
+            
+            <div class="step">
+                <span class="step-number">1</span>
+                Acceda desde el menú: <strong>Reportes → Reportes Contables → Libro IVA Compras</strong>
+            </div>
+        </section>
+
+        <!-- 4.2.3 Reporte Retenciones/Percepciones/Impuestos -->
+        <section id="seccion4-2-3">
+            <h3>4.2.3 Reporte Retenciones/Percepciones/Impuestos</h3>
+            
+            <div class="info">
+                <strong>¿Qué es y para qué sirve?</strong> Este reporte muestra un resumen consolidado de todas las retenciones, percepciones e impuestos aplicados en los comprobantes de venta y compra. Permite ver el detalle de cada tipo de retención/percepción/impuesto, los montos totales, y es esencial para el cumplimiento de obligaciones fiscales y la presentación de declaraciones juradas.
+            </div>
+            
+            <h4>Acceso y Uso</h4>
+            <div class="info">
+                <strong>¿Para qué sirve y qué puedo hacer?</strong> Desde este reporte puede ver el detalle de todas las retenciones y percepciones aplicadas, ver los totales por tipo de impuesto, filtrar por período, exportar el reporte para presentación fiscal, e imprimir el reporte completo para archivo.
+            </div>
+            
+            <div class="step">
+                <span class="step-number">1</span>
+                Acceda desde el menú: <strong>Reportes → Reportes Contables → Reporte Retenc./Percepc./Impuestos</strong>
+            </div>
+        </section>
+
+        <!-- SECCIÓN 4.3: REPORTES VARIOS -->
+        <section id="seccion4-3">
+            <h2>4.3 Reportes Varios</h2>
+        </section>
+
+        <!-- 4.3.1 Consulta Comprobantes -->
+        <section id="seccion4-3-1">
+            <h3>4.3.1 Consulta Comprobantes</h3>
+            
+            <div class="info">
+                <strong>¿Qué es y para qué sirve?</strong> La consulta de comprobantes es una herramienta de búsqueda avanzada que permite encontrar comprobantes específicos usando múltiples criterios de búsqueda. Permite buscar por número, fecha, cliente/proveedor, importe, estado, CAE, y otros criterios. Es útil para localizar rápidamente cualquier comprobante en el sistema.
+            </div>
+            
+            <h4>Acceso y Uso</h4>
+            <div class="info">
+                <strong>¿Para qué sirve y qué puedo hacer?</strong> Desde esta herramienta puede buscar comprobantes por múltiples criterios simultáneamente, ver el detalle completo de los comprobantes encontrados, filtrar resultados, exportar los resultados, e imprimir listados de comprobantes según los criterios de búsqueda.
+            </div>
+            
+            <div class="step">
+                <span class="step-number">1</span>
+                Acceda desde el menú: <strong>Reportes → Reportes Varios → Consulta Comprobantes</strong>
+            </div>
+        </section>
+
+        <!-- 4.3.2 Movimientos Productos/Stock -->
+        <section id="seccion4-3-2">
+            <h3>4.3.2 Movimientos Productos/Stock</h3>
+            
+            <div class="info">
+                <strong>¿Qué es y para qué sirve?</strong> El reporte de movimientos de productos/stock muestra el historial completo de todos los movimientos de stock de productos. Incluye entradas (compras, remitos de compra), salidas (ventas, remitos de venta), ajustes manuales, y otros movimientos. Permite rastrear el historial completo de cada producto y verificar la trazabilidad del inventario.
+            </div>
+            
+            <h4>Acceso y Uso</h4>
+            <div class="info">
+                <strong>¿Para qué sirve y qué puedo hacer?</strong> Desde este reporte puede ver el historial completo de movimientos de un producto específico, ver movimientos por ubicación, filtrar por tipo de movimiento, ver movimientos en un período específico, identificar comprobantes que afectaron el stock, e imprimir el reporte para auditoría o análisis.
+            </div>
+            
+            <div class="step">
+                <span class="step-number">1</span>
+                Acceda desde el menú: <strong>Reportes → Reportes Varios → Movimientos Productos/Stock</strong>
+            </div>
+        </section>
+
+        <!-- 4.3.3 Estadísticas Ventas/Compras -->
+        <section id="seccion4-3-3">
+            <h3>4.3.3 Estadísticas Ventas/Compras</h3>
+            
+            <div class="info">
+                <strong>¿Qué es y para qué sirve?</strong> El reporte de estadísticas de ventas/compras muestra análisis y rankings de las operaciones comerciales. Incluye información como productos más vendidos, clientes que más compran, vendedores con mejores resultados, períodos de mayor actividad, y otros indicadores de desempeño. Es útil para tomar decisiones comerciales y analizar el rendimiento del negocio.
+            </div>
+            
+            <h4>Acceso y Uso</h4>
+            <div class="info">
+                <strong>¿Para qué sirve y qué puedo hacer?</strong> Desde este reporte puede ver rankings de productos más vendidos, identificar clientes más importantes, analizar el desempeño de vendedores, ver tendencias de ventas/compras por período, filtrar por diferentes criterios, e imprimir los reportes para análisis y presentaciones.
+            </div>
+            
+            <div class="step">
+                <span class="step-number">1</span>
+                Acceda desde el menú: <strong>Reportes → Reportes Varios → Estadísticas Ventas/Compras</strong>
+            </div>
+        </section>
+
+        <!-- 4.3.4 Reporte Costos por Ventas -->
+        <section id="seccion4-3-4">
+            <h3>4.3.4 Reporte Costos por Ventas</h3>
+            
+            <div class="info">
+                <strong>¿Qué es y para qué sirve?</strong> El reporte de costos por ventas muestra el análisis de los costos asociados a las ventas realizadas. Permite ver el costo de los productos vendidos, calcular la utilidad bruta, analizar la rentabilidad de las ventas, y evaluar el margen de ganancia. Es esencial para el análisis financiero y la toma de decisiones comerciales.
+            </div>
+            
+            <h4>Acceso y Uso</h4>
+            <div class="info">
+                <strong>¿Para qué sirve y qué puedo hacer?</strong> Desde este reporte puede ver el costo de cada venta realizada, calcular utilidades por producto, ver márgenes de ganancia, analizar la rentabilidad de diferentes productos o clientes, filtrar por período, e imprimir el reporte para análisis financiero.
+            </div>
+            
+            <div class="step">
+                <span class="step-number">1</span>
+                Acceda desde el menú: <strong>Reportes → Reportes Varios → Reporte Costos x Ventas</strong>
+            </div>
+        </section>
+
+        <!-- 4.3.5 Comisiones por Ventas -->
+        <section id="seccion4-3-5">
+            <h3>4.3.5 Comisiones por Ventas</h3>
+            
+            <div class="info">
+                <strong>¿Qué es y para qué sirve?</strong> El reporte de comisiones por ventas calcula las comisiones que corresponden a cada vendedor según las ventas realizadas. Permite ver el detalle de ventas por vendedor, calcular las comisiones según los porcentajes configurados, y generar reportes para el pago de comisiones. Es esencial para la gestión de incentivos y el control de comisiones.
+            </div>
+            
+            <h4>Acceso y Uso</h4>
+            <div class="info">
+                <strong>¿Para qué sirve y qué puedo hacer?</strong> Desde este reporte puede ver las ventas realizadas por cada vendedor, calcular las comisiones correspondientes, ver el detalle de comisiones por período, filtrar por vendedor o fecha, exportar el reporte para cálculo de pagos, e imprimir el reporte de comisiones.
+            </div>
+            
+            <div class="step">
+                <span class="step-number">1</span>
+                Acceda desde el menú: <strong>Reportes → Reportes Varios → Comisiones x Ventas</strong>
+            </div>
+        </section>
+
+        <!-- SECCIÓN 4.4: REPORTES FINANZAS -->
+        <section id="seccion4-4">
+            <h2>4.4 Reportes Finanzas</h2>
+        </section>
+
+        <!-- 4.4.1 Saldos Cuentas -->
+        <section id="seccion4-4-1">
+            <h3>4.4.1 Saldos Cuentas</h3>
+            
+            <div class="info">
+                <strong>¿Qué es y para qué sirve?</strong> El reporte de saldos de cuentas muestra los saldos actuales de todas las cuentas del negocio (cajas, bancos, cuentas corrientes, etc.). Permite ver rápidamente cuánto dinero hay disponible en cada cuenta, tener una visión general de la liquidez, y verificar que los saldos registrados coincidan con los saldos reales.
+            </div>
+            
+            <h4>Acceso y Uso</h4>
+            <div class="info">
+                <strong>¿Para qué sirve y qué puedo hacer?</strong> Desde este reporte puede ver el saldo actual de cada cuenta, ver el total de fondos disponibles, filtrar por tipo de cuenta, ver saldos por fecha específica, comparar saldos entre diferentes períodos, e imprimir el reporte para conciliación bancaria o control interno.
+            </div>
+            
+            <div class="step">
+                <span class="step-number">1</span>
+                Acceda desde el menú: <strong>Reportes → Reportes Finanzas → Saldos Cuentas</strong>
+            </div>
+        </section>
+
+        <!-- 4.4.2 Detalle Ingresos/Egresos -->
+        <section id="seccion4-4-2">
+            <h3>4.4.2 Detalle Ingresos/Egresos</h3>
+            
+            <div class="info">
+                <strong>¿Qué es y para qué sirve?</strong> El reporte de detalle de ingresos/egresos muestra el detalle completo de todos los movimientos de dinero (ingresos y egresos) en un período determinado. Incluye cobranzas, pagos, movimientos entre cuentas, y otros movimientos financieros. Permite tener un control detallado del flujo de caja y analizar los ingresos y gastos del negocio.
+            </div>
+            
+            <h4>Acceso y Uso</h4>
+            <div class="info">
+                <strong>¿Para qué sirve y qué puedo hacer?</strong> Desde este reporte puede ver el detalle de todos los ingresos y egresos, filtrar por tipo de movimiento, ver movimientos por cuenta, analizar el flujo de caja, exportar el reporte para análisis en Excel, e imprimir el detalle completo para archivo o análisis.
+            </div>
+            
+            <div class="step">
+                <span class="step-number">1</span>
+                Acceda desde el menú: <strong>Reportes → Reportes Finanzas → Detalle Ingresos/Egresos</strong>
+            </div>
+        </section>
+
+        <!-- 4.4.3 Caja Diaria -->
+        <section id="seccion4-4-3">
+            <h3>4.4.3 Caja Diaria</h3>
+            
+            <div class="info">
+                <strong>¿Qué es y para qué sirve?</strong> El reporte de caja diaria muestra el resumen diario de todos los ingresos y egresos, incluyendo el saldo inicial del día, los movimientos realizados, y el saldo final. Permite llevar un control diario del flujo de caja, verificar que los saldos coincidan, y tener un registro completo de la actividad financiera del día.
+            </div>
+            
+            <h4>Acceso y Uso</h4>
+            <div class="info">
+                <strong>¿Para qué sirve y qué puedo hacer?</strong> Desde este reporte puede ver el resumen diario de ingresos y egresos, ver el saldo inicial y final del día, ver todos los movimientos del día, filtrar por cuenta específica, verificar la caja diaria, e imprimir el reporte para cierre de caja o archivo.
+            </div>
+            
+            <div class="step">
+                <span class="step-number">1</span>
+                Acceda desde el menú: <strong>Reportes → Reportes Finanzas → Caja Diaria</strong>
+            </div>
+        </section>
+
+        <!-- 4.4.4 Seguimiento Cheques -->
+        <section id="seccion4-4-4">
+            <h3>4.4.4 Seguimiento Cheques</h3>
+            
+            <div class="info">
+                <strong>¿Qué es y para qué sirve?</strong> El reporte de seguimiento de cheques muestra el estado y seguimiento de todos los cheques registrados en el sistema. Permite ver qué cheques están en cartera, cuáles fueron depositados, cuáles fueron utilizados, y cuáles están pendientes. Es esencial para el control de cheques recibidos y emitidos, y para la gestión de la cartera de cheques.
+            </div>
+            
+            <h4>Acceso y Uso</h4>
+            <div class="info">
+                <strong>¿Para qué sirve y qué puedo hacer?</strong> Desde este reporte puede ver todos los cheques y su estado actual, filtrar por estado (en cartera, depositado, utilizado), ver cheques próximos a vencer, ver el historial de movimientos de cada cheque, exportar el reporte, e imprimir el seguimiento completo.
+            </div>
+            
+            <div class="step">
+                <span class="step-number">1</span>
+                Acceda desde el menú: <strong>Reportes → Reportes Finanzas → Seguimiento Cheques</strong>
+            </div>
+        </section>
+
+        <!-- ============================================ -->
+        <!-- SECCIÓN 5: CONFIGURACIÓN -->
+        <!-- ============================================ -->
+        
+        <section id="seccion5">
+            <h2>5. CONFIGURACIÓN</h2>
+            <p>Este módulo permite configurar los parámetros del sistema. Solo accesible para usuarios con permisos de administración.</p>
+        </section>
+
+        <!-- SECCIÓN 5.1: COMPROBANTES -->
+        <section id="seccion5-1">
+            <h2>5.1 Comprobantes</h2>
+        </section>
+
+        <!-- 5.1.1 Puntos de Venta -->
+        <section id="seccion5-1-1">
+            <h3>5.1.1 Puntos de Venta</h3>
+            
+            <div class="info">
+                <strong>¿Qué es y para qué sirve?</strong> Los puntos de venta son las ubicaciones físicas o lógicas desde donde se emiten los comprobantes. Cada punto de venta tiene su propia numeración de comprobantes y puede tener configuración fiscal independiente (certificados AFIP, datos fiscales, etc.). Permiten organizar las operaciones cuando se tienen múltiples sucursales o puntos de emisión.
+            </div>
+            
+            <h4>Listado de Puntos de Venta</h4>
+            <div class="info">
+                <strong>¿Para qué sirve y qué puedo hacer?</strong> Desde el listado puede ver todos los puntos de venta configurados, ver la numeración actual de cada tipo de comprobante, crear nuevos puntos de venta, editar la configuración existente, dar de baja o reactivar puntos de venta, y configurar los certificados para facturación electrónica.
+            </div>
+            
+            <div class="step">
+                <span class="step-number">1</span>
+                Acceda desde el menú: <strong>Configuración → Comprobantes → Puntos de Venta</strong>
+            </div>
+            
+            <h4>Crear un Punto de Venta</h4>
+            <div class="info">
+                <strong>¿Para qué sirve y qué puedo hacer?</strong> Permite crear un nuevo punto de venta con su configuración completa. Debe especificar el número del punto de venta, los datos fiscales, y si aplica, los certificados para facturación electrónica. Una vez creado, podrá emitir comprobantes desde ese punto de venta.
+            </div>
+            <div class="step">
+                <span class="step-number">1</span>
+                Complete los datos:
+                <ul>
+                    <li><strong>Número:</strong> Número del punto de venta</li>
+                    <li><strong>Nombre:</strong> Nombre descriptivo</li>
+                    <li><strong>Datos Fiscales:</strong> CUIT, IIBB, Categoría Fiscal</li>
+                    <li><strong>Facturación Electrónica:</strong> Configure certificados CRT y KEY si aplica</li>
+                </ul>
+            </div>
+        </section>
+
+        <!-- 5.1.2 Percepciones/Impuestos -->
+        <section id="seccion5-1-2">
+            <h3>5.1.2 Percepciones/Impuestos</h3>
+            
+            <div class="info">
+                <strong>¿Qué es y para qué sirve?</strong> Las percepciones e impuestos son cargos adicionales que se aplican a los comprobantes según la normativa fiscal vigente. Este módulo permite configurar los diferentes tipos de percepciones e impuestos que se pueden aplicar (por ejemplo, percepciones de IVA, ingresos brutos, etc.). Una vez configurados, pueden aplicarse a los comprobantes de venta cuando corresponda.
+            </div>
+            
+            <h4>Listado de Percepciones/Impuestos</h4>
+            <div class="info">
+                <strong>¿Para qué sirve y qué puedo hacer?</strong> Desde el listado puede ver todas las percepciones/impuestos configurados, crear nuevos tipos de percepciones/impuestos, editar la configuración existente, y eliminar percepciones/impuestos que ya no se utilizan. Cada percepción/impuesto debe tener un código y descripción que lo identifique.
+            </div>
+            
+            <div class="step">
+                <span class="step-number">1</span>
+                Acceda desde el menú: <strong>Configuración → Comprobantes → Percep./Impuestos</strong>
+            </div>
+        </section>
+
+        <!-- 5.1.3 Retenciones -->
+        <section id="seccion5-1-3">
+            <h3>5.1.3 Retenciones</h3>
+            
+            <div class="info">
+                <strong>¿Qué es y para qué sirve?</strong> Las retenciones son descuentos que se aplican a los pagos a proveedores según la normativa fiscal (por ejemplo, retenciones de IVA, ganancias, ingresos brutos, etc.). Este módulo permite configurar los diferentes tipos de retenciones que se pueden aplicar en las órdenes de pago. Una vez configuradas, pueden aplicarse cuando se registran pagos a proveedores.
+            </div>
+            
+            <h4>Listado de Retenciones</h4>
+            <div class="info">
+                <strong>¿Para qué sirve y qué puedo hacer?</strong> Desde el listado puede ver todas las retenciones configuradas, crear nuevos tipos de retenciones, editar la configuración existente, y eliminar retenciones que ya no se utilizan. Cada retención debe tener un código, descripción y grupo (IVA, Ganancias, IIBB, etc.) que la identifique.
+            </div>
+            
+            <div class="step">
+                <span class="step-number">1</span>
+                Acceda desde el menú: <strong>Configuración → Comprobantes → Retenciones</strong>
+            </div>
+        </section>
+
+        <!-- 5.1.4 Formas de Pago/Cobro -->
+        <section id="seccion5-1-4">
+            <h3>5.1.4 Formas de Pago/Cobro</h3>
+            
+            <div class="info">
+                <strong>¿Qué es y para qué sirve?</strong> Las formas de pago/cobro son los métodos utilizados para recibir o realizar pagos (efectivo, cheque, transferencia, tarjeta, etc.). Este módulo permite configurar todos los tipos de formas de pago que se utilizan en el negocio. Cada forma de pago puede tener una cuenta asociada por defecto y un signo (positivo o negativo) según el tipo de movimiento.
+            </div>
+            
+            <h4>Listado de Formas de Pago</h4>
+            <div class="info">
+                <strong>¿Para qué sirve y qué puedo hacer?</strong> Desde el listado puede ver todas las formas de pago configuradas, crear nuevas formas de pago, editar la configuración existente, asociar cuentas por defecto a cada forma de pago, y eliminar formas de pago que ya no se utilizan.
+            </div>
+            
+            <div class="step">
+                <span class="step-number">1</span>
+                Acceda desde el menú: <strong>Configuración → Comprobantes → Formas de Pago/Cobro</strong>
+            </div>
+            
+            <h4>Crear una Forma de Pago</h4>
+            <div class="info">
+                <strong>¿Para qué sirve y qué puedo hacer?</strong> Permite crear un nuevo tipo de forma de pago con su código, nombre, cuenta asociada por defecto, y signo. Una vez creada, estará disponible para usar en recibos de cobranza, órdenes de pago y otros comprobantes.
+            </div>
+            <div class="step">
+                <span class="step-number">1</span>
+                Complete:
+                <ul>
+                    <li><strong>Código:</strong> Código identificatorio</li>
+                    <li><strong>Nombre:</strong> Nombre descriptivo (Efectivo, Cheque, Transferencia, etc.)</li>
+                    <li><strong>Cuenta:</strong> Cuenta asociada por defecto</li>
+                    <li><strong>Signo:</strong> Positivo o negativo según el tipo de movimiento</li>
+                </ul>
+            </div>
+        </section>
+
+        <!-- 5.1.5 Bancos -->
+        <section id="seccion5-1-5">
+            <h3>5.1.5 Bancos</h3>
+            
+            <div class="info">
+                <strong>¿Qué es y para qué sirve?</strong> El módulo de bancos permite mantener un listado de todos los bancos que se utilizan en las operaciones del negocio. Los bancos se utilizan principalmente para registrar cheques (tanto recibidos como emitidos) y para asociar cuentas bancarias. Permite tener un control organizado de las instituciones bancarias con las que se trabaja.
+            </div>
+            
+            <h4>Listado de Bancos</h4>
+            <div class="info">
+                <strong>¿Para qué sirve y qué puedo hacer?</strong> Desde el listado puede ver todos los bancos registrados, crear nuevos bancos, editar la información existente, y eliminar bancos que ya no se utilizan. Cada banco debe tener un código y nombre que lo identifique.
+            </div>
+            
+            <div class="step">
+                <span class="step-number">1</span>
+                Acceda desde el menú: <strong>Configuración → Comprobantes → Bancos</strong>
+            </div>
+        </section>
+
+        <!-- 5.1.6 Cuentas/Disponibilidades -->
+        <section id="seccion5-1-6">
+            <h3>5.1.6 Cuentas/Disponibilidades</h3>
+            
+            <div class="info">
+                <strong>¿Qué es y para qué sirve?</strong> Las cuentas/disponibilidades son las cuentas donde se registran los ingresos y egresos de dinero (cajas, cuentas bancarias, etc.). Permiten llevar un control detallado de los fondos en cada cuenta, rastrear todos los movimientos de dinero, y generar reportes de saldos y movimientos por cuenta. Son esenciales para la gestión financiera del negocio.
+            </div>
+            
+            <h4>Listado de Cuentas</h4>
+            <div class="info">
+                <strong>¿Para qué sirve y qué puedo hacer?</strong> Desde el listado puede ver todas las cuentas configuradas, ver el saldo actual de cada cuenta, crear nuevas cuentas, editar la información existente, dar de baja o reactivar cuentas, y acceder a reportes de movimientos por cuenta.
+            </div>
+            
+            <div class="step">
+                <span class="step-number">1</span>
+                Acceda desde el menú: <strong>Configuración → Comprobantes → Cuentas/Disponibilidades</strong>
+            </div>
+            
+            <h4>Crear una Cuenta</h4>
+            <div class="info">
+                <strong>¿Para qué sirve y qué puedo hacer?</strong> Permite crear una nueva cuenta (caja, banco, etc.) con su código, nombre, tipo, banco asociado (si aplica), y CBU. Una vez creada, podrá usarla para registrar ingresos y egresos en los comprobantes.
+            </div>
+            <div class="step">
+                <span class="step-number">1</span>
+                Complete:
+                <ul>
+                    <li><strong>Código:</strong> Código de la cuenta</li>
+                    <li><strong>Nombre:</strong> Nombre descriptivo (Caja, Banco X, etc.)</li>
+                    <li><strong>Tipo:</strong> Caja, Banco, Otro</li>
+                    <li><strong>Banco:</strong> Si es cuenta bancaria, seleccione el banco</li>
+                    <li><strong>CBU:</strong> Si aplica, ingrese el CBU</li>
+                </ul>
+            </div>
+        </section>
+
+        <!-- SECCIÓN 5.2: PRODUCTOS/SERVICIOS -->
+        <section id="seccion5-2">
+            <h2>5.2 Productos/Servicios</h2>
+        </section>
+
+        <!-- 5.2.1 Listas de Precios -->
+        <section id="seccion5-2-1">
+            <h3>5.2.1 Listas de Precios</h3>
+            
+            <div class="info">
+                <strong>¿Qué es y para qué sirve?</strong> Las listas de precios permiten tener diferentes precios para los mismos productos según el tipo de cliente o situación comercial. Por ejemplo, puede tener una lista "Mayorista" con precios más bajos y una lista "Minorista" con precios al público. Cada cliente puede tener asignada una lista de precios por defecto, y al crear un comprobante, el sistema carga automáticamente los precios de esa lista.
+            </div>
+            
+            <h4>Listado de Listas de Precios</h4>
+            <div class="info">
+                <strong>¿Para qué sirve y qué puedo hacer?</strong> Desde el listado puede ver todas las listas de precios configuradas, crear nuevas listas, editar listas existentes, ver qué productos tienen precios en cada lista, y eliminar listas que ya no se utilizan.
+            </div>
+            
+            <div class="step">
+                <span class="step-number">1</span>
+                Acceda desde el menú: <strong>Configuración → Productos/Servicios → Listas de Precios</strong>
+            </div>
+            
+            <h4>Crear una Lista de Precios</h4>
+            <div class="info">
+                <strong>¿Para qué sirve y qué puedo hacer?</strong> Permite crear una nueva lista de precios con un nombre descriptivo. Una vez creada, deberá configurar los precios de cada producto en esa lista. Los precios se configuran al crear o editar productos, donde puede establecer diferentes precios para cada lista de precios.
+            </div>
+            <div class="step">
+                <span class="step-number">1</span>
+                Complete:
+                <ul>
+                    <li><strong>Nombre:</strong> Nombre de la lista (Ej: Mayorista, Minorista, etc.)</li>
+                    <li><strong>Descripción:</strong> Descripción opcional</li>
+                </ul>
+            </div>
+        </section>
+
+        <!-- 5.2.2 Categorías -->
+        <section id="seccion5-2-2">
+            <h3>5.2.2 Categorías</h3>
+            
+            <div class="info">
+                <strong>¿Qué es y para qué sirve?</strong> Las categorías permiten organizar y clasificar los productos/servicios en grupos lógicos (por ejemplo: Electrónica, Ropa, Servicios, Insumos, etc.). Facilitan la búsqueda y organización de productos, permiten generar reportes por categoría, y ayudan a mantener el catálogo de productos ordenado y estructurado.
+            </div>
+            
+            <h4>Listado de Categorías</h4>
+            <div class="info">
+                <strong>¿Para qué sirve y qué puedo hacer?</strong> Desde el listado puede ver todas las categorías configuradas, crear nuevas categorías, editar categorías existentes, ver qué productos pertenecen a cada categoría, y eliminar categorías que ya no se utilizan.
+            </div>
+            
+            <div class="step">
+                <span class="step-number">1</span>
+                Acceda desde el menú: <strong>Configuración → Productos/Servicios → Categorías</strong>
+            </div>
+        </section>
+
+        <!-- 5.2.3 Depósitos/Ubicación -->
+        <section id="seccion5-2-3">
+            <h3>5.2.3 Depósitos/Ubicación</h3>
+            
+            <div class="info">
+                <strong>¿Qué es y para qué sirve?</strong> Los depósitos/ubicaciones son las ubicaciones físicas donde se almacenan los productos (depósitos, almacenes, sucursales, etc.). Permiten controlar el stock de productos en cada ubicación por separado, rastrear movimientos entre ubicaciones, y tener un control preciso del inventario en cada lugar. Son esenciales cuando se tienen múltiples depósitos o puntos de almacenamiento.
+            </div>
+            
+            <h4>Listado de Depósitos/Ubicaciones</h4>
+            <div class="info">
+                <strong>¿Para qué sirve y qué puedo hacer?</strong> Desde el listado puede ver todas las ubicaciones configuradas, ver el stock de productos en cada ubicación, crear nuevas ubicaciones, editar la información existente, y eliminar ubicaciones que ya no se utilizan.
+            </div>
+            
+            <div class="step">
+                <span class="step-number">1</span>
+                Acceda desde el menú: <strong>Configuración → Productos/Servicios → Depósitos/Ubicación</strong>
+            </div>
+            
+            <h4>Crear una Ubicación/Depósito</h4>
+            <div class="info">
+                <strong>¿Para qué sirve y qué puedo hacer?</strong> Permite crear una nueva ubicación o depósito con su nombre, descripción y dirección física (si aplica). Una vez creada, podrá asignar stock de productos a esa ubicación y los comprobantes podrán afectar el stock en esa ubicación específica.
+            </div>
+            <div class="step">
+                <span class="step-number">1</span>
+                Complete:
+                <ul>
+                    <li><strong>Nombre:</strong> Nombre del depósito/ubicación</li>
+                    <li><strong>Descripción:</strong> Descripción opcional</li>
+                    <li><strong>Dirección:</strong> Si aplica, dirección física</li>
+                </ul>
+            </div>
+        </section>
+
+        <footer>
+            <p>Manual de Usuario IronWeb - Versión 1.0</p>
+            <p>Para consultas o soporte, contacte al administrador del sistema</p>
+        </footer>
+    </div>
+</body>
+</html>
