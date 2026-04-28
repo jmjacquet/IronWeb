@@ -7,6 +7,7 @@ from django.contrib.auth.models import User
 from datetime import datetime,date
 from dateutil.relativedelta import *
 from django.conf import settings
+from decimal import Decimal
 import os 
 from .utilidades import COMPROB_FISCAL,CATEG_FISCAL,PROVINCIAS,TIPO_CTA,TIPO_LOGOTIPO,get_image_name
 from django.core.files.storage import default_storage
@@ -83,7 +84,43 @@ class gral_empresa(models.Model):
     codbar_detalle = models.BooleanField(u'Detalle en Etiquetas CB',default=False)
     codbar_tipo = models.CharField('Tipo CodBar',max_length=20,blank=True, null=True) # prod_codbar or prod_url
     qr_size = models.IntegerField(u'Tamaño QR', blank=True, null=True, default=40)
-    
+
+    etiq_cb_pdf_margin_top = models.DecimalField(
+        u'Márgen superior PDF etiquetas código de barras (cm)',
+        max_digits=5,
+        decimal_places=2,
+        default=Decimal('0.50'),
+    )
+    etiq_cb_pdf_margin_right = models.DecimalField(
+        u'Márgen derecho PDF etiquetas código de barras (cm)',
+        max_digits=5,
+        decimal_places=2,
+        default=Decimal('0.50'),
+    )
+    etiq_cb_pdf_margin_bottom = models.DecimalField(
+        u'Márgen inferior PDF etiquetas código de barras (cm)',
+        max_digits=5,
+        decimal_places=2,
+        default=Decimal('1.00'),
+    )
+    etiq_cb_pdf_margin_left = models.DecimalField(
+        u'Márgen izquierdo PDF etiquetas código de barras (cm)',
+        max_digits=5,
+        decimal_places=2,
+        default=Decimal('0.50'),
+    )
+    etiq_cb_pdf_footer = models.TextField(
+        u'Texto pie de página PDF etiquetas código de barras',
+        blank=True,
+        null=True,
+    )
+    etiq_cb_pdf_footer_height = models.DecimalField(
+        u'Altura reservada pie PDF etiquetas código de barras (cm)',
+        max_digits=5,
+        decimal_places=2,
+        default=Decimal('1.00'),
+    )
+
     cbu = models.CharField('CBU',max_length=100, blank=True)
     #cbu_alias = models.CharField('Alias CBU',max_length=20, blank=True)
 

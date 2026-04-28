@@ -121,18 +121,21 @@ TENANT_MAP = {
 
 def get_tenant_map():
     """
-    Get tenant configuration map from environment variable or use hardcoded map.
-    Environment variable TENANT_MAP should be a JSON string.
-    Example: TENANT_MAP='{"subdomain.example.com": {"ENTIDAD_ID": "1", "ENTIDAD_DB": "db1", "ENTIDAD_DIR": "dir1"}}'
+    Get tenant configuration map: hardcoded TENANT_MAP merged with optional env overlay.
+    Environment variable TENANT_MAP should be a JSON object string; its keys are merged
+    on top of the defaults (so Docker/local can add localhost without losing production hosts).
+    Example: TENANT_MAP='{"localhost": {"ENTIDAD_ID": "1", "ENTIDAD_DB": "ironweb_prueba", "ENTIDAD_DIR": "prueba"}}'
     """
+    merged = dict(TENANT_MAP)
     tenant_map_env = os.environ.get('TENANT_MAP')
     if tenant_map_env:
         try:
-            return json.loads(tenant_map_env)
-        except (json.JSONDecodeError, ValueError):
-            # If JSON parsing fails, fall back to hardcoded map
+            extra = json.loads(tenant_map_env)
+            if isinstance(extra, dict):
+                merged.update(extra)
+        except (json.JSONDecodeError, ValueError, TypeError):
             pass
-    return TENANT_MAP
+    return merged
 
 
 class TenantMiddleware(object):

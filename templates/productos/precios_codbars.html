@@ -11,36 +11,30 @@
 
 <style type="text/css">
  @page {
-         margin: 0.5cm 0.5cm 1cm 0.5cm;
+         margin: {{ cb_pdf_margin_top }}cm {{ cb_pdf_margin_right }}cm {{ cb_pdf_margin_bottom }}cm {{ cb_pdf_margin_left }}cm;
          padding: 0;         
          @frame footer {
                         -pdf-frame-content: page-footer;
                         bottom: 0cm;
-                        height: 1 cm;
-                        margin-right: 0.5cm;                        
-                        margin-left: 0.5cm;                        
+                        height: {{ cb_pdf_footer_height }}cm;
+                        margin-right: {{ cb_pdf_margin_right }}cm;                        
+                        margin-left: {{ cb_pdf_margin_left }}cm;                        
                     }
         
          }
-@frame header_frame  {
-              -pdf-frame-content: page-header;
-              margin-top: 0cm;
-              margin-right: 1cm;                        
-              margin-left: 1cm;
-              margin-bottom: 1cm;
-              height: 4cm;                      
-          }
 </style>
 </head>
 
 <body>  
-  <div id="page-header">    
+  <div id="page-footer" class="pie_sistema">
+    {% if cb_pdf_footer %}{{ cb_pdf_footer|linebreaksbr }}{% endif %}
   </div>
 
+  {% if precios %}
   <table class="tabla" align="center" border="0" width="100%" cellspacing="0" > 
       <tr>
       {% for c in precios %}
-          {% if forloop.counter0|divisibleby:5 %}                              
+          {% if forloop.counter0|divisibleby:5 and not forloop.first %}
            </tr>
            <tr>
           {% endif %}
@@ -50,17 +44,13 @@
                 {% if mostrar_detalle %}<span class="pie_sistema">{{c.detalle}}</span><br>{% endif %}
                 {% if mostrar_precio %}${{c.precio}}{% endif %} 
           </td>    
-      {% endfor precios %}
+      {% endfor %}
       </tr>    
   </table>
+  {% else %}
+  <table class="tabla" align="center" border="0" width="100%" cellspacing="0"><tr><td>No hay etiquetas para imprimir (sin código de barras o sin ítems seleccionados).</td></tr></table>
+  {% endif %}
 
-  <div id="page-footer">
-    <table class="tabla" width="100%" border="0" cellspacing="0">
-      <tr>
-        <td width="90%" class="pie_sistema"><img alt="" class="pie_logo" src="{% static 'images/logo_iron.png' %}"/>&nbsp;&nbsp;IRONweb Gestión & Facturación - {{fecha|date:'d/m/Y'}} </td>
-        <td width="10%" class="pie_texto"><pdf:pagenumber /> de <pdf:pagecount/> </td>
-      </tr>
-    </table>    
-  </div>
+
 </body>
 </html>

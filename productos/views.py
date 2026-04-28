@@ -26,6 +26,27 @@ from django.db.models.expressions import RawSQL
 from comprobantes.models import actualizar_stock_multiple, actualizar_stock
 from django.core.serializers.json import DjangoJSONEncoder
 
+import logging
+
+logger = logging.getLogger(__name__)
+
+def _fmt_cm_for_pdf_css(val):
+    if val is None:
+        return "0.00"
+    return format(val, ".2f").replace(",", ".")
+
+
+def _context_cb_pdf_page_settings(empresa):
+    """@page margins and footer for productos/precios_codbars.html (xhtml2pdf)."""
+    return {
+        "cb_pdf_margin_top": _fmt_cm_for_pdf_css(empresa.etiq_cb_pdf_margin_top),
+        "cb_pdf_margin_right": _fmt_cm_for_pdf_css(empresa.etiq_cb_pdf_margin_right),
+        "cb_pdf_margin_bottom": _fmt_cm_for_pdf_css(empresa.etiq_cb_pdf_margin_bottom),
+        "cb_pdf_margin_left": _fmt_cm_for_pdf_css(empresa.etiq_cb_pdf_margin_left),
+        "cb_pdf_footer_height": _fmt_cm_for_pdf_css(empresa.etiq_cb_pdf_footer_height),
+        "cb_pdf_footer": (empresa.etiq_cb_pdf_footer or "").strip(),
+    }
+
 
 @login_required
 def coeficiente_iva(request):
@@ -754,6 +775,7 @@ def prod_precios_actualizar(request):
             )
             response = {"cant": cant, "message": "Se actualizaron exitosamente."}  # for ok
         else:
+            logger.error("Error generating the report: "+str(e), exc_info=1)
             response = {"cant": 0, "message": "¡Verifique los datos ingresados!"}
         # except:
         #     response = {'cant': 0, 'message': "¡No se actualizaron Precios!"}
@@ -808,14 +830,22 @@ def prod_precios_imprimirCBS(request):
                 for p in precios
             ]
             lista_precios = [x for x in lista_precios for i in range(cantidad)]
+            if not lista_precios:
+                messages.warning(
+                    request,
+                    u"No hay productos con código de barras para imprimir entre los seleccionados.",
+                )
+                return HttpResponseRedirect(reverse("prod_precios_listado"))
             context["precios"] = lista_precios
             context["mostrar_precio"] = mostrar_precio
             context["mostrar_detalle"] = mostrar_detalle
             fecha = datetime.now()
             context["fecha"] = fecha
+            context.update(_context_cb_pdf_page_settings(empresa))
             template = "productos/precios_codbars.html"
             return render_to_pdf_response(request, template, context)
-    except:
+    except Exception as e:
+        logger.error("Error Imprimiendo los precios: " + str(e), exc_info=1)
         messages.error(request, u"¡No se pudieron imprimir los CBs seleccionados!")
         return HttpResponseRedirect(reverse("prod_precios_listado"))
 
@@ -856,6 +886,12 @@ def prod_precios_imprimir_qrs(request):
                     }
                 )
             lista_precios = [x for x in lista_precios for i in range(cantidad)]
+            if not lista_precios:
+                messages.warning(
+                    request,
+                    u"No hay productos para imprimir entre los seleccionados.",
+                )
+                return HttpResponseRedirect(reverse("prod_precios_listado"))
             context["precios"] = lista_precios
             context["qr_size"] = empresa.qr_size or 40
             context["mostrar_precio"] = mostrar_precio
@@ -864,7 +900,8 @@ def prod_precios_imprimir_qrs(request):
             context["fecha"] = fecha
             template = "productos/precios_qrs.html"
             return render_to_pdf_response(request, template, context)
-    except:
+    except Exception as e:
+        logger.error("Error Imprimiendo los precios: " + str(e), exc_info=1)
         messages.error(request, u"¡No se pudieron imprimir los QRs seleccionados!")
         return HttpResponseRedirect(reverse("prod_precios_listado"))
 

@@ -14,6 +14,7 @@ from crispy_forms.helper import FormHelper
 from crispy_forms.layout import Layout
 from crispy_forms.bootstrap import TabHolder, Tab
 from datetime import datetime,date,timedelta
+from decimal import Decimal
 from django.utils import timezone
 from chosen import forms as chosenforms
 from productos.models import prod_productos,prod_producto_lprecios,prod_lista_precios
@@ -127,6 +128,56 @@ class EmpresaForm(forms.ModelForm):
 	mail_password = forms.CharField(widget=forms.PasswordInput(render_value = True),max_length=20,label=u'Contraseña')
 	codbar_tipo = forms.ChoiceField(label=u'Contenido del QR',required=False,choices=TIPO_CODBAR_QR_CHOICE)
 	qr_size = forms.IntegerField(label=u'Tamaño QR (mm)', required=True, initial=40)
+	etiq_cb_pdf_margin_top = forms.DecimalField(
+		label=u'Márgen sup. PDF etiquetas CB (cm)',
+		max_digits=5,
+		decimal_places=2,
+		required=True,
+		min_value=Decimal('0'),
+		initial=Decimal('0.50'),
+		widget=forms.TextInput(attrs={'class': 'form-control'}),
+	)
+	etiq_cb_pdf_margin_right = forms.DecimalField(
+		label=u'Márgen der. PDF etiquetas CB (cm)',
+		max_digits=5,
+		decimal_places=2,
+		required=True,
+		min_value=Decimal('0'),
+		initial=Decimal('0.50'),
+		widget=forms.TextInput(attrs={'class': 'form-control'}),
+	)
+	etiq_cb_pdf_margin_bottom = forms.DecimalField(
+		label=u'Márgen inf. PDF etiquetas CB (cm)',
+		max_digits=5,
+		decimal_places=2,
+		required=True,
+		min_value=Decimal('0'),
+		initial=Decimal('1.00'),
+		widget=forms.TextInput(attrs={'class': 'form-control'}),
+	)
+	etiq_cb_pdf_margin_left = forms.DecimalField(
+		label=u'Márgen izq. PDF etiquetas CB (cm)',
+		max_digits=5,
+		decimal_places=2,
+		required=True,
+		min_value=Decimal('0'),
+		initial=Decimal('0.50'),
+		widget=forms.TextInput(attrs={'class': 'form-control'}),
+	)
+	etiq_cb_pdf_footer_height = forms.DecimalField(
+		label=u'Altura pie PDF etiquetas CB (cm)',
+		max_digits=5,
+		decimal_places=2,
+		required=True,
+		min_value=Decimal('0'),
+		initial=Decimal('1.00'),
+		widget=forms.TextInput(attrs={'class': 'form-control'}),
+	)
+	etiq_cb_pdf_footer = forms.CharField(
+		label=u'Texto pie de página PDF etiquetas CB',
+		widget=forms.Textarea(attrs={'class': 'form-control2', 'rows': 2}),
+		required=False,
+	)
 	class Meta:
 			model = gral_empresa
 			exclude = ['id','baja','fecha_creacion',]	

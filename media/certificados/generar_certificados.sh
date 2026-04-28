@@ -1,6 +1,6 @@
 #!/bin/bash
 
-if [ -z "$1" ] || [ -z "$2"] || [ -z "$3"] ; then
+if [ -z "$1" ] || [ -z "$2" ] || [ -z "$3" ] ; then
   echo "Please provide a FILE NAME as the first argument, CUIT as the second one and COMPANY NAME as a third one"
   exit 1
 fi
@@ -9,8 +9,10 @@ nombre_key="$1"
 cuit="$2"
 nombre_empresa="$3"
 
-# Create the folder
-mkdir "$nombre_empresa"
+# Create the dir
+if [ ! -d "$nombre_empresa" ]; then
+  mkdir "$nombre_empresa"
+fi
 
 csr_file="$nombre_empresa/$nombre_key.key"
 cert_file="$nombre_empresa/$nombre_key.csr"

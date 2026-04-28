@@ -26,29 +26,25 @@
 </head>
 
 <body>
+  {% if precios %}
   <table class="tabla" align="center" border="0" width="100%" cellspacing="0" >
       <tr>
       {% for c in precios %}
-          {% if forloop.counter0|divisibleby:8 %}
+          {% if forloop.counter0|divisibleby:8 and not forloop.first %}
            </tr>
            <tr>
           {% endif %}
           <td align="center" class="qr_borde_punteado" width="100">
-            <img src="data:image/png;base64,{{c.codbar}}" alt="qrcode" width="100%" height= {{ qr_size }}>
+            <img src="data:image/png;base64,{{c.codbar}}" alt="qrcode" width="100%" height="{{ qr_size }}">
                 {% if mostrar_detalle %}<br><span class="pie_sistema">{{c.detalle}}</span>{% endif %}
                 {% if mostrar_precio %}<br>${{c.precio}}{% endif %}
           </td>
-      {% endfor precios %}
+      {% endfor %}
       </tr>
   </table>
+  {% else %}
+  <table class="tabla" align="center" border="0" width="100%" cellspacing="0"><tr><td>No hay etiquetas QR para imprimir.</td></tr></table>
+  {% endif %}
 
-  <div id="page-footer">
-    <table class="tabla" width="100%" border="0" cellspacing="0">
-      <tr>
-        <td width="90%" class="pie_sistema"><img alt="" class="pie_logo" src="{% static 'images/logo_iron.png' %}"/>&nbsp;&nbsp;IRONweb Gestión & Facturación - {{fecha|date:'d/m/Y'}} </td>
-        <td width="10%" class="pie_texto"><pdf:pagenumber /> de <pdf:pagecount/> </td>
-      </tr>
-    </table>
-  </div>
 </body>
 </html>

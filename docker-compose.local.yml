@@ -9,6 +9,10 @@ services:
     restart: unless-stopped
     environment:
       PYTHONUNBUFFERED: 1
+      # Host header must match a key in TenantMiddleware map (see ggcontable/middleware.py).
+      # Merge adds these entries for browser access via IP/hostname without Traefik.
+      TENANT_MAP: >-
+        {"localhost":{"ENTIDAD_ID":"1","ENTIDAD_DB":"ironweb_prueba","ENTIDAD_DIR":"prueba"},"127.0.0.1":{"ENTIDAD_ID":"1","ENTIDAD_DB":"ironweb_prueba","ENTIDAD_DIR":"prueba"},"0.0.0.0":{"ENTIDAD_ID":"1","ENTIDAD_DB":"ironweb_prueba","ENTIDAD_DIR":"prueba"},"host.docker.internal":{"ENTIDAD_ID":"1","ENTIDAD_DB":"ironweb_prueba","ENTIDAD_DIR":"prueba"}}
       ENV: ${ENV:-local}
       DEBUG: ${DEBUG:-True}
       GUNICORN_WSGI: ${GUNICORN_WSGI:-ggcontable.wsgi_local:application}
@@ -30,13 +34,29 @@ services:
       - ironweb_local_static:/app/static
       - ironweb_local_media:/app/media
       - ironweb_local_logs:/app/logs
+    # runserver only accepts HTTP. Use http://localhost:8001 (not https://) or you get TLS bytes on an HTTP port.
     ports:
       - "8001:8001"
     networks:
       - dokploy-network
-    labels:
-      - traefik.docker.network=dokploy-network
-      - traefik.enable=true
+    entrypoint: ["/bin/bash", "-c"]
+    command:
+      - |
+        set -e
+        echo "Starting Ironweb development server..."
+        echo "Waiting for database at mariadb_shared:3306..."
+        for i in {1..30}; do
+          if nc -z mariadb_shared 3306; then
+            echo "Database is ready!"
+            break
+          fi
+          echo "Attempt $i/30: Database not ready, waiting..."
+          sleep 2
+        done        
+        echo "Collecting static files..."
+        python manage.py collectstatic --noinput || echo "Collectstatic failed, continuing..."
+        echo "Starting Django development server..."
+        exec python manage.py runserver 0.0.0.0:8001
 
 volumes:
   ironweb_local_static:
