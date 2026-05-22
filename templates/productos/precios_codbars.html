@@ -11,8 +11,9 @@
 
 <style type="text/css">
  @page {
+         size: {{ cb_pdf_page_size }};
          margin: {{ cb_pdf_margin_top }}cm {{ cb_pdf_margin_right }}cm {{ cb_pdf_margin_bottom }}cm {{ cb_pdf_margin_left }}cm;
-         padding: 0;         
+         padding: 0;
          @frame footer {
                         -pdf-frame-content: page-footer;
                         bottom: 0cm;

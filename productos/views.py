@@ -36,9 +36,19 @@ def _fmt_cm_for_pdf_css(val):
     return format(val, ".2f").replace(",", ".")
 
 
+def _page_size_css(empresa):
+    size = getattr(empresa, 'etiq_cb_pdf_page_size', None) or 'A4'
+    if size == 'custom':
+        w = _fmt_cm_for_pdf_css(getattr(empresa, 'etiq_cb_pdf_page_width', None) or Decimal('21.00'))
+        h = _fmt_cm_for_pdf_css(getattr(empresa, 'etiq_cb_pdf_page_height', None) or Decimal('29.70'))
+        return u"{}cm {}cm".format(w, h)
+    return size
+
+
 def _context_cb_pdf_page_settings(empresa):
-    """@page margins and footer for productos/precios_codbars.html (xhtml2pdf)."""
+    """@page size, margins and footer for barcode/QR label PDFs (xhtml2pdf)."""
     return {
+        "cb_pdf_page_size": _page_size_css(empresa),
         "cb_pdf_margin_top": _fmt_cm_for_pdf_css(empresa.etiq_cb_pdf_margin_top),
         "cb_pdf_margin_right": _fmt_cm_for_pdf_css(empresa.etiq_cb_pdf_margin_right),
         "cb_pdf_margin_bottom": _fmt_cm_for_pdf_css(empresa.etiq_cb_pdf_margin_bottom),
@@ -898,6 +908,7 @@ def prod_precios_imprimir_qrs(request):
             context["mostrar_detalle"] = mostrar_detalle
             fecha = datetime.now()
             context["fecha"] = fecha
+            context.update(_context_cb_pdf_page_settings(empresa))
             template = "productos/precios_qrs.html"
             return render_to_pdf_response(request, template, context)
     except Exception as e:

@@ -178,6 +178,28 @@ class EmpresaForm(forms.ModelForm):
 		widget=forms.Textarea(attrs={'class': 'form-control2', 'rows': 2}),
 		required=False,
 	)
+	etiq_cb_pdf_page_size = forms.ChoiceField(
+		label=u'Tamaño PDF etiquetas',
+		choices=ETIQ_PAGE_SIZE_CHOICES,
+		required=True,
+		widget=forms.Select(attrs={'class': 'form-control', 'id': 'id_etiq_page_size'}),
+	)
+	etiq_cb_pdf_page_width = forms.DecimalField(
+		label=u'Ancho (cm)',
+		max_digits=6,
+		decimal_places=2,
+		required=False,
+		min_value=Decimal('1'),
+		widget=forms.TextInput(attrs={'class': 'form-control'}),
+	)
+	etiq_cb_pdf_page_height = forms.DecimalField(
+		label=u'Alto (cm)',
+		max_digits=6,
+		decimal_places=2,
+		required=False,
+		min_value=Decimal('1'),
+		widget=forms.TextInput(attrs={'class': 'form-control'}),
+	)
 	class Meta:
 			model = gral_empresa
 			exclude = ['id','baja','fecha_creacion',]	
