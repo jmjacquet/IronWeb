@@ -22,12 +22,15 @@ services:
       GUNICORN_TIMEOUT: ${GUNICORN_TIMEOUT:-120}
       GUNICORN_BIND: ${GUNICORN_BIND:-0.0.0.0:8000}
       COLLECT_STATIC: ${COLLECT_STATIC:-false}
+      AFIP_SERVICE_URL: ${AFIP_SERVICE_URL:-http://afip-service:8002}
     volumes:
       - ironweb_static:/app/static
       - ironweb_media:/app/media
       - ironweb_logs:/app/logs
     networks:
       - dokploy-network
+    depends_on:
+      - afip-service
     labels:
       - traefik.docker.network=dokploy-network
       - traefik.enable=true
@@ -48,17 +51,47 @@ services:
       - traefik.http.routers.ironweb-http.service=ironweb
       - traefik.http.routers.ironweb-http.priority=1
 
-volumes:
-  ironweb_static:
-    driver: local
-    name: ironweb_static
-  ironweb_media:
-    driver: local
-    name: ironweb_media
-  ironweb_logs:
-    driver: local
-    name: ironweb_logs
+  afip-service:
+    build:
+      context: ./felectronica_service
+      dockerfile: Dockerfile
+    container_name: afip_service
+    restart: unless-stopped
+    environment:
+      PYTHONUNBUFFERED: 1
+      DEBUG: ${AFIP_DEBUG:-false}
+      AFIP_HOMOLOGACION: ${AFIP_HOMOLOGACION:-true}
+    ports:
+      - "8002:8002"
+    volumes:
+      - ./felectronica_service/certificados:/app/certificados
+      - afip_logs:/app/logs
+    networks:
+      - dokploy-network
+
+  adminer:
+    image: adminer:latest
+    container_name: adminer
+    restart: unless-stopped
+    environment:
+      ADMINER_DEFAULT_SERVER: mariadb-shared-2xk6mf
+      ADMINER_DEFAULT_DB: jmjacquet
+      ADMINER_DEFAULT_USERNAME: jmjacquet
+      ADMINER_DEFAULT_PASSWD: piranha
+    networks:
+      - dokploy-network
+      - shared-services-adminer-w8vuue
+    labels:
+      - traefik.http.routers.adminer.rule=Host(`adminer.ironwebgestion.com.ar`)
+      - traefik.http.routers.adminer.entrypoints=websecure
+      - traefik.http.routers.adminer.tls=true
+      - traefik.http.routers.adminer.tls.certresolver=letsencrypt
+      - traefik.http.services.adminer.loadbalancer.server.port=8080
+      - traefik.enable=true
 
 networks:
   dokploy-network:
+    external: true
+  shared-services-adminer-w8vuue:
+    name: shared-services-adminer-w8vuue
     external: true

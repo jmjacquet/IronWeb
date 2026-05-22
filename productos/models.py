@@ -31,6 +31,8 @@ class prod_lista_precios(models.Model):
     default = models.BooleanField('Default',default=False)
     baja = models.BooleanField(default=False)
     empresa =  models.ForeignKey('general.gral_empresa',db_column='empresa',blank=True, null=True,on_delete=models.SET_NULL)
+    moneda = models.ForeignKey('general.gral_moneda', verbose_name=u'Moneda',
+                               db_column='moneda', blank=True, null=True, on_delete=models.SET_NULL)
     class Meta:
         db_table = 'prod_lista_precios'
         ordering = ['-default','nombre']

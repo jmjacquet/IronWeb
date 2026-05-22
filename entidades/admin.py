@@ -6,5 +6,3 @@ from .models import *
 
 
 admin.site.register(egr_entidad)
-# admin.site.register(gral_moneda)
-# admin.site.register(gral_lista_precios)

@@ -232,6 +232,8 @@ class cpb_comprobante(models.Model):
                                      related_name="cpb_comprobante_padre", blank=True, null=True, on_delete=models.SET_NULL)
     saldo = models.DecimalField(
         max_digits=15, decimal_places=2, blank=True, null=True, default=0)
+    moneda = models.ForeignKey('general.gral_moneda', verbose_name=u'Moneda',
+                               db_column='moneda', blank=True, null=True, on_delete=models.SET_NULL)
     empresa = models.ForeignKey('general.gral_empresa', db_column='empresa',
                                 blank=True, null=True, on_delete=models.SET_NULL)
     usuario = models.ForeignKey('usuarios.usu_usuario', db_column='usuario', blank=True,
@@ -424,6 +426,16 @@ class cpb_comprobante(models.Model):
             return self.importe_perc_imp * signo
         else:
             return self.importe_perc_imp
+
+    def save(self, *args, **kwargs):
+        if self.moneda_id:
+            for detalle in self.cpb_comprobante_detalle.all():
+                if detalle.lista_precios_id and detalle.lista_precios.moneda_id != self.moneda_id:
+                    raise ValueError(
+                        'La lista de precios "%s" tiene moneda "%s" que no coincide con la moneda del comprobante "%s".'
+                        % (detalle.lista_precios.nombre, detalle.lista_precios.moneda.codigo, self.moneda.codigo)
+                    )
+        super(cpb_comprobante, self).save(*args, **kwargs)
 
 
 class cpb_comprobante_detalle(models.Model):
@@ -625,6 +637,8 @@ class cpb_cobranza(models.Model):
                                     related_name='cpb_cobranza_factura', db_column='cpb_factura', blank=True, null=True, on_delete=models.CASCADE)
     importe_total = models.DecimalField(
         max_digits=15, decimal_places=2, blank=True, null=True, default=0)
+    moneda = models.ForeignKey('general.gral_moneda', verbose_name=u'Moneda',
+                               db_column='moneda', blank=True, null=True, on_delete=models.SET_NULL)
     # Descuento o Recargo que tuvo la factura
     desc_rec = models.DecimalField(
         max_digits=15, decimal_places=2, blank=True, null=True, default=0)

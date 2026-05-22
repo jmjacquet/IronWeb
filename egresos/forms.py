@@ -13,6 +13,7 @@ from django.utils.safestring import mark_safe
 from crispy_forms.helper import FormHelper
 from crispy_forms.layout import Layout, Submit, Div,Button,HTML
 from comprobantes.models import *
+from general.models import gral_moneda
 from comprobantes.views import *
 from chosen import forms as chosenforms
 import math
@@ -56,6 +57,7 @@ class CPBCompraForm(forms.ModelForm):
 	cliente_categ_fiscal = forms.IntegerField(widget = forms.HiddenInput(), required = False,initial=5)	
 	cliente_descuento = forms.DecimalField(initial=0.00,decimal_places=2,widget = forms.HiddenInput(), required = False)
 	lista_precios = forms.ModelChoiceField(label='Lista de Precios',queryset=prod_lista_precios.objects.filter(baja=False),required = True,empty_label=None,initial=1)
+	moneda = forms.ModelChoiceField(label='Moneda',queryset=gral_moneda.objects.filter(baja=False),required = True,empty_label=None)
 	origen_destino = forms.ModelChoiceField(label=u'Ubicación',queryset=prod_ubicacion.objects.filter(baja=False),required = True,empty_label=None,initial=1)
 	importe_tasa1 = forms.DecimalField(label='',widget=PrependWidget(attrs={'class':'form-control'},base_widget=NumberInput, data='$'),initial=0.00,decimal_places=2,required = False)
 	importe_tasa2 = forms.DecimalField(label='',widget=PrependWidget(attrs={'class':'form-control'},base_widget=NumberInput, data='$'),initial=0.00,decimal_places=2,required = False)	
@@ -84,6 +86,8 @@ class CPBCompraForm(forms.ModelForm):
 			else:				
 				self.fields['importe_tasa1'].label = empresa.nombre_impuesto1 or ''				
 				self.fields['importe_tasa2'].label = empresa.nombre_impuesto2 or ''
+			if empresa.moneda_default:
+				self.fields['moneda'].initial = empresa.moneda_default.id
 
 		except:
 			empresa = None  

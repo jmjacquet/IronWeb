@@ -20,6 +20,22 @@ TIPO_CODBAR = (
 )
 
 
+class gral_moneda(models.Model):
+    id = models.AutoField(primary_key=True, db_index=True)
+    codigo = models.CharField(u'Código', max_length=10, unique=True)
+    nombre = models.CharField(u'Nombre', max_length=100)
+    simbolo = models.CharField(u'Símbolo', max_length=5)
+    decimales = models.IntegerField(u'Decimales en pantalla', default=2)
+    baja = models.BooleanField(default=False)
+
+    class Meta:
+        db_table = 'gral_moneda'
+        ordering = ['codigo']
+
+    def __unicode__(self):
+        return u'%s (%s)' % (self.nombre, self.simbolo)
+
+
 class gral_afip_categorias(models.Model):
     id = models.AutoField(primary_key=True,db_index=True)    
     letra = models.CharField(u'Letra',choices=COMPROB_FISCAL,max_length=1,blank=True, null=True)
@@ -122,7 +138,9 @@ class gral_empresa(models.Model):
     )
 
     cbu = models.CharField('CBU',max_length=100, blank=True)
-    #cbu_alias = models.CharField('Alias CBU',max_length=20, blank=True)
+    moneda_default = models.ForeignKey('general.gral_moneda', verbose_name=u'Moneda por Defecto',
+                                        db_column='moneda_default', blank=True, null=True,
+                                        on_delete=models.SET_NULL)
 
     class Meta:
         db_table = 'gral_empresa'

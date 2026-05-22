@@ -69,7 +69,10 @@ class egr_entidad(models.Model):
     tope_cta_cte = models.DecimalField(
         'Tope CtaCte', max_digits=15, decimal_places=2, default=0, blank=True, null=True)
     lista_precios_defecto = models.ForeignKey(
-        'productos.prod_lista_precios', db_column='lista_precios_defecto', blank=True, null=True)  # Cliente/Pro
+        'productos.prod_lista_precios', db_column='lista_precios_defecto', blank=True, null=True)
+    moneda_default = models.ForeignKey('general.gral_moneda', verbose_name=u'Moneda por Defecto',
+                                        db_column='moneda_default', blank=True, null=True,
+                                        on_delete=models.SET_NULL)
 
     contacto1_nombre = models.CharField(
         'Detalle Contacto 1', max_length=200, blank=True, null=True)

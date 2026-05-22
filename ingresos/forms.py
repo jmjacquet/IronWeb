@@ -12,6 +12,7 @@ from django.utils.safestring import mark_safe
 from crispy_forms.helper import FormHelper
 from crispy_forms.layout import Layout, Submit, Div,Button,HTML
 from comprobantes.models import *
+from general.models import gral_moneda
 from comprobantes.views import *
 from chosen import forms as chosenforms
 import math
@@ -57,6 +58,7 @@ class CPBVentaForm(forms.ModelForm):
 	cliente_categ_fiscal = forms.IntegerField(widget = forms.HiddenInput(), required = False,initial=5)		
 	cliente_descuento = forms.DecimalField(initial=0.00,decimal_places=2,widget = forms.HiddenInput(), required = False)	
 	lista_precios = forms.ModelChoiceField(label='Lista de Precios',queryset=prod_lista_precios.objects.filter(baja=False),required = True,empty_label=None,initial=1)
+	moneda = forms.ModelChoiceField(label='Moneda',queryset=gral_moneda.objects.filter(baja=False),required = True,empty_label=None)
 	origen_destino = forms.ModelChoiceField(label=u'Ubicación',queryset=prod_ubicacion.objects.filter(baja=False),required = True,empty_label=None,initial=1)
 	importe_tasa1 = forms.DecimalField(label='',widget=PrependWidget(attrs={'class':'form-control','readonly':'readonly'},base_widget=NumberInput, data='$'),initial=0.00,decimal_places=2,required = False)
 	importe_tasa2 = forms.DecimalField(label='',widget=PrependWidget(attrs={'class':'form-control','readonly':'readonly'},base_widget=NumberInput, data='$'),initial=0.00,decimal_places=2,required = False)	
@@ -89,6 +91,8 @@ class CPBVentaForm(forms.ModelForm):
 				self.fields['cpb_tipo'].initial = usr.cpb_tipo.id
 			if usr.condic_pago:
 				self.fields['condic_pago'].initial = usr.condic_pago
+			if empresa.moneda_default:
+				self.fields['moneda'].initial = empresa.moneda_default.id
 			if not empresa.usa_impuestos:
 				self.fields['importe_tasa1'].widget=forms.HiddenInput()
 				self.fields['importe_tasa2'].widget=forms.HiddenInput()
@@ -298,6 +302,7 @@ class CPBRemitoForm(forms.ModelForm):
 	letra = forms.ChoiceField(label='Letra',choices=COMPROB_FISCAL_X,required=False,initial=1)	
 	tipo_form = forms.CharField(widget = forms.HiddenInput(), required = False)	
 	pto_vta = forms.ChoiceField(label='Pto. Vta.',choices=[(pto.numero, pto.__unicode__()) for pto in cpb_pto_vta.objects.filter(baja=False)],required = False)
+	moneda = forms.ModelChoiceField(label='Moneda',queryset=gral_moneda.objects.filter(baja=False),required = True,empty_label=None)
 	class Meta:
 			model = cpb_comprobante
 			exclude = ['id','fecha_creacion','cpb_tipo','fecha_imputacion','cae','cae_vto','estado','anulacion_motivo','anulacion_fecha','empresa','usuario','presup_tiempo_entrega','presup_forma_pago','presup_aprobacion','cpb_nro_afip','cpb_tipo']
@@ -313,6 +318,8 @@ class CPBRemitoForm(forms.ModelForm):
 			self.fields['pto_vta'].choices = [(pto.numero, pto.__unicode__()) for pto in pto_vta]
 			self.fields['pto_vta'].initial = get_pv_defecto(request)
 			self.fields['numero'].initial= ultimoNro(8,pto_vta[0],'X')
+			if empresa.moneda_default:
+				self.fields['moneda'].initial = empresa.moneda_default.id
 
 		except gral_empresa.DoesNotExist:
 			empresa = None
@@ -393,7 +400,9 @@ class CPBPresupForm(forms.ModelForm):
 			self.fields['fecha_vto'].initial = datetime.now()+timedelta(days=empresa.get_dias_venc())
 			usr = usuario_actual(request)
 			if usr.vendedor_defecto:
-				self.fields['vendedor'].initial = usr.vendedor_defecto.id			
+				self.fields['vendedor'].initial = usr.vendedor_defecto.id
+			if empresa.moneda_default:
+				self.fields['moneda'].initial = empresa.moneda_default.id
 
 		except gral_empresa.DoesNotExist:
 			empresa = None
@@ -475,6 +484,7 @@ class CPBPresupLiteForm(forms.ModelForm):
 	cliente_categ_fiscal = forms.IntegerField(widget = forms.HiddenInput(), required = False,initial=5)	
 	cliente_descuento = forms.DecimalField(initial=0.00,decimal_places=2,widget = forms.HiddenInput(), required = False)	
 	lista_precios = forms.ModelChoiceField(label='Lista de Precios',queryset=prod_lista_precios.objects.filter(baja=False),required = True,empty_label=None,initial=1)
+	moneda = forms.ModelChoiceField(label='Moneda',queryset=gral_moneda.objects.filter(baja=False),required = True,empty_label=None)
 	origen_destino = forms.ModelChoiceField(label=u'Ubicación',queryset=prod_ubicacion.objects.filter(baja=False),required = True,empty_label=None,initial=1)
 	tipo_form = forms.CharField(widget = forms.HiddenInput(), required = False)		
 	class Meta:
@@ -500,6 +510,8 @@ class CPBPresupLiteForm(forms.ModelForm):
 			usr = usuario_actual(request)
 			if usr.vendedor_defecto:
 				self.fields['vendedor'].initial = usr.vendedor_defecto.id
+			if empresa.moneda_default:
+				self.fields['moneda'].initial = empresa.moneda_default.id
 
 		except gral_empresa.DoesNotExist:
 			empresa = None	
@@ -575,6 +587,7 @@ class CPBRecCobranzaForm(forms.ModelForm):
 	importe_subtotal = forms.DecimalField(label='',widget=PrependWidget(attrs={'class':'form-control','readonly':'readonly','step':0},base_widget=NumberInput, data='$'),initial=0.00,decimal_places=2,required = False)
 	importe_total = forms.DecimalField(label='',widget=PrependWidget(attrs={'class':'form-control','readonly':'readonly',},base_widget=NumberInput, data='$'),initial=0.00,decimal_places=2,required = False)	
 	importe_cpbs = forms.DecimalField(label='',widget=PrependWidget(attrs={'class':'form-control','readonly':'readonly','step':0},base_widget=NumberInput, data='$'),initial=0.00,decimal_places=2,required = False)
+	moneda = forms.ModelChoiceField(label='Moneda',queryset=gral_moneda.objects.filter(baja=False),required = True,empty_label=None)
 	tipo_form = forms.CharField(widget = forms.HiddenInput(), required = False)		
 	vendedor = EntidadModelChoiceField(label='Vendedor',queryset=egr_entidad.objects.filter(tipo_entidad=3,baja=False),empty_label='---',required = False)		
 	class Meta:
@@ -599,6 +612,8 @@ class CPBRecCobranzaForm(forms.ModelForm):
 			usr = usuario_actual(request)
 			if usr.vendedor_defecto:
 				self.fields['vendedor'].initial = usr.vendedor_defecto.id
+			if empresa.moneda_default:
+				self.fields['moneda'].initial = empresa.moneda_default.id
 		except gral_empresa.DoesNotExist:
 			empresa = None
 
@@ -609,6 +624,7 @@ class CPBRecCPBForm(forms.ModelForm):
 	id_cpb_factura = forms.IntegerField(widget = forms.HiddenInput(), required = False)	
 	cpb_factura = forms.ModelChoiceField(queryset=cpb_comprobante.objects.all(),widget = forms.HiddenInput(),empty_label=None, required = False)	
 	saldo = forms.DecimalField(widget=PrependWidget(attrs={'class':'form-control','readonly':'readonly','step':0},base_widget=NumberInput, data='$'),initial=0.00,decimal_places=2, required = False)	
+	moneda = forms.ModelChoiceField(queryset=gral_moneda.objects.filter(baja=False),required = True,empty_label=None)
 	class Meta:
 			model = cpb_cobranza
 			exclude = ['id','fecha_creacion']	

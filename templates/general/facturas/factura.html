@@ -245,7 +245,7 @@
     </tr>
     <tr>
       <td class="listado_final borde_der borde_abajo">TOTAL:</td>
-      <td class="listado_final borde_der borde_arriba borde_abajo tabla_footer">$ {{cpb.importe_total|default_if_none:0|floatformat:2|intcomma}}</td>
+      <td class="listado_final borde_der borde_arriba borde_abajo tabla_footer">{{cpb.moneda.simbolo|default:'$'}} {{cpb.importe_total|default_if_none:0|floatformat:2|intcomma}}</td>
     </tr>
   </table>
 </div>

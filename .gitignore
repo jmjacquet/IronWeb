@@ -13,3 +13,6 @@ requirements.txt
 *.bkp
 /varios
 /pyafipws/cache
+.env
+.DS_Store
+skills-lock.json
