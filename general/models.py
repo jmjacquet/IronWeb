@@ -19,6 +19,15 @@ TIPO_CODBAR = (
     ("QRCode", "QRCode"),
 )
 
+ETIQ_PAGE_SIZE_CHOICES = [
+    ('A4',     u'A4 (21 \xd7 29.7 cm)'),
+    ('A5',     u'A5 (14.8 \xd7 21 cm)'),
+    ('A3',     u'A3 (29.7 \xd7 42 cm)'),
+    ('Letter', u'Letter (21.6 \xd7 27.9 cm)'),
+    ('Legal',  u'Legal (21.6 \xd7 35.6 cm)'),
+    ('custom', u'Personalizado'),
+]
+
 
 class gral_moneda(models.Model):
     id = models.AutoField(primary_key=True, db_index=True)
@@ -135,6 +144,26 @@ class gral_empresa(models.Model):
         max_digits=5,
         decimal_places=2,
         default=Decimal('1.00'),
+    )
+    etiq_cb_pdf_page_size = models.CharField(
+        u'Tamaño hoja PDF etiquetas',
+        max_length=10,
+        choices=ETIQ_PAGE_SIZE_CHOICES,
+        default='A4',
+    )
+    etiq_cb_pdf_page_width = models.DecimalField(
+        u'Ancho hoja personalizado (cm)',
+        max_digits=6,
+        decimal_places=2,
+        blank=True,
+        null=True,
+    )
+    etiq_cb_pdf_page_height = models.DecimalField(
+        u'Alto hoja personalizado (cm)',
+        max_digits=6,
+        decimal_places=2,
+        blank=True,
+        null=True,
     )
 
     cbu = models.CharField('CBU',max_length=100, blank=True)

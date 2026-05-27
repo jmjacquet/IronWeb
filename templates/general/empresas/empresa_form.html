@@ -153,6 +153,11 @@
                                                         <fieldset>
                                                         <legend>PDF ETIQUETAS CÓDIGO DE BARRAS</legend>
                                                         <div class="row cerca">
+                                                            <div class="col-sm-6">{% bootstrap_field form.etiq_cb_pdf_page_size %}</div>
+                                                            <div class="col-sm-3" id="div_page_width" style="display:none">{% bootstrap_field form.etiq_cb_pdf_page_width %}</div>
+                                                            <div class="col-sm-3" id="div_page_height" style="display:none">{% bootstrap_field form.etiq_cb_pdf_page_height %}</div>
+                                                        </div>
+                                                        <div class="row cerca">
                                                             <div class="col-sm-3">{% bootstrap_field form.etiq_cb_pdf_margin_top %}</div>
                                                             <div class="col-sm-3">{% bootstrap_field form.etiq_cb_pdf_margin_right %}</div>
                                                             <div class="col-sm-3">{% bootstrap_field form.etiq_cb_pdf_margin_bottom %}</div>
@@ -254,6 +259,17 @@
           autoclose: true,
           todayHighlight: true
     });
+
+  (function(){
+    var sel = document.getElementById('id_etiq_page_size');
+    function toggleCustomSize(){
+      var isCustom = sel.value === 'custom';
+      document.getElementById('div_page_width').style.display = isCustom ? '' : 'none';
+      document.getElementById('div_page_height').style.display = isCustom ? '' : 'none';
+    }
+    sel.addEventListener('change', toggleCustomSize);
+    toggleCustomSize();
+  })();
 
 </script>
 {% endblock %}

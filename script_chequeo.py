@@ -30,12 +30,10 @@ lista_dbs = ['ironweb_prueba', 'ironweb_brolcazsrl', 'ironweb_cirugiamf', 'ironw
 #SCRIPT_EJECUCION =INSERT INTO `configuracion_vars` VALUES(3, 'modif_bases_imp', 'Modificación de Bases Imponibles de Períodos pagados', NULL, 'N', NULL);"
 #SCRIPT_EJECUCION ="INSERT INTO `configuracion_vars` VALUES(4, 'dri_retenciones', 'Modificación del campo label de Retenciones en Liquidación y Boleta DReI', NULL, NULL, NULL);"
 #SCRIPT_EJECUCION = "DELETE FROM `django_session`;"
-SCRIPT_EJECUCION = """ALTER TABLE gral_empresa ADD COLUMN etiq_cb_pdf_margin_top DECIMAL(5,2) NOT NULL DEFAULT 0.50;
-ALTER TABLE gral_empresa ADD COLUMN etiq_cb_pdf_margin_right DECIMAL(5,2) NOT NULL DEFAULT 0.50;
-ALTER TABLE gral_empresa ADD COLUMN etiq_cb_pdf_margin_bottom DECIMAL(5,2) NOT NULL DEFAULT 1.00;
-ALTER TABLE gral_empresa ADD COLUMN etiq_cb_pdf_margin_left DECIMAL(5,2) NOT NULL DEFAULT 0.50;
-ALTER TABLE gral_empresa ADD COLUMN etiq_cb_pdf_footer TEXT NULL;
-ALTER TABLE gral_empresa ADD COLUMN etiq_cb_pdf_footer_height DECIMAL(5,2) NOT NULL DEFAULT 1.00;"""
+SCRIPT_EJECUCION = """ALTER TABLE gral_empresa
+    ADD COLUMN etiq_cb_pdf_page_size   VARCHAR(10) NOT NULL DEFAULT 'A4',
+    ADD COLUMN etiq_cb_pdf_page_width  DECIMAL(6,2) NULL,
+    ADD COLUMN etiq_cb_pdf_page_height DECIMAL(6,2) NULL;"""
 # SCRIPT_EJECUCION = "ALTER TABLE gral_empresa ADD COLUMN qr_size INTEGER NULL;"
 # SCRIPT_EJECUCION = "ALTER TABLE `gral_empresa` DROP COLUMN  `ruta_empresa_media` "
 # SCRIPT_EJECUCION = "SELECT count(*) FROM `cpb_comprobante`;"
