@@ -40,6 +40,53 @@ docker exec -it ironweb python manage.py <command>
 
 Required: `DB_HOST`, `DB_USER`, `DB_PASS`, `SECRET_KEY`, `ENTIDAD_DB`
 
+## Testing
+
+**Stack**: `pytest 4.6.x` + `pytest-django 3.4.x` + `mock 2.0` — all Python 2.7 compatible.
+
+**Run all tests** (inside Docker):
+```bash
+docker exec -it ironweb_local pytest
+```
+
+**Run with coverage** (target ≥ 80%):
+```bash
+docker exec -it ironweb_local pytest --cov=. --cov-report=term-missing
+```
+
+**Run a specific file**:
+```bash
+docker exec -it ironweb_local pytest general/tests/test_utilidades.py -v
+```
+
+**Config files**:
+- `pytest.ini` — test discovery, `DJANGO_SETTINGS_MODULE = ggcontable.settings_test`
+- `ggcontable/settings_test.py` — SQLite in-memory, no env vars required
+- `conftest.py` — shared fixtures (`mock_request`, `mock_empresa`, `mock_usuario`)
+
+**Test locations**:
+| Module | Test file |
+|---|---|
+| `general/utilidades.py` | `general/tests/test_utilidades.py` |
+| `ggcontable/middleware.py` | `ggcontable/tests/test_middleware.py` |
+| `entidades/models.py` | `entidades/tests/test_models.py` |
+| `comprobantes/models.py` | `comprobantes/tests/test_models.py` |
+| `usuarios/authentication.py` | `usuarios/tests/test_authentication.py` |
+
+**Patterns used**:
+- Pure functions (utilidades): plain `def test_*` with `pytest.mark.parametrize`
+- Model methods without DB: `Model.__new__(Model)` to create instances in-memory
+- Middleware / auth backend: `monkeypatch` for env vars, `patch` for DB calls
+- DB tests: `@pytest.mark.django_db` only where strictly needed
+
+**Mocking import**:
+```python
+try:
+    from unittest.mock import MagicMock, patch
+except ImportError:
+    from mock import MagicMock, patch  # Python 2.7 backport
+```
+
 ## Skills
 
 - `~/Repo/IronWeb/.claude/skills/django-expert`

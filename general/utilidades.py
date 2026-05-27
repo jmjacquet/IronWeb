@@ -1,6 +1,12 @@
 # -*- coding: utf-8 -*-
 from datetime import datetime, timedelta,date
 import calendar
+
+# Python 2/3 compatibility
+try:
+    xrange
+except NameError:
+    xrange = range  # Python 3
 from django.contrib import messages
 from django.conf import settings
 from django.contrib.messages import constants as message_constants

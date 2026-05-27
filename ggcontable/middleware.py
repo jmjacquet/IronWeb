@@ -133,7 +133,8 @@ def get_tenant_map():
             extra = json.loads(tenant_map_env)
             if isinstance(extra, dict):
                 merged.update(extra)
-        except (json.JSONDecodeError, ValueError, TypeError):
+        except (ValueError, TypeError):
+            # ValueError covers json.JSONDecodeError (Python 3) and Python 2 json parse errors
             pass
     return merged
 
@@ -199,6 +200,7 @@ class TenantMiddleware(object):
 
     def __call__(self, request):
         """Django 1.8+ compatibility"""
-        self.process_request(request)
-        response = self.get_response(request)
-        return response
+        response = self.process_request(request)
+        if response is not None:
+            return response
+        return self.get_response(request)
