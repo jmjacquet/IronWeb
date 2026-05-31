@@ -77,7 +77,7 @@
                                 <td>{{ orden}}</td>                                
                                 <td title="{{ orden.cliente}}"><a href="{% url 'cliente_ver' id=orden.cliente.id %}"   class="modal-detail" data-modal-head="DETALLE CLIENTE {{orden.cliente.codigo}}" data-modal-callback="reload">
                                     <strong>{{ orden.cliente|truncatechars:50 }}</strong></a></td>
-                                <td class="importe">${{orden.importe_total|default_if_none:0|floatformat:2}}</td>                                                                 
+                                <td class="importe">{{orden.moneda.simbolo|default:'$'}}{{orden.importe_total|default_if_none:0|floatformat:2}}</td>                                                                 
                                 <td class="text-center">{{orden.fecha_entrega|date:'d/m/Y'}} {{orden.hora_entrega|time:'H:i'}}</td>                                
                                 <td class="text-center">{% if orden.firma_conformidad %}<i class="fa fa-check text-success"></i>{% endif %}</td>
                                 <td  title="{{ orden.detalle}}">{{ orden.detalle|default_if_none:''|truncatechars:60 }}</td>
@@ -191,7 +191,7 @@ var tabla = $('#dataTables-cpb_venta').DataTable({
                                             if (typeof i === "number") {
                                                 return i;
                                             } else if (typeof i === "string") {
-                                                i = i.replace(/\$/g, "");
+                                                i = i.replace(/[^0-9\-,]/g, "");
                     i = i.replace(/\,/g ,"");                    
                     i = i.replace(/\./g, "");
                                                 var result = parseFloat(i)/100;
@@ -264,7 +264,7 @@ var tabla = $('#dataTables-cpb_venta').DataTable({
                 if (typeof i === "number") {
                     return i;
                 } else if (typeof i === "string") {
-                    i = i.replace(/\$/g, "");
+                    i = i.replace(/[^0-9\-,]/g, "");
                     i = i.replace(/\,/g ,"");                    
                     i = i.replace(/\./g, "");
                     var result = parseFloat(i)/100;
@@ -289,7 +289,7 @@ var tabla = $('#dataTables-cpb_venta').DataTable({
                         
             
             pageTotal = api.column(6, { page: 'current'} ).data().reduce( function (a, b) {return floatVal(a) + floatVal(b);}, 0 );            
-            $( api.column(6).footer() ).html('$'+pageTotal.toLocaleString(undefined,{minimumFractionDigits:2}));
+            $( api.column(6).footer() ).html('{{ simbolo|default:"$" }}'+pageTotal.toLocaleString(undefined,{minimumFractionDigits:2}));
             
         }
         });

@@ -92,7 +92,13 @@ class ProductosFormModal(forms.ModelForm):
 		request = kwargs.pop('request', None)
 		super(ProductosFormModal, self).__init__(*args, **kwargs)      
 		try:
-			empresa = empresa_actual(request)			
+			empresa = empresa_actual(request)
+			simbolo = '$'
+			if empresa.moneda_default:
+				simbolo = empresa.moneda_default.simbolo
+			for field in self.fields.values():
+				if isinstance(field.widget, PrependWidget):
+					field.widget.data = simbolo
 			self.fields['ubicacion'].queryset = prod_ubicacion.objects.filter(baja=False,empresa__id__in=empresas_habilitadas(request))			
 			self.fields['categoria'].queryset = prod_categoria.objects.filter(baja=False,empresa__id__in=empresas_habilitadas(request))			
 			self.fields['lista_precios'].queryset = prod_lista_precios.objects.filter(baja=False,empresa__id__in=empresas_habilitadas(request))			
@@ -138,7 +144,13 @@ class Producto_ListaPreciosForm(forms.ModelForm):
 		request = kwargs.pop('request', None)
 		super(Producto_ListaPreciosForm, self).__init__(*args, **kwargs)      
 		try:
-			empresa = empresa_actual(request)			
+			empresa = empresa_actual(request)
+			simbolo = '$'
+			if empresa.moneda_default:
+				simbolo = empresa.moneda_default.simbolo
+			for field in self.fields.values():
+				if isinstance(field.widget, PrependWidget):
+					field.widget.data = simbolo
 			self.fields['lista_precios'].queryset = prod_lista_precios.objects.filter(baja=False,empresa__id__in=empresas_habilitadas(request))			
 			if not empresa.usa_impuestos:
 				self.fields['precio_itc'].initial = 0
@@ -230,7 +242,13 @@ class Producto_EditarPrecioForm(forms.ModelForm):
 		request = kwargs.pop('request', None)
 		super(Producto_EditarPrecioForm, self).__init__(*args, **kwargs)      
 		try:
-			empresa = empresa_actual(request)			
+			empresa = empresa_actual(request)
+			simbolo = '$'
+			if empresa.moneda_default:
+				simbolo = empresa.moneda_default.simbolo
+			for field in self.fields.values():
+				if isinstance(field.widget, PrependWidget):
+					field.widget.data = simbolo
 			if empresa.usa_impuestos:				
 				self.fields['precio_itc'].label = empresa.nombre_impuesto1 or ''				
 				self.fields['precio_tasa'].label = empresa.nombre_impuesto2 or ''
@@ -261,6 +279,20 @@ class ActualizarPrecioForm(forms.Form):
 	porc = forms.IntegerField(label='Porcentaje',widget=PostPendWidget(attrs={'class':'form-control','step':0.00},base_widget=NumberInput, data='%',tooltip='[0-100%]'),initial=0)
 	coeficiente = forms.DecimalField(initial=1,decimal_places=3)
 	recalcular = forms.BooleanField(label='Recalcular Precio Venta',initial=0,required=False)
+
+	def __init__(self, *args, **kwargs):
+		request = kwargs.pop('request', None)
+		super(ActualizarPrecioForm, self).__init__(*args, **kwargs)
+		simbolo = '$'
+		try:
+			empresa = empresa_actual(request)
+			if empresa.moneda_default:
+				simbolo = empresa.moneda_default.simbolo
+		except:
+			pass
+		for field in self.fields.values():
+			if isinstance(field.widget, PrependWidget):
+				field.widget.data = simbolo
 
 
 class ConsultaStockProd(forms.Form):               

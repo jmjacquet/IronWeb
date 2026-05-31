@@ -51,8 +51,8 @@
                                         <td class="text-center" title="{{ cpb.cpb_tipo|default_if_none:'' }}"><strong>{{ cpb.cpb_tipo.codigo|default_if_none:'' }}</strong></td>
                                         <td>{{ cpb}}</td>                                
                                         <td  title="{{ cpb.entidad}}" >{{ cpb.entidad.apellido_y_nombre|truncatechars:40 }}</td>                               
-                                        <td class="importe">${{cpb.get_saldo|default_if_none:0|floatformat:2}}</td>               
-                                        <td class="importe_total">${{cpb.get_importe_total|default_if_none:0|floatformat:2}}</td> 
+                                        <td class="importe">{{cpb.moneda.simbolo|default:'$'}}{{cpb.get_saldo|default_if_none:0|floatformat:2}}</td>               
+                                        <td class="importe_total">{{cpb.moneda.simbolo|default:'$'}}{{cpb.get_importe_total|default_if_none:0|floatformat:2}}</td> 
                                     </tr>
                                     {% endfor %}
                                 </tbody>                                                                                    
@@ -94,8 +94,8 @@
                                         <td class="text-center" title="{{ cpb.cpb_tipo|default_if_none:'' }}"><strong>{{ cpb.cpb_tipo.codigo|default_if_none:'' }}</strong></td>
                                         <td>{{ cpb}}</td>                                
                                         <td  title="{{ cpb.entidad}}" >{{ cpb.entidad.apellido_y_nombre|truncatechars:40 }}</td>                               
-                                        <td class="importe">${{cpb.get_saldo|default_if_none:0|floatformat:2}}</td>               
-                                        <td class="importe_total">${{cpb.get_importe_total|default_if_none:0|floatformat:2}}</td> 
+                                        <td class="importe">{{cpb.moneda.simbolo|default:'$'}}{{cpb.get_saldo|default_if_none:0|floatformat:2}}</td>               
+                                        <td class="importe_total">{{cpb.moneda.simbolo|default:'$'}}{{cpb.get_importe_total|default_if_none:0|floatformat:2}}</td> 
                                     </tr>
                                     {% endfor %}
                                 </tbody>                                                                                    

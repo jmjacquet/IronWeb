@@ -179,11 +179,11 @@
                                         <a href="{% url 'cliente_ver' id=cpb.entidad.id %}"  title="{{ cpb.detalle_entidad}}" class="modal-detail" data-modal-head="DETALLE CLIENTE {{cpb.entidad.codigo}}" data-modal-callback="reload">
 	                                        <strong>{{ cpb.entidad|truncatechars:60 }}</strong></a>
                                     </td>
-                                    <td class="importe">${{cpb.get_saldo|default_if_none:0|floatformat:2}}</td>                                
-                                    <td class="importe">${{cpb.get_importe_total|default_if_none:0}}</td> 
-                                    <td class="importe">${{cpb.get_importe_subtotal|default_if_none:0|floatformat:2}}<input class="hidden" value="{{ item.importe_total }}" id="importe_chk_{{forloop.counter0}}"/></td> 
-                                    <td class="importe">${{cpb.get_importe_iva|default_if_none:0|floatformat:2}}</td>
-                                    <td class="importe">${{cpb.get_importe_perc_imp|default_if_none:0|floatformat:2}}</td>
+                                    <td class="importe">{{cpb.moneda.simbolo|default:'$'}}{{cpb.get_saldo|default_if_none:0|floatformat:2}}</td>                                
+                                    <td class="importe">{{cpb.moneda.simbolo|default:'$'}}{{cpb.get_importe_total|default_if_none:0}}</td> 
+                                    <td class="importe">{{cpb.moneda.simbolo|default:'$'}}{{cpb.get_importe_subtotal|default_if_none:0|floatformat:2}}<input class="hidden" value="{{ item.importe_total }}" id="importe_chk_{{forloop.counter0}}"/></td> 
+                                    <td class="importe">{{cpb.moneda.simbolo|default:'$'}}{{cpb.get_importe_iva|default_if_none:0|floatformat:2}}</td>
+                                    <td class="importe">{{cpb.moneda.simbolo|default:'$'}}{{cpb.get_importe_perc_imp|default_if_none:0|floatformat:2}}</td>
                                     <td {% if cpb.cae %}title="Vencimiento CAE: {{cpb.cae_vto|date:'d/m/Y'}}" class="listado_estado success"{% endif %}>{{ cpb.cae|default_if_none:'' }}</td>
                                     <td  title="{{ cpb.observacion}}">{{ cpb.observacion|default_if_none:''|truncatechars:60 }}</td>
                                     <td>{{ cpb.vendedor|default_if_none:''|truncatechars:60 }}</td>

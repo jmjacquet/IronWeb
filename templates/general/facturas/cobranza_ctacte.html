@@ -121,21 +121,21 @@
       <td class=" borde_izq" width="10%">{{item.mdcp_fecha|date:'d/m/Y'}}</td>
       <td class="listado_izq borde_izq" width="20%">{{item.mdcp_banco|default_if_none:''}}</td>
       <td class="listado_der borde_izq" width="10%">{{item.mdcp_cheque|default_if_none:''}}</td>
-      <td class="listado_der borde_der borde_izq" width="10%">${{item.importe|default_if_none:0|floatformat:2|intcomma}}</td>
+      <td class="listado_der borde_der borde_izq" width="10%">{{cpb.moneda.simbolo|default:'$'}}{{item.importe|default_if_none:0|floatformat:2|intcomma}}</td>
     </tr>       
   {% endfor pagos %}  
   {% for r in retenciones %}
     <tr>
       <td colspan="2" class="listado_izq borde_arriba borde_izq">{{r.retencion|default_if_none:''}}</td>
       <td colspan="4" class="listado_izq borde_arriba borde_izq">{{r.detalle|default_if_none:''}}</td>      
-      <td class="listado_der borde_der borde_arriba borde_izq">${{r.importe_total|default_if_none:0|floatformat:2|intcomma}}</td>
+      <td class="listado_der borde_der borde_arriba borde_izq">{{cpb.moneda.simbolo|default:'$'}}{{r.importe_total|default_if_none:0|floatformat:2|intcomma}}</td>
     </tr>       
   {% endfor retenciones %}  
   <tr class="borde_izq borde_der borde_arriba borde_abajo ">
-    <td colspan="7" class="tabla_footer">Total: ${{cpb.importe_total|default_if_none:0|floatformat:2|intcomma}}</td>
+    <td colspan="7" class="tabla_footer">Total: {{cpb.moneda.simbolo|default:'$'}}{{cpb.importe_total|default_if_none:0|floatformat:2|intcomma}}</td>
   </tr>
 </table>
-<h2 class="listado_subtot_imp">Saldo Restante de Cta.Cte al {{cpb.fecha_cpb|date:'d/m/Y'}}: ${{total_ctacte|default_if_none:0|floatformat:2|intcomma}}</h2>
+<h2 class="listado_subtot_imp">Saldo Restante de Cta.Cte al {{cpb.fecha_cpb|date:'d/m/Y'}}: {{cpb.moneda.simbolo|default:'$'}}{{total_ctacte|default_if_none:0|floatformat:2|intcomma}}</h2>
 <div id="page-footer">
   <table width="100%" align="center" >    
     <tr>

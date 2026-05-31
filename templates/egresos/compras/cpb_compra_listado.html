@@ -122,12 +122,12 @@
                                     <a href="{% url 'proveedor_ver' id=cpb.entidad.id %}"  title="{{ cpb.entidad}}" class="modal-detail" data-modal-head="DETALLE PROVEEDOR {{cpb.entidad.codigo}}"
                                        data-modal-callback="reload"> <strong>{{ cpb.entidad|truncatechars:50 }}</strong></a>
                                 </td>
-                                <td class="importe">${{cpb.get_saldo|default_if_none:0|floatformat:2}}</td>                                
-                                <td class="importe">${{cpb.get_importe_total|default_if_none:0|floatformat:2}}</td>
-                                <td class="importe">${{cpb.get_importe_subtotal|default_if_none:0|floatformat:2}}<input class="hidden" value="{{ item.importe_total }}" 
+                                <td class="importe">{{cpb.moneda.simbolo|default:'$'}}{{cpb.get_saldo|default_if_none:0|floatformat:2}}</td>                                
+                                <td class="importe">{{cpb.moneda.simbolo|default:'$'}}{{cpb.get_importe_total|default_if_none:0|floatformat:2}}</td>
+                                <td class="importe">{{cpb.moneda.simbolo|default:'$'}}{{cpb.get_importe_subtotal|default_if_none:0|floatformat:2}}<input class="hidden" value="{{ item.importe_total }}" 
                                             id="importe_chk_{{forloop.counter0}}"/></td> 
-                                <td class="importe">${{cpb.get_importe_iva|default_if_none:0|floatformat:2}}</td>
-                                <td class="importe">${{cpb.get_importe_perc_imp|default_if_none:0|floatformat:2}}</td>
+                                <td class="importe">{{cpb.moneda.simbolo|default:'$'}}{{cpb.get_importe_iva|default_if_none:0|floatformat:2}}</td>
+                                <td class="importe">{{cpb.moneda.simbolo|default:'$'}}{{cpb.get_importe_perc_imp|default_if_none:0|floatformat:2}}</td>
                                 <td  title="{{ cpb.descripcion}}">{{ cpb.descripcion|default_if_none:''|truncatechars:60 }}</td>                                
                             </tr>
                             {% endfor %}

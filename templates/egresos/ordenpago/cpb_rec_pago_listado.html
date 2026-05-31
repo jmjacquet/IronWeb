@@ -77,9 +77,9 @@
                                 <td class="text-center">{{cpb.fecha_cpb|date:'d/m/Y'}}</td>                                
                                 <td>{{ cpb }}</td>                                
                                 <td  title="{{ cpb.entidad}}" >{% include "entidades/proveedor_ver.html" %}</td>
-                                <td class="importe">${{cpb.importe_total|default_if_none:0|floatformat:2}}</td>
-                                <td class="importe">${{cpb.importe_subtotal|default_if_none:0|floatformat:2}}</td>
-                                <td class="importe">${{cpb.importe_ret|default_if_none:0|floatformat:2}}</td>
+                                <td class="importe">{{cpb.moneda.simbolo|default:'$'}}{{cpb.importe_total|default_if_none:0|floatformat:2}}</td>
+                                <td class="importe">{{cpb.moneda.simbolo|default:'$'}}{{cpb.importe_subtotal|default_if_none:0|floatformat:2}}</td>
+                                <td class="importe">{{cpb.moneda.simbolo|default:'$'}}{{cpb.importe_ret|default_if_none:0|floatformat:2}}</td>
                                 <td class="wrap">
                                 {% if cpb.cobranzas > 0 %}                                    
                                     <a href="{% url 'recibo_ver' id=cpb.id %}"  title="VER" class="modal-detail" data-modal-head="DETALLE {{cpb.cpb_tipo.nombre|upper}} {{cpb}}   Fecha: {{cpb.fecha_cpb|date:'d/m/Y'}}" data-modal-callback="reload"><i class="fa fa-list-alt text-success"></i>
@@ -207,7 +207,7 @@ var tabla = $('#dataTables-pagos').DataTable({
                                             if (typeof i === "number") {
                                                 return i;
                                             } else if (typeof i === "string") {
-                                                i = i.replace(/\$/g, "");
+                                                i = i.replace(/[^0-9\-,]/g, "");
                     i = i.replace(/\,/g ,"");                    
                     i = i.replace(/\./g, "");
                                                 var result = parseFloat(i)/100;
@@ -267,7 +267,7 @@ var tabla = $('#dataTables-pagos').DataTable({
                 if (typeof i === "number") {
                     return i;
                 } else if (typeof i === "string") {
-                    i = i.replace(/\$/g, "");
+                    i = i.replace(/[^0-9\-,]/g, "");
                     i = i.replace(/\,/g ,"");                    
                     i = i.replace(/\./g, "");
                     var result = parseFloat(i)/100;
@@ -292,7 +292,7 @@ var tabla = $('#dataTables-pagos').DataTable({
             let col_tot_sum =[4, 5, 6]
             col_tot_sum.forEach(function (col_number) {
                 pageTotal = api.column(col_number, { page: 'current'} ).data().reduce( function (a, b) {return floatVal(a) + floatVal(b);}, 0 );
-                $( api.column(col_number).footer() ).html('$'+pageTotal.toLocaleString(undefined,{minimumFractionDigits:2}));
+                $( api.column(col_number).footer() ).html('{{ simbolo|default:"$" }}'+pageTotal.toLocaleString(undefined,{minimumFractionDigits:2}));
             });
         }
         });

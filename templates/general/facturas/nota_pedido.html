@@ -118,7 +118,7 @@
     <tr>      
       <td class="listado_der borde_izq">{{item.cantidad|default_if_none:0|floatformat:2|intcomma}} {{item.producto.get_unidad_display}}</td>
       <td class="listado_izq borde_izq">{{item.producto}} {% if item.detalle %} ({{item.detalle}}) {% endif %}</td>      
-      <td class="listado_der borde_der borde_izq">${{item.importe_total|default_if_none:0|floatformat:2|intcomma}}</td>
+      <td class="listado_der borde_der borde_izq">{{pedido.moneda.simbolo|default:'$'}}{{item.importe_total|default_if_none:0|floatformat:2|intcomma}}</td>
     </tr>       
   {% endfor detalle_pedido %}
   {% for i in renglones %}  
@@ -129,7 +129,7 @@
     </tr>     
   {% endfor %}
   <tr class="">
-    <td colspan="3" class="tabla_footer borde_izq borde_der borde_abajo borde_arriba">Total Orden: ${{pedido.importe_total|default_if_none:0|floatformat:2|intcomma}}</td>
+    <td colspan="3" class="tabla_footer borde_izq borde_der borde_abajo borde_arriba">Total Orden: {{pedido.moneda.simbolo|default:'$'}}{{pedido.importe_total|default_if_none:0|floatformat:2|intcomma}}</td>
   </tr>
 </table>
 <div id="page-footer">

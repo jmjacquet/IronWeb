@@ -64,7 +64,17 @@ class MovimCuentasForm(forms.ModelForm):
 
 	def __init__(self, *args, **kwargs):
 		request = kwargs.pop('request', None)
-		super(MovimCuentasForm, self).__init__(*args, **kwargs)		
+		super(MovimCuentasForm, self).__init__(*args, **kwargs)
+		simbolo = '$'
+		try:
+			empresa = empresa_actual(request)
+			if empresa.moneda_default:
+				simbolo = empresa.moneda_default.simbolo
+		except:
+			pass
+		for field in self.fields.values():
+			if isinstance(field.widget, PrependWidget):
+				field.widget.data = simbolo		
 	
 class MovimCuentasFPForm(forms.ModelForm):
 	tipo_forma_pago = forms.ModelChoiceField(label='Medio de Pago',queryset=cpb_tipo_forma_pago.objects.filter(baja=False),empty_label='---')
@@ -82,7 +92,13 @@ class MovimCuentasFPForm(forms.ModelForm):
 		request = kwargs.pop('request', None)
 		super(MovimCuentasFPForm, self).__init__(*args, **kwargs)
 		try:
-			empresa = empresa_actual(request)			
+			empresa = empresa_actual(request)
+			simbolo = '$'
+			if empresa.moneda_default:
+				simbolo = empresa.moneda_default.simbolo
+			for field in self.fields.values():
+				if isinstance(field.widget, PrependWidget):
+					field.widget.data = simbolo
 			self.fields['tipo_forma_pago'].queryset = cpb_tipo_forma_pago.objects.filter(empresa__id__in=empresas_habilitadas(request),baja=False,cuenta__tipo__in=[0,1,3])			
 			self.fields['mdcp_banco'].queryset = cpb_banco.objects.filter(empresa__id__in=empresas_habilitadas(request),baja=False)			
 			self.fields['cta_egreso'].queryset = cpb_cuenta.objects.filter(empresa__id__in=empresas_habilitadas(request),baja=False,tipo__in=[0,1,3])			
@@ -266,7 +282,13 @@ class SaldoInicialForm(forms.ModelForm):
 		request = kwargs.pop('request', None)
 		super(SaldoInicialForm, self).__init__(*args, **kwargs)
 		try:
-			empresa = empresa_actual(request)			
+			empresa = empresa_actual(request)
+			simbolo = '$'
+			if empresa.moneda_default:
+				simbolo = empresa.moneda_default.simbolo
+			for field in self.fields.values():
+				if isinstance(field.widget, PrependWidget):
+					field.widget.data = simbolo
 			self.fields['tipo_forma_pago'].queryset = cpb_tipo_forma_pago.objects.filter(empresa__id__in=empresas_habilitadas(request),baja=False,cuenta__tipo__in=[0,1,3])			
 			self.fields['mdcp_banco'].queryset = cpb_banco.objects.filter(empresa__id__in=empresas_habilitadas(request),baja=False)			
 			self.fields['cta_ingreso'].queryset = cpb_cuenta.objects.filter(empresa__id__in=empresas_habilitadas(request),baja=False,tipo__in=[0,1,3])			

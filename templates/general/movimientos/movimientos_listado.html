@@ -86,7 +86,7 @@
                                 <td>{{ cpb.tipo_forma_pago|default_if_none:'' }}</td>                                                                
                                 <td>{{ cpb.cta_egreso|default_if_none:'' }}</td>                                                                
                                 <td>{{ cpb.cta_ingreso|default_if_none:'' }}</td>                                                                
-                                <td class="importe_total">${{cpb.importe|default_if_none:0|floatformat:2}}</td>                                                                
+                                <td class="importe_total">{{cpb.moneda.simbolo|default:'$'}}{{cpb.importe|default_if_none:0|floatformat:2}}</td>                                                                
                                 <td  title="{{ cpb.detalle}}">{{ cpb.detalle|default_if_none:''|truncatechars:60 }}</td>
                                 <td class="text-center">{{cpb.mdcp_fecha|date:'d/m/Y'}}</td>                                
                                 <td>{{ cpb.mdcp_banco|default_if_none:''}}</td>
@@ -220,7 +220,7 @@ var tabla = $('#dataTables-cpb_movimientos').DataTable({
                                             if (typeof i === "number") {
                                                 return i;
                                             } else if (typeof i === "string") {
-                                                i = i.replace(/\$/g, "");
+                                                i = i.replace(/[^0-9\-,]/g, "");
                     i = i.replace(/\,/g ,"");                    
                     i = i.replace(/\./g, "");
                                                 var result = parseFloat(i)/100;
@@ -300,7 +300,7 @@ var tabla = $('#dataTables-cpb_movimientos').DataTable({
                 if (typeof i === "number") {
                     return i;
                 } else if (typeof i === "string") {
-                    i = i.replace(/\$/g, "");
+                    i = i.replace(/[^0-9\-,]/g, "");
                     i = i.replace(/\,/g ,"");                    
                     i = i.replace(/\./g, "");
                     var result = parseFloat(i)/100;
@@ -323,7 +323,7 @@ var tabla = $('#dataTables-cpb_movimientos').DataTable({
                 }
             };
             pageTotal = api.column(7, { page: 'current'} ).data().reduce( function (a, b) {return floatVal(a) + floatVal(b);}, 0 );            
-            $( api.column(7).footer() ).html('$'+pageTotal.toLocaleString(undefined,{minimumFractionDigits:2}));
+            $( api.column(7).footer() ).html('{{ simbolo|default:"$" }}'+pageTotal.toLocaleString(undefined,{minimumFractionDigits:2}));
           
         }
         });

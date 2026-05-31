@@ -44,7 +44,7 @@
                                 <div class="portlet box green-jungle">
                                             <div class="portlet-title">
                                                 <div class="caption"><i class="fa fa-money"></i>Detalle Ingresos</div>
-                                                <div class="actions"><span class="monto_total"> $ {{ingresos_total.ingresos_total|default_if_none:0|floatformat:2}}</span></div>
+                                                <div class="actions"><span class="monto_total"> {{ simbolo|default:"$" }} {{ingresos_total.ingresos_total|default_if_none:0|floatformat:2}}</span></div>
                                             </div>                                                                                         
                                         </div> 
                                 <div class="row cerca">                 
@@ -60,7 +60,7 @@
                                                {% for icta in ingresos_cta_resumen %}
                                                 <tr>                                
                                                  <td title="{{icta.pk|safe}}">{{ icta.cta_ingreso__codigo|default_if_none:'' }} - {{ icta.cta_ingreso__nombre|default_if_none:'' }}</td>
-                                                 <td class="importe_total">$ {{icta.saldo|default_if_none:0|floatformat:2}}</td>
+                                                 <td class="importe_total">{{ simbolo|default:"$" }} {{icta.saldo|default_if_none:0|floatformat:2}}</td>
                                                 </tr>
                                                {% endfor %}
                                             </tbody>
@@ -84,7 +84,7 @@
                                                {% for ingr in ingresos_resumen %}
                                                 <tr>                                
                                                  <td title="{{ingr.pk|safe}}">{{ ingr.tipo_forma_pago__codigo|default_if_none:'' }} - {{ ingr.tipo_forma_pago__nombre|default_if_none:'' }}</td>
-                                                 <td class="importe_total">$ {{ingr.saldo|default_if_none:0|floatformat:2}}</td>
+                                                 <td class="importe_total">{{ simbolo|default:"$" }} {{ingr.saldo|default_if_none:0|floatformat:2}}</td>
                                                 </tr>
                                                {% endfor %}
                                             </tbody>
@@ -120,7 +120,7 @@
                                                  <td class="">{{i.mdcp_fecha|date:'d/m/Y'}}</td> 
                                                  <td class="">{{i.mdcp_banco|default_if_none:''}}</td> 
                                                  <td class="">{{i.mdcp_cheque|default_if_none:''}}</td>                          
-                                                 <td class="importe_total">$ {{i.importe|default_if_none:0|floatformat:2}}</td>
+                                                 <td class="importe_total">{{ simbolo|default:"$" }} {{i.importe|default_if_none:0|floatformat:2}}</td>
                                                 </tr>
                                                {% endfor %}
                                             </tbody>
@@ -144,7 +144,7 @@
                                <div class="portlet box red-sunglo">
                                             <div class="portlet-title">
                                                 <div class="caption"><i class="fa fa-money"></i>Detalle Egresos</div>
-                                                <div class="actions "> <span class="monto_total">$ {{egresos_total.egresos_total|default_if_none:0|floatformat:2}}</span></div>
+                                                <div class="actions "> <span class="monto_total">{{ simbolo|default:"$" }} {{egresos_total.egresos_total|default_if_none:0|floatformat:2}}</span></div>
                                             </div>                                                                                         
                                         </div> 
                                 <div class="row cerca">
@@ -160,7 +160,7 @@
                                                {% for ecta in egresos_cta_resumen %}
                                                 <tr>                                
                                                  <td title="{{ecta.pk|safe}}">{{ ecta.cta_egreso__codigo|default_if_none:'' }} - {{ ecta.cta_egreso__nombre|default_if_none:'' }}</td>
-                                                 <td class="importe_total">$ {{ecta.saldo|default_if_none:0|floatformat:2}}</td>
+                                                 <td class="importe_total">{{ simbolo|default:"$" }} {{ecta.saldo|default_if_none:0|floatformat:2}}</td>
                                                 </tr>
                                                {% endfor %}
                                             </tbody>
@@ -184,7 +184,7 @@
                                                {% for eres in egresos_resumen %}
                                                 <tr>                                
                                                  <td title="{{eres.pk|safe}}">{{ eres.tipo_forma_pago__codigo|default_if_none:'' }} - {{ eres.tipo_forma_pago__nombre|default_if_none:'' }}</td>
-                                                 <td class="importe_total">$ {{eres.saldo|default_if_none:0|floatformat:2}}</td>
+                                                 <td class="importe_total">{{ simbolo|default:"$" }} {{eres.saldo|default_if_none:0|floatformat:2}}</td>
                                                 </tr>
                                                {% endfor %}
                                             </tbody>
@@ -219,7 +219,7 @@
                                                  <td class="">{{e.mdcp_fecha|date:'d/m/Y'}}</td> 
                                                  <td class="">{{e.mdcp_banco|default_if_none:''}}</td> 
                                                  <td class="">{{e.mdcp_cheque|default_if_none:''}}</td>                          
-                                                 <td class="importe_total">$ {{e.importe|default_if_none:0|floatformat:2}}</td>
+                                                 <td class="importe_total">{{ simbolo|default:"$" }} {{e.importe|default_if_none:0|floatformat:2}}</td>
                                                 </tr>
                                                {% endfor %}
                                             </tbody>
@@ -363,7 +363,7 @@ var tabla2 = $('#dataTables-ingresos').DataTable({
                 if (typeof i === "number") {
                     return i;
                 } else if (typeof i === "string") {
-                    i = i.replace(/\$/g, "");
+                    i = i.replace(/[^0-9\-,]/g, "");
                     i = i.replace(/\,/g ,"");                    
                     i = i.replace(/\./g, "");
                     var result = parseFloat(i)/100;
@@ -386,7 +386,7 @@ var tabla2 = $('#dataTables-ingresos').DataTable({
                 }
             };            
             pageTotal = api.column(6, { page: 'current'} ).data().reduce( function (a, b) {return floatVal(a) + floatVal(b);}, 0 );
-            $( api.column(6).footer() ).html('$'+pageTotal.toLocaleString(undefined,{minimumFractionDigits:2}));                       
+            $( api.column(6).footer() ).html('{{ simbolo|default:"$" }}'+pageTotal.toLocaleString(undefined,{minimumFractionDigits:2}));                       
         }
         });
 
@@ -483,7 +483,7 @@ var tabla4 = $('#dataTables-egresos').DataTable({
                 if (typeof i === "number") {
                     return i;
                 } else if (typeof i === "string") {
-                    i = i.replace(/\$/g, "");
+                    i = i.replace(/[^0-9\-,]/g, "");
                     i = i.replace(/\,/g ,"");                    
                     i = i.replace(/\./g, "");
                     var result = parseFloat(i)/100;
@@ -506,7 +506,7 @@ var tabla4 = $('#dataTables-egresos').DataTable({
                 }
             };            
             pageTotal = api.column(6, { page: 'current'} ).data().reduce( function (a, b) {return floatVal(a) + floatVal(b);}, 0 );
-            $( api.column(6).footer() ).html('$'+pageTotal.toLocaleString(undefined,{minimumFractionDigits:2}));                       
+            $( api.column(6).footer() ).html('{{ simbolo|default:"$" }}'+pageTotal.toLocaleString(undefined,{minimumFractionDigits:2}));                       
         }
         });
 

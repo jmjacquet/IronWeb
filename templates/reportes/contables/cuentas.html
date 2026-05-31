@@ -45,9 +45,9 @@
                                             <tr data-toggle="collapse" data-target="#cta_{{cta.id_cuenta|safe}}">
                                              <td class="no-sort text-center"><i class="glyphicon glyphicon-plus accordion-toggle" ></i></td>
                                              <td nowrap>{{cta.cuenta|default_if_none:''}}</td>              
-                                             <td class="importe">$ {{cta.debe|default_if_none:0|floatformat:2}}</td>
-                                             <td class="importe">$ {{cta.haber|default_if_none:0|floatformat:2}}</td>
-                                             <td class="importe_total {% if cta.saldo < 0 %} text-danger {% endif %}">$ {{cta.saldo|default_if_none:0|floatformat:2}}</td>
+                                             <td class="importe">{{ simbolo|default:"$" }} {{cta.debe|default_if_none:0|floatformat:2}}</td>
+                                             <td class="importe">{{ simbolo|default:"$" }} {{cta.haber|default_if_none:0|floatformat:2}}</td>
+                                             <td class="importe_total {% if cta.saldo < 0 %} text-danger {% endif %}">{{ simbolo|default:"$" }} {{cta.saldo|default_if_none:0|floatformat:2}}</td>
                                             </tr>      
                                             <tr>
                                               <td></td>
@@ -71,9 +71,9 @@
                                                          <td nowrap class="">{{c.fp|default_if_none:''}} {{c.mdcp_cheque|default_if_none:''}}</td>
                                                          <td nowrap class="">{{c.nro_cpb|default_if_none:''}}</td> 
                                                          <td nowrap class="">{{c.tipo|default_if_none:''}}</td> 
-                                                         <td class="importe">$ {{c.debe|default_if_none:0|floatformat:2}}</td>
-                                                         <td class="importe">$ {{c.haber|default_if_none:0|floatformat:2}}</td>
-                                                         <td class="importe_total {% if c.saldo < 0 %} text-danger {% endif %}">$ {{c.saldo|default_if_none:0|floatformat:2}}</td>
+                                                         <td class="importe">{{ simbolo|default:"$" }} {{c.debe|default_if_none:0|floatformat:2}}</td>
+                                                         <td class="importe">{{ simbolo|default:"$" }} {{c.haber|default_if_none:0|floatformat:2}}</td>
+                                                         <td class="importe_total {% if c.saldo < 0 %} text-danger {% endif %}">{{ simbolo|default:"$" }} {{c.saldo|default_if_none:0|floatformat:2}}</td>
                                                         </tr>
                                                     {% endfor %}                                                   
                                                   </tbody>
@@ -183,7 +183,7 @@ var tabla = $('#dtCuentas').DataTable({
                 if (typeof i === "number") {
                     return i;
                 } else if (typeof i === "string") {
-                    i = i.replace(/\$/g, "");
+                    i = i.replace(/[^0-9\-,]/g, "");
                     i = i.replace(/\,/g ,"");                    
                     i = i.replace(/\./g, "");
                     var result = parseFloat(i)/100;
@@ -208,7 +208,7 @@ var tabla = $('#dtCuentas').DataTable({
             let col_tot_sum =[2, 3, 4]
             col_tot_sum.forEach(function (col_number) {
                 pageTotal = api.column(col_number, { page: 'current'} ).data().reduce( function (a, b) {return floatVal(a) + floatVal(b);}, 0 );
-                $( api.column(col_number).footer() ).html('$'+pageTotal.toLocaleString(undefined,{minimumFractionDigits:2}));
+                $( api.column(col_number).footer() ).html('{{ simbolo|default:"$" }}'+pageTotal.toLocaleString(undefined,{minimumFractionDigits:2}));
             });
         }
         });

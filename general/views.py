@@ -117,9 +117,11 @@ class VariablesMixin(ContextMixin):
             empresa = empresa_actual(request)
             context['empresa'] = empresa
             context['homologacion'] = empresa.homologacion
+            context['simbolo'] = empresa.moneda_default.simbolo if empresa.moneda_default else '$'
         except:
             context['empresa'] = None
             context['homologacion'] = True
+            context['simbolo'] = '$'
         try:
             tipo_usr = usr.userprofile.id_usuario.tipoUsr
             context['tipo_usr'] = tipo_usr

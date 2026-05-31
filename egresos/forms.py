@@ -71,6 +71,12 @@ class CPBCompraForm(forms.ModelForm):
 		super(CPBCompraForm, self).__init__(*args, **kwargs)		
 		try:
 			empresa = empresa_actual(request)
+			simbolo = '$'
+			if empresa.moneda_default:
+				simbolo = empresa.moneda_default.simbolo
+			for field in self.fields.values():
+				if isinstance(field.widget, PrependWidget):
+					field.widget.data = simbolo
 			letras = tipo_comprob_fiscal(None)
 			self.fields['letra'].choices = letras						
 			self.fields['lista_precios'].queryset = prod_lista_precios.objects.filter(baja=False,empresa__id__in=empresas_habilitadas(request))
@@ -109,8 +115,10 @@ class CPBCompraForm(forms.ModelForm):
 			raise forms.ValidationError("El Nº de PV no es válido! Verifique.")
 
 		if tipo_form == 'EDICION':							
-				if importe_cobrado > importe_total:					
-					self._errors['importe_cobrado'] = u'El total del comprobante debe ser igual o mayor al total de sus cobros!($%s)' % (importe_total-importe_cobrado)
+				if importe_cobrado > importe_total:
+					moneda = self.cleaned_data.get('moneda')
+					simbolo = moneda.simbolo if moneda else '$'
+					self._errors['importe_cobrado'] = u'El total del comprobante debe ser igual o mayor al total de sus cobros!(%s%s)' % (simbolo, importe_total-importe_cobrado)
 		
 		id_cpbs=cpb_comprobante.objects.filter(numero=numero,pto_vta=pto_vta,letra=letra,cpb_tipo=cpb_tipo,entidad=entidad).values_list('id',flat=True)
 		id_cpbs = [int(x) for x in id_cpbs]  
@@ -157,6 +165,12 @@ class CPBCompraDetalleForm(forms.ModelForm):
 		self.fields['cantidad'].initial = 1	
 		try:
 			empresa = empresa_actual(request)
+			simbolo = '$'
+			if empresa.moneda_default:
+				simbolo = empresa.moneda_default.simbolo
+			for field in self.fields.values():
+				if isinstance(field.widget, PrependWidget):
+					field.widget.data = simbolo
 			self.fields['producto'].queryset = prod_productos.objects.filter(baja=False,mostrar_en__in=(2,3),empresa__id__in=empresas_habilitadas(request)).order_by('nombre')			
 			self.fields['lista_precios'].queryset = prod_lista_precios.objects.filter(baja=False,empresa__id__in=empresas_habilitadas(request))		
 			self.fields['origen_destino'].queryset = prod_ubicacion.objects.filter(baja=False,empresa__id__in=empresas_habilitadas(request))		
@@ -189,6 +203,12 @@ class CPBCompraPercImpForm(forms.ModelForm):
 		super(CPBCompraPercImpForm, self).__init__(*args, **kwargs)
 		try:
 			empresa = empresa_actual(request)
+			simbolo = '$'
+			if empresa.moneda_default:
+				simbolo = empresa.moneda_default.simbolo
+			for field in self.fields.values():
+				if isinstance(field.widget, PrependWidget):
+					field.widget.data = simbolo
 			self.fields['perc_imp'].queryset = cpb_perc_imp.objects.filter(empresa__id__in=empresas_habilitadas(request))			
 		except:
 			empresa = None
@@ -239,6 +259,12 @@ class CPBFPForm(forms.ModelForm):
 		super(CPBFPForm, self).__init__(*args, **kwargs)
 		try:
 			empresa = empresa_actual(request)
+			simbolo = '$'
+			if empresa.moneda_default:
+				simbolo = empresa.moneda_default.simbolo
+			for field in self.fields.values():
+				if isinstance(field.widget, PrependWidget):
+					field.widget.data = simbolo
 			self.fields['tipo_forma_pago'].queryset = cpb_tipo_forma_pago.objects.filter(empresa__id__in=empresas_habilitadas(request),baja=False)			
 			self.fields['mdcp_banco'].queryset = cpb_banco.objects.filter(empresa__id__in=empresas_habilitadas(request),baja=False)			
 			self.fields['cta_egreso'].queryset = cpb_cuenta.objects.filter(empresa__id__in=empresas_habilitadas(request),baja=False,tipo__in=[0,1,2])			
@@ -354,7 +380,13 @@ class CPBPagoForm(forms.ModelForm):
 		request = kwargs.pop('request', None)
 		super(CPBPagoForm, self).__init__(*args, **kwargs)
 		try:
-			empresa = empresa_actual(request)			
+			empresa = empresa_actual(request)
+			simbolo = '$'
+			if empresa.moneda_default:
+				simbolo = empresa.moneda_default.simbolo
+			for field in self.fields.values():
+				if isinstance(field.widget, PrependWidget):
+					field.widget.data = simbolo
 			self.fields['entidad'].queryset = egr_entidad.objects.filter(tipo_entidad=2,baja=False,empresa__id__in=empresas_habilitadas(request)).order_by('apellido_y_nombre')
 		except:
 			empresa = None   
@@ -375,7 +407,18 @@ class CPBPagoCPBForm(forms.ModelForm):
 			exclude = ['id','fecha_creacion']	
 
 	def __init__(self, *args, **kwargs):
+		request = kwargs.pop('request', None)
 		super(CPBPagoCPBForm, self).__init__(*args, **kwargs)
+		simbolo = '$'
+		try:
+			empresa = empresa_actual(request)
+			if empresa.moneda_default:
+				simbolo = empresa.moneda_default.simbolo
+		except:
+			pass
+		for field in self.fields.values():
+			if isinstance(field.widget, PrependWidget):
+				field.widget.data = simbolo
 
 class CPBPagoRetForm(forms.ModelForm):
 	retencion = forms.ModelChoiceField(label='Retenciones',queryset=cpb_retenciones.objects.all(),empty_label='---',required = False)
@@ -391,10 +434,17 @@ class CPBPagoRetForm(forms.ModelForm):
 	def __init__(self, *args, **kwargs):
 		request = kwargs.pop('request', None)
 		super(CPBPagoRetForm, self).__init__(*args, **kwargs)
+		simbolo = '$'
 		try:
-			self.fields['retencion'].queryset = cpb_retenciones.objects.filter(empresa__id__in=empresas_habilitadas(request))			
+			empresa = empresa_actual(request)
+			self.fields['retencion'].queryset = cpb_retenciones.objects.filter(empresa__id__in=empresas_habilitadas(request))
+			if empresa.moneda_default:
+				simbolo = empresa.moneda_default.simbolo
 		except:
 			pass
+		for field in self.fields.values():
+			if isinstance(field.widget, PrependWidget):
+				field.widget.data = simbolo
 
 #############################################################################
 
@@ -407,7 +457,18 @@ class CPBSeleccionados(forms.Form):
 	saldo = forms.DecimalField(widget=PrependWidget(attrs={'class':'form-control','readonly':'readonly','step':0},base_widget=NumberInput, data='$'),initial=0.00,decimal_places=2, required = False)			
 
 	def __init__(self, *args, **kwargs):
+		request = kwargs.pop('request', None)
 		super(CPBSeleccionados, self).__init__(*args, **kwargs)
+		simbolo = '$'
+		try:
+			empresa = empresa_actual(request)
+			if empresa.moneda_default:
+				simbolo = empresa.moneda_default.simbolo
+		except:
+			pass
+		for field in self.fields.values():
+			if isinstance(field.widget, PrependWidget):
+				field.widget.data = simbolo
 
 	def clean(self):		
 		super(forms.Form,self).clean()	

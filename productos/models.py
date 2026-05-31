@@ -142,7 +142,8 @@ class prod_producto_lprecios(models.Model):
         ordering = ['producto__nombre','lista_precios']
     
     def __unicode__(self):
-        return u'%s - %s - $ %s' % (self.lista_precios,self.producto.nombre,self.precio_venta)        
+        simbolo = self.lista_precios.moneda.simbolo if self.lista_precios and self.lista_precios.moneda else '$'
+        return u'%s - %s - %s %s' % (self.lista_precios, self.producto.nombre, simbolo, self.precio_venta)        
 
     @property
     def get_porc_gan(self):

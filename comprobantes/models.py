@@ -438,6 +438,7 @@ class cpb_comprobante(models.Model):
         super(cpb_comprobante, self).save(*args, **kwargs)
 
 
+
 class cpb_comprobante_detalle(models.Model):
     id = models.AutoField(primary_key=True, db_index=True)
     cpb_comprobante = models.ForeignKey('comprobantes.cpb_comprobante', verbose_name=u'CPB',
@@ -648,7 +649,8 @@ class cpb_cobranza(models.Model):
         db_table = 'cpb_cobranza'
 
     def __unicode__(self):
-        return u'%s-%s-$ %s' % (self.cpb_comprobante, self.cpb_factura, self.importe_total)
+        simbolo = self.moneda.simbolo if self.moneda else '$'
+        return u'%s-%s-%s %s' % (self.cpb_comprobante, self.cpb_factura, simbolo, self.importe_total)
 
 
 class cpb_banco(models.Model):
@@ -736,7 +738,8 @@ class cpb_comprobante_fp(models.Model):
         db_table = 'cpb_comprobante_fp'
 
     def __unicode__(self):
-        descr = u'%s $ %s' % (self.tipo_forma_pago.nombre, self.importe)
+        simbolo = self.cpb_comprobante.moneda.simbolo if self.cpb_comprobante and self.cpb_comprobante.moneda else '$'
+        descr = u'%s %s %s' % (self.tipo_forma_pago.nombre, simbolo, self.importe)
         if self.mdcp_banco and self.mdcp_fecha:
             descr = u'%s - %s %s %s %s' % (descr, datetime.strftime(
                 self.mdcp_fecha, "%d/%m/%Y"), self.mdcp_banco, self.mdcp_cheque, self.detalle)
@@ -761,7 +764,8 @@ class cpb_comprobante_fp(models.Model):
         except:
             descr = ''
 
-        return u'$ %s%s%s%s%s' % (self.importe, nro, fecha, banco, descr)
+        simbolo = self.cpb_comprobante.moneda.simbolo if self.cpb_comprobante and self.cpb_comprobante.moneda else '$'
+        return u'%s %s%s%s%s%s' % (simbolo, self.importe, nro, fecha, banco, descr)
 
     def get_estadoCheque(self):
         estado = ''

@@ -85,13 +85,13 @@
                                     <td>{{ pp.producto.codigo_barras|default_if_none:''|truncatechars:40 }}</td>
                                     <td>{{ pp.producto.categoria|default_if_none:''|truncatechars:40 }}</td>
                                     <td>{{ pp.producto.get_tipo_producto_display|default_if_none:'' }}</td>
-                                    <td class="importe">${{pp.precio_costo|default_if_none:0|floatformat:2}}</td>                                                                     
-                                    <td class="importe">${{pp.precio_cimp|default_if_none:0|floatformat:2}}</td>                                                                     
+                                    <td class="importe">{{pp.lista_precios.moneda.simbolo|default:'$'}}{{pp.precio_costo|default_if_none:0|floatformat:2}}</td>                                                                     
+                                    <td class="importe">{{pp.lista_precios.moneda.simbolo|default:'$'}}{{pp.precio_cimp|default_if_none:0|floatformat:2}}</td>                                                                     
                                     <td class="importe">{{pp.coef_ganancia|default_if_none:0|floatformat:2}}</td>                                                                     
-                                    <td class="importe_total">${{pp.precio_venta|default_if_none:0|floatformat:2}}</td>
+                                    <td class="importe_total">{{pp.lista_precios.moneda.simbolo|default:'$'}}{{pp.precio_venta|default_if_none:0|floatformat:2}}</td>
                                     {% if empresa.usa_impuestos %}
-                                    <td class="importe_total">${{pp.precio_itc|default_if_none:0|floatformat:2}}</td>
-                                    <td class="importe_total">${{pp.precio_tasa|default_if_none:0|floatformat:2}}</td>
+                                    <td class="importe_total">{{pp.lista_precios.moneda.simbolo|default:'$'}}{{pp.precio_itc|default_if_none:0|floatformat:2}}</td>
+                                    <td class="importe_total">{{pp.lista_precios.moneda.simbolo|default:'$'}}{{pp.precio_tasa|default_if_none:0|floatformat:2}}</td>
                                     {% endif %}  
                                 </tr>
                             {% endfor %}                        
@@ -217,7 +217,7 @@ var tabla = $('#dataTables-lprecios').DataTable({
                                             if (typeof i === "number") {
                                                 return i;
                                             } else if (typeof i === "string") {
-                                                i = i.replace(/\$/g, "");
+                                                i = i.replace(/[^0-9\-,]/g, "");
                     i = i.replace(/\,/g ,"");                    
                     i = i.replace(/\./g, "");
                                                 var result = parseFloat(i)/100;
@@ -296,7 +296,7 @@ var tabla = $('#dataTables-lprecios').DataTable({
                 if (typeof i === "number") {
                     return i;
                 } else if (typeof i === "string") {
-                    i = i.replace(/\$/g, "");
+                    i = i.replace(/[^0-9\-,]/g, "");
                     i = i.replace(/\,/g ,"");                    
                     i = i.replace(/\./g, "");
                     var result = parseFloat(i)/100;
@@ -322,7 +322,7 @@ var tabla = $('#dataTables-lprecios').DataTable({
             let col_tot_sum =[6, 7, 9 {% if empresa.usa_impuestos %},10, 11{% endif %}]
             col_tot_sum.forEach(function (col_number) {
                 pageTotal = api.column(col_number, { page: 'current'} ).data().reduce( function (a, b) {return floatVal(a) + floatVal(b);}, 0 );
-                $( api.column(col_number).footer() ).html('$'+pageTotal.toLocaleString(undefined,{minimumFractionDigits:2}));
+                $( api.column(col_number).footer() ).html('{{ simbolo|default:"$" }}'+pageTotal.toLocaleString(undefined,{minimumFractionDigits:2}));
             });
 
         }
