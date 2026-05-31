@@ -13,6 +13,7 @@ INSERT INTO gral_moneda (codigo, nombre, simbolo, decimales, baja) VALUES
 ('CLP', 'Peso Chileno', '$', 0, 0),
 ('UYU', 'Peso Uruguayo', '$', 2, 0);
 
+
 -- ============================================
 -- STEP 2: Update existing records to ARS
 -- (These are handled by migration, but included for reference)
