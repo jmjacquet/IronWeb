@@ -29,7 +29,7 @@ logger = logging.getLogger(__name__)
 
 @login_required 
 def recalcular_precios(request):
-    detalles = cpb_comprobante_detalle.objects.filter(cpb_comprobante__cpb_tipo__tipo__in=[1,2,3,9,14,21,22,23],cpb_comprobante__cpb_tipo__usa_stock=True)
+    detalles = cpb_comprobante_detalle.objects.filter(cpb_comprobante__cpb_tipo__tipo__in=[1,2,3,9,14,21,22,23],cpb_comprobante__cpb_tipo__usa_stock=True).select_related('producto', 'lista_precios')
     for c in detalles:
         lp = prod_producto_lprecios.objects.get(producto=c.producto,lista_precios=c.lista_precios)
         c.importe_costo = lp.precio_costo
@@ -355,9 +355,10 @@ def setearCta_FP(request):
         datos = [int(cta)]            
     elif cta and not fp:                
         try:
-            tipo_fp = cpb_cuenta.objects.get(id=cta).tipo_forma_pago       
-            banco = cpb_cuenta.objects.get(id=cta).banco       
-            cbu = cpb_cuenta.objects.get(id=cta).nro_cuenta_bancaria       
+            cuenta = cpb_cuenta.objects.select_related('tipo_forma_pago', 'banco').get(id=cta)
+            tipo_fp = cuenta.tipo_forma_pago
+            banco = cuenta.banco
+            cbu = cuenta.nro_cuenta_bancaria
             if tipo_fp:
                 fp= tipo_fp.id
                 datos.append(int(fp))
@@ -492,7 +493,7 @@ def cpb_anular_reactivar(request,id,estado,descr=None):
     cpb.save()
     
 
-    movs = cpb_comprobante_fp.objects.filter(pk__in=fps)
+    movs = cpb_comprobante_fp.objects.filter(pk__in=fps).select_related('cpb_comprobante__estado')
     for m in movs:
         m.cpb_comprobante.estado = state
         if estado==3:
@@ -506,7 +507,7 @@ def cpb_anular_reactivar(request,id,estado,descr=None):
 
     #Para cada uno de los comprobantes del Recibo/OP recalculo su saldo (Recibos/OP anulados no suman)
     if (cpb.cpb_tipo.tipo in [4,7]):
-        cobranzas = cpb_cobranza.objects.filter(cpb_comprobante=cpb)
+        cobranzas = cpb_cobranza.objects.filter(cpb_comprobante=cpb).select_related('cpb_factura')
         for c in cobranzas:
             recalcular_saldo_cpb(c.cpb_factura.pk)
 
@@ -689,13 +690,13 @@ def imprimirFactura_CB(request,id,pdf=None):
     if not cpb:
       raise Http404            
 
-    detalle_comprobante = cpb_comprobante_detalle.objects.filter(cpb_comprobante=cpb)
+    detalle_comprobante = cpb_comprobante_detalle.objects.filter(cpb_comprobante=cpb).select_related('producto', 'tasa_iva', 'lista_precios', 'origen_destino')
     detalle_totales_iva = cpb_comprobante_tot_iva.objects.filter(cpb_comprobante=cpb)    
     
     discrimina_iva = cpb.letra in  ('A', 'B')
 
     if cpb.condic_pago == 2:
-        cobranzas = cpb_comprobante_fp.objects.filter(cpb_comprobante__cpb_cobranza_cpb__cpb_factura=cpb,cpb_comprobante__estado__pk__lt=3)
+        cobranzas = cpb_comprobante_fp.objects.filter(cpb_comprobante__cpb_cobranza_cpb__cpb_factura=cpb,cpb_comprobante__estado__pk__lt=3).select_related('tipo_forma_pago', 'mdcp_banco')
         cantidad = cobranzas.count()    
     else:
         cobranzas = None
@@ -788,13 +789,13 @@ def imprimirFacturaQR(request,id,pdf=None):
     if not cpb:
       raise Http404            
 
-    detalle_comprobante = cpb_comprobante_detalle.objects.filter(cpb_comprobante=cpb)
+    detalle_comprobante = cpb_comprobante_detalle.objects.filter(cpb_comprobante=cpb).select_related('producto', 'tasa_iva', 'lista_precios', 'origen_destino')
     detalle_totales_iva = cpb_comprobante_tot_iva.objects.filter(cpb_comprobante=cpb)    
     
     discrimina_iva = cpb.letra in ('A', 'B')
 
     if cpb.condic_pago == 2:
-        cobranzas = cpb_comprobante_fp.objects.filter(cpb_comprobante__cpb_cobranza_cpb__cpb_factura=cpb,cpb_comprobante__estado__pk__lt=3)
+        cobranzas = cpb_comprobante_fp.objects.filter(cpb_comprobante__cpb_cobranza_cpb__cpb_factura=cpb,cpb_comprobante__estado__pk__lt=3).select_related('tipo_forma_pago', 'mdcp_banco')
         cantidad = cobranzas.count()    
     else:
         cobranzas = None
@@ -899,13 +900,13 @@ def imprimirFacturaHTML(request,id,pdf=None):
     if not cpb:
       raise Http404   
 
-    detalle_comprobante = cpb_comprobante_detalle.objects.filter(cpb_comprobante=cpb)
+    detalle_comprobante = cpb_comprobante_detalle.objects.filter(cpb_comprobante=cpb).select_related('producto', 'tasa_iva', 'lista_precios', 'origen_destino')
     detalle_totales_iva = cpb_comprobante_tot_iva.objects.filter(cpb_comprobante=cpb)    
     
     discrimina_iva = cpb.letra in ('A', 'B')
 
     if cpb.condic_pago == 2:
-        cobranzas = cpb_comprobante_fp.objects.filter(cpb_comprobante__cpb_cobranza_cpb__cpb_factura=cpb,cpb_comprobante__estado__pk__lt=3)
+        cobranzas = cpb_comprobante_fp.objects.filter(cpb_comprobante__cpb_cobranza_cpb__cpb_factura=cpb,cpb_comprobante__estado__pk__lt=3).select_related('tipo_forma_pago', 'mdcp_banco')
         cantidad = cobranzas.count()    
     else:
         cobranzas = None

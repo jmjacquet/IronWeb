@@ -234,6 +234,10 @@ class cpb_comprobante(models.Model):
         max_digits=15, decimal_places=2, blank=True, null=True, default=0)
     moneda = models.ForeignKey('general.gral_moneda', verbose_name=u'Moneda',
                                db_column='moneda', blank=True, null=True, on_delete=models.SET_NULL)
+    cotizacion = models.DecimalField(
+        'Cotización', max_digits=15, decimal_places=6, default=1.000000)
+    importe_total_sistema = models.DecimalField(
+        u'Importe Total Sistema', max_digits=15, decimal_places=2, blank=True, null=True)
     empresa = models.ForeignKey('general.gral_empresa', db_column='empresa',
                                 blank=True, null=True, on_delete=models.SET_NULL)
     usuario = models.ForeignKey('usuarios.usu_usuario', db_column='usuario', blank=True,
@@ -429,12 +433,24 @@ class cpb_comprobante(models.Model):
 
     def save(self, *args, **kwargs):
         if self.moneda_id:
-            for detalle in self.cpb_comprobante_detalle.all():
+            for detalle in self.cpb_comprobante_detalle.select_related('lista_precios__moneda').all():
                 if detalle.lista_precios_id and detalle.lista_precios.moneda_id != self.moneda_id:
                     raise ValueError(
                         'La lista de precios "%s" tiene moneda "%s" que no coincide con la moneda del comprobante "%s".'
                         % (detalle.lista_precios.nombre, detalle.lista_precios.moneda.codigo, self.moneda.codigo)
                     )
+        if self.cotizacion is None or self.cotizacion == 0:
+            self.cotizacion = 1
+        cotizacion = self.cotizacion
+        for detalle in self.cpb_comprobante_detalle.all():
+            detalle.importe_unitario_sistema = detalle.importe_unitario * cotizacion if detalle.importe_unitario else None
+            detalle.importe_total_sistema = detalle.importe_total * cotizacion if detalle.importe_total else None
+            detalle.save()
+        for fp in self.cpb_comprobante_fp_set.all():
+            fp.cotizacion = cotizacion
+            fp.importe_sistema = fp.importe * cotizacion if fp.importe else None
+            fp.save()
+        self.importe_total_sistema = self.importe_total * cotizacion if self.importe_total else None
         super(cpb_comprobante, self).save(*args, **kwargs)
 
 
@@ -465,6 +481,10 @@ class cpb_comprobante_detalle(models.Model):
         max_digits=15, decimal_places=2, blank=True, null=True, default=0)
     importe_total = models.DecimalField(
         max_digits=15, decimal_places=2, blank=True, null=True, default=0)
+    importe_unitario_sistema = models.DecimalField(
+        max_digits=15, decimal_places=2, blank=True, null=True, default=None)
+    importe_total_sistema = models.DecimalField(
+        max_digits=15, decimal_places=2, blank=True, null=True, default=None)
 
     importe_tasa1 = models.DecimalField(
         max_digits=15, decimal_places=2, blank=True, null=True, default=0)
@@ -640,6 +660,10 @@ class cpb_cobranza(models.Model):
         max_digits=15, decimal_places=2, blank=True, null=True, default=0)
     moneda = models.ForeignKey('general.gral_moneda', verbose_name=u'Moneda',
                                db_column='moneda', blank=True, null=True, on_delete=models.SET_NULL)
+    cotizacion = models.DecimalField(
+        'Cotización', max_digits=15, decimal_places=6, default=1.000000)
+    importe_total_sistema = models.DecimalField(
+        u'Importe Total Sistema', max_digits=15, decimal_places=2, blank=True, null=True)
     # Descuento o Recargo que tuvo la factura
     desc_rec = models.DecimalField(
         max_digits=15, decimal_places=2, blank=True, null=True, default=0)
@@ -651,6 +675,12 @@ class cpb_cobranza(models.Model):
     def __unicode__(self):
         simbolo = self.moneda.simbolo if self.moneda else '$'
         return u'%s-%s-%s %s' % (self.cpb_comprobante, self.cpb_factura, simbolo, self.importe_total)
+
+    def save(self, *args, **kwargs):
+        if self.cotizacion is None or self.cotizacion == 0:
+            self.cotizacion = 1
+        self.importe_total_sistema = self.importe_total * self.cotizacion if self.importe_total else None
+        super(cpb_cobranza, self).save(*args, **kwargs)
 
 
 class cpb_banco(models.Model):
@@ -728,6 +758,10 @@ class cpb_comprobante_fp(models.Model):
         u'Cheque Nº', max_length=50, blank=True, null=True)
     importe = models.DecimalField(
         'Importe', max_digits=15, decimal_places=2, blank=True, null=True, default=0)
+    cotizacion = models.DecimalField(
+        'Cotización', max_digits=15, decimal_places=6, null=True, blank=True)
+    importe_sistema = models.DecimalField(
+        u'Importe Sistema', max_digits=15, decimal_places=2, blank=True, null=True)
     # Field name made lowercase.
     detalle = models.TextField(max_length=500, blank=True, null=True)
     fecha_creacion = models.DateTimeField(auto_now_add=True)
