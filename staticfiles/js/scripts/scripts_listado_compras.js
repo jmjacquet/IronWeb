@@ -203,7 +203,7 @@ var tabla = $('#dataTables-cpb_compra').DataTable({
             let col_tot_sum =[8, 9, 10, 11, 12]
             col_tot_sum.forEach(function (col_number) {
                 pageTotal = api.column(col_number, { page: 'current'} ).data().reduce( function (a, b) {return floatVal(a) + floatVal(b);}, 0 );
-                $( api.column(col_number).footer() ).html('$'+pageTotal.toLocaleString(undefined,{minimumFractionDigits:2}));
+                $( api.column(col_number).footer() ).html(pageTotal.toLocaleString(undefined,{minimumFractionDigits:2}));
             });
 
             }

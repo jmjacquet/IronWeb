@@ -365,7 +365,8 @@ $( "#GuardarLiqProd" ).click(function() {
       };       
       if (($("#id_condic_pago").val()==2)&&(total != total_pagos)&&($('#id_tipo_form').val()=='ALTA'))
       {                
-          alertify.errorAlert("¡El importe total ($"+total+") no coincide con los pagos cargados ($"+total_pagos+")!");
+          var simb = MONEDAS[$("#id_moneda").val()] || '$';
+          alertify.errorAlert("¡El importe total ("+simb+total+") no coincide con los pagos cargados ("+simb+total_pagos+")!");
           $("#GuardarLiqProd").prop("disabled", false);     
           return false;
       }

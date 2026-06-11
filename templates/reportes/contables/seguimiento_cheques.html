@@ -424,7 +424,7 @@ var tabla2 = $('#dataTables-cartera').DataTable({
             };
             
             pageTotal = api.column(5, { page: 'current'} ).data().reduce( function (a, b) {return floatVal(a) + floatVal(b);}, 0 );
-            $( api.column(5).footer() ).html('{{ simbolo|default:"$" }}'+pageTotal.toLocaleString(undefined,{minimumFractionDigits:2}));      
+            $( api.column(5).footer() ).html(pageTotal.toLocaleString(undefined,{minimumFractionDigits:2}));      
          
         }
         });
@@ -579,7 +579,7 @@ var tabla3 = $('#dataTables-cobrados').DataTable({
             };
             
             pageTotal = api.column(5, { page: 'current'} ).data().reduce( function (a, b) {return floatVal(a) + floatVal(b);}, 0 );
-            $( api.column(5).footer() ).html('{{ simbolo|default:"$" }}'+pageTotal.toLocaleString(undefined,{minimumFractionDigits:2}));      
+            $( api.column(5).footer() ).html(pageTotal.toLocaleString(undefined,{minimumFractionDigits:2}));      
          
         }
         });
@@ -734,7 +734,7 @@ var tabla4 = $('#dataTables-pagados').DataTable({
             };
             
             pageTotal = api.column(4, { page: 'current'} ).data().reduce( function (a, b) {return floatVal(a) + floatVal(b);}, 0 );
-            $( api.column(4).footer() ).html('{{ simbolo|default:"$" }}'+pageTotal.toLocaleString(undefined,{minimumFractionDigits:2}));      
+            $( api.column(4).footer() ).html(pageTotal.toLocaleString(undefined,{minimumFractionDigits:2}));      
          
         }
         });
@@ -910,7 +910,7 @@ var tabla = $('#dataTables-cheques').DataTable({
               };
               
               pageTotal = api.column(5, { page: 'current'} ).data().reduce( function (a, b) {return floatVal(a) + floatVal(b);}, 0 );
-              $( api.column(5).footer() ).html('{{ simbolo|default:"$" }}'+pageTotal.toLocaleString(undefined,{minimumFractionDigits:2}));      
+              $( api.column(5).footer() ).html(pageTotal.toLocaleString(undefined,{minimumFractionDigits:2}));      
          
             }
         });

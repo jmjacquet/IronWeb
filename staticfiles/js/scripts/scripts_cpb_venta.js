@@ -52,7 +52,8 @@ $("#id_entidad").change(function(){
 
                           var tot = data['saldo_sobrepaso'];
                           if (tot>0){
-                            alertify.alert("TOPE SALDO PERMITIDO CLIENTES","¡El saldo pendiente sobrepasa al tope permitido por <b>$"+tot+"</b>!"); 
+                            var simb = MONEDAS[$("#id_moneda").val()] || '$';
+                            alertify.alert("TOPE SALDO PERMITIDO CLIENTES","¡El saldo pendiente sobrepasa al tope permitido por <b>"+simb+tot+"</b>!"); 
                           };
                         }
                         else{                 
@@ -694,7 +695,8 @@ $( "#GuardarVenta" ).click(function() {
       };             
       if (($("#id_condic_pago").val()==2)&&(total != total_pagos)&&($('#id_tipo_form').val()=='ALTA'))
       {                
-          alertify.errorAlert("¡El importe total ($"+total+") no coincide con los pagos cargados ($"+total_pagos+")!");
+          var simb = MONEDAS[$("#id_moneda").val()] || '$';
+          alertify.errorAlert("¡El importe total ("+simb+total+") no coincide con los pagos cargados ("+simb+total_pagos+")!");
           $("#GuardarVenta").prop("disabled", false);     
           return false;
       }
