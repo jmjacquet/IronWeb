@@ -130,6 +130,13 @@ class VariablesMixin(ContextMixin):
             context['tipo_usr'] = 1
             context['habilitado_contador'] = False
 
+        from general.models import gral_moneda
+        try:
+            monedas = gral_moneda.objects.filter(baja=False)
+            context['monedas_json'] = json.dumps({m.id: m.simbolo for m in monedas})
+        except:
+            context['monedas_json'] = '{}'
+
         permisos_grupo = ver_permisos(request)
         context['permisos_grupo'] = permisos_grupo
         context['permisos_ingresos'] = ('cpb_ventas' in permisos_grupo) or ('cpb_cobranzas' in permisos_grupo) or (

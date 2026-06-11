@@ -10,6 +10,17 @@
 {% endblock %}
 {% block extra_js %}        
     <script src="{% static 'js/jquery.formset.js' %}" type="text/javascript"></script>
+    <script type="text/javascript">
+        var MONEDAS = {{ monedas_json|safe }};
+        $(function(){
+            function actualizarSimboloMoneda(){
+                var s = MONEDAS[$("#id_moneda").val()] || '$';
+                $("#form-alta .input-group > .input-group-addon:first-child").text(s);
+            }
+            $("#id_moneda").change(actualizarSimboloMoneda);
+            actualizarSimboloMoneda();
+        });
+    </script>
     <script src="{% static 'js/scripts/scripts_cpb_presup_lite.js'%}?{% now "Ymd"%}" type="text/javascript"></script>
     {% block modales_js %} 
     {% endblock %}
