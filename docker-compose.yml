@@ -22,7 +22,7 @@ services:
       GUNICORN_TIMEOUT: ${GUNICORN_TIMEOUT:-120}
       GUNICORN_BIND: ${GUNICORN_BIND:-0.0.0.0:8000}
       COLLECT_STATIC: ${COLLECT_STATIC:-false}
-      AFIP_SERVICE_URL: ${AFIP_SERVICE_URL:-http://afip-service:8002}
+#      AFIP_SERVICE_URL: ${AFIP_SERVICE_URL:-http://afip-service:8002}
     volumes:
       - ironweb_static:/app/static
       - ironweb_media:/app/media
@@ -51,23 +51,23 @@ services:
       - traefik.http.routers.ironweb-http.service=ironweb
       - traefik.http.routers.ironweb-http.priority=1
 
-  afip-service:
-    build:
-      context: ./felectronica_service
-      dockerfile: Dockerfile
-    container_name: afip_service
-    restart: unless-stopped
-    environment:
-      PYTHONUNBUFFERED: 1
-      DEBUG: ${AFIP_DEBUG:-false}
-      AFIP_HOMOLOGACION: ${AFIP_HOMOLOGACION:-true}
-    ports:
-      - "8002:8002"
-    volumes:
-      - ./felectronica_service/certificados:/app/certificados
-      - afip_logs:/app/logs
-    networks:
-      - dokploy-network
+#  afip-service:
+#    build:
+#      context: ./felectronica_service
+#      dockerfile: Dockerfile
+#    container_name: afip_service
+#    restart: unless-stopped
+#    environment:
+#      PYTHONUNBUFFERED: 1
+#      DEBUG: ${AFIP_DEBUG:-false}
+#      AFIP_HOMOLOGACION: ${AFIP_HOMOLOGACION:-true}
+#    ports:
+#      - "8002:8002"
+#    volumes:
+#      - ./felectronica_service/certificados:/app/certificados
+#      - afip_logs:/app/logs
+#    networks:
+#      - dokploy-network
 
   adminer:
     image: adminer:latest
