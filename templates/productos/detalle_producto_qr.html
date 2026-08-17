@@ -98,11 +98,11 @@
                       <tr>
                         <td class="text-center texto_detalle">{{pp.lista_precios}}</td>
                         {% if is_logged %}
-                          <td class="importe texto_detalle">${{pp.precio_costo|default_if_none:0|floatformat:2}}</td>
-                          <td class="importe texto_detalle">${{pp.precio_cimp|default_if_none:0|floatformat:2}}</td>
+                          <td class="importe texto_detalle">{{pp.lista_precios.moneda.simbolo|default:'$'}}{{pp.precio_costo|default_if_none:0|floatformat:2}}</td>
+                          <td class="importe texto_detalle">{{pp.lista_precios.moneda.simbolo|default:'$'}}{{pp.precio_cimp|default_if_none:0|floatformat:2}}</td>
                           <td class="importe texto_detalle">{{pp.get_porc_gan|default_if_none:0|floatformat:2}}%</td>
                         {% endif %}
-                        <td class="importe_total texto_detalle">${{pp.precio_venta|default_if_none:0|floatformat:2}}</td>
+                        <td class="importe_total texto_detalle">{{pp.lista_precios.moneda.simbolo|default:'$'}}{{pp.precio_venta|default_if_none:0|floatformat:2}}</td>
                       </tr>
                     {% endfor %}
                   </tbody>

@@ -299,7 +299,7 @@ class CPBVentaPresupCreateView(VariablesMixin, CreateView):
             form.fields["id_cpb_padre"].initial = cpb.pk
             form.fields["pto_vta"].initial = cpb.pto_vta
             form.fields["entidad"].initial = cpb.entidad
-            detalles = cpb_comprobante_detalle.objects.filter(cpb_comprobante=cpb)
+            detalles = cpb_comprobante_detalle.objects.filter(cpb_comprobante=cpb).select_related('producto', 'tasa_iva', 'lista_precios', 'origen_destino')
             det = []
             for c in detalles:
                 det.append(
@@ -475,7 +475,7 @@ class CPBVentaNCCreateView(VariablesMixin, CreateView):
                 compra_venta="V", baja=False, tipo__in=[2, 3]
             )
             form.fields["condic_pago"].initial = 1
-            detalles = cpb_comprobante_detalle.objects.filter(cpb_comprobante=cpb)
+            detalles = cpb_comprobante_detalle.objects.filter(cpb_comprobante=cpb).select_related('producto', 'tasa_iva', 'lista_precios', 'origen_destino')
             det = []
             for c in detalles:
                 det.append(
@@ -511,7 +511,7 @@ class CPBVentaNCCreateView(VariablesMixin, CreateView):
                 min_num=1,
             )
 
-            perc_imp = cpb_comprobante_perc_imp.objects.filter(cpb_comprobante=cpb)
+            perc_imp = cpb_comprobante_perc_imp.objects.filter(cpb_comprobante=cpb).select_related('perc_imp')
             pi = []
             for p in perc_imp:
                 pi.append({"perc_imp": p.perc_imp, "detalle": p.detalle, "importe_total": p.importe_total})
@@ -670,7 +670,7 @@ class CPBVentaOPCreateView(VariablesMixin, CreateView):
             form.fields["entidad"].initial = orden.cliente
             form.fields["vendedor"].initial = orden.vendedor
             form.fields["observacion"].initial = u"Orden de Pedido Nº: %s" % orden.numero
-            detalles = orden_pedido_detalle.objects.filter(orden_pedido=orden)
+            detalles = orden_pedido_detalle.objects.filter(orden_pedido=orden).select_related('producto', 'origen_destino', 'lista_precios')
             letra = get_letra(orden.cliente.fact_categFiscal, empresa_actual(self.request).categ_fiscal)
             det = []
             for c in detalles:
@@ -839,9 +839,12 @@ class CPBVentaUnificarView(VariablesMixin, CreateView):
             form.fields["entidad"].initial = cpb.entidad
             # cargo cada uno de los detalles en un solo cpb
             det = []
+            detalles_all = cpb_comprobante_detalle.objects.filter(cpb_comprobante__in=cpbs).select_related('producto', 'tasa_iva', 'lista_precios', 'origen_destino')
+            cpb_detalles = {}
+            for d in detalles_all:
+                cpb_detalles.setdefault(d.cpb_comprobante_id, []).append(d)
             for f in cpbs:
-                detalles = cpb_comprobante_detalle.objects.filter(cpb_comprobante=f)
-                for c in detalles:
+                for c in cpb_detalles.get(f.id, []):
                     det.append(
                         {
                             "producto": c.producto,
@@ -1121,7 +1124,7 @@ class CPBVentaClonarCreateView(VariablesMixin, CreateView):
             form.fields["condic_pago"].initial = 1
             form.fields["importe_tasa1"].initial = cpb.importe_tasa1
             form.fields["importe_tasa2"].initial = cpb.importe_tasa2
-            detalles = cpb_comprobante_detalle.objects.filter(cpb_comprobante=cpb)
+            detalles = cpb_comprobante_detalle.objects.filter(cpb_comprobante=cpb).select_related('producto', 'tasa_iva', 'lista_precios', 'origen_destino')
             det = []
             for c in detalles:
                 det.append(
@@ -1155,7 +1158,7 @@ class CPBVentaClonarCreateView(VariablesMixin, CreateView):
                 min_num=1,
             )
 
-            perc_imp = cpb_comprobante_perc_imp.objects.filter(cpb_comprobante=cpb)
+            perc_imp = cpb_comprobante_perc_imp.objects.filter(cpb_comprobante=cpb).select_related('perc_imp')
             pi = []
             for p in perc_imp:
                 pi.append({"perc_imp": p.perc_imp, "detalle": p.detalle, "importe_total": p.importe_total})
@@ -1404,7 +1407,7 @@ class CPBRemitoCreateView(VariablesMixin, CreateView):
         form.fields["id_cpb_padre"].initial = cpb.pk
         form.fields["pto_vta"].initial = cpb.pto_vta
         form.fields["entidad"].initial = cpb.entidad
-        detalles = cpb_comprobante_detalle.objects.filter(cpb_comprobante=cpb)
+        detalles = cpb_comprobante_detalle.objects.filter(cpb_comprobante=cpb).select_related('producto')
         det = []
         for c in detalles:
             det.append({"producto": c.producto, "cantidad": c.cantidad, "detalle": c.detalle})

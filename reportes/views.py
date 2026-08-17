@@ -477,10 +477,10 @@ def generarCITI(cpbs, ventas_compras, tipo_archivo, libro_iva_dig=False):
                 perc_IIBB = Decimal(0.00)
                 perc_impMunicip = Decimal(0.00)
                 importe_impuestosInt = Decimal(0.00)
-                cpb_perc = cpb_comprobante_perc_imp.objects.filter(cpb_comprobante=c)
+                cpb_perc = cpb_comprobante_perc_imp.objects.filter(cpb_comprobante=c).select_related('perc_imp')
 
                 try:
-                    cpb_perc = cpb_comprobante_perc_imp.objects.filter(cpb_comprobante=c)
+                    cpb_perc = cpb_comprobante_perc_imp.objects.filter(cpb_comprobante=c).select_related('perc_imp')
                     for p in cpb_perc:
                         id = p.perc_imp.id
                         if id in [2, 8]:
@@ -505,7 +505,7 @@ def generarCITI(cpbs, ventas_compras, tipo_archivo, libro_iva_dig=False):
                 cod_op = "N"
                 cant_alic = 0
                 try:
-                    cpb_iva = cpb_comprobante_tot_iva.objects.filter(cpb_comprobante=c)
+                    cpb_iva = cpb_comprobante_tot_iva.objects.filter(cpb_comprobante=c).select_related('tasa_iva')
                     cant_alic = len(cpb_iva)
                     informa = len(cpb_iva.filter(tasa_iva__id_afip__lte=3)) > 0
                     cod_op = "N"
@@ -532,7 +532,7 @@ def generarCITI(cpbs, ventas_compras, tipo_archivo, libro_iva_dig=False):
                 nafip = c.get_nro_afip()
                 if nafip == None:
                     continue
-                cpb_iva = cpb_comprobante_tot_iva.objects.filter(cpb_comprobante=c)
+                cpb_iva = cpb_comprobante_tot_iva.objects.filter(cpb_comprobante=c).select_related('tasa_iva')
                 for ci in cpb_iva:
                     linea = ""
                     linea += str(nafip).encode("utf-8").rjust(3, "0")  # CODIGO CPB AFIP
@@ -571,7 +571,7 @@ def generarCITI(cpbs, ventas_compras, tipo_archivo, libro_iva_dig=False):
                 importe_impuestosInt = Decimal(0.00)
                 perc_imp_iva = Decimal(0.00)
                 try:
-                    cpb_perc = cpb_comprobante_perc_imp.objects.filter(cpb_comprobante=c)
+                    cpb_perc = cpb_comprobante_perc_imp.objects.filter(cpb_comprobante=c).select_related('perc_imp')
                     for p in cpb_perc:
                         id = p.perc_imp.id
                         if id in [2, 8]:
@@ -600,7 +600,7 @@ def generarCITI(cpbs, ventas_compras, tipo_archivo, libro_iva_dig=False):
                 cod_op = "N"
                 cant_alic = 0
                 try:
-                    cpb_iva = cpb_comprobante_tot_iva.objects.filter(cpb_comprobante=c)
+                    cpb_iva = cpb_comprobante_tot_iva.objects.filter(cpb_comprobante=c).select_related('tasa_iva')
                     cant_alic = len(cpb_iva)
                     informa = len(cpb_iva.filter(tasa_iva__id_afip__lte=3)) > 0
                     cod_op = "N"
@@ -626,7 +626,7 @@ def generarCITI(cpbs, ventas_compras, tipo_archivo, libro_iva_dig=False):
                 nafip = c.get_nro_afip()
                 if nafip == None:
                     continue
-                cpb_iva = cpb_comprobante_tot_iva.objects.filter(cpb_comprobante=c)
+                cpb_iva = cpb_comprobante_tot_iva.objects.filter(cpb_comprobante=c).select_related('tasa_iva')
                 nro_doc, tipo_doc = c.entidad.get_nro_doc_afip()
 
                 for ci in cpb_iva:

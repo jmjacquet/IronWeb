@@ -46,6 +46,16 @@ TENANT_MAP = {
         'ENTIDAD_DB': 'ironweb_sma',
         'ENTIDAD_DIR': 'sma',
     },
+    'development.ironwebgestion.com.ar': {
+        'ENTIDAD_ID': '1',
+        'ENTIDAD_DB': 'ironweb_prueba',
+        'ENTIDAD_DIR': 'prueba',
+    },
+    'www.development.ironwebgestion.com.ar': {
+        'ENTIDAD_ID': '1',
+        'ENTIDAD_DB': 'ironweb_prueba',
+        'ENTIDAD_DIR': 'prueba',
+    },
     # 'digra.ironwebgestion.com.ar': {
     #     'ENTIDAD_ID': '3',
     #     'ENTIDAD_DB': 'ironweb_digra',
@@ -199,6 +209,7 @@ class TenantMiddleware(object):
 
     def __call__(self, request):
         """Django 1.8+ compatibility"""
-        self.process_request(request)
-        response = self.get_response(request)
-        return response
+        response = self.process_request(request)
+        if response is not None:
+            return response
+        return self.get_response(request)

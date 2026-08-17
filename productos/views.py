@@ -287,12 +287,12 @@ class ProductosVerView(VariablesMixin, DetailView):
     def get_context_data(self, **kwargs):
         context = super(ProductosVerView, self).get_context_data(**kwargs)
         try:
-            prod_stock = prod_producto_ubicac.objects.filter(producto=self.object)
+            prod_stock = prod_producto_ubicac.objects.filter(producto=self.object).select_related('ubicacion')
         except prod_stock.DoesNotExist:
             prod_stock = None
 
         try:
-            prod_precios = prod_producto_lprecios.objects.filter(producto=self.object)
+            prod_precios = prod_producto_lprecios.objects.filter(producto=self.object).select_related('lista_precios')
         except prod_precios.DoesNotExist:
             prod_precios = None
 

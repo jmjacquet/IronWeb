@@ -704,7 +704,7 @@ def facturarAFIP(request,idCpb):
                 # iva_id: código Alícuota de IVA (según tabla de parámetros AFIP)
                 # base_imp: base imponible (importe)
                 # importe_iva: importe liquidado (base_imp por alicuota)        
-            cpb_iva = cpb_comprobante_tot_iva.objects.filter(cpb_comprobante=f)
+            cpb_iva = cpb_comprobante_tot_iva.objects.filter(cpb_comprobante=f).select_related('tasa_iva')
             for c in cpb_iva:            
                 id = c.tasa_iva.id_afip # 21%
                 base_imp = c.importe_base
@@ -721,7 +721,7 @@ def facturarAFIP(request,idCpb):
                 # base_imp: base imponible (importe)
                 # alic: alicuota (porcentaje)
                 # importe: importe liquidado
-            cpb_perc = cpb_comprobante_perc_imp.objects.filter(cpb_comprobante=f)
+            cpb_perc = cpb_comprobante_perc_imp.objects.filter(cpb_comprobante=f).select_related('perc_imp')
             for p in cpb_perc:            
                 if p.perc_imp:
                     id = p.perc_imp.id 

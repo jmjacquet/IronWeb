@@ -75,12 +75,12 @@
       <td class="listado_der borde_izq">{{item.cantidad|default_if_none:0|floatformat:2|intcomma}} {{item.producto.get_unidad_display}}</td>
       <td class="listado_izq borde_izq"  {% if not discrimina_iva %}colspan="2"{% endif %}>{{item.producto}} {% if item.detalle %} ({{item.detalle}}) {% endif %}</td>
       {%if discrimina_iva %}
-        <td class="listado_der borde_izq">${{item.importe_unitario|default_if_none:0|floatformat:2|intcomma}}</td>      
+        <td class="listado_der borde_izq">{{cpb.moneda.simbolo|default:'$'}}{{item.importe_unitario|default_if_none:0|floatformat:2|intcomma}}</td>      
         <td class="listado_der borde_izq">{{item.tasa_iva|default_if_none:''}}</td>
-        <td class="listado_der borde_der borde_izq">${{item.importe_subtotal|default_if_none:0|floatformat:2|intcomma}}</td>
+        <td class="listado_der borde_der borde_izq">{{cpb.moneda.simbolo|default:'$'}}{{item.importe_subtotal|default_if_none:0|floatformat:2|intcomma}}</td>
       {% else %}
-        <td class="listado_der borde_izq">${{item.importe_unitario|default_if_none:0|floatformat:2|intcomma}}</td>      
-        <td class="listado_der borde_der borde_izq">${{item.importe_total|default_if_none:0|floatformat:2|intcomma}}</td>
+        <td class="listado_der borde_izq">{{cpb.moneda.simbolo|default:'$'}}{{item.importe_unitario|default_if_none:0|floatformat:2|intcomma}}</td>      
+        <td class="listado_der borde_der borde_izq">{{cpb.moneda.simbolo|default:'$'}}{{item.importe_total|default_if_none:0|floatformat:2|intcomma}}</td>
       {% endif %}      
     </tr>       
   {% endfor detalle_comprobante %}
@@ -95,7 +95,7 @@
   {% endfor %}
   
  <tr class="borde_izq borde_der borde_arriba borde_abajo ">
-    <td colspan="5" class="tabla_footer">Subtotal: ${{subtotal|default_if_none:0|floatformat:2|intcomma}}</td>
+    <td colspan="5" class="tabla_footer">Subtotal: {{cpb.moneda.simbolo|default:'$'}}{{subtotal|default_if_none:0|floatformat:2|intcomma}}</td>
   </tr>
 </table>
 <br>
@@ -122,17 +122,17 @@
     <tr>
       <td width="50%" class="listado_izq  "></td>
       <td width="25%" class="listado_final ">{%if discrimina_iva %}Importe Neto Gravado:{%endif%}</td>
-      <td width="25%" class="listado_final">{%if discrimina_iva %}$ {{cpb.importe_gravado|default_if_none:0|floatformat:2|intcomma}}{%endif%}</td>
+      <td width="25%" class="listado_final">{%if discrimina_iva %}{{cpb.moneda.simbolo|default:'$'}} {{cpb.importe_gravado|default_if_none:0|floatformat:2|intcomma}}{%endif%}</td>
     </tr>
     <tr>
       <td class="listado_izq "></td>
       <td class="listado_final ">{%if discrimina_iva %} Importe IVA:{% endif %}</td>
-      <td class="listado_final ">{%if discrimina_iva %}$ {{cpb.importe_iva|default_if_none:0|floatformat:2|intcomma}}{%endif%}</td>
+      <td class="listado_final ">{%if discrimina_iva %}{{cpb.moneda.simbolo|default:'$'}} {{cpb.importe_iva|default_if_none:0|floatformat:2|intcomma}}{%endif%}</td>
     </tr>    
     <tr>
       <td class="listado_final "></td>
       <td class="listado_final borde_der borde_arriba borde_abajo borde_izq">Importe TOTAL</td>
-      <td class="listado_final borde_der borde_arriba borde_abajo tabla_footer">$ {{cpb.importe_total|default_if_none:0|floatformat:2|intcomma}}</td>
+      <td class="listado_final borde_der borde_arriba borde_abajo tabla_footer">{{cpb.moneda.simbolo|default:'$'}} {{cpb.importe_total|default_if_none:0|floatformat:2|intcomma}}</td>
     </tr>
   </table>
   <div id="page-footer2" class="pie_sistema">

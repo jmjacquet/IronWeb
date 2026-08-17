@@ -147,7 +147,7 @@ class OPPresupCreateView(VariablesMixin,CreateView):
         if id_presupuesto:
             form.fields['id_presupuesto'].initial = id_presupuesto.pk
             form.fields['cliente'].initial = id_presupuesto.entidad
-            detalles = cpb_comprobante_detalle.objects.filter(cpb_comprobante=id_presupuesto)
+            detalles = cpb_comprobante_detalle.objects.filter(cpb_comprobante=id_presupuesto).select_related('producto')
             det=[]        
             for c in detalles:            
                 det.append({'producto': c.producto,'cantidad':c.cantidad,'detalle':c.detalle,'importe_unitario':c.importe_unitario,
@@ -267,7 +267,7 @@ def imprimirNotaPedido(request,id):
         config = gral_empresa.objects.get(id=settings.ENTIDAD_ID)        
     except gral_empresa.DoesNotExist:
         config = None        
-    detalle_pedido = orden_pedido_detalle.objects.filter(orden_pedido=pedido)
+    detalle_pedido = orden_pedido_detalle.objects.filter(orden_pedido=pedido).select_related('producto')
         
     cobranzas = None
     cantidad = 0
@@ -292,7 +292,7 @@ def imprimirOrdenTrabajo(request,id):
         config = gral_empresa.objects.get(id=settings.ENTIDAD_ID)        
     except gral_empresa.DoesNotExist:
         config = None        
-    detalle_trabajo = orden_trabajo_detalle.objects.filter(orden_trabajo=trabajo)
+    detalle_trabajo = orden_trabajo_detalle.objects.filter(orden_trabajo=trabajo).select_related('producto')
     pedido = trabajo.orden_pedido    
     cobranzas = None
     cantidad = 0
@@ -317,7 +317,7 @@ def imprimirOrdenColocacion(request,id):
         config = gral_empresa.objects.get(id=settings.ENTIDAD_ID)        
     except gral_empresa.DoesNotExist:
         config = None        
-    detalle_pedido = orden_pedido_detalle.objects.filter(orden_pedido=pedido)
+    detalle_pedido = orden_pedido_detalle.objects.filter(orden_pedido=pedido).select_related('producto')
         
     cobranzas = None
     cantidad = 0
@@ -393,7 +393,7 @@ class OPVerView(VariablesMixin,DetailView):
             config = None        
         op = self.object
         context['config'] = config
-        detalle_pedido = orden_pedido_detalle.objects.filter(orden_pedido=op)       
+        detalle_pedido = orden_pedido_detalle.objects.filter(orden_pedido=op).select_related('producto')       
         context['detalle_pedido'] = detalle_pedido       
         return context
 
@@ -455,7 +455,7 @@ class OTCreateView(VariablesMixin,CreateView):
         id = self.kwargs['id']       
         op = orden_pedido.objects.get(id=id)    
         pedido = op
-        pedido_detalles = orden_pedido_detalle.objects.filter(orden_pedido=op)   
+        pedido_detalles = orden_pedido_detalle.objects.filter(orden_pedido=op).select_related('producto')   
         form.fields['orden_pedido'].initial = op.pk        
         form.fields['numero'].initial = op.numero  
         OTDetalleFS.form = staticmethod(curry(OTDetalleForm,request=request))
@@ -500,7 +500,7 @@ class OTCreateView(VariablesMixin,CreateView):
         id = self.kwargs['id']       
         op = orden_pedido.objects.get(id=id)    
         pedido = op
-        pedido_detalles = orden_pedido_detalle.objects.filter(orden_pedido=op)   
+        pedido_detalles = orden_pedido_detalle.objects.filter(orden_pedido=op).select_related('producto')   
         form.fields['orden_pedido'].initial = op.pk        
         form.fields['numero'].initial = op.numero  
         OTDetalleFS.form = staticmethod(curry(OTDetalleForm,request=self.request))
@@ -541,14 +541,14 @@ class OTEditView(VariablesMixin,UpdateView):
         cpb=self.get_object() 
        
         pedido = cpb.orden_pedido
-        pedido_detalles = orden_pedido_detalle.objects.filter(orden_pedido=pedido)   
+        pedido_detalles = orden_pedido_detalle.objects.filter(orden_pedido=pedido).select_related('producto')   
         form.fields['orden_pedido'].initial = pedido.pk                        
         form.fields['numero'].widget.attrs['disabled'] = True                
         OTDetalleFS.form = staticmethod(curry(OTDetalleForm,request=request))
         ot_detalle = OTDetalleFS(instance=self.object,prefix='formDetalle')        
 
         pedido = cpb.orden_pedido
-        pedido_detalles = orden_pedido_detalle.objects.filter(orden_pedido=pedido)   
+        pedido_detalles = orden_pedido_detalle.objects.filter(orden_pedido=pedido).select_related('producto')   
         form.fields['orden_pedido'].initial = pedido.pk        
 
         return self.render_to_response(self.get_context_data(form=form,ot_detalle = ot_detalle,pedido=pedido,pedido_detalles=pedido_detalles))
@@ -560,7 +560,7 @@ class OTEditView(VariablesMixin,UpdateView):
         form = self.get_form(form_class)        
         cpb=self.get_object()        
         pedido = cpb.orden_pedido
-        pedido_detalles = orden_pedido_detalle.objects.filter(orden_pedido=pedido)   
+        pedido_detalles = orden_pedido_detalle.objects.filter(orden_pedido=pedido).select_related('producto')   
         OTDetalleFS.form = staticmethod(curry(OTDetalleForm,request=request))
         ot_detalle = OTDetalleFS(request.POST,instance=self.object,prefix='formDetalle')  
         if form.is_valid() and ot_detalle.is_valid():
@@ -615,7 +615,7 @@ class OTVerView(VariablesMixin,DetailView):
             config = None        
         op = self.object
         context['config'] = config
-        detalle_trabajo = orden_trabajo_detalle.objects.filter(orden_trabajo=op)       
+        detalle_trabajo = orden_trabajo_detalle.objects.filter(orden_trabajo=op).select_related('producto')       
         context['detalle'] = detalle_trabajo       
         return context
 
@@ -698,8 +698,8 @@ class OCCreateView(VariablesMixin,CreateView):
         ot = orden_trabajo.objects.get(id=id)    
         trabajo = ot  
         pedido = ot.orden_pedido
-        pedido_detalles = orden_pedido_detalle.objects.filter(orden_pedido=pedido)   
-        trabajo_detalles = orden_trabajo_detalle.objects.filter(orden_trabajo=trabajo)   
+        pedido_detalles = orden_pedido_detalle.objects.filter(orden_pedido=pedido).select_related('producto')   
+        trabajo_detalles = orden_trabajo_detalle.objects.filter(orden_trabajo=trabajo).select_related('producto')   
         form.fields['orden_trabajo'].initial = trabajo.pk        
         form.fields['numero'].initial = trabajo.numero          
         return self.render_to_response(self.get_context_data(form=form,trabajo=trabajo,pedido_detalles=pedido_detalles,trabajo_detalles=trabajo_detalles))
@@ -735,8 +735,8 @@ class OCCreateView(VariablesMixin,CreateView):
         ot = orden_trabajo.objects.get(id=id)    
         trabajo = ot
         pedido = ot.orden_pedido
-        pedido_detalles = orden_pedido_detalle.objects.filter(orden_pedido=pedido)   
-        trabajo_detalles = orden_trabajo_detalle.objects.filter(orden_trabajo=trabajo)  
+        pedido_detalles = orden_pedido_detalle.objects.filter(orden_pedido=pedido).select_related('producto')   
+        trabajo_detalles = orden_trabajo_detalle.objects.filter(orden_trabajo=trabajo).select_related('producto')  
         form.fields['orden_pedido'].initial = trabajo.pk        
         form.fields['numero'].initial = trabajo.numero          
         return self.render_to_response(self.get_context_data(form=form,trabajo=trabajo,pedido_detalles=pedido_detalles,trabajo_detalles=trabajo_detalles))
@@ -775,7 +775,7 @@ class OCEditView(VariablesMixin,UpdateView):
         orden = self.get_object()        
         ot = orden.orden_trabajo
         trabajo = ot
-        trabajo_detalles = orden_trabajo_detalle.objects.filter(orden_trabajo=trabajo)   
+        trabajo_detalles = orden_trabajo_detalle.objects.filter(orden_trabajo=trabajo).select_related('producto')   
         form.fields['orden_trabajo'].initial = trabajo.pk        
         form.fields['numero'].widget.attrs['disabled'] = True                
         return self.render_to_response(self.get_context_data(form=form,trabajo=trabajo,trabajo_detalles=trabajo_detalles))
@@ -787,7 +787,7 @@ class OCEditView(VariablesMixin,UpdateView):
         orden = self.get_object()        
         ot = orden.orden_trabajo
         trabajo = ot
-        trabajo_detalles = orden_trabajo_detalle.objects.filter(orden_trabajo=trabajo)              
+        trabajo_detalles = orden_trabajo_detalle.objects.filter(orden_trabajo=trabajo).select_related('producto')              
         if form.is_valid():
             return self.form_valid(form,trabajo=trabajo,trabajo_detalles=trabajo_detalles)
         else:          
@@ -837,7 +837,7 @@ class OCVerView(VariablesMixin,DetailView):
         context['config'] = config
         trabajo = orden_trabajo.objects.get(pk=trabajo.pk)       
         context['trabajo'] = trabajo       
-        op_detalle = orden_pedido_detalle.objects.filter(orden_pedido=trabajo.orden_pedido)       
+        op_detalle = orden_pedido_detalle.objects.filter(orden_pedido=trabajo.orden_pedido).select_related('producto')       
         context['orden_pedido_detalle'] = op_detalle  
         return context        
 

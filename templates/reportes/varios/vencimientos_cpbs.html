@@ -97,7 +97,7 @@
                                            data-modal-head="DETALLE {{cpb.entidad.get_tipo_entidad_display|upper}} {{cpb.entidad.codigo}}" data-modal-callback="reload">
                                             <strong>{{ cpb.entidad.detalle_entidad|truncatechars:60 }}</strong></a>
                                     </td>
-                                    <td class="importe">${{cpb.get_importe_total|default_if_none:0|floatformat:2}}</td> 
+                                    <td class="importe">{{ simbolo|default:"$" }}{{cpb.get_importe_total|default_if_none:0|floatformat:2}}</td> 
                                     <td {% if cpb.cae %}title="Vencimiento CAE: {{cpb.cae_vto|date:'d/m/Y'}}" class="listado_estado success"{% endif %}>{{ cpb.cae|default_if_none:'' }}</td>
                                     <td title="{{ cpb.observacion}} {{ cpb.seguimiento|default_if_none:''}}">{{ cpb.observacion|default_if_none:''|truncatechars:40 }}{% if cpb.seguimiento %} - {{ cpb.seguimiento|default_if_none:''|truncatechars:40 }} {% endif %}</td>                                    
                                     <td title="{{ cpb.vendedor.apellido_y_nombre}}">{{ cpb.vendedor.apellido_y_nombre|default_if_none:''|truncatechars:40 }}</td>

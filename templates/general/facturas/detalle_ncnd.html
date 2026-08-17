@@ -46,9 +46,9 @@
     <tr>
       <td class="listado_der borde_izq">{{item.cantidad|default_if_none:0|floatformat:2}} {{item.producto.get_unidad_display}}</td>
       <td class="listado_izq borde_izq">{{item.producto}} {% if item.detalle %} ({{item.detalle}}) {% endif %}</td>    
-      <td class="listado_der borde_izq">${{item.importe_unitario|default_if_none:0|floatformat:2}}</td>      
+      <td class="listado_der borde_izq">{{cpb.moneda.simbolo|default:'$'}}{{item.importe_unitario|default_if_none:0|floatformat:2}}</td>      
       <td class="listado_der borde_izq">{{item.tasa_iva|default_if_none:''}}</td>
-      <td class="listado_der borde_der borde_izq">${{item.importe_total|default_if_none:0|floatformat:2}}</td>
+      <td class="listado_der borde_der borde_izq">{{cpb.moneda.simbolo|default:'$'}}{{item.importe_total|default_if_none:0|floatformat:2}}</td>
     </tr>       
   {% endfor detalle_comprobante %}
   </tbody>
@@ -56,7 +56,7 @@
      <tr>
        <th colspan="3"></th>
        <th class="texto_der">Total:</th>
-       <th>${{cpb.importe_total|default_if_none:0|floatformat:2}}</th>
+       <th>{{cpb.moneda.simbolo|default:'$'}}{{cpb.importe_total|default_if_none:0|floatformat:2}}</th>
      </tr>
     </tfoot>   
  </table>

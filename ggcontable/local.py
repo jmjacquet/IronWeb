@@ -18,6 +18,18 @@ STATICFILES_DIRS = (
     os.path.join(SITE_ROOT, "staticfiles"),
 )
 
+USE_I18N = True
+USE_THOUSAND_SEPARATOR = False
+USE_L10N = False  # Disable localization
+DATE_FORMAT = "d/m/Y"
+DATETIME_FORMAT = "d/m/Y H:i"
+SHORT_DATE_FORMAT = "d/m/Y"
+USE_TZ = True
+DEFAULT_CHARSET = "utf-8"
+FILE_CHARSET = "utf-8"
+TIME_INPUT_FORMATS = ("%H:%M",)
+DATE_INPUT_FORMATS = ("%d/%m/%Y",)
+
 # Database name is set dynamically by TenantMiddleware via ENTIDAD_DB env var
 DATABASES = {
     'default': {

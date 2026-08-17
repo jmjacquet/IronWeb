@@ -52,9 +52,9 @@
         <td></td> 
         <td class="listado_centro"><strong>SALDO ANTERIOR</strong></td>                             
         <td></td>
-        <td class="listado_der">${{saldo_anterior_debe|default_if_none:0|floatformat:2}}</td>                                 
-        <td class="listado_der">${{saldo_anterior_haber|default_if_none:0|floatformat:2}}</td>                                
-        <td class="listado_der">${{saldo_anterior|default_if_none:0|floatformat:2}}</td>
+        <td class="listado_der">{{ simbolo|default:"$" }}{{saldo_anterior_debe|default_if_none:0|floatformat:2}}</td>                                 
+        <td class="listado_der">{{ simbolo|default:"$" }}{{saldo_anterior_haber|default_if_none:0|floatformat:2}}</td>                                
+        <td class="listado_der">{{ simbolo|default:"$" }}{{saldo_anterior|default_if_none:0|floatformat:2}}</td>
     </tr>
     {% endif %}
     {% for cpb in cpbs %}
@@ -63,13 +63,13 @@
         <td class="listado_centro">{{ cpb.get_cpb}}</td> 
         <td class="listado_centro">{{ cpb.cpb_tipo|default_if_none:'' }}</td>                                     
         {% if cpb.signo_ctacte > 0 %}
-            <td class="listado_der">${{cpb.importe_total|default_if_none:0|floatformat:2}}</td>                                 
-            <td class="listado_der">$0.00</td>
+            <td class="listado_der">{{ simbolo|default:"$" }}{{cpb.importe_total|default_if_none:0|floatformat:2}}</td>                                 
+            <td class="listado_der">{{ simbolo|default:"$" }}0.00</td>
         {% else %}
-            <td class="listado_der">$0.00</td>
-            <td class="listado_der">${{cpb.importe_total|default_if_none:0|floatformat:2}}</td>                                 
+            <td class="listado_der">{{ simbolo|default:"$" }}0.00</td>
+            <td class="listado_der">{{ simbolo|default:"$" }}{{cpb.importe_total|default_if_none:0|floatformat:2}}</td>                                 
         {% endif %}
-        <td class="listado_der">${{cpb.saldo|default_if_none:0|floatformat:2}}</td>
+        <td class="listado_der">{{ simbolo|default:"$" }}{{cpb.saldo|default_if_none:0|floatformat:2}}</td>
     </tr>
     {% endfor cpbs %}
     
@@ -77,7 +77,7 @@
       <td colspan="6" bordercolor="#000000" style="border-top:1px;"><hr></td>
     </tr>
     <tr valign="middle" >          
-      <td colspan="6" bordercolor="#000000" style="border-top:1px;" class="listado_subtot_imp">Saldo Total:  $ {{saldo|default_if_none:0|floatformat:2}}</td>
+      <td colspan="6" bordercolor="#000000" style="border-top:1px;" class="listado_subtot_imp">Saldo Total:  {{ simbolo|default:"$" }} {{saldo|default_if_none:0|floatformat:2}}</td>
     </tr>
 </table>
 

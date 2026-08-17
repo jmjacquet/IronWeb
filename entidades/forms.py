@@ -40,14 +40,24 @@ class EntidadesForm(forms.ModelForm):
 	def __init__(self, *args, **kwargs):
 		request = kwargs.pop('request', None)
 		super(EntidadesForm, self).__init__(*args, **kwargs)
-		self.fields['lista_precios_defecto'].queryset = prod_lista_precios.objects.filter(baja=False,empresa__id__in=empresas_habilitadas(request))		
+		self.fields['lista_precios_defecto'].queryset = prod_lista_precios.objects.filter(baja=False,empresa__id__in=empresas_habilitadas(request))
+		simbolo = '$'
 		try:
 			empresas = empresas_buscador(request)			
 			self.fields['empresa'].queryset = empresas
 			self.fields['empresa'].initial = 1
 		except:
 			empresas = empresa_actual(request)  
-			self.fields['empresa'].queryset = empresas		
+			self.fields['empresa'].queryset = empresas
+		try:
+			empresa = empresa_actual(request)
+			if empresa.moneda_default:
+				simbolo = empresa.moneda_default.simbolo
+		except:
+			pass
+		for field in self.fields.values():
+			if isinstance(field.widget, PrependWidget):
+				field.widget.data = simbolo		
 			
 
 	def clean(self):		
@@ -91,13 +101,23 @@ class EntidadesEditForm(forms.ModelForm):
 	def __init__(self, *args, **kwargs):
 		request = kwargs.pop('request', None)
 		super(EntidadesEditForm, self).__init__(*args, **kwargs)
-		self.fields['lista_precios_defecto'].queryset = prod_lista_precios.objects.filter(baja=False,empresa__id__in=empresas_habilitadas(request))		
+		self.fields['lista_precios_defecto'].queryset = prod_lista_precios.objects.filter(baja=False,empresa__id__in=empresas_habilitadas(request))
+		simbolo = '$'
 		try:
 			empresas = empresas_buscador(request)			
 			self.fields['empresa'].queryset = empresas			
 		except:
 			empresas = empresa_actual(request)  
 			self.fields['empresa'].queryset = empresas
+		try:
+			empresa = empresa_actual(request)
+			if empresa.moneda_default:
+				simbolo = empresa.moneda_default.simbolo
+		except:
+			pass
+		for field in self.fields.values():
+			if isinstance(field.widget, PrependWidget):
+				field.widget.data = simbolo
 
 	def clean(self):				
 		fact_categFiscal = self.cleaned_data.get('fact_categFiscal')

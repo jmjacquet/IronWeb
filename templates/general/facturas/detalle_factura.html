@@ -55,10 +55,10 @@
     <tr>
       <td class="listado_der borde_izq">{{item.cantidad|default_if_none:0|floatformat:2}} {{item.producto.get_unidad_display}}</td>
       <td class="listado_izq borde_izq">{{item.producto}} {% if item.detalle %} - {{item.detalle}}{% endif %}</td>    
-      <td class="listado_der borde_izq">${{item.importe_unitario|default_if_none:0|floatformat:2}}</td>      
-      <td class="listado_der borde_izq">${{item.porc_dcto|default_if_none:0|floatformat:2}}</td>
+      <td class="listado_der borde_izq">{{cpb.moneda.simbolo|default:'$'}}{{item.importe_unitario|default_if_none:0|floatformat:2}}</td>      
+      <td class="listado_der borde_izq">{{cpb.moneda.simbolo|default:'$'}}{{item.porc_dcto|default_if_none:0|floatformat:2}}</td>
       <td class="listado_der borde_izq">{{item.tasa_iva|default_if_none:''}}</td>
-      <td class="listado_der borde_der borde_izq">${{item.importe_total|default_if_none:0|floatformat:2}}</td>
+      <td class="listado_der borde_der borde_izq">{{cpb.moneda.simbolo|default:'$'}}{{item.importe_total|default_if_none:0|floatformat:2}}</td>
     </tr>       
   {% endfor detalle_comprobante %}
   </tbody>
@@ -66,7 +66,7 @@
      <tr>
        <th colspan="4"></th>
        <th class="texto_der">Total:</th>
-       <th>${{cpb.importe_total|default_if_none:0|floatformat:2}}</th>
+       <th>{{cpb.moneda.simbolo|default:'$'}}{{cpb.importe_total|default_if_none:0|floatformat:2}}</th>
      </tr>
     </tfoot>   
  </table>
@@ -86,7 +86,7 @@
          {% else %}CUENTA CORRIENTE 
          {% endif %}      
        </td>     
-       <td class="text-right borde_der borde_izq"><strong>${{cpb.saldo|default_if_none:0|floatformat:2}}</strong></td>
+       <td class="text-right borde_der borde_izq"><strong>{{cpb.moneda.simbolo|default:'$'}}{{cpb.saldo|default_if_none:0|floatformat:2}}</strong></td>
     </tr> 
   </tbody>
   </table> 

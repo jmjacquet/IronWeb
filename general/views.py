@@ -117,9 +117,11 @@ class VariablesMixin(ContextMixin):
             empresa = empresa_actual(request)
             context['empresa'] = empresa
             context['homologacion'] = empresa.homologacion
+            context['simbolo'] = empresa.moneda_default.simbolo if empresa.moneda_default else '$'
         except:
             context['empresa'] = None
             context['homologacion'] = True
+            context['simbolo'] = '$'
         try:
             tipo_usr = usr.userprofile.id_usuario.tipoUsr
             context['tipo_usr'] = tipo_usr
@@ -127,6 +129,13 @@ class VariablesMixin(ContextMixin):
         except:
             context['tipo_usr'] = 1
             context['habilitado_contador'] = False
+
+        from general.models import gral_moneda
+        try:
+            monedas = gral_moneda.objects.filter(baja=False)
+            context['monedas_json'] = json.dumps({m.id: m.simbolo for m in monedas})
+        except:
+            context['monedas_json'] = '{}'
 
         permisos_grupo = ver_permisos(request)
         context['permisos_grupo'] = permisos_grupo

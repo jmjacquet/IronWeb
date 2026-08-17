@@ -437,7 +437,7 @@ class CPBCompraClonarCreateView(VariablesMixin, CreateView):
             form.fields["entidad"].initial = cpb.entidad
             form.fields["importe_tasa1"].initial = cpb.importe_tasa1
             form.fields["importe_tasa2"].initial = cpb.importe_tasa2
-            detalles = cpb_comprobante_detalle.objects.filter(cpb_comprobante=cpb)
+            detalles = cpb_comprobante_detalle.objects.filter(cpb_comprobante=cpb).select_related('producto', 'tasa_iva', 'lista_precios', 'origen_destino')
             det = []
             for c in detalles:
                 det.append(

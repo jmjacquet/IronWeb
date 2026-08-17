@@ -45,8 +45,8 @@
     <tr>      
       <td class="listado_izq borde_izq">{{item.cpb_factura.cpb_tipo|default_if_none:''}}</td>            
       <td class="listado_izq borde_izq">{{item.cpb_factura|default_if_none:''}}</td>            
-      <td class="listado_der borde_izq">${{item.cpb_factura.importe_total|default_if_none:0|floatformat:2}}</td>
-      <td class="listado_der borde_der borde_izq">${{item.importe_total|default_if_none:0|floatformat:2}}</td>
+      <td class="listado_der borde_izq">{{cpb.moneda.simbolo|default:'$'}}{{item.cpb_factura.importe_total|default_if_none:0|floatformat:2}}</td>
+      <td class="listado_der borde_der borde_izq">{{cpb.moneda.simbolo|default:'$'}}{{item.importe_total|default_if_none:0|floatformat:2}}</td>
     </tr> 
     {% endfor cobranzas %}
   </tbody>
@@ -71,7 +71,7 @@
       <td class="listado_izq borde_izq">{{item.mdcp_fecha|date:'d/m/Y'}}</td>
       <td class="listado_izq borde_izq">{{item.mdcp_banco|default_if_none:''}}</td>
       <td class="listado_izq borde_izq">{{item.mdcp_cheque|default_if_none:''}}</td>      
-      <td class="listado_der borde_der borde_izq">${{item.importe|default_if_none:0|floatformat:2}}</td>
+      <td class="listado_der borde_der borde_izq">{{cpb.moneda.simbolo|default:'$'}}{{item.importe|default_if_none:0|floatformat:2}}</td>
     </tr>       
   {% endfor detalle %}
   </tbody>
@@ -79,7 +79,7 @@
      <tr>
        <th colspan="5"></th>
        <th >Total:</th>
-       <th> ${{cpb.importe_total|default_if_none:0|floatformat:2}}</th>
+       <th> {{cpb.moneda.simbolo|default:'$'}}{{cpb.importe_total|default_if_none:0|floatformat:2}}</th>
      </tr>
     </tfoot>   
  </table> 

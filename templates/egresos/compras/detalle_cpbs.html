@@ -47,10 +47,10 @@
               <tr style="">
                 <th style="padding-right:5px;"class="text-right"></th>
                 <th style="width: 20%;border-top: solid;padding-top:2px;  border-width: 1px 0;">
-                  <span id="tot_cpb" class="total_comprobante pull-right">$ <span id="totSaldos">{{total}}</span></span>
+                  <span id="tot_cpb" class="total_comprobante pull-right">{{cpb.moneda.simbolo|default:'$'}} <span id="totSaldos">{{total}}</span></span>
                 </th>
                 <th style="width: 20%;border-top: solid;  border-width: 1px 0;">
-                  <span id="tot_cpb" class="total_comprobante pull-right">$ <span id="totCpbs">{{total}}</span></span>
+                  <span id="tot_cpb" class="total_comprobante pull-right">{{cpb.moneda.simbolo|default:'$'}} <span id="totCpbs">{{total}}</span></span>
                 </th>
               </tr>
               </tfoot>

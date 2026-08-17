@@ -75,7 +75,7 @@
                                    <td >{{i.mdcp_cheque|default_if_none:''}}</td>                                                 
                                    <td class="">{{i.mdcp_banco|default_if_none:''}}</td> 
                                    <td class="">{{i.mdcp_fecha|date:'d/m/Y'}}</td> 
-                                   <td class="importe">$ {{i.importe|default_if_none:0|floatformat:2}}</td>
+                                   <td class="importe">{{ simbolo|default:"$" }} {{i.importe|default_if_none:0|floatformat:2}}</td>
                                    <td title="{{i.cpb_comprobante.cpb_tipo|default_if_none:''}}" class="">
                                     <a href="{% url 'recibo_ver' id=i.cpb_comprobante.id %}"  title="VER" class="modal-detail" data-modal-head="DETALLE {{i.cpb_comprobante.cpb_tipo.nombre|upper}} {{i.cpb_comprobante}}   Fecha:{{i.cpb_comprobante.fecha_cpb|date:'d/m/Y'}}  Vencimiento:{{i.cpb_comprobante.fecha_vto|date:'d/m/Y'}}" data-modal-callback="reload">  
                                       <i class="fa fa-list-alt text-primary"></i></a>{{i.cpb_comprobante.cpb_tipo.codigo|default_if_none:''}}: {{i.cpb_comprobante|default_if_none:''}}</td>
@@ -122,7 +122,7 @@
                                    <td class="">{{i.mdcp_banco|default_if_none:''}}</td> 
                                    <td class="">{{i.mdcp_salida.cta_ingreso|default_if_none:''}}</td>
                                    <td class="">{{i.mdcp_fecha|date:'d/m/Y'}}</td> 
-                                   <td class="importe">$ {{i.importe|default_if_none:0|floatformat:2}}</td>
+                                   <td class="importe">{{ simbolo|default:"$" }} {{i.importe|default_if_none:0|floatformat:2}}</td>
                                    <td title="{{i.cpb_comprobante.cpb_tipo|default_if_none:''}}" class="">
                                     <a href="{% url 'recibo_ver' id=i.cpb_comprobante.id %}"  title="VER" class="modal-detail" data-modal-head="DETALLE {{i.cpb_comprobante.cpb_tipo.nombre|upper}} {{i.cpb_comprobante}}   Fecha:{{i.cpb_comprobante.fecha_cpb|date:'d/m/Y'}}  Vencimiento:{{i.cpb_comprobante.fecha_vto|date:'d/m/Y'}}" data-modal-callback="reload">  
                                       <i class="fa fa-list-alt text-primary"></i></a>{{i.cpb_comprobante.cpb_tipo.codigo|default_if_none:''}}: {{i.cpb_comprobante|default_if_none:''}}</td>
@@ -170,7 +170,7 @@
                                    <td class="">{{i.mdcp_cheque|default_if_none:''}}</td>                                                 
                                    <td class="">{{i.mdcp_banco|default_if_none:''}}</td> 
                                    <td class="">{{i.mdcp_fecha|date:'d/m/Y'}}</td> 
-                                   <td class="importe">$ {{i.importe|default_if_none:0|floatformat:2}}</td>
+                                   <td class="importe">{{ simbolo|default:"$" }} {{i.importe|default_if_none:0|floatformat:2}}</td>
                                    <td title="{{i.cpb_comprobante.cpb_tipo|default_if_none:''}}" class="">
                                     <a href="{% url 'recibo_ver' id=i.cpb_comprobante.id %}"  title="VER" class="modal-detail" data-modal-head="DETALLE {{i.cpb_comprobante.cpb_tipo.nombre|upper}} {{i.cpb_comprobante}}   Fecha:{{i.cpb_comprobante.fecha_cpb|date:'d/m/Y'}}  Vencimiento:{{i.cpb_comprobante.fecha_vto|date:'d/m/Y'}}" data-modal-callback="reload">  
                                       <i class="fa fa-list-alt text-primary"></i></a>{{i.cpb_comprobante.cpb_tipo.codigo|default_if_none:''}}: {{i.cpb_comprobante|default_if_none:''}}</td>
@@ -221,7 +221,7 @@
                                    <td class="">{{c.get_estadoCheque|default_if_none:''}}</td>                                                 
                                    <td class="">{{c.mdcp_banco|default_if_none:''}}</td> 
                                    <td class="">{{c.mdcp_fecha|date:'d/m/Y'}}</td> 
-                                   <td class="importe">$ {{c.importe|default_if_none:0|floatformat:2}}</td>
+                                   <td class="importe">{{ simbolo|default:"$" }} {{c.importe|default_if_none:0|floatformat:2}}</td>
                                    <td title="{{c.cpb_comprobante.cpb_tipo|default_if_none:''}}" class="">
                                     <a href="{% url 'recibo_ver' id=c.cpb_comprobante.id %}"  title="VER" class="modal-detail" data-modal-head="DETALLE {{c.cpb_comprobante.cpb_tipo.nombre|upper}} {{c.cpb_comprobante}}   Fecha:{{c.cpb_comprobante.fecha_cpb|date:'d/m/Y'}}  Vencimiento:{{c.cpb_comprobante.fecha_vto|date:'d/m/Y'}}" data-modal-callback="reload">  
                                       <i class="fa fa-list-alt text-primary"></i></a>{{c.cpb_comprobante.cpb_tipo.codigo|default_if_none:''}}: {{c.cpb_comprobante|default_if_none:''}}</td>
@@ -348,7 +348,7 @@ var tabla2 = $('#dataTables-cartera').DataTable({
                                             if (typeof i === "number") {
                                                 return i;
                                             } else if (typeof i === "string") {
-                                                i = i.replace(/\$/g, "");
+                                                i = i.replace(/[^0-9\-,]/g, "");
                     i = i.replace(/\,/g ,"");                    
                     i = i.replace(/\./g, "");
                                                 var result = parseFloat(i)/100;
@@ -400,7 +400,7 @@ var tabla2 = $('#dataTables-cartera').DataTable({
                 if (typeof i === "number") {
                     return i;
                 } else if (typeof i === "string") {
-                    i = i.replace(/\$/g, "");
+                    i = i.replace(/[^0-9\-,]/g, "");
                     i = i.replace(/\,/g ,"");                    
                     i = i.replace(/\./g, "");
                     var result = parseFloat(i)/100;
@@ -424,7 +424,7 @@ var tabla2 = $('#dataTables-cartera').DataTable({
             };
             
             pageTotal = api.column(5, { page: 'current'} ).data().reduce( function (a, b) {return floatVal(a) + floatVal(b);}, 0 );
-            $( api.column(5).footer() ).html('$'+pageTotal.toLocaleString(undefined,{minimumFractionDigits:2}));      
+            $( api.column(5).footer() ).html(pageTotal.toLocaleString(undefined,{minimumFractionDigits:2}));      
          
         }
         });
@@ -504,7 +504,7 @@ var tabla3 = $('#dataTables-cobrados').DataTable({
                                             if (typeof i === "number") {
                                                 return i;
                                             } else if (typeof i === "string") {
-                                                i = i.replace(/\$/g, "");
+                                                i = i.replace(/[^0-9\-,]/g, "");
                     i = i.replace(/\,/g ,"");                    
                     i = i.replace(/\./g, "");
                                                 var result = parseFloat(i)/100;
@@ -555,7 +555,7 @@ var tabla3 = $('#dataTables-cobrados').DataTable({
                 if (typeof i === "number") {
                     return i;
                 } else if (typeof i === "string") {
-                    i = i.replace(/\$/g, "");
+                    i = i.replace(/[^0-9\-,]/g, "");
                     i = i.replace(/\,/g ,"");                    
                     i = i.replace(/\./g, "");
                     var result = parseFloat(i)/100;
@@ -579,7 +579,7 @@ var tabla3 = $('#dataTables-cobrados').DataTable({
             };
             
             pageTotal = api.column(5, { page: 'current'} ).data().reduce( function (a, b) {return floatVal(a) + floatVal(b);}, 0 );
-            $( api.column(5).footer() ).html('$'+pageTotal.toLocaleString(undefined,{minimumFractionDigits:2}));      
+            $( api.column(5).footer() ).html(pageTotal.toLocaleString(undefined,{minimumFractionDigits:2}));      
          
         }
         });
@@ -658,7 +658,7 @@ var tabla4 = $('#dataTables-pagados').DataTable({
                                             if (typeof i === "number") {
                                                 return i;
                                             } else if (typeof i === "string") {
-                                                i = i.replace(/\$/g, "");
+                                                i = i.replace(/[^0-9\-,]/g, "");
                     i = i.replace(/\,/g ,"");                    
                     i = i.replace(/\./g, "");
                                                 var result = parseFloat(i)/100;
@@ -710,7 +710,7 @@ var tabla4 = $('#dataTables-pagados').DataTable({
                 if (typeof i === "number") {
                     return i;
                 } else if (typeof i === "string") {
-                    i = i.replace(/\$/g, "");
+                    i = i.replace(/[^0-9\-,]/g, "");
                     i = i.replace(/\,/g ,"");                    
                     i = i.replace(/\./g, "");
                     var result = parseFloat(i)/100;
@@ -734,7 +734,7 @@ var tabla4 = $('#dataTables-pagados').DataTable({
             };
             
             pageTotal = api.column(4, { page: 'current'} ).data().reduce( function (a, b) {return floatVal(a) + floatVal(b);}, 0 );
-            $( api.column(4).footer() ).html('$'+pageTotal.toLocaleString(undefined,{minimumFractionDigits:2}));      
+            $( api.column(4).footer() ).html(pageTotal.toLocaleString(undefined,{minimumFractionDigits:2}));      
          
         }
         });
@@ -812,7 +812,7 @@ var tabla = $('#dataTables-cheques').DataTable({
                                             if (typeof i === "number") {
                                                 return i;
                                             } else if (typeof i === "string") {
-                                                i = i.replace(/\$/g, "");
+                                                i = i.replace(/[^0-9\-,]/g, "");
                     i = i.replace(/\,/g ,"");                    
                     i = i.replace(/\./g, "");
                                                 var result = parseFloat(i)/100;
@@ -910,7 +910,7 @@ var tabla = $('#dataTables-cheques').DataTable({
               };
               
               pageTotal = api.column(5, { page: 'current'} ).data().reduce( function (a, b) {return floatVal(a) + floatVal(b);}, 0 );
-              $( api.column(5).footer() ).html('$'+pageTotal.toLocaleString(undefined,{minimumFractionDigits:2}));      
+              $( api.column(5).footer() ).html(pageTotal.toLocaleString(undefined,{minimumFractionDigits:2}));      
          
             }
         });

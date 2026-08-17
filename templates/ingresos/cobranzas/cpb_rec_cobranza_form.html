@@ -13,6 +13,17 @@
 {% endblock %}
 {% block extra_js_final %}        
     <script src="{% static 'js/jquery.formset.js' %}" type="text/javascript"></script>
+    <script type="text/javascript">
+        var MONEDAS = {{ monedas_json|safe }};
+        $(function(){
+            function actualizarSimboloMoneda(){
+                var s = MONEDAS[$("#id_moneda").val()] || '$';
+                $("#form-alta .input-group > .input-group-addon:first-child").text(s);
+            }
+            $("#id_moneda").change(actualizarSimboloMoneda);
+            actualizarSimboloMoneda();
+        });
+    </script>
     <script src="{% static 'js/scripts/scripts_cpb_rec_cobranza.js'%}?{% now "Ymd"%}" type="text/javascript"></script>    
 {% endblock %}
 
@@ -59,7 +70,11 @@
 								       <div class="col-sm-3 col-xs-3">	{% bootstrap_field form.fecha_cpb show_label=False %}</div>	
 								        <label class="control-label col-sm-3 col-xs-3">Pto.Venta:</label>	
 										<div class="col-xs-3 col-sm-3">{% bootstrap_field form.pto_vta show_label=False %}</div>
-									</div>	
+									</div>
+								    <div class="row">
+								        <label class="control-label col-sm-2 col-xs-2">Moneda:</label>
+								        <div class="col-sm-4 col-xs-10">{% bootstrap_field form.moneda show_label=False %}</div>
+								    </div>
 								</div>
 								{% if cpbs %}
 								<div class="col-sm-5 col-xs-12">

@@ -97,11 +97,11 @@
       <td class=" borde_izq" width="10%">{{item.mdcp_fecha|date:'d/m/Y'}}</td>
       <td class="listado_izq borde_izq" width="20%">{{item.mdcp_banco|default_if_none:''}}</td>
       <td class="listado_der borde_izq" width="10%">{{item.mdcp_cheque|default_if_none:''}}</td>
-      <td class="listado_der borde_der borde_izq" width="10%">${{item.importe|default_if_none:0|floatformat:2|intcomma}}</td>
+      <td class="listado_der borde_der borde_izq" width="10%">{{cpb.moneda.simbolo|default:'$'}}{{item.importe|default_if_none:0|floatformat:2|intcomma}}</td>
     </tr>       
   {% endfor detalle_comprobante %}  
   <tr class="borde_izq borde_der borde_arriba borde_abajo ">
-    <td colspan="7" class="tabla_footer">Subtotal: ${{cpb.importe_total|default_if_none:0|floatformat:2|intcomma}}</td>
+    <td colspan="7" class="tabla_footer">Subtotal: {{cpb.moneda.simbolo|default:'$'}}{{cpb.importe_total|default_if_none:0|floatformat:2|intcomma}}</td>
   </tr>
 </table>
 {% if retenciones %}
@@ -117,11 +117,11 @@
     <tr>
       <td class="listado_izq borde_izq">{{r.retencion|default_if_none:''}}</td>
       <td class="listado_izq borde_izq">{{r.detalle|default_if_none:''}}</td>      
-      <td class="listado_der borde_der borde_izq">${{r.importe_total|default_if_none:0|floatformat:2|intcomma}}</td>
+      <td class="listado_der borde_der borde_izq">{{cpb.moneda.simbolo|default:'$'}}{{r.importe_total|default_if_none:0|floatformat:2|intcomma}}</td>
     </tr>       
   {% endfor retenciones %}  
   <tr class="borde_izq borde_der borde_arriba borde_abajo ">
-    <td colspan="3" class="tabla_footer">Subtotal: ${{cpb.importe_ret|default_if_none:0|floatformat:2|intcomma}}</td>
+    <td colspan="3" class="tabla_footer">Subtotal: {{cpb.moneda.simbolo|default:'$'}}{{cpb.importe_ret|default_if_none:0|floatformat:2|intcomma}}</td>
   </tr>
 </table>
 {% endif %}
@@ -140,11 +140,11 @@
       <td class="listado_izq borde_izq">{{c.cpb_factura.get_cpb_tipo|default_if_none:''}}</td>
       <td class="listado_izq borde_izq">{{c.cpb_factura.fecha_cpb|date:'d/m/Y'}}</td>
       <td class="listado_izq borde_izq">{{c.cpb_factura.get_numero|default_if_none:''}}</td>      
-      <td class="listado_der borde_der borde_izq">${{c.importe_total|default_if_none:0|floatformat:2|intcomma}}</td>
+      <td class="listado_der borde_der borde_izq">{{cpb.moneda.simbolo|default:'$'}}{{c.importe_total|default_if_none:0|floatformat:2|intcomma}}</td>
     </tr>       
   {% endfor detalle_comprobante %}  
   <tr class="borde_izq borde_der borde_arriba borde_abajo ">
-    <td colspan="4" class="tabla_footer">Subtotal: ${{cpb.importe_total|default_if_none:0|floatformat:2|intcomma}}</td>
+    <td colspan="4" class="tabla_footer">Subtotal: {{cpb.moneda.simbolo|default:'$'}}{{cpb.importe_total|default_if_none:0|floatformat:2|intcomma}}</td>
   </tr>
 </table>
 {% endif %}
@@ -152,7 +152,7 @@
   <table width="100%" align="center" >    
     <tr>
       <td width="90%" class="listado_final borde_izq borde_arriba borde_abajo tabla_footer">TOTAL:</td>
-      <td width="10%" class="listado_final borde_der borde_arriba borde_abajo tabla_footer">$ {{cpb.importe_total|default_if_none:0|floatformat:2|intcomma}}</td>
+      <td width="10%" class="listado_final borde_der borde_arriba borde_abajo tabla_footer">{{cpb.moneda.simbolo|default:'$'}} {{cpb.importe_total|default_if_none:0|floatformat:2|intcomma}}</td>
     </tr>
       
   </table>

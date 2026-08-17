@@ -31,6 +31,8 @@ class prod_lista_precios(models.Model):
     default = models.BooleanField('Default',default=False)
     baja = models.BooleanField(default=False)
     empresa =  models.ForeignKey('general.gral_empresa',db_column='empresa',blank=True, null=True,on_delete=models.SET_NULL)
+    moneda = models.ForeignKey('general.gral_moneda', verbose_name=u'Moneda',
+                               db_column='moneda', blank=True, null=True, on_delete=models.SET_NULL)
     class Meta:
         db_table = 'prod_lista_precios'
         ordering = ['-default','nombre']
@@ -140,7 +142,8 @@ class prod_producto_lprecios(models.Model):
         ordering = ['producto__nombre','lista_precios']
     
     def __unicode__(self):
-        return u'%s - %s - $ %s' % (self.lista_precios,self.producto.nombre,self.precio_venta)        
+        simbolo = self.lista_precios.moneda.simbolo if self.lista_precios and self.lista_precios.moneda else '$'
+        return u'%s - %s - %s %s' % (self.lista_precios, self.producto.nombre, simbolo, self.precio_venta)        
 
     @property
     def get_porc_gan(self):
