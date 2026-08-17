@@ -98,3 +98,4 @@ except ImportError:
 - `~/Repo/IronWeb/.claude/skills/accessibility`
 - `~/Repo/IronWeb/.claude/skills/seo`
 - `~/Repo/IronWeb/.claude/skills/python-executor`
+@AGENTS.md

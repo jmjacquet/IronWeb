@@ -36,6 +36,16 @@ TENANT_MAP = {
         'ENTIDAD_DB': 'ironweb_mullertma',
         'ENTIDAD_DIR': 'mullertma',
     },
+    'sma.ironwebgestion.com.ar': {
+        'ENTIDAD_ID': '11',
+        'ENTIDAD_DB': 'ironweb_sma',
+        'ENTIDAD_DIR': 'sma',
+    },
+    'www.sma.ironwebgestion.com.ar': {
+        'ENTIDAD_ID': '11',
+        'ENTIDAD_DB': 'ironweb_sma',
+        'ENTIDAD_DIR': 'sma',
+    },
     'development.ironwebgestion.com.ar': {
         'ENTIDAD_ID': '1',
         'ENTIDAD_DB': 'ironweb_prueba',
@@ -46,16 +56,6 @@ TENANT_MAP = {
         'ENTIDAD_DB': 'ironweb_prueba',
         'ENTIDAD_DIR': 'prueba',
     },
-    # 'sucec.ironwebgestion.com.ar': {
-    #     'ENTIDAD_ID': '2',
-    #     'ENTIDAD_DB': 'ironweb_sucec',
-    #     'ENTIDAD_DIR': 'sucec',
-    # },
-    # 'www.sucec.ironwebgestion.com.ar': {
-    #     'ENTIDAD_ID': '2',
-    #     'ENTIDAD_DB': 'ironweb_sucec',
-    #     'ENTIDAD_DIR': 'sucec',
-    # },
     # 'digra.ironwebgestion.com.ar': {
     #     'ENTIDAD_ID': '3',
     #     'ENTIDAD_DB': 'ironweb_digra',
@@ -143,8 +143,7 @@ def get_tenant_map():
             extra = json.loads(tenant_map_env)
             if isinstance(extra, dict):
                 merged.update(extra)
-        except (ValueError, TypeError):
-            # ValueError covers json.JSONDecodeError (Python 3) and Python 2 json parse errors
+        except (json.JSONDecodeError, ValueError, TypeError):
             pass
     return merged
 
