@@ -4,7 +4,8 @@ from django.forms import ModelForm
 import datetime
 from general.utilidades import *
 from general.views import ultimoNroId
-from general.forms import pto_vta_habilitados
+from general.forms import pto_vta_habilitados, empresas_buscador
+from general.models import gral_empresa
 from django.contrib import admin
 from django.utils import *
 from django.forms.widgets import TextInput,NumberInput
@@ -298,3 +299,26 @@ class SaldoInicialForm(forms.ModelForm):
 
 
  
+
+class ImportarArcaForm(forms.Form):
+	archivo = forms.FileField(label=u'Archivo CSV de ARCA',required=True)
+	compra_venta = forms.ChoiceField(label=u'Tipo',choices=(('C',u'Recibidos (Compras)'),('V',u'Emitidos (Ventas)')),required=True,initial='C')
+	empresa = forms.ModelChoiceField(queryset=gral_empresa.objects.all(),empty_label=None,required=True)
+
+	def __init__(self, *args, **kwargs):
+		request = kwargs.pop('request', None)
+		super(ImportarArcaForm, self).__init__(*args, **kwargs)
+		try:
+			self.fields['empresa'].queryset = empresas_buscador(request)
+			self.fields['empresa'].initial = 1
+		except:
+			pass  # Sin request válido queda el queryset completo
+
+	def clean(self):
+		archivo = self.cleaned_data.get('archivo')
+		if archivo:
+			if not archivo.name.lower().endswith('.csv'):
+				self.add_error("archivo",u'¡El archivo debe tener extensión .CSV!')
+			if archivo.multiple_chunks():
+				self.add_error("archivo",u"El archivo es demasiado grande (%.2f MB)." % (archivo.size/(1000*1000),))
+		return self.cleaned_data

@@ -267,6 +267,11 @@
                               <li>
                                 <a href="{% url 'disponibilidades_listado' %}">Cuentas/Disponibilidades</a>
                               </li>
+                              {% if 'cpb_compras_abm' in permisos_grupo or 'cpb_ventas_abm' in permisos_grupo %}
+                              <li>
+                                <a href="{% url 'importar_arca' %}">Importar Comprobantes</a>
+                              </li>
+                              {% endif %}
                         </ul>
                     </li>
                    {% endif %} 

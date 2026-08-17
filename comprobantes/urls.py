@@ -119,4 +119,5 @@ urlpatterns = patterns(
     url(r"^saldo_inicial/nuevo/$", SaldoInicialCreateView.as_view(), name="saldo_inicial_nuevo"),
     url(r"^saldo_inicial/eliminar/(?P<id>[\w-]+)/$", SaldoInicialDeleteView, name="saldo_inicial_eliminar"),
     url(r"^respuesta/$", respuesta, name="respuesta"),
+    url(r"^importar_arca/$", importar_arca, name="importar_arca"),
 )

@@ -5,7 +5,8 @@ from django.template.loader import render_to_string,get_template
 from django.views.generic import TemplateView,ListView,CreateView,UpdateView,FormView,DetailView
 from django.contrib.auth.decorators import login_required
 from django.utils.decorators import method_decorator
-from .forms import MovimCuentasForm,BancosForm,MovimCuentasFPForm,PercImpForm,FormaPagoForm,PtoVtaForm,DispoForm,SeguimientoForm,FormCheques,FormChequesCobro,PtoVtaEditForm,RetencForm
+from .forms import MovimCuentasForm,BancosForm,MovimCuentasFPForm,PercImpForm,FormaPagoForm,PtoVtaForm,DispoForm,SeguimientoForm,FormCheques,FormChequesCobro,PtoVtaEditForm,RetencForm,ImportarArcaForm
+from comprobantes.importar_arca import importar
 from django.http import HttpResponseRedirect, HttpResponseForbidden, HttpResponse, Http404
 from django.db.models import Q,Sum,Count,F,DecimalField
 from .models import *
@@ -2300,3 +2301,35 @@ def SaldoInicialDeleteView(request, id):
     return redirect('caja_diaria')       
 
 
+
+
+PERMISO_IMPORTAR = {'C': 'cpb_compras_abm', 'V': 'cpb_ventas_abm'}
+
+
+@login_required
+def importar_arca(request):
+    if not any(tiene_permiso(request, p) for p in PERMISO_IMPORTAR.values()):
+        return redirect(reverse('principal'))
+    context = VariablesMixin().get_context_data(request=request)
+    if request.method == 'POST':
+        form = ImportarArcaForm(request.POST, request.FILES, request=request)
+        if form.is_valid():
+            compra_venta = form.cleaned_data['compra_venta']
+            if not tiene_permiso(request, PERMISO_IMPORTAR[compra_venta]):
+                return redirect(reverse('principal'))
+            resultado = importar(
+                form.cleaned_data['archivo'],
+                form.cleaned_data['empresa'],
+                compra_venta,
+                usuario_actual(request),
+            )
+            messages.success(request, u'Se importaron %s comprobantes (%s omitidos por duplicados).'
+                             % (resultado['creados'], resultado['omitidos']))
+            for error in resultado['errores'][:20]:
+                messages.warning(request, error)
+            if len(resultado['errores']) > 20:
+                messages.warning(request, u'...y %s errores más.' % (len(resultado['errores']) - 20))
+    else:
+        form = ImportarArcaForm(None, None, request=request)
+    context['form'] = form
+    return render(request, 'comprobantes/importar_arca.html', context)
