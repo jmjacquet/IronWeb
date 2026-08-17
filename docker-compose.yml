@@ -29,8 +29,8 @@ services:
       - ironweb_logs:/app/logs
     networks:
       - dokploy-network
-    depends_on:
-      - afip-service
+#    depends_on:
+#      - afip-service
     labels:
       - traefik.docker.network=dokploy-network
       - traefik.enable=true
