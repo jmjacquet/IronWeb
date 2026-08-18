@@ -20,7 +20,7 @@ STATICFILES_DIRS = (
 
 USE_I18N = True
 USE_THOUSAND_SEPARATOR = False
-USE_L10N = False  # Disable localization
+USE_L10N =True  # Disable localization
 DATE_FORMAT = "d/m/Y"
 DATETIME_FORMAT = "d/m/Y H:i"
 SHORT_DATE_FORMAT = "d/m/Y"
