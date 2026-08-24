@@ -64,7 +64,7 @@ class CPBVentaForm(forms.ModelForm):
 	importe_tasa2 = forms.DecimalField(label='',widget=PrependWidget(attrs={'class':'form-control','readonly':'readonly'},base_widget=NumberInput, data='$'),initial=0.00,decimal_places=2,required = False)	
 	class Meta:
 			model = cpb_comprobante
-			exclude = ['id','fecha_creacion','fecha_imputacion','cae','cae_vto','estado','anulacion_motivo','anulacion_fecha','empresa','usuario','presup_tiempo_entrega','presup_forma_pago','presup_aprobacion']
+			exclude = ['id','fecha_creacion','fecha_imputacion','cae','cae_vto','estado','anulacion_motivo','anulacion_fecha','empresa','usuario','presup_tiempo_entrega','presup_forma_pago','presup_aprobacion','cotizacion']
 	
 
 	def __init__(self, *args, **kwargs):
@@ -284,7 +284,7 @@ class CPBFPForm(forms.ModelForm):
 	cta_ingreso = forms.ModelChoiceField(label='Cta. Ingreso',queryset=cpb_cuenta.objects.all(),required = True,empty_label=None)
 	class Meta:
 			model = cpb_comprobante_fp
-			exclude = ['id','fecha_creacion','cta_egreso']
+			exclude = ['id','fecha_creacion','cta_egreso','cotizacion']
 
 	def __init__(self, *args, **kwargs):
 		request = kwargs.pop('request', None)		
@@ -331,7 +331,7 @@ class CPBRemitoForm(forms.ModelForm):
 	moneda = forms.ModelChoiceField(label='Moneda',queryset=gral_moneda.objects.filter(baja=False),required = True,empty_label=None)
 	class Meta:
 			model = cpb_comprobante
-			exclude = ['id','fecha_creacion','cpb_tipo','fecha_imputacion','cae','cae_vto','estado','anulacion_motivo','anulacion_fecha','empresa','usuario','presup_tiempo_entrega','presup_forma_pago','presup_aprobacion','cpb_nro_afip','cpb_tipo']
+			exclude = ['id','fecha_creacion','cpb_tipo','fecha_imputacion','cae','cae_vto','estado','anulacion_motivo','anulacion_fecha','empresa','usuario','presup_tiempo_entrega','presup_forma_pago','presup_aprobacion','cpb_nro_afip','cpb_tipo','cotizacion']
 
 	def __init__(self, *args, **kwargs):
 		request = kwargs.pop('request', None)		
@@ -406,7 +406,7 @@ class CPBPresupForm(forms.ModelForm):
 	tipo_form = forms.CharField(widget = forms.HiddenInput(), required = False)		
 	class Meta:
 			model = cpb_comprobante			
-			exclude = ['id','fecha_creacion','numero','fecha_imputacion','cae','cae_vto','estado','anulacion_motivo','anulacion_fecha','empresa','usuario','cpb_nro_afip','importe_perc_imp','cpb_tipo']
+			exclude = ['id','fecha_creacion','numero','fecha_imputacion','cae','cae_vto','estado','anulacion_motivo','anulacion_fecha','empresa','usuario','cpb_nro_afip','importe_perc_imp','cpb_tipo','cotizacion']
 
 	def __init__(self, *args, **kwargs):
 		request = kwargs.pop('request', None)
@@ -527,7 +527,7 @@ class CPBPresupLiteForm(forms.ModelForm):
 	tipo_form = forms.CharField(widget = forms.HiddenInput(), required = False)		
 	class Meta:
 			model = cpb_comprobante			
-			exclude = ['id','fecha_creacion','numero','fecha_imputacion','cae','cae_vto','estado','anulacion_motivo','anulacion_fecha','empresa','usuario','cpb_nro_afip','importe_perc_imp','cpb_tipo']
+			exclude = ['id','fecha_creacion','numero','fecha_imputacion','cae','cae_vto','estado','anulacion_motivo','anulacion_fecha','empresa','usuario','cpb_nro_afip','importe_perc_imp','cpb_tipo','cotizacion']
 
 	def __init__(self, *args, **kwargs):
 		request = kwargs.pop('request', None)
@@ -642,7 +642,7 @@ class CPBRecCobranzaForm(forms.ModelForm):
 	vendedor = EntidadModelChoiceField(label='Vendedor',queryset=egr_entidad.objects.filter(tipo_entidad=3,baja=False),empty_label='---',required = False)		
 	class Meta:
 			model = cpb_comprobante			
-			exclude = ['id','fecha_creacion','numero','fecha_imputacion','cae','cae_vto','estado','anulacion_motivo','anulacion_fecha','empresa','usuario','presup_tiempo_entrega','presup_forma_pago','presup_aprobacion','cpb_tipo','letra']
+			exclude = ['id','fecha_creacion','numero','fecha_imputacion','cae','cae_vto','estado','anulacion_motivo','anulacion_fecha','empresa','usuario','presup_tiempo_entrega','presup_forma_pago','presup_aprobacion','cpb_tipo','letra','cotizacion']
 
 	def clean_entidad(self):		
 		entidad = self.cleaned_data['entidad']
@@ -709,7 +709,7 @@ class CPBRecFPForm(forms.ModelForm):
 	cta_ingreso = forms.ModelChoiceField(label='Cta. Ingreso',queryset=cpb_cuenta.objects.all(),empty_label='---',required = True)
 	class Meta:
 			model = cpb_comprobante_fp
-			exclude = ['id','fecha_creacion','cta_egreso']
+			exclude = ['id','fecha_creacion','cta_egreso','cotizacion']
 
 	def __init__(self, *args, **kwargs):
 		request = kwargs.pop('request', None)
@@ -915,7 +915,7 @@ class CPBLiqProdDetalleForm(forms.ModelForm):
 	origen_destino = forms.ModelChoiceField(queryset=prod_ubicacion.objects.all(),widget = forms.HiddenInput(),required = False)
 	class Meta:
 			model = cpb_comprobante_detalle
-			exclude = ['id','fecha_creacion']			
+			exclude = ['id','fecha_creacion','cotizacion']
 
 	def __init__(self,*args, **kwargs):				
 		request = kwargs.pop('request', None)

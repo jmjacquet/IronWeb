@@ -86,7 +86,7 @@ class MovimCuentasFPForm(forms.ModelForm):
 	cta_ingreso = forms.ModelChoiceField(label='Cuenta Destino/Ingreso',queryset=cpb_cuenta.objects.all(),empty_label='---')
 	class Meta:
 			model = cpb_comprobante_fp
-			exclude = ['id','fecha_creacion']			
+			exclude = ['id','fecha_creacion','cotizacion']
 
 	def __init__(self, *args, **kwargs):
 		request = kwargs.pop('request', None)
@@ -276,7 +276,7 @@ class SaldoInicialForm(forms.ModelForm):
 	cta_ingreso = forms.ModelChoiceField(label='Cuenta Destino/Ingreso',queryset=cpb_cuenta.objects.all(),empty_label='---')
 	class Meta:
 			model = cpb_comprobante_fp
-			exclude = ['id','fecha_creacion']			
+			exclude = ['id','fecha_creacion','cotizacion']
 
 	def __init__(self, *args, **kwargs):
 		request = kwargs.pop('request', None)
