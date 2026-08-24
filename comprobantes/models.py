@@ -661,7 +661,7 @@ class cpb_cobranza(models.Model):
     moneda = models.ForeignKey('general.gral_moneda', verbose_name=u'Moneda',
                                db_column='moneda', blank=True, null=True, on_delete=models.SET_NULL)
     cotizacion = models.DecimalField(
-        'Cotización', max_digits=15, decimal_places=6, default=1.000000)
+        'Cotización', max_digits=15, decimal_places=6, default=Decimal(1))
     importe_total_sistema = models.DecimalField(
         u'Importe Total Sistema', max_digits=15, decimal_places=2, blank=True, null=True)
     # Descuento o Recargo que tuvo la factura
@@ -678,7 +678,7 @@ class cpb_cobranza(models.Model):
 
     def save(self, *args, **kwargs):
         if self.cotizacion is None or self.cotizacion == 0:
-            self.cotizacion = 1
+            self.cotizacion = Decimal(1)
         self.importe_total_sistema = self.importe_total * self.cotizacion if self.importe_total else None
         super(cpb_cobranza, self).save(*args, **kwargs)
 
