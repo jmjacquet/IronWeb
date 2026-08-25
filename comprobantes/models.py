@@ -432,13 +432,6 @@ class cpb_comprobante(models.Model):
             return self.importe_perc_imp
 
     def save(self, *args, **kwargs):
-        if self.moneda_id:
-            for detalle in self.cpb_comprobante_detalle_set.select_related('lista_precios__moneda').all():
-                if detalle.lista_precios_id and detalle.lista_precios.moneda_id != self.moneda_id:
-                    raise ValueError(
-                        'La lista de precios "%s" tiene moneda "%s" que no coincide con la moneda del comprobante "%s".'
-                        % (detalle.lista_precios.nombre, detalle.lista_precios.moneda.codigo, self.moneda.codigo)
-                    )
         if self.cotizacion is None or self.cotizacion == 0:
             self.cotizacion = Decimal(1.0)
         cotizacion = Decimal(self.cotizacion)
