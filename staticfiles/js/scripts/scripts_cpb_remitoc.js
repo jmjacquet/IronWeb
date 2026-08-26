@@ -67,7 +67,8 @@ $('.formDetalle').formset({
             $("[name='formDetalle-"+i+"-producto']").change(function(){
               cargarProd(i);
              });
-             $("[name='formDetalle-"+i1+"-producto']").trigger("change"); 
+             $("[name='formDetalle-"+i1+"-producto']").trigger("change");
+             if (typeof actualizarSimboloMoneda === 'function') actualizarSimboloMoneda();
            },
           removed: function (row) {
             var i = $(row).index();
