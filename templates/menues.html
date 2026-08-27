@@ -234,6 +234,11 @@
                         <a href="{% url 'prod_stock_listado' %}"><i class="fa fa-cubes"></i>Mantenimiento Stock</a>
                       </li>             
                       {% endif %}
+                      {% if 'prod_precios' in permisos_grupo %}
+                      <li>
+                        <a href="{% url 'prod_reporte' %}"><i class="fa fa-bar-chart"></i>Reporte Productos</a>
+                      </li>
+                      {% endif %}
                       <li>                        
                         <a href="#" id="prod_buscar_datos"><i class="fa fa-list-alt"></i>Consulta Productos</a>
                       </li>

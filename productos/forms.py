@@ -309,6 +309,23 @@ class ConsultaStockProd(forms.Form):
 		self.fields['ubicacion'].queryset = prod_ubicacion.objects.filter(baja=False,empresa__id__in=empresas_habilitadas(request))
 		self.fields['categoria'].queryset = prod_categoria.objects.filter(baja=False,empresa__id__in=empresas_habilitadas(request))
 
+
+class ConsultaReporteProd(forms.Form):               
+	lista_precios = forms.ModelChoiceField(queryset=prod_lista_precios.objects.filter(baja=False))	
+	ubicacion = forms.ModelChoiceField(label=u'Ubicación',queryset=prod_ubicacion.objects.filter(baja=False))	
+	producto = forms.CharField(label='Producto/Servicio',widget=forms.TextInput(attrs={'class':'form-control'}),required = False)
+	categoria = forms.ModelChoiceField(queryset=prod_categoria.objects.filter(baja=False),required = False)
+	tipo_prod = forms.ChoiceField(label=u'Tipo',choices=TIPO_PRODUCTO_,initial=0)
+	mostrar_en = forms.ChoiceField(label=u'Mostrar en',choices=MOSTRAR_PRODUCTO_,required=False,initial=0)
+	baja = forms.ChoiceField(label='Estado',choices=BAJA_,initial=0)
+
+	def __init__(self, *args, **kwargs):		
+		request = kwargs.pop('request', None)
+		super(ConsultaReporteProd, self).__init__(*args, **kwargs)				
+		self.fields['lista_precios'].queryset = prod_lista_precios.objects.filter(baja=False,empresa__id__in=empresas_habilitadas(request))
+		self.fields['ubicacion'].queryset = prod_ubicacion.objects.filter(baja=False,empresa__id__in=empresas_habilitadas(request))
+		self.fields['categoria'].queryset = prod_categoria.objects.filter(baja=False,empresa__id__in=empresas_habilitadas(request))
+
 OPERACION2_ = (
  (21,'Movimiento Ingreso Stock'),	
  (22,'Movimiento Egreso Stock'), 

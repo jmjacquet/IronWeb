@@ -654,7 +654,7 @@ class ProdLPreciosView(VariablesMixin, ListView):
                 prod_producto_lprecios.objects.filter(
                     producto__empresa=empresa, lista_precios__empresa__in=empresas_habilitadas(self.request)
                 )
-                .select_related("producto", "producto__categoria")
+                .select_related("producto", "producto__categoria", "lista_precios__moneda")
                 .order_by("producto", "lista_precios")
             )
             producto = form.cleaned_data["producto"]
@@ -980,6 +980,152 @@ class ProdStockView(VariablesMixin, ListView):
 
     def post(self, *args, **kwargs):
         return self.get(*args, **kwargs)
+
+
+class ProdReporteView(VariablesMixin, TemplateView):
+    template_name = "productos/producto_reporte.html"
+
+    @method_decorator(login_required)
+    def dispatch(self, *args, **kwargs):
+        limpiar_sesion(self.request)
+        if not tiene_permiso(self.request, "gral_configuracion"):
+            return redirect(reverse("principal"))
+        return super(ProdReporteView, self).dispatch(*args, **kwargs)
+
+    def get_context_data(self, **kwargs):
+        context = super(ProdReporteView, self).get_context_data(**kwargs)
+        form = ConsultaReporteProd(self.request.POST or None, request=self.request)
+        context["form"] = form
+        return context
+
+    def post(self, *args, **kwargs):
+        return self.get(*args, **kwargs)
+
+
+@login_required
+def prod_reporte_data(request):
+    try:
+        empresa = empresa_actual(request)
+    except gral_empresa.DoesNotExist:
+        return HttpResponse(json.dumps({"draw": 1, "recordsTotal": 0, "recordsFiltered": 0, "data": []}, cls=DjangoJSONEncoder), content_type='application/json')
+
+    draw = int(request.GET.get('draw', 1))
+    start = int(request.GET.get('start', 0))
+    length = int(request.GET.get('length', 20))
+    search_value = request.GET.get('search[value]', '')
+    order_col_idx = int(request.GET.get('order[0][column]', 1))
+    order_dir = request.GET.get('order[0][dir]', 'asc')
+
+    f_lista_precios = request.GET.get('lista_precios', '')
+    f_ubicacion = request.GET.get('ubicacion', '')
+    f_producto = request.GET.get('producto', '')
+    f_categoria = request.GET.get('categoria', '')
+    f_tipo_prod = request.GET.get('tipo_prod', '0')
+    f_mostrar_en = request.GET.get('mostrar_en', '0')
+    f_baja = request.GET.get('baja', '0')
+
+    columns = ['producto__nombre', 'producto__nombre', 'producto__codigo_barras',
+               'producto__categoria__nombre', 'producto__tipo_producto',
+               'precio_costo', 'precio_cimp', 'coef_ganancia', 'precio_venta',
+               'stock_calc', 'producto__unidad']
+
+    qs = prod_producto_ubicac.objects.filter(
+        producto__empresa=empresa,
+    ).select_related('producto', 'producto__categoria', 'ubicacion')
+
+    if f_lista_precios:
+        qs = qs.filter(producto__producto_lprecios__lista_precios__id=f_lista_precios)
+    if f_ubicacion:
+        qs = qs.filter(ubicacion__id=f_ubicacion)
+    if f_producto:
+        qs = qs.filter(Q(producto__nombre__icontains=f_producto) |
+                        Q(producto__codigo__icontains=f_producto) |
+                        Q(producto__codigo_barras__icontains=f_producto))
+    if f_categoria:
+        qs = qs.filter(producto__categoria__id=f_categoria)
+    if int(f_tipo_prod) > 0:
+        qs = qs.filter(producto__tipo_producto=int(f_tipo_prod))
+    if int(f_mostrar_en) > 0:
+        qs = qs.filter(producto__mostrar_en=int(f_mostrar_en))
+    if int(f_baja) == 1:
+        qs = qs.filter(producto__baja=False)
+    elif int(f_baja) == 2:
+        qs = qs.filter(producto__baja=True)
+
+    stock_sql = (
+        "(SELECT COALESCE(SUM(d.cantidad * t.signo_stock), 0) "
+        "FROM cpb_comprobante_detalle d "
+        "INNER JOIN cpb_comprobante c ON d.cpb_comprobante = c.id "
+        "INNER JOIN cpb_tipo t ON c.cpb_tipo = t.id "
+        "WHERE c.estado_id IN (1, 2) "
+        "AND t.usa_stock = 1 "
+        "AND d.producto = prod_producto_ubicac.producto "
+        "AND d.origen_destino = prod_producto_ubicac.ubicacion)"
+    )
+    qs = qs.annotate(stock_calc=RawSQL(stock_sql, []))
+    qs = qs.distinct()
+
+    recordsFiltered = qs.count()
+
+    if search_value:
+        qs = qs.filter(
+            Q(producto__nombre__icontains=search_value) |
+            Q(producto__codigo__icontains=search_value) |
+            Q(producto__codigo_barras__icontains=search_value) |
+            Q(producto__categoria__nombre__icontains=search_value)
+        )
+        recordsFiltered = qs.count()
+
+    order = columns[order_col_idx] if order_col_idx < len(columns) else 'producto__nombre'
+    if order_dir == 'desc':
+        order = '-' + order
+    qs = qs.order_by(order)
+
+    page = qs[start:start + length]
+
+    product_ids = [rec.producto_id for rec in page]
+    prices_dict = {}
+    if f_lista_precios:
+        for lp in prod_producto_lprecios.objects.filter(
+            producto__id__in=product_ids,
+            lista_precios__id=f_lista_precios
+        ):
+            prices_dict[lp.producto_id] = lp
+
+    TIPO_UNIDAD_DICT = dict(TIPO_UNIDAD)
+    data = []
+    for rec in page:
+        p = rec.producto
+        lp = prices_dict.get(p.id)
+        tipo_display = p.get_tipo_producto_display() or ''
+        unidad_display = TIPO_UNIDAD_DICT.get(p.unidad, 'u.')
+        stock_val = float(rec.stock_calc) if rec.stock_calc else 0.0
+        data.append([
+            rec.pk,
+            u'<a href="{}" class="modal-detail" data-modal-head="DETALLE PRODUCTO {}"><strong>{}</strong></a>'.format(
+                reverse('producto_ver', args=[p.pk]),
+                p.codigo or '',
+                unicode(p)[:60]
+            ),
+            p.codigo_barras or '',
+            unicode(p.categoria) if p.categoria else '',
+            tipo_display,
+            float(lp.precio_costo if lp else 0),
+            float(lp.precio_cimp if lp else 0),
+            float(lp.coef_ganancia if lp else 0),
+            float(lp.precio_venta if lp else 0),
+            stock_val,
+            u'[{}]'.format(unidad_display),
+        ])
+
+    return HttpResponse(json.dumps({
+        'draw': draw,
+        'recordsTotal': prod_producto_ubicac.objects.filter(
+            producto__empresa=empresa
+        ).count(),
+        'recordsFiltered': recordsFiltered,
+        'data': data,
+    }, cls=DjangoJSONEncoder), content_type='application/json')
 
 
 class ProdStockCreateView(VariablesMixin, AjaxCreateView):

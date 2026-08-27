@@ -16,7 +16,7 @@ from usuarios.views import tiene_permiso
 from general.utilidades import *
 from modal.views import AjaxCreateView,AjaxUpdateView,AjaxDeleteView
 # from modal.views import Detailview
-from .forms import EntidadesForm,EntidadesEditForm,VendedoresForm,ImportarEntidadesForm
+from .forms import EntidadesForm,EntidadesEditForm,VendedoresForm,ImportarEntidadesForm,ConsultaEntidades
 from django.http import JsonResponse
 
 import json
@@ -43,12 +43,26 @@ class ClientesView(VariablesMixin,ListView):
             return redirect(reverse('principal'))
         return super(ClientesView, self).dispatch(*args, **kwargs)
 
-    def get_queryset(self):        
-        entidades = egr_entidad.objects.filter(tipo_entidad=1,empresa=empresa_actual(self.request))
+    def get_context_data(self, **kwargs):
+        context = super(ClientesView, self).get_context_data(**kwargs)
+        form = ConsultaEntidades(self.request.POST or None)
+        entidades = egr_entidad.objects.filter(tipo_entidad=1, empresa=empresa_actual(self.request))
         usuario = usuario_actual(self.request)
         if habilitado_contador(usuario.tipoUsr):
-            entidades = egr_entidad.objects.filter(tipo_entidad=1,empresa__id__in=empresas_habilitadas(self.request))
-        return entidades
+            entidades = egr_entidad.objects.filter(tipo_entidad=1, empresa__id__in=empresas_habilitadas(self.request))
+        if form.is_valid():
+            nombre = form.cleaned_data["nombre"]
+            estado = form.cleaned_data["estado"]
+            if int(estado) == 0:
+                entidades = entidades.filter(baja=False)
+            if nombre:
+                entidades = entidades.filter(apellido_y_nombre__icontains=nombre)
+        context["form"] = form
+        context["clientes"] = entidades
+        return context
+
+    def post(self, *args, **kwargs):
+        return self.get(*args, **kwargs)
 
 
 class ClientesCreateView(VariablesMixin,AjaxCreateView):
@@ -151,12 +165,26 @@ class ProveedoresView(VariablesMixin,ListView):
     template_name = 'entidades/lista_proveedores.html'
     context_object_name = 'proveedores'    
 
-    def get_queryset(self):        
-        entidades = egr_entidad.objects.filter(tipo_entidad=2,empresa=empresa_actual(self.request))
+    def get_context_data(self, **kwargs):
+        context = super(ProveedoresView, self).get_context_data(**kwargs)
+        form = ConsultaEntidades(self.request.POST or None)
+        entidades = egr_entidad.objects.filter(tipo_entidad=2, empresa=empresa_actual(self.request))
         usuario = usuario_actual(self.request)
         if habilitado_contador(usuario.tipoUsr):
-            entidades = egr_entidad.objects.filter(tipo_entidad=2,empresa__id__in=empresas_habilitadas(self.request))
-        return entidades
+            entidades = egr_entidad.objects.filter(tipo_entidad=2, empresa__id__in=empresas_habilitadas(self.request))
+        if form.is_valid():
+            nombre = form.cleaned_data["nombre"]
+            estado = form.cleaned_data["estado"]
+            if int(estado) == 1:
+                entidades = egr_entidad.objects.filter(tipo_entidad=2)
+            if nombre:
+                entidades = entidades.filter(apellido_y_nombre__icontains=nombre)
+        context["form"] = form
+        context["proveedores"] = entidades
+        return context
+
+    def post(self, *args, **kwargs):
+        return self.get(*args, **kwargs)
 
     @method_decorator(login_required)
     def dispatch(self, *args, **kwargs): 
@@ -249,12 +277,26 @@ class VendedoresView(VariablesMixin,ListView):
     template_name = 'entidades/lista_vendedores.html'
     context_object_name = 'vendedores'    
 
-    def get_queryset(self):        
-        entidades = egr_entidad.objects.filter(tipo_entidad=3,empresa=empresa_actual(self.request))
+    def get_context_data(self, **kwargs):
+        context = super(VendedoresView, self).get_context_data(**kwargs)
+        form = ConsultaEntidades(self.request.POST or None)
+        entidades = egr_entidad.objects.filter(tipo_entidad=3, empresa=empresa_actual(self.request))
         usuario = usuario_actual(self.request)
         if habilitado_contador(usuario.tipoUsr):
-            entidades = egr_entidad.objects.filter(tipo_entidad=3,empresa__id__in=empresas_habilitadas(self.request))
-        return entidades
+            entidades = egr_entidad.objects.filter(tipo_entidad=3, empresa__id__in=empresas_habilitadas(self.request))
+        if form.is_valid():
+            nombre = form.cleaned_data["nombre"]
+            estado = form.cleaned_data["estado"]
+            if int(estado) == 1:
+                entidades = egr_entidad.objects.filter(tipo_entidad=3)
+            if nombre:
+                entidades = entidades.filter(apellido_y_nombre__icontains=nombre)
+        context["form"] = form
+        context["vendedores"] = entidades
+        return context
+
+    def post(self, *args, **kwargs):
+        return self.get(*args, **kwargs)
 
     @method_decorator(login_required)
     def dispatch(self, *args, **kwargs): 
