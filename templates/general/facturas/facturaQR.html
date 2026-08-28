@@ -49,16 +49,16 @@
     <td width="18%" class="texto_izq borde_der">{{cpb.entidad.localidad|default_if_none:''|upper}}</td>
   </tr>
   <tr>
-    <td class="texto_der borde_izq">Dirección:</td>
-    <td class="texto_izq">{% if cpb.entidad.fact_direccion %}{{cpb.entidad.fact_direccion|default_if_none:''|upper}}{% else %}{{cpb.entidad.domicilio|default_if_none:''|upper}}{% endif %}</td>
-    <td class="texto_der">Provincia:</td>
-    <td class="texto_izq borde_der">{{cpb.entidad.get_provincia_display|default_if_none:''|upper}}</td>
+    <td width="10%" class="texto_der borde_izq">Dirección:</td>
+    <td width="63%" class="texto_izq">{% if cpb.entidad.fact_direccion %}{{cpb.entidad.fact_direccion|default_if_none:''|upper}}{% else %}{{cpb.entidad.domicilio|default_if_none:''|upper}}{% endif %}</td>
+    <td width="9%" class="texto_der">Provincia:</td>
+    <td width="18%" class="texto_izq borde_der">{{cpb.entidad.get_provincia_display|default_if_none:''|upper}}</td>
   </tr>
   <tr>
-    <td class="texto_der borde_izq borde_abajo">I.V.A.:</td>
-    <td class="texto_izq borde_abajo">{{cpb.entidad.get_fact_categFiscal_display|default_if_none:''|upper}}</td>
-    <td class="texto_der borde_abajo">{{cpb.entidad.get_tipo_doc_display|default_if_none:'CUIT/DNI'|upper}}:</td>
-    <td class="texto_izq borde_der borde_abajo">{{cpb.entidad.get_nro_doc_cuit|default_if_none:''|upper}}</td>
+    <td width="10%" class="texto_der borde_izq borde_abajo">I.V.A.:</td>
+    <td width="63%" class="texto_izq borde_abajo">{{cpb.entidad.get_fact_categFiscal_display|default_if_none:''|upper}}</td>
+    <td width="9%" class="texto_der borde_abajo">{{cpb.entidad.get_tipo_doc_display|default_if_none:'CUIT/DNI'|upper}}:</td>
+    <td width="18%" class="texto_izq borde_der borde_abajo">{{cpb.entidad.get_nro_doc_cuit|default_if_none:''|upper}}</td>
   </tr>
   <tr>
     <td class="texto_der borde_izq" valign="top">Observaciones:</td>
@@ -103,50 +103,50 @@
 
   {% for i in renglones %}
     <tr>
-      <td class="listado_der borde_izq">&nbsp;</td>
+      <td class="listado_der borde_izq" width="15%">&nbsp;</td>
       <td {% if not discrimina_iva %}colspan="2"{% endif %} class="listado_izq borde_izq">&nbsp;</td>
-      <td class="listado_der borde_izq" >&nbsp;</td>
+      <td class="listado_der borde_izq" width="25%">&nbsp;</td>
         {%if discrimina_iva %}
-            <td class="listado_der borde_izq" >&nbsp;</td>
+            <td class="listado_der borde_izq" width="16%">&nbsp;</td>
         {% endif %}
-      <td class="listado_der borde_der borde_izq">&nbsp;</td>
+      <td class="listado_der borde_der borde_izq" width="30%">&nbsp;</td>
     </tr>
   {% endfor %}
   {% if config.fp_facturas %}
       <tr>
-        <td class="listado_der borde_izq" >&nbsp;</td>
+        <td class="listado_der borde_izq" width="15%">&nbsp;</td>
         <td {% if not discrimina_iva %}colspan="2"{% endif %} class="listado_izq borde_izq">Forma de Pago:</td>
-        <td class="listado_der borde_izq" >&nbsp;</td>
-        {%if discrimina_iva %}<td class="listado_der borde_izq" >&nbsp;</td> {% endif %}
-        <td class="listado_der borde_der borde_izq" >&nbsp;</td>
+        <td class="listado_der borde_izq" width="25%">&nbsp;</td>
+        {%if discrimina_iva %}<td class="listado_der borde_izq" width="16%">&nbsp;</td> {% endif %}
+        <td class="listado_der borde_der borde_izq" width="30%">&nbsp;</td>
       </tr>
     {% if not cobranzas %}
       <tr>
-        <td class="listado_der borde_izq" >&nbsp;</td>
+        <td class="listado_der borde_izq" width="15%">&nbsp;</td>
         <td  {% if not discrimina_iva %}colspan="2" {% endif %}class="listado_izq borde_izq">CUENTA CORRIENTE</td>
-        <td class="listado_der borde_izq" >&nbsp;</td>
-        {%if discrimina_iva %}<td class="listado_der borde_izq" >&nbsp;</td> {% endif %}
-        <td class="listado_der borde_der borde_izq"  >&nbsp;</td>
+        <td class="listado_der borde_izq" width="25%">&nbsp;</td>
+        {%if discrimina_iva %}<td class="listado_der borde_izq" width="16%">&nbsp;</td> {% endif %}
+        <td class="listado_der borde_der borde_izq" width="30%">&nbsp;</td>
       </tr>
     {% endif %}
   {% endif %}
   {% for p in cobranzas %}
     <tr>
-      <td class="listado_der borde_izq" >&nbsp;</td>
+      <td class="listado_der borde_izq" width="15%">&nbsp;</td>
       <td  {% if not discrimina_iva %}colspan="2"{% endif %} class="listado_izq borde_izq">{{p}}</td>
-      <td class="listado_der borde_izq" ></td>
-      {%if discrimina_iva %}<td class="listado_der borde_izq" ></td> {% endif %}
-      <td class="listado_der borde_der borde_izq"  ></td>
+      <td class="listado_der borde_izq" width="25%"></td>
+      {%if discrimina_iva %}<td class="listado_der borde_izq" width="16%"></td> {% endif %}
+      <td class="listado_der borde_der borde_izq" width="30%"></td>
     </tr>
   {% endfor cobranzas %}
   {% if cpb.empresa.usa_impuestos %}
     {% if total_imp > 0 %}
       <tr>
-        <td class="listado_der borde_izq">&nbsp;</td>
+        <td class="listado_der borde_izq" width="15%">&nbsp;</td>
         <td  {% if not discrimina_iva %}colspan="2"{% endif %} class="listado_izq borde_izq">Total {{cpb.empresa.nombre_impuesto1}}{% if cpb.empresa.nombre_impuesto2 %} / {{cpb.empresa.nombre_impuesto2}}{% endif %} </td>
-        <td class="listado_der borde_izq" ></td>
-        {%if discrimina_iva %}<td class="listado_der borde_izq" ></td> {% endif %}
-        <td class="listado_der borde_der borde_izq">{{cpb.moneda.simbolo|default:'$'}}{{total_imp|default_if_none:0|floatformat:2|intcomma}}</td>
+        <td class="listado_der borde_izq" width="25%"></td>
+        {%if discrimina_iva %}<td class="listado_der borde_izq" width="16%"></td> {% endif %}
+        <td class="listado_der borde_der borde_izq" width="30%">{{cpb.moneda.simbolo|default:'$'}}{{total_imp|default_if_none:0|floatformat:2|intcomma}}</td>
       </tr>
     {% endif %}
   {% endif %}
@@ -225,30 +225,30 @@
     </tr>
     <tr>
       {% if total_exng > 0 %}
-        <td class="listado_final">Exento/No Gravado/Perc/Imp:</td>
-        <td class="listado_final borde_der">{{cpb.moneda.simbolo|default:'$'}} {{total_exng|default_if_none:0|floatformat:2|intcomma}}</td>
+        <td width="35%" class="listado_final">Exento/No Gravado/Perc/Imp:</td>
+        <td width="15%" class="listado_final borde_der">{{cpb.moneda.simbolo|default:'$'}} {{total_exng|default_if_none:0|floatformat:2|intcomma}}</td>
       {% else %}
-        <td class="listado_final ">&nbsp;</td>
-        <td class="listado_final borde_der">&nbsp;</td>
+        <td width="35%" class="listado_final ">&nbsp;</td>
+        <td width="15%" class="listado_final borde_der">&nbsp;</td>
       {% endif %}
     </tr>
     
     <tr>
       {% if discrimina_iva %}
-        <td class="listado_final">
+        <td width="35%" class="listado_final">
           {% for ti in detalle_totales_iva %}
           <small>{% if forloop.first %}( {% endif %}  IVA {{ti.tasa_iva.nombre}}: {{cpb.moneda.simbolo|default:'$'}}{{ti.importe_total}}</small> {% if forloop.last %} )&nbsp;&nbsp;&nbsp; Total IVA Contenido:{% else %}/{% endif %}
          {% endfor detalle_totales_iva %} 
         </td>
-        <td class="listado_final borde_der">{{cpb.moneda.simbolo|default:'$'}} {{cpb.importe_iva|default_if_none:0|floatformat:2|intcomma}}</td>
+        <td width="15%" class="listado_final borde_der">{{cpb.moneda.simbolo|default:'$'}} {{cpb.importe_iva|default_if_none:0|floatformat:2|intcomma}}</td>
       {% else %}
-        <td class="listado_final ">&nbsp;</td>
-        <td class="listado_final borde_der">&nbsp;</td>
+        <td width="35%" class="listado_final ">&nbsp;</td>
+        <td width="15%" class="listado_final borde_der">&nbsp;</td>
       {% endif %}
     </tr>
     <tr>
-      <td class="listado_final borde_der borde_abajo">TOTAL:</td>
-      <td class="listado_final borde_der borde_arriba borde_abajo tabla_footer">{{cpb.moneda.simbolo|default:'$'}} {{cpb.importe_total|default_if_none:0|floatformat:2|intcomma}}</td>
+      <td width="35%" class="listado_final borde_der borde_abajo">TOTAL:</td>
+      <td width="15%" class="listado_final borde_der borde_arriba borde_abajo tabla_footer">{{cpb.moneda.simbolo|default:'$'}} {{cpb.importe_total|default_if_none:0|floatformat:2|intcomma}}</td>
     </tr>
   </table>
 </div>
