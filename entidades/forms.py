@@ -181,4 +181,12 @@ class ImportarEntidadesForm(forms.Form):
 			if archivo.multiple_chunks():
 				self.add_error("archivo",u"El archivo es demasiado grande (%.2f MB)." % (archivo.size/(1000*1000),))
 		return self.cleaned_data
-	    
+
+ESTADO_ = (
+ (0,'ACTIVOS'),
+ (1,'TODOS'),
+)
+
+class ConsultaEntidades(forms.Form):
+	nombre = forms.CharField(label='Nombre',max_length=100,widget=forms.TextInput(attrs={'class':'form-control','text-transform': 'uppercase'}),required=False)
+	estado = forms.ChoiceField(label='Estado',choices=ESTADO_,required=False,initial=0)

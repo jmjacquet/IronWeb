@@ -25,7 +25,8 @@ INSERT INTO gral_moneda (codigo, nombre, simbolo, decimales, baja) VALUES
 ('GBP', 'Libra Esterlina', '£', 2, 0),
 ('BRL', 'Real Brasileño', 'R$', 2, 0),
 ('CLP', 'Peso Chileno', '$', 0, 0),
-('UYU', 'Peso Uruguayo', '$', 2, 0);
+('UYU', 'Peso Uruguayo', '$', 2, 0),
+('PYG', 'Guarani', '₲', 2, 0);
 
 
 -- ============================================
@@ -116,11 +117,11 @@ DROP PROCEDURE IF EXISTS add_column_if_not_exists;
 -- STEP 3: Update existing records to ARS
 -- (commented by default; uncomment after currencies exist)
 -- ============================================
--- UPDATE gral_empresa SET moneda_default_id = (SELECT id FROM gral_moneda WHERE codigo = 'ARS');
--- UPDATE egr_entidad SET moneda_default_id = (SELECT id FROM gral_moneda WHERE codigo = 'ARS');
--- UPDATE prod_lista_precios SET moneda_id = (SELECT id FROM gral_moneda WHERE codigo = 'ARS');
--- UPDATE cpb_comprobante SET moneda_id = (SELECT id FROM gral_moneda WHERE codigo = 'ARS');
--- UPDATE cpb_cobranza SET moneda_id = (SELECT id FROM gral_moneda WHERE codigo = 'ARS');
+UPDATE gral_empresa SET moneda_default = (SELECT id FROM gral_moneda WHERE codigo = 'ARS');
+UPDATE egr_entidad SET moneda_default = (SELECT id FROM gral_moneda WHERE codigo = 'ARS');
+UPDATE prod_lista_precios SET moneda = (SELECT id FROM gral_moneda WHERE codigo = 'ARS');
+UPDATE cpb_comprobante SET moneda = (SELECT id FROM gral_moneda WHERE codigo = 'ARS');
+UPDATE cpb_cobranza SET moneda = (SELECT id FROM gral_moneda WHERE codigo = 'ARS');
 
 
 -- ============================================

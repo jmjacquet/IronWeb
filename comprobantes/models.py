@@ -432,17 +432,10 @@ class cpb_comprobante(models.Model):
             return self.importe_perc_imp
 
     def save(self, *args, **kwargs):
-        if self.moneda_id:
-            for detalle in self.cpb_comprobante_detalle.select_related('lista_precios__moneda').all():
-                if detalle.lista_precios_id and detalle.lista_precios.moneda_id != self.moneda_id:
-                    raise ValueError(
-                        'La lista de precios "%s" tiene moneda "%s" que no coincide con la moneda del comprobante "%s".'
-                        % (detalle.lista_precios.nombre, detalle.lista_precios.moneda.codigo, self.moneda.codigo)
-                    )
         if self.cotizacion is None or self.cotizacion == 0:
-            self.cotizacion = 1
-        cotizacion = self.cotizacion
-        for detalle in self.cpb_comprobante_detalle.all():
+            self.cotizacion = Decimal(1.0)
+        cotizacion = Decimal(self.cotizacion)
+        for detalle in self.cpb_comprobante_detalle_set.all():
             detalle.importe_unitario_sistema = detalle.importe_unitario * cotizacion if detalle.importe_unitario else None
             detalle.importe_total_sistema = detalle.importe_total * cotizacion if detalle.importe_total else None
             detalle.save()
@@ -661,7 +654,7 @@ class cpb_cobranza(models.Model):
     moneda = models.ForeignKey('general.gral_moneda', verbose_name=u'Moneda',
                                db_column='moneda', blank=True, null=True, on_delete=models.SET_NULL)
     cotizacion = models.DecimalField(
-        'Cotización', max_digits=15, decimal_places=6, default=1.000000)
+        'Cotización', max_digits=15, decimal_places=6, default=Decimal(1))
     importe_total_sistema = models.DecimalField(
         u'Importe Total Sistema', max_digits=15, decimal_places=2, blank=True, null=True)
     # Descuento o Recargo que tuvo la factura
@@ -678,7 +671,7 @@ class cpb_cobranza(models.Model):
 
     def save(self, *args, **kwargs):
         if self.cotizacion is None or self.cotizacion == 0:
-            self.cotizacion = 1
+            self.cotizacion = Decimal(1)
         self.importe_total_sistema = self.importe_total * self.cotizacion if self.importe_total else None
         super(cpb_cobranza, self).save(*args, **kwargs)
 

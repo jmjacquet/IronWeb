@@ -577,7 +577,7 @@ $('.formDetalle').formset({
             $("#id_letra").trigger("change");
             calcularProd(i1);   
             recalcular();
-            
+            if (typeof actualizarSimboloMoneda === 'function') actualizarSimboloMoneda();
            },
           removed: function (row) {      
             calcularTotales();               

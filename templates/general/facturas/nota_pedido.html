@@ -19,14 +19,6 @@
                         margin-right: 0.5cm;                        
                         margin-left: 0.5cm;                                                
                     }
-         @frame header {
-                        -pdf-frame-content: page-header;
-                        margin-top: 1cm;
-                        margin-right: 1cm;                        
-                        margin-left: 1cm;
-                        margin-bottom: 1cm;
-                        height: 2cm;                      
-                    }
          }
 </style>
 </head>
@@ -50,28 +42,28 @@
     <td width="25%" class="texto_izq borde_der borde_arriba">{{pedido.cliente.localidad|default_if_none:''|upper}}</td>
   </tr>
   <tr>
-    <td class="texto_der borde_izq">Dirección:</td>
-    <td class="texto_izq">{% if pedido.cliente.fact_direccion %}{{pedido.cliente.fact_direccion|default_if_none:''|upper}}{% else %}{{pedido.cliente.domicilio|default_if_none:''|upper}}{% endif %}</td>
-    <td class="texto_der">Provincia:</td>
-    <td class="texto_izq borde_der">{{pedido.cliente.get_provincia_display|default_if_none:''|upper}}</td>
+    <td width="15%" class="texto_der borde_izq">Dirección:</td>
+    <td width="40%" class="texto_izq">{% if pedido.cliente.fact_direccion %}{{pedido.cliente.fact_direccion|default_if_none:''|upper}}{% else %}{{pedido.cliente.domicilio|default_if_none:''|upper}}{% endif %}</td>
+    <td width="20%" class="texto_der">Provincia:</td>
+    <td width="25%" class="texto_izq borde_der">{{pedido.cliente.get_provincia_display|default_if_none:''|upper}}</td>
   </tr>
   <tr>
-    <td class="texto_der borde_izq borde_abajo">Tel./Cel.:</td>
-    <td class="texto_izq borde_abajo">{{pedido.cliente.fact_telefono|default_if_none:''|upper}}</td>
-    <td class="texto_der borde_abajo">{{pedido.cliente.get_tipo_doc_display|default_if_none:'CUIT/DNI'}}:</td>
-    <td class="texto_izq borde_der borde_abajo">{{pedido.cliente.get_nro_doc_cuit|default_if_none:''}}</td>
+    <td width="15%" class="texto_der borde_izq borde_abajo">Tel./Cel.:</td>
+    <td width="40%" class="texto_izq borde_abajo">{{pedido.cliente.fact_telefono|default_if_none:''|upper}}</td>
+    <td width="20%" class="texto_der borde_abajo">{{pedido.cliente.get_tipo_doc_display|default_if_none:'CUIT/DNI'}}:</td>
+    <td width="25%" class="texto_izq borde_der borde_abajo">{{pedido.cliente.get_nro_doc_cuit|default_if_none:''}}</td>
   </tr> 
   <tr>
-    <td class="texto_der borde_izq ">Muestra Enviada:</td>
-    <td class="texto_izq ">{{pedido.muestra_enviada|default_if_none:''|upper}}</td>
-    <td class="texto_der ">Entrega:</td>
-    <td class="texto_izq borde_der ">{{pedido.fecha_entrega|date:'d/m/Y'}} {{pedido.hora_entrega|time:'H:i'}}{% if pedido.hora_entrega %} hs.{% endif %}</td>
+    <td width="15%" class="texto_der borde_izq ">Muestra Enviada:</td>
+    <td width="40%" class="texto_izq ">{{pedido.muestra_enviada|default_if_none:''|upper}}</td>
+    <td width="20%" class="texto_der ">Entrega:</td>
+    <td width="25%" class="texto_izq borde_der ">{{pedido.fecha_entrega|date:'d/m/Y'}} {{pedido.hora_entrega|time:'H:i'}}{% if pedido.hora_entrega %} hs.{% endif %}</td>
   </tr> 
   <tr>
-    <td class="texto_der borde_izq borde_abajo">Archivo/Medio:</td>
-    <td class="texto_izq borde_abajo">{{pedido.archivo_enviado|default_if_none:''|upper}}</td>
-    <td class="texto_der borde_abajo">Firmado/Aceptado:</td>
-    <td class="texto_izq borde_der borde_abajo">{{pedido.firma_conformidad|yesno:"Si,No"}}</td>
+    <td width="15%" class="texto_der borde_izq borde_abajo">Archivo/Medio:</td>
+    <td width="40%" class="texto_izq borde_abajo">{{pedido.archivo_enviado|default_if_none:''|upper}}</td>
+    <td width="20%" class="texto_der borde_abajo">Firmado/Aceptado:</td>
+    <td width="25%" class="texto_izq borde_der borde_abajo">{{pedido.firma_conformidad|yesno:"Si,No"}}</td>
   </tr> 
   
 </table>
@@ -84,17 +76,17 @@
   </thead>
 
     <tr>      
-      <td class="borde_izq listado_centro">
+      <td width="20%" class="borde_izq listado_centro">
         {% if pedido.ped_mostrador %}MOSTRADOR&nbsp;{% endif %}{% if pedido.ped_webface %}WEB/FACEB&nbsp;{% endif %}
         {% if pedido.ped_comercial %}COMERCIAL&nbsp;{% endif %}{% if pedido.ped_email %}E-MAIL{% endif %}      </td>
-      <td class="borde_izq listado_centro">
+      <td width="40%" class="borde_izq listado_centro">
         {% if pedido.ped_mostrador %}LASER&nbsp;{% endif %}{% if pedido.ped_webface %}LATEX&nbsp;{% endif %}{% if pedido.ped_comercial %}ROTULADO{% endif %}
      
         {% if pedido.impres_offset %}OFFSET&nbsp;{% endif %}{% if pedido.impres_corporeo %}CORPÓREO&nbsp;{% endif %}{% if pedido.impres_disenio %}DISEÑO{% endif %}
       
         {% if pedido.impres_ploteo_papel %}PLOTEO PAPEL&nbsp;{% endif %}{% if pedido.impres_facturero %}FACTURERO&nbsp;{% endif %}{% if pedido.impres_sellos %}SELLOS&nbsp;{% endif %}{% if pedido.impres_imprbyn %}IMPR.B/N{% endif %}
       </td>
-      <td class="borde_izq listado_centro borde_der">
+      <td width="40%" class="borde_izq listado_centro borde_der">
         {% if pedido.term_cortado %}CORTADO&nbsp;{% endif %}{% if pedido.term_troquelado %} TROQUELADO&nbsp;{% endif %}{% if pedido.term_abrochado %}ABROCHADO&nbsp;{% endif %}
      
         {% if pedido.term_engomado %}ENGOMADO&nbsp;{% endif %}{% if pedido.term_plegado %} PLEGADO&nbsp;{% endif %}{% if pedido.term_arandelas %}ARANDELAS&nbsp;{% endif %}
@@ -116,16 +108,16 @@
   </thead>
   {% for item in detalle_pedido %}
     <tr>      
-      <td class="listado_der borde_izq">{{item.cantidad|default_if_none:0|floatformat:2|intcomma}} {{item.producto.get_unidad_display}}</td>
+      <td class="listado_der borde_izq" width="15%">{{item.cantidad|default_if_none:0|floatformat:2|intcomma}} {{item.producto.get_unidad_display}}</td>
       <td class="listado_izq borde_izq">{{item.producto}} {% if item.detalle %} ({{item.detalle}}) {% endif %}</td>      
-      <td class="listado_der borde_der borde_izq">{{pedido.moneda.simbolo|default:'$'}}{{item.importe_total|default_if_none:0|floatformat:2|intcomma}}</td>
+      <td class="listado_der borde_der borde_izq" width="25%">{{pedido.moneda.simbolo|default:'$'}}{{item.importe_total|default_if_none:0|floatformat:2|intcomma}}</td>
     </tr>       
   {% endfor detalle_pedido %}
   {% for i in renglones %}  
     <tr>
-      <td class="listado_der borde_izq">&nbsp;</td>
+      <td class="listado_der borde_izq" width="15%">&nbsp;</td>
       <td class="listado_izq borde_izq"></td>
-      <td class="listado_der borde_der borde_izq"></td>
+      <td class="listado_der borde_der borde_izq" width="25%"></td>
     </tr>     
   {% endfor %}
   <tr class="">

@@ -290,7 +290,8 @@ $('.formDetalle').formset({
             $("[name='formDetalle-"+i1+"-producto']").focus();
             $("#id_letra").trigger("change");
             $("[name='formDetalle-"+i1+"-producto']").trigger("change"); 
-            recalcular(); 
+            recalcular();
+            if (typeof actualizarSimboloMoneda === 'function') actualizarSimboloMoneda();
            },
           removed: function (row) {      
             calcularTotales();               

@@ -278,6 +278,7 @@ $('.formDetalle').formset({
             recalcular(); 
             // $("#recargarProductos").trigger("click");
             recarga_listado_detalle(i1);
+            if (typeof actualizarSimboloMoneda === 'function') actualizarSimboloMoneda();
            },
           removed: function (row) {      
             calcularTotales();               

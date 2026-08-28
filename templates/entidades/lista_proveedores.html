@@ -2,6 +2,7 @@
 {% load static from staticfiles %}
 {% load i18n l10n %}
 {% load humanize %}
+{% load bootstrap3 %}
 {% block main %} 
    
     <div id="cargando" class="cargando" >
@@ -14,9 +15,12 @@
                     <div class="caption bold">
                                 <i class="icon-users"></i>LISTADO PROVEEDORES <small>carga e impresión</small>
                     </div>
-
+                    <div class="actions">
+                        <button tittle="Búsqueda Avanzada" data-toggle="collapse" aria-expanded="true" class="btn btn-circle active" data-target="#barra_busqueda" aria-controls="#barra_busqueda"><i class="glyphicon glyphicon-search"></i></button>
+                    </div>
                 </div> 
-            </div>      
+            </div>
+            {% include "entidades/barra_busqueda.html" %}      
             {% if 'ent_proveedores_abm' in permisos_grupo %}
             <a class="btn btn-sm blue-hoki modal-create" style="float:left;margin-right:20px;" href="{% url 'proveedor_nuevo' %}" data-modal-head="AGREGAR PROVEEDOR" data-modal-callback="reload">Nuevo Proveedor</a>
             {% endif %}

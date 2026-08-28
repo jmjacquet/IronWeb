@@ -233,7 +233,12 @@
                               <li>
                                 <a href="{% url 'prod_stock_listado' %}">Mantenimiento Stock</a>
                               </li>             
-                         {% endif %} 
+                         {% endif %}
+                         {% if 'prod_precios' in permisos_grupo %}
+                              <li>
+                                <a href="{% url 'prod_reporte' %}">Reporte Productos</a>
+                              </li>
+                         {% endif %}
                         </ul>
                     </li>
                    {% endif %}

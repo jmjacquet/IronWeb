@@ -28,6 +28,12 @@ MOSTRAR_PRODUCTO_ = (
     (3, u'Ventas y Compras'),    
 )
 
+BAJA_ = (    
+    (0, 'Todos'),
+    (1, 'Activos'),
+    (2, 'Baja'),
+)
+
 #Valor ITC default
 vitc = 5.733
 #Valor TASA default

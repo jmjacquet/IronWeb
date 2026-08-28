@@ -9,6 +9,10 @@ import os
 DEBUG = True
 TEMPLATE_DEBUG = DEBUG
 
+# Ensure TENANT_MAP from .env is available in os.environ (python-decouple config() doesn't set it)
+if 'TENANT_MAP' not in os.environ:
+    os.environ['TENANT_MAP'] = config('TENANT_MAP', default='{}')
+
 DB_USER = config('DB_USER', default='root')
 DB_PASS = config('DB_PASS', default='rootpassword')
 DB_HOST = config('DB_HOST', default='mariadb_ironweb_local')
@@ -20,7 +24,7 @@ STATICFILES_DIRS = (
 
 USE_I18N = True
 USE_THOUSAND_SEPARATOR = False
-USE_L10N = False  # Disable localization
+USE_L10N =False  # Disable localization
 DATE_FORMAT = "d/m/Y"
 DATETIME_FORMAT = "d/m/Y H:i"
 SHORT_DATE_FORMAT = "d/m/Y"
