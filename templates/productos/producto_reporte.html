@@ -1,0 +1,274 @@
+{% extends "index.html" %}
+{% load static from staticfiles %}
+{% load i18n %}
+{% load bootstrap3 %}
+{% load humanize %}
+{% block extra_js %}
+    {{ block.super }}            
+    <script src="{% static 'js/scripts/scripts_prod_reporte.js'%}?{% now "Ymd"%}" type="text/javascript"></script>   
+{% endblock %}
+{% block main %}   
+ <div id="cargando" class="cargando" >
+                <span class="cargando-txt">CARGANDO...</span>
+                <img class="cargando-img" src="{% static 'img/loading-bars.svg' %}">
+        </div>
+<div class="col-md-12 cerca">   
+    <div class="portlet box toolbar_green">
+        <div class="portlet-title">
+            <div class="caption bold">   <i class="fa fa-bar-chart"></i> REPORTES PRECIOS Y STOCK <small>consulta</small></div>
+        </div> 
+    </div> 
+    
+    <div class="row">
+        <div class="col-sm-12">
+         <form class="form" accept-charset="UTF-8" role="form" action="" method="post">
+            {% csrf_token %} 
+            <div class="barra_busqueda col-sm-12">                                                                   
+                <div class="col-sm-2">{% bootstrap_field form.producto  %}</div>                             
+                <div class="col-sm-2">{% bootstrap_field form.lista_precios  %}</div>
+                <div class="col-sm-2">{% bootstrap_field form.ubicacion  %}</div>
+                <div class="col-sm-2">{% bootstrap_field form.categoria  %}</div>                                    
+                <div class="col-sm-1">{% bootstrap_field form.tipo_prod  %}</div>
+                <div class="col-sm-1">{% bootstrap_field form.mostrar_en  %}</div>
+                <div class="col-sm-1">{% bootstrap_field form.baja  %}</div>
+                <div class="col-sm-1"><button id="btnBuscar" style="float:left;margin-left:10px;" class="btn btn-sm green-meadow" type="button">Buscar</button></div>
+            </div>     
+            </form>         
+        </div>
+    </div>
+
+    <table id="dataTables-reporte" style="display:none;" class="table table-striped compact table-hover table-no-bordered tabla_nueva nowrap">         
+        <thead>
+            <tr>                                                               
+                <th class="no-sort text-center"></th>
+                <th class="imprimir">Producto</th>                                                                
+                <th class="imprimir">CodBar</th>
+                <th class="imprimir">Categoría</th>
+                <th class="imprimir">TipoProd.</th>
+                <th class="imprimir text-right">Costo</th>
+                <th class="imprimir text-right">Costo c/Imp.</th>
+                <th class="imprimir text-right" title="Coeficiente de Ganancia">C.Gan.</th>
+                <th class="imprimir text-right">Precio Venta</th>
+                <th class="imprimir text-right">Stock</th>
+                <th class="imprimir text-left">Unidad</th>                                                                                                              
+            </tr>
+        </thead>
+        <tbody>                                                   
+        </tbody>
+        <tfoot>
+            <tr>
+                <th></th> 
+                <th></th>
+                <th></th>
+                <th></th>
+                <th></th>                                                                 
+                <th class="importe"></th>   
+                <th class="importe"></th>
+                <th class="importe"></th>
+                <th class="importe_total"></th>
+                <th class="importe_total"></th>
+                <th></th>                                   
+
+            </tr>
+        </tfoot>
+    </table>
+                                                                 
+</div>
+       
+
+<script type="text/javascript">
+
+$(document).ready(function() { 
+
+var tabla = $('#dataTables-reporte').DataTable({
+            "language": {
+                "decimal": ",",
+                "thousands": ".",                
+                "sProcessing": "Procesando...",
+                "sLengthMenu": "Mostrar _MENU_ registros",
+                "sZeroRecords": "No se encontraron resultados",
+                "sEmptyTable": "No hay registros en esta tabla",
+                "sInfo": "Mostrando registros del _START_ al _END_ de un total de _TOTAL_ registros",
+                "sInfoEmpty": "Mostrando registros del 0 al 0 de un total de 0 registros",
+                "sInfoFiltered": "(filtrado de un total de _MAX_ registros)",
+                "sInfoPostFix": "",
+                "sSearch": "Buscar:",
+                "sUrl": "",
+                "sInfoThousands": ".",
+                "sLoadingRecords": "Cargando...",
+                "oPaginate": {
+                    "sFirst": "Primero",
+                    "sLast": "Último",
+                    "sNext": "Siguiente",
+                    "sPrevious": "Anterior"
+                },
+                "oAria": {
+                    "sSortAscending": ": Activar para ordenar la columna de manera ascendente",
+                    "sSortDescending": ": Activar para ordenar la columna de manera descendente"
+                },
+                      
+            },                      
+            "columnDefs": [ {
+                  "targets"  : 'no-sort',
+                  "orderable": false,
+                }],          
+           "processing": true,
+           "serverSide": true,
+           "autoWidth": false,           
+           "order": [[1, 'asc']],
+           "colReorder": true,
+           "searching": false,
+            fixedHeader: {
+              header: false,
+              footer: false
+              },
+            responsive: true,
+            dom: "Bf<'row'<'col-sm-12'tr>>"+"<'row'<'col-sm-3'l><'col-sm-9'ip>>",
+            buttons: [
+                {
+                    extend:    'colvis',
+                    text:      '<i class="fa fa-list"></i>',
+                    titleAttr: 'Ver/Ocultar',
+                    className: 'btnToolbar',                    
+                },
+                {
+                    extend:    'copyHtml5',
+                    text:      '<i class="fa fa-files-o"></i>',
+                    titleAttr: 'Copiar',
+                    exportOptions: { columns: ':visible' },
+                    className: 'btnToolbar',     
+
+                },
+                {
+                    extend:    'excel',
+                    text:      '<i class="fa fa-file-excel-o"></i>',
+                    titleAttr: 'Excel',
+                    filename: 'REPORTE_PRODUCTOS',                    
+                    exportOptions: {  modifier: {
+                                        page: 'current'
+                                    }, 
+                                      columns: '.imprimir',
+                                      format: {
+                                      body: function(data, row, column, node) {
+                                        var floatVal = function (i) {
+                                            if (typeof i === "number") {
+                                                return i;
+                                            } else if (typeof i === "string") {
+                                                i = i.replace(/[^0-9\-,]/g, "");
+                    i = i.replace(/\,/g ,"");                    
+                    i = i.replace(/\./g, "");
+                                                var result = parseFloat(i)/100;
+                                                if (isNaN(result)) {
+                                                    try {
+                                                        var result = $jq(i).text();
+                                                        result = parseFloat(result);
+                                                        if (isNaN(result)) { result = 0 };
+                                                        return result * 1;
+                                                    } catch (error) {
+                                                        return 0;
+                                                    }
+                                                } else {
+                                                    return result * 1;
+                                                }
+                                            } else {
+                                                alert("Unhandled type for totals [" + (typeof i) + "]");
+                                                return 0
+                                            }
+                                        };
+                                          data = $('<p>' + data + '</p>').text();
+                                          return (node.className=='importe') ? floatVal(data)  : data;
+                                      }
+                                    }},
+                    className: 'btnToolbar',     
+                },
+                        
+                {
+                    extend:    'pdfHtml5',
+                    text:      '<i class="fa fa-file-pdf-o"></i>',
+                    titleAttr: 'PDF',footer: true,
+                    exportOptions: { columns: '.imprimir'},
+                    orientation: 'landscape',
+                    className: 'btnToolbar',                    
+                },
+                {
+                    extend: 'print',
+                    text:      '<i class="fa fa-print"></i>',
+                    titleAttr: 'Imprimir',
+                    exportOptions: { columns: '.imprimir' },
+                    className: 'btnToolbar',                    
+                },
+            ],
+             PreDrawCallback:function(){
+            $("#cargando").show();
+            },
+            drawCallback: function() {
+                $("#dataTables-reporte").show();
+                $("#cargando").hide();
+            },
+            ajax: {
+                url: "{% url 'prod_reporte_data' %}",
+                type: "GET",
+                data: function(d) {
+                    d.lista_precios = $('#id_lista_precios').val();
+                    d.ubicacion = $('#id_ubicacion').val();
+                    d.producto = $('#id_producto').val();
+                    d.categoria = $('#id_categoria').val();
+                    d.tipo_prod = $('#id_tipo_prod').val();
+                    d.mostrar_en = $('#id_mostrar_en').val();
+                    d.baja = $('#id_baja').val();
+                }
+            },
+            columns: [
+                { data: 0, orderable: false, searchable: false, className: 'no-sort text-center' },
+                { data: 1, className: 'imprimir' },
+                { data: 2, className: 'imprimir' },
+                { data: 3, className: 'imprimir' },
+                { data: 4, className: 'imprimir' },
+                { data: 5, className: 'importe' },
+                { data: 6, className: 'importe' },
+                { data: 7, className: 'importe' },
+                { data: 8, className: 'importe_total' },
+                { data: 9, className: 'importe_total' },
+                { data: 10, className: 'text-left' },
+            ],
+            footerCallback: function ( row, data, start, end, display ) {
+            var api = this.api(), data;
+            var floatVal = function (i) {
+                if (typeof i === "number") {
+                    return i;
+                } else if (typeof i === "string") {
+                    i = i.replace(/[^0-9\-,]/g, "");
+                    i = i.replace(/\,/g ,"");                    
+                    i = i.replace(/\./g, "");
+                    var result = parseFloat(i)/100;
+                    if (isNaN(result)) {
+                        try {
+                            var result = $jq(i).text();
+                            result = parseFloat(result);
+                            if (isNaN(result)) { result = 0 };
+                            return result * 1;
+                        } catch (error) {
+                            return 0;
+                        }
+                    } else {
+                        return result * 1;
+                    }
+                } else {
+                    alert("Unhandled type for totals [" + (typeof i) + "]");
+                    return 0
+                }
+            };
+                        
+            let col_tot_sum =[5, 6, 8, 9]
+            col_tot_sum.forEach(function (col_number) {
+                pageTotal = api.column(col_number, { page: 'current'} ).data().reduce( function (a, b) {return floatVal(a) + floatVal(b);}, 0 );
+                $( api.column(col_number).footer() ).html(pageTotal.toLocaleString(undefined,{minimumFractionDigits:2}));
+            });
+
+            }
+        });
+
+});
+
+</script>
+{% endblock main %}
