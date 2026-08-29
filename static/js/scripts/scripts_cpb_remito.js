@@ -91,7 +91,8 @@ $('.formDetalle').formset({
             $("[name='formDetalle-"+i1+"-producto']").change(function(){
               cargarProd(i1);
              });
-             $("[name='formDetalle-"+i1+"-producto']").trigger("change"); 
+             $("[name='formDetalle-"+i1+"-producto']").trigger("change");
+             if (typeof actualizarSimboloMoneda === 'function') actualizarSimboloMoneda();
            },
           removed: function (row) {
             var i = $(row).index();
@@ -100,21 +101,24 @@ $('.formDetalle').formset({
       });
 
 
-    $.fn.datepicker.dates['es'] = {
-    days: ["Domingo", "Lunes", "Martes", "Miércoles", "Jueves", "Viernes", "Sábado", "Domingo"],
-    daysShort: ["Dom", "Lun", "Mar", "Mié", "Jue", "Vie", "Sáb", "Dom"],
-    daysMin: ["Do", "Lu", "Ma", "Mi", "Ju", "Vi", "Sa", "Do"],
-    months: ["Enero", "Febrero", "Marzo", "Abril", "Mayo", "Junio", "Julio", "Agosto", "Septiembre", "Octubre", "Noviembre", "Diciembre"],
-    monthsShort: ["Ene", "Feb", "Mar", "Abr", "May", "Jun", "Jul", "Ago", "Sep", "Oct", "Nov", "Dic"],
-    today: "Hoy"
-  };
-
-   $('.datepicker').datepicker({
-          format: "dd/mm/yyyy",
-          language: "es",
-          autoclose: true,
-          todayHighlight: true
-    });
+    $.datepicker.regional['es'] = {
+     closeText: 'Cerrar',
+     prevText: '',
+     nextText: '',
+     currentText: 'Hoy',
+     monthNames: ['Enero', 'Febrero', 'Marzo', 'Abril', 'Mayo', 'Junio', 'Julio', 'Agosto', 'Septiembre', 'Octubre', 'Noviembre', 'Diciembre'],
+     monthNamesShort: ['Ene','Feb','Mar','Abr', 'May','Jun','Jul','Ago','Sep', 'Oct','Nov','Dic'],
+     dayNames: ['Domingo', 'Lunes', 'Martes', 'Miércoles', 'Jueves', 'Viernes', 'Sábado'],
+     dayNamesShort: ['Dom','Lun','Mar','Mié','Juv','Vie','Sáb'],
+     dayNamesMin: ['Do','Lu','Ma','Mi','Ju','Vi','Sá'],
+     weekHeader: 'Sm',
+     dateFormat: 'dd/mm/yy',
+     firstDay: 1,
+     isRTL: false,
+     showMonthAfterYear: false,
+     yearSuffix: ''
+     };
+     $.datepicker.setDefaults($.datepicker.regional['es']);
 
     $('.datepicker').each(function(){
         $(this).datepicker();
