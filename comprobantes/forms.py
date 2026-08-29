@@ -313,8 +313,10 @@ class ImportarArcaForm(forms.Form):
 		request = kwargs.pop('request', None)
 		super(ImportarArcaForm, self).__init__(*args, **kwargs)
 		try:
-			self.fields['empresa'].queryset = empresas_buscador(request)
-			self.fields['empresa'].initial = 1
+			empresa = empresa_actual(request)
+			if empresa:
+				self.fields['empresa'].queryset = gral_empresa.objects.filter(pk=empresa.pk)
+				self.fields['empresa'].initial = empresa.pk
 			empresa_id = self.data.get('empresa') if self.is_bound else self.initial.get('empresa')
 			self._filtrar_productos(empresa_id)
 		except:
