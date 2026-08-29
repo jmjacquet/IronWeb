@@ -29,10 +29,33 @@ CAMPOS = {
     'codautorizacion': 'cae',
     'tipodocemisor': 'tipo_doc',
     'tipodocreceptor': 'tipo_doc',
-    'nrodocemisor': 'nro_doc',
-    'nrodocreceptor': 'nro_doc',
+    'nrodocemisor': 'nro_doc_emisor',
+    'nrodocreceptor': 'nro_doc_receptor',
     'denominacionemisor': 'denominacion',
     'denominacionreceptor': 'denominacion',
+    # Variantes reales del export de ARCA (Mi Comprobantes)
+    'nrodocdelemisor': 'nro_doc_emisor',
+    'nrodocdelreceptor': 'nro_doc_receptor',
+    'numerodedocumentodelemisor': 'nro_doc_emisor',
+    'numerodedocumentodelreceptor': 'nro_doc_receptor',
+    'numerodeldocumentodelemisor': 'nro_doc_emisor',
+    'numerodeldocumentodelreceptor': 'nro_doc_receptor',
+    'nodedocumentodelemisor': 'nro_doc_emisor',
+    'nodedocumentodelreceptor': 'nro_doc_receptor',
+    'ndocumentoemisor': 'nro_doc_emisor',
+    'ndocumentoreceptor': 'nro_doc_receptor',
+    'ndocemisor': 'nro_doc_emisor',
+    'ndocreceptor': 'nro_doc_receptor',
+    'nodocemisor': 'nro_doc_emisor',
+    'nodocreceptor': 'nro_doc_receptor',
+    'denominaciondelemisor': 'denominacion',
+    'denominaciondelreceptor': 'denominacion',
+    'tipodocumentoemisor': 'tipo_doc',
+    'tipodocumentoreceptor': 'tipo_doc',
+    'tipodocumentodelemisor': 'tipo_doc',
+    'tipodocumentodelreceptor': 'tipo_doc',
+    'tipodocdelemisor': 'tipo_doc',
+    'tipodocdelreceptor': 'tipo_doc',
     'tipocambio': 'cotizacion',
     'moneda': 'moneda',
     'impnetogravado': 'gravado',
@@ -136,17 +159,16 @@ def leer_filas(archivo):
     return filas
 
 
-def tasa_para(gravado, iva):
+def tasa_para(gravado, iva, tasas, tasa_por_afip):
     u"""Mis Comprobantes trae un único total de IVA, así que se deduce la alícuota."""
-    tasas = [t for t in gral_tipo_iva.objects.all() if t.coeficiente > 0]
     if gravado > 0 and tasas:
         coeficiente = iva / gravado
         return min(tasas, key=lambda t: abs(t.coeficiente - coeficiente))
-    return gral_tipo_iva.objects.filter(id_afip=3).first()
+    return tasa_por_afip.get(3)
 
 
-def _buscar_tipo(codigo_afip, compra_venta):
-    nro = cpb_nro_afip.objects.filter(numero_afip=codigo_afip).first()
+def _buscar_tipo(codigo_afip, compra_venta, nro_por_afip):
+    nro = nro_por_afip.get(codigo_afip)
     if not nro:
         return None, None
     # libro_iva descarta los no fiscales (ej. "FACTURA VENTA X") que comparten tipo
@@ -155,13 +177,13 @@ def _buscar_tipo(codigo_afip, compra_venta):
     return tipo, nro.letra
 
 
-def _buscar_moneda(token):
+def _buscar_moneda(token, moneda_por_codigo):
     codigo = MONEDAS.get((token or '').strip(), (token or '').strip())
-    return gral_moneda.objects.filter(codigo=codigo).first()
+    return moneda_por_codigo.get(codigo)
 
 
-def _buscar_entidad(fila, empresa, tipo_entidad):
-    cuit = re.sub(r'[^0-9]', '', fila.get('nro_doc') or '')
+def _buscar_entidad(fila, empresa, tipo_entidad, nro_doc_col='nro_doc'):
+    cuit = re.sub(r'[^0-9]', '', fila.get(nro_doc_col) or '')
     nombre = (fila.get('denominacion') or '').strip().upper() or u'SIN IDENTIFICAR'
     if not cuit:
         return None
@@ -175,28 +197,29 @@ def _buscar_entidad(fila, empresa, tipo_entidad):
     return entidad
 
 
-def _tasa(id_afip):
-    return gral_tipo_iva.objects.filter(id_afip=id_afip).first()
+def _tasa(id_afip, tasa_por_afip):
+    return tasa_por_afip.get(id_afip)
 
 
-def _agrupar_por_alicuota(fila, gravado, iva, no_gravado, exento, total):
+def _agrupar_por_alicuota(fila, gravado, iva, no_gravado, exento, total,
+                          tasa_por_afip, tasa_por_coef):
     u"""[(tasa_iva, base, iva)] — base de las alícuotas y de los detalles."""
     grupos = []
     for col_neto, col_iva, id_afip in ALICUOTAS:
         base = a_decimal(fila.get(col_neto))
         monto = a_decimal(fila.get(col_iva)) if col_iva else Decimal(0)
         if base or monto:
-            grupos.append((_tasa(id_afip), base, monto))
+            grupos.append((_tasa(id_afip, tasa_por_afip), base, monto))
     # Export sin columnas por alícuota: se deduce del total
     if not grupos and (gravado or iva):
-        grupos.append((tasa_para(gravado, iva), gravado, iva))
+        grupos.append((tasa_para(gravado, iva, tasa_por_coef, tasa_por_afip), gravado, iva))
     if no_gravado:
-        grupos.append((_tasa(1), no_gravado, Decimal(0)))
+        grupos.append((_tasa(1, tasa_por_afip), no_gravado, Decimal(0)))
     if exento:
-        grupos.append((_tasa(2), exento, Decimal(0)))
+        grupos.append((_tasa(2, tasa_por_afip), exento, Decimal(0)))
     # Todo comprobante lleva al menos una fila, incluso si viene en cero
     if not grupos:
-        grupos.append((_tasa(3), total, Decimal(0)))
+        grupos.append((_tasa(3, tasa_por_afip), total, Decimal(0)))
     return grupos
 
 
@@ -207,8 +230,9 @@ def _crear_alicuotas(comprobante, grupos):
             tasa_iva=tasa, importe_total=monto)
 
 
-def _crear_detalles(comprobante, grupos, otros, total, descripcion):
-    u"""Sin producto ni lista de precios: no mueve stock ni valida moneda.
+def _crear_detalles(comprobante, grupos, otros, total, descripcion, producto=None):
+    u"""Sin lista de precios: no mueve stock ni valida moneda (salvo que se indique
+    un producto por defecto, que se asigna a cada detalle).
 
     ARCA redondea y sus componentes no siempre suman el Imp. Total. La diferencia
     se absorbe en la última fila para que un recálculo posterior (lo dispara el
@@ -223,6 +247,7 @@ def _crear_detalles(comprobante, grupos, otros, total, descripcion):
             monto += ajuste
         cpb_comprobante_detalle.objects.create(
             cpb_comprobante=comprobante,
+            producto=producto,
             cantidad=1,
             tasa_iva=tasa,
             coef_iva=tasa.coeficiente if tasa else 0,
@@ -234,15 +259,20 @@ def _crear_detalles(comprobante, grupos, otros, total, descripcion):
 
 
 @transaction.atomic
-def importar(archivo, empresa, compra_venta, usuario=None):
+def importar(archivo, empresa, compra_venta, usuario=None, producto=None):
     u"""compra_venta: 'C' para Recibidos (compras), 'V' para Emitidos (ventas)."""
     tipo_entidad = 2 if compra_venta == 'C' else 1
     estado = cpb_estado.objects.filter(pk=1).first()
+    # Tablas chicas de referencia: se cargan una vez y se reutilizan por fila
+    tasa_por_afip = {t.id_afip: t for t in gral_tipo_iva.objects.all()}
+    tasa_por_coef = [t for t in tasa_por_afip.values() if t.coeficiente > 0]
+    moneda_por_codigo = {m.codigo: m for m in gral_moneda.objects.all()}
+    nro_por_afip = {n.numero_afip: n for n in cpb_nro_afip.objects.all()}
     resultado = {'creados': 0, 'omitidos': 0, 'errores': []}
 
     for nro_linea, fila in enumerate(leer_filas(archivo), start=2):
         codigo_afip = a_entero(fila.get('tipo'))
-        tipo, letra = _buscar_tipo(codigo_afip, compra_venta)
+        tipo, letra = _buscar_tipo(codigo_afip, compra_venta, nro_por_afip)
         if not tipo:
             resultado['errores'].append(
                 u'Línea %s: tipo de comprobante AFIP %s sin equivalente en el sistema.'
@@ -284,9 +314,11 @@ def importar(archivo, empresa, compra_venta, usuario=None):
         if numero_hasta and numero_hasta != numero:
             observacion += u' (rango %s a %s)' % (numero, numero_hasta)
 
+        nro_doc_col = 'nro_doc_emisor' if compra_venta == 'C' else 'nro_doc_receptor'
+
         comprobante = cpb_comprobante.objects.create(
             cpb_tipo=tipo,
-            entidad=_buscar_entidad(fila, empresa, tipo_entidad),
+            entidad=_buscar_entidad(fila, empresa, tipo_entidad, nro_doc_col),
             pto_vta=pto_vta,
             letra=letra,
             numero=numero,
@@ -301,7 +333,7 @@ def importar(archivo, empresa, compra_venta, usuario=None):
             importe_exento=exento,
             importe_perc_imp=otros,
             importe_total=total,
-            moneda=_buscar_moneda(fila.get('moneda')),
+            moneda=_buscar_moneda(fila.get('moneda'), moneda_por_codigo),
             cotizacion=cotizacion,
             estado=estado,
             observacion=observacion,
@@ -310,10 +342,11 @@ def importar(archivo, empresa, compra_venta, usuario=None):
             # Sin detalles que cobrar/pagar, el saldo es el total del comprobante
             saldo=total,
         )
-        grupos = _agrupar_por_alicuota(fila, gravado, iva, no_gravado, exento, total)
+        grupos = _agrupar_por_alicuota(fila, gravado, iva, no_gravado, exento, total,
+                                       tasa_por_afip, tasa_por_coef)
         _crear_alicuotas(comprobante, grupos)
         _crear_detalles(comprobante, grupos, otros, total,
-                        u'%s %s %s' % (tipo.nombre, letra, comprobante.get_numero()))
+                        u'%s %s %s' % (tipo.nombre, letra, comprobante.get_numero()), producto)
         resultado['creados'] += 1
 
     return resultado

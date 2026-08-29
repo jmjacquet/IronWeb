@@ -2311,25 +2311,36 @@ def importar_arca(request):
     if not any(tiene_permiso(request, p) for p in PERMISO_IMPORTAR.values()):
         return redirect(reverse('principal'))
     context = VariablesMixin().get_context_data(request=request)
+    errores = []
     if request.method == 'POST':
         form = ImportarArcaForm(request.POST, request.FILES, request=request)
         if form.is_valid():
             compra_venta = form.cleaned_data['compra_venta']
             if not tiene_permiso(request, PERMISO_IMPORTAR[compra_venta]):
                 return redirect(reverse('principal'))
-            resultado = importar(
-                form.cleaned_data['archivo'],
-                form.cleaned_data['empresa'],
-                compra_venta,
-                usuario_actual(request),
-            )
-            messages.success(request, u'Se importaron %s comprobantes (%s omitidos por duplicados).'
-                             % (resultado['creados'], resultado['omitidos']))
-            for error in resultado['errores'][:20]:
-                messages.warning(request, error)
-            if len(resultado['errores']) > 20:
-                messages.warning(request, u'...y %s errores más.' % (len(resultado['errores']) - 20))
+            try:
+                resultado = importar(
+                    form.cleaned_data['archivo'],
+                    form.cleaned_data['empresa'],
+                    compra_venta,
+                    usuario_actual(request),
+                    form.cleaned_data.get('producto'),
+                )
+                messages.success(request, u'Se importaron %s comprobantes (%s omitidos por duplicados).'
+                                 % (resultado['creados'], resultado['omitidos']))
+                errores = list(resultado['errores'])
+                for error in errores[:20]:
+                    messages.warning(request, error)
+                if len(errores) > 20:
+                    messages.warning(request, u'...y %s errores más.' % (len(errores) - 20))
+            except Exception:
+                logger.exception(u'Error importando comprobantes de ARCA')
+                errores = [u'Error inesperado al importar el archivo. Revise el formato y vuelva a intentarlo.']
+                messages.error(request, errores[0])
+        else:
+            errores = [u'%s: %s' % (campo, u', '.join(msgs)) for campo, msgs in form.errors.iteritems()]
     else:
         form = ImportarArcaForm(None, None, request=request)
     context['form'] = form
+    context['errores'] = errores
     return render(request, 'comprobantes/importar_arca.html', context)

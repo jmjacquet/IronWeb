@@ -17,6 +17,7 @@ from crispy_forms.layout import Layout, Submit, Div,Button,HTML
 from .models import *
 from general.flavor import ARCUITField,ARDNIField,ARPostalCodeField
 from chosen import forms as chosenforms
+from productos.models import prod_productos
 
 ####################################################################################################
 
@@ -304,6 +305,9 @@ class ImportarArcaForm(forms.Form):
 	archivo = forms.FileField(label=u'Archivo CSV de ARCA',required=True)
 	compra_venta = forms.ChoiceField(label=u'Tipo',choices=(('C',u'Recibidos (Compras)'),('V',u'Emitidos (Ventas)')),required=True,initial='C')
 	empresa = forms.ModelChoiceField(queryset=gral_empresa.objects.all(),empty_label=None,required=True)
+	producto = chosenforms.ChosenModelChoiceField(
+		label=u'Producto por defecto',queryset=prod_productos.objects.none(),
+		empty_label=None,required=True)
 
 	def __init__(self, *args, **kwargs):
 		request = kwargs.pop('request', None)
@@ -311,8 +315,16 @@ class ImportarArcaForm(forms.Form):
 		try:
 			self.fields['empresa'].queryset = empresas_buscador(request)
 			self.fields['empresa'].initial = 1
+			empresa_id = self.data.get('empresa') if self.is_bound else self.initial.get('empresa')
+			self._filtrar_productos(empresa_id)
 		except:
 			pass  # Sin request válido queda el queryset completo
+
+	def _filtrar_productos(self, empresa_id):
+		productos = prod_productos.objects.filter(baja=False).order_by('nombre')
+		if empresa_id:
+			productos = productos.filter(empresa_id=empresa_id)
+		self.fields['producto'].queryset = productos
 
 	def clean(self):
 		archivo = self.cleaned_data.get('archivo')

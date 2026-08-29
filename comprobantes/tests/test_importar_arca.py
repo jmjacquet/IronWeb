@@ -53,7 +53,7 @@ def test_a_entero_ignora_ceros_y_simbolos():
 def test_leer_filas_mapea_encabezados_con_acentos():
     fila = leer_filas(io.StringIO(CSV_RECIBIDOS))[0]
     assert fila['tipo'] == '1'
-    assert fila['nro_doc'] == '30712345678'      # "Nro. Doc. Emisor" -> nro_doc
+    assert fila['nro_doc_emisor'] == '30712345678'   # "Nro. Doc. Emisor" -> nro_doc_emisor
     assert fila['denominacion'] == 'ACME SA'
     assert a_decimal(fila['total']) == Decimal('121000')
     assert a_decimal(fila['iva']) == Decimal('21000')
@@ -62,7 +62,7 @@ def test_leer_filas_mapea_encabezados_con_acentos():
 def test_leer_filas_acepta_emitidos_con_receptor():
     csv_emitidos = CSV_RECIBIDOS.replace('Emisor', 'Receptor')
     fila = leer_filas(io.StringIO(csv_emitidos))[0]
-    assert fila['nro_doc'] == '30712345678'
+    assert fila['nro_doc_receptor'] == '30712345678'
 
 
 def test_leer_filas_vacio():
@@ -101,3 +101,24 @@ def test_leer_filas_utf8_no_se_lee_como_latin1():
     # Si se decodifica mal, "Fecha de Emisión" deja de matchear y la fecha queda vacía
     fila = leer_filas(io.BytesIO(CSV_CON_ALICUOTAS.encode('utf-8')))[0]
     assert fila.get('fecha'), 'los encabezados con acento no se mapearon'
+
+
+# Variante real de ARCA ("Denominación DEL Emisor"): cada fila debe exponer el
+# propio proveedor (CUIT/tipo/doc y denominación) y no repetir el de la primera.
+CSV_DEL_EMISOR = (
+    u'Fecha;Tipo;Punto de Venta;Número Desde;Número Hasta;Cód. Autorización;'
+    u'Tipo Doc. del Emisor;Nro. Doc. del Emisor;Denominación del Emisor;'
+    u'Tipo Cambio;Moneda;Imp. Neto Gravado;Imp. Neto No Gravado;Imp. Op. Exentas;'
+    u'Otros Tributos;IVA;Imp. Total\n'
+    u'2026-07-03;1;1;1;1;72345678901234;80;30712345678;PROVEE A SA;'
+    u'1,00;PES;100,00;0,00;0,00;0,00;21,00;121,00\n'
+    u'2026-07-04;1;1;2;2;72345678901235;80;30710911496;PROVEE B SA;'
+    u'1,00;PES;200,00;0,00;0,00;0,00;42,00;242,00\n'
+)
+
+
+def test_leer_filas_del_emisor_exponer_proveedor_por_fila():
+    filas = leer_filas(io.BytesIO(CSV_DEL_EMISOR.encode('utf-8')))
+    assert [f.get('nro_doc_emisor') for f in filas] == ['30712345678', '30710911496']
+    assert [f.get('denominacion') for f in filas] == ['PROVEE A SA', 'PROVEE B SA']
+    assert [f.get('tipo_doc') for f in filas] == ['80', '80']
