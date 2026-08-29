@@ -265,7 +265,8 @@ $('.formDetalle').formset({
             });
             $("[name='formDetalle-"+i1+"-producto']").focus();
             cargarProd(i1);
-            recalcular(); 
+            recalcular();
+            if (typeof actualizarSimboloMoneda === 'function') actualizarSimboloMoneda();
            },
           removed: function (row) {      
             calcularTotales();               
