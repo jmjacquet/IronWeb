@@ -318,14 +318,18 @@ class ImportarArcaForm(forms.Form):
 				self.fields['empresa'].queryset = gral_empresa.objects.filter(pk=empresa.pk)
 				self.fields['empresa'].initial = empresa.pk
 			empresa_id = self.data.get('empresa') if self.is_bound else self.initial.get('empresa')
-			self._filtrar_productos(empresa_id)
+			compra_venta = self.data.get('compra_venta') if self.is_bound else self.fields['compra_venta'].initial
+			self._filtrar_productos(empresa_id, compra_venta)
 		except:
 			pass  # Sin request válido queda el queryset completo
 
-	def _filtrar_productos(self, empresa_id):
+	def _filtrar_productos(self, empresa_id, compra_venta=None):
 		productos = prod_productos.objects.filter(baja=False).order_by('nombre')
 		if empresa_id:
 			productos = productos.filter(empresa_id=empresa_id)
+		mostrar_en = {'C': (2, 3), 'V': (1, 3)}.get(compra_venta)
+		if mostrar_en:
+			productos = productos.filter(mostrar_en__in=mostrar_en)
 		self.fields['producto'].queryset = productos
 
 	def clean(self):
