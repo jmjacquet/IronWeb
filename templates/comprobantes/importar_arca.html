@@ -76,6 +76,16 @@
 	$(document).ready(function() {
    $('#cargando').hide();
    $("#id_producto").chosen({search_contains: true, width: '100%'});
+   $("#id_compra_venta").change(function() {
+        var tipo = $(this).val() === 'C' ? 2 : 1;
+        $.getJSON('/recargar_productos/' + tipo + '/', {}, function(c) {
+            $("#id_producto").empty();
+            $.each(c["productos"], function(idx, item) {
+                $("#id_producto").append('<option value="' + item['id'] + '">' + item['detalle'] + '</option>');
+            });
+            $("#id_producto").trigger("chosen:updated");
+        });
+   });
    $( "#Procesar" ).click(function() {
         $('#cargando').show();
         $("#Procesar").prop("disabled", true);
