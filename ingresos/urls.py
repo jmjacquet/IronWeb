@@ -34,6 +34,7 @@ urlpatterns = patterns(
     ),
     url(r"^cobranza/comprobantes/$", CPBCobrosSeleccionarView, name="cpb_cobro_comprobantes"),
     url(r"^presup/$", CPBPresupViewList.as_view(), name="cpb_presup_listado"),
+    url(r"^presup_data/$", presup_data, name="cpb_presup_data"),
     url(r"^presup/nuevo/$", CPBPresupCreateView.as_view(), name="cpb_presup_nuevo"),
     url(r"^presup/nuevo_lite/$", CPBPresupLiteCreateView.as_view(), name="cpb_presup_lite_nuevo"),
     url(r"^presup/editar/(?P<id>\d+)/$", CPBPresupEditView.as_view(), name="cpb_presup_editar"),

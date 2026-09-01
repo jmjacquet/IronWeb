@@ -13,11 +13,14 @@ from comprobantes.views import (
     cobros_cpb,
     cpb_anular_reactivar,
 )
+from django.core.serializers.json import DjangoJSONEncoder
+from django.template.loader import render_to_string
+
 from general.forms import ConsultaCpbs, ConsultaCpbsCompras, pto_vta_habilitados_list
 from general.utilidades import *
 from general.views import VariablesMixin
 from trabajos.models import orden_pedido, orden_pedido_detalle
-from usuarios.views import tiene_permiso
+from usuarios.views import tiene_permiso, ver_permisos
 from .forms import *
 
 
@@ -1701,6 +1704,99 @@ class CPBPresupViewList(VariablesMixin, ListView):
 
     def post(self, *args, **kwargs):
         return self.get(*args, **kwargs)
+
+
+@login_required
+def presup_data(request):
+    try:
+        empresa = empresa_actual(request)
+    except gral_empresa.DoesNotExist:
+        return HttpResponse(json.dumps({"draw": 1, "recordsTotal": 0, "recordsFiltered": 0, "data": []}, cls=DjangoJSONEncoder), content_type='application/json')
+
+    draw = int(request.GET.get('draw', 1))
+    start = int(request.GET.get('start', 0))
+    length = int(request.GET.get('length', 20))
+    search_value = request.GET.get('search[value]', '')
+    order_col_idx = int(request.GET.get('order[0][column]', 3))
+    order_dir = request.GET.get('order[0][dir]', 'desc')
+
+    f_entidad = request.GET.get('entidad', '')
+    f_pto_vta = request.GET.get('pto_vta', '')
+    f_letra = request.GET.get('letra', '')
+    f_estado = request.GET.get('estado', '0')
+    f_fdesde = request.GET.get('fdesde', '')
+    f_fhasta = request.GET.get('fhasta', '')
+
+    columns = ['fecha_cpb', 'estado__nombre', 'presup_aprobacion__nombre', 'fecha_cpb', 'fecha_vto',
+               'numero', 'entidad__apellido_y_nombre', 'importe_total', 'importe_subtotal',
+               'importe_iva', 'fecha_cpb']
+
+    qs = cpb_comprobante.objects.filter(cpb_tipo__tipo=6, empresa=empresa).select_related(
+        'estado', 'presup_aprobacion', 'cpb_tipo', 'entidad', 'moneda'
+    )
+
+    if int(f_estado) == 1:
+        pass
+    elif int(f_estado) == 2:
+        qs = qs.filter(estado__in=[3])
+    else:
+        qs = qs.filter(estado__in=[1, 2, 4])
+
+    if f_fdesde:
+        qs = qs.filter(fecha_cpb__gte=datetime.strptime(f_fdesde, '%d/%m/%Y').date())
+    if f_fhasta:
+        qs = qs.filter(fecha_cpb__lte=datetime.strptime(f_fhasta, '%d/%m/%Y').date())
+    if f_entidad:
+        qs = qs.filter(Q(entidad__apellido_y_nombre__icontains=f_entidad))
+    if f_pto_vta:
+        qs = qs.filter(pto_vta=f_pto_vta)
+    if f_letra:
+        qs = qs.filter(letra=f_letra)
+
+    recordsFiltered = qs.count()
+
+    if search_value:
+        qs = qs.filter(
+            Q(entidad__apellido_y_nombre__icontains=search_value) |
+            Q(estado__nombre__icontains=search_value) |
+            Q(presup_aprobacion__nombre__icontains=search_value)
+        )
+        recordsFiltered = qs.count()
+
+    order = columns[order_col_idx] if order_col_idx < len(columns) else 'fecha_cpb'
+    if order_dir == 'desc':
+        order = '-' + order
+    qs = qs.order_by(order)
+
+    page = qs[start:start + length]
+
+    permisos_grupo = ver_permisos(request)
+    data = []
+    for rec in page:
+        simbolo = rec.moneda.simbolo if rec.moneda else '$'
+        data.append([
+            render_to_string('ingresos/presupuesto/_presup_row_acciones.html',
+                              {'cpb': rec, 'permisos_grupo': permisos_grupo}),
+            rec.estado.nombre if rec.estado else '',
+            rec.presup_aprobacion.nombre if rec.presup_aprobacion else '',
+            rec.fecha_cpb.strftime('%d/%m/%Y') if rec.fecha_cpb else '',
+            rec.fecha_vto.strftime('%d/%m/%Y') if rec.fecha_vto else '',
+            unicode(rec),
+            render_to_string('entidades/cliente_ver.html', {'cpb': rec}),
+            u'{} {:.2f}'.format(simbolo, rec.importe_total or 0),
+            u'{}{:.2f}'.format(simbolo, rec.importe_subtotal or 0),
+            u'{}{:.2f}'.format(simbolo, rec.importe_iva or 0),
+            u'',
+            rec.estado_color or '',
+            (rec.presup_aprobacion.color or '') if rec.presup_aprobacion else '',
+        ])
+
+    return HttpResponse(json.dumps({
+        'draw': draw,
+        'recordsTotal': cpb_comprobante.objects.filter(cpb_tipo__tipo=6, empresa=empresa).count(),
+        'recordsFiltered': recordsFiltered,
+        'data': data,
+    }, cls=DjangoJSONEncoder), content_type='application/json')
 
 
 @login_required

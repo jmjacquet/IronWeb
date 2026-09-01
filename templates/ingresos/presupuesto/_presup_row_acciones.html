@@ -1,0 +1,49 @@
+{% load i18n %}
+<div class="btn-group">
+  <button type="button" title="{{ cpb.pk|safe}}" class="btn btn-xs color_barra" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+    <i class="icon-settings"> </i> <span class="caret"></span>
+  </button>
+  <ul class="dropdown-menu dropdown-menu-default">
+    <li>{% include "general/varios/cpb_ver_dropdown.html" %}</li>
+    <li><a target="_blank" href="{% url 'imprimirPresupuesto' id=cpb.pk %}"><i class=" icon-printer"></i> Imprimir</a></li>
+    <li><a href="#" name='mandarEmail' value="{{cpb.pk|safe}}"><i class="icon-envelope-open"></i> Enviar por Email</a></li>
+{% if 'cpb_presup_abm' in permisos_grupo %}
+    <li role="separator" class="divider"></li>
+    {% if cpb.presup_aprobacion.pk != 14 %}
+        <li><a href="{% url 'cpb_presup_editar' id=cpb.pk %}"  title="Editar" data-modal-callback="reload" ><i class="icon-note"></i> Editar</a></li>
+    {% endif %}
+        <li><a href="#"
+                    onClick="alerta= alertify.dialog('confirm').set({'labels':{ok:'Aceptar', cancel:'Cancelar'},'message': '¿DESEA ELIMINAR EL PRESUPUESTO SELECCIONADO?',transition:'fade','onok': function(){ window.location.href = '{% url 'cpb_presup_eliminar' id=cpb.pk %}'; },'oncancel': function(){ return true;} }); alerta.setting('modal', true); alerta.setHeader('ELIMINAR COMPROBANTE'); alerta.show(); return true;"><i class="icon-trash"></i>Eliminar</a>
+        </li>
+    {% if cpb.presup_aprobacion.pk != 12 and cpb.presup_aprobacion.pk != 14 %}
+        <li><a href="#"
+        onClick="alerta= alertify.dialog('confirm').set({'labels':{ok:'Aceptar', cancel:'Cancelar'},'message': '¿DESEA APROBAR EL PRESUPUESTO ACTUAL?',transition:'fade','onok': function(){ window.location.href = '{% url 'presup_aprobacion' id=cpb.pk estado=12 %}'; },'oncancel': function(){ return true;} }); alerta.setting('modal', true); alerta.setHeader('APROBAR PRESUPUESTO'); alerta.show(); return true;"><i class="icon-like"></i>Aprobar</a></li>
+    {% elif cpb.presup_aprobacion.pk == 12 %}
+        <li><a href="#"
+        onClick="alerta= alertify.dialog('confirm').set({'labels':{ok:'Aceptar', cancel:'Cancelar'},'message': '¿DESEA RECHAZAR EL PRESUPUESTO ACTUAL?',transition:'fade','onok': function(){ window.location.href = '{% url 'presup_aprobacion' id=cpb.pk estado=13  %}'; },'oncancel': function(){ return true;} }); alerta.setting('modal', true); alerta.setHeader('RECHAZAR PRESUPUESTO'); alerta.show(); return true;" ><i class="icon-dislike"></i>Rechazar</a></li>
+    {% endif %}
+    {% if cpb.presup_aprobacion.pk = 12 %}
+        <li role="separator" class="divider"></li>
+        {% if 'cpb_ventas_abm' in permisos_grupo %}
+            <li><a href="{% url 'cpb_venta_presup_nuevo' id=cpb.pk %}"  title="Generar Venta" ><i class="icon-note"></i> Generar/Cargar Venta</a></li>
+        {% endif %}
+        {% if 'trab_pedidos' in permisos_grupo %}
+            <li><a href="{% url 'orden_pedido_presup_nuevo' id=cpb.pk %}"  title="Generar Nota Pedido" ><i class="icon-notebook"></i> Generar Nota Pedido</a></li>
+        {% endif %}
+    {% endif %}
+        <li role="separator" class="divider"></li>
+    {% if cpb.estado.pk < 3 %}
+        <li><a href="#"
+        onClick="alerta= alertify.dialog('confirm').set({'labels':{ok:'Aceptar', cancel:'Cancelar'},'message': '¿DESEA ANULAR EL PRESUPUESTO ACTUAL?',transition:'fade','onok': function(){ window.location.href = '{% url 'presup_anular_reactivar' id=cpb.pk estado=3  %}'; },'oncancel': function(){ return true;} }); alerta.setting('modal', true); alerta.setHeader('ANULAR/REACTIVAR PRESUPUESTO'); alerta.show(); return true;" ><i class="icon-dislike"></i>Anular</a></li>
+    {% else %}
+        <li><a href="#"
+        onClick="alerta= alertify.dialog('confirm').set({'labels':{ok:'Aceptar', cancel:'Cancelar'},'message': '¿DESEA REACTIVAR EL PRESUPUESTO ACTUAL?',transition:'fade','onok': function(){ window.location.href = '{% url 'presup_anular_reactivar' id=cpb.pk estado=1 %}'; },'oncancel': function(){ return true;} }); alerta.setting('modal', true); alerta.setHeader('ANULAR/REACTIVAR PRESUPUESTO'); alerta.show(); return true;"><i class="icon-like"></i>Restablecer</a></li>
+    {% endif %}
+{% endif %}
+    <li role="separator" class="divider"></li>
+    <li><a href="{% url 'cpb_editar_seguimiento' id=cpb.pk %}"  class="modal-update" data-modal-head="EDITAR SEGUIMIENTO"  title="Editar Seguimiento" data-modal-target="#object-{{ item.pk }}" data-modal-callback="reload" ><i class="icon-speech"></i>Seguimiento</a></li>
+  </ul>
+</div>
+{% if cpb.seguimiento %}  <i title="{{cpb.seguimiento}}" class="icon-speech icono_seguimiento"></i> {% endif %}
+{% if cpb.anulacion_motivo %}  <i title="{{cpb.anulacion_motivo}}" class="glyphicon glyphicon-exclamation-sign text-danger"></i> {% endif %}
+{% if cpb.fecha_envio_mail %}  <i title="Email enviado el {{cpb.fecha_envio_mail|date:'d/m/Y'}}" class="fa fa-envelope-o icono_seguimiento"></i> {% endif %}
