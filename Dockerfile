@@ -35,6 +35,11 @@ RUN apt-get update && \
     python-m2crypto \
     && rm -rf /var/lib/apt/lists/*
 
+# AFIP's legacy WSFEv1 (servicios1.afip.gov.ar) still offers a weak DH key.
+# OpenSSL 1.1.1's default SECLEVEL=2 rejects it (DH_KEY_TOO_SMALL); drop to
+# SECLEVEL=1 so facturarAFIP can complete the TLS handshake.
+RUN sed -i 's/CipherString = DEFAULT@SECLEVEL=2/CipherString = DEFAULT@SECLEVEL=1/' /etc/ssl/openssl.cnf
+
 # Copy requirements and install Python packages
 # Skip GRR-M2Crypto since we're using system package python-m2crypto
 COPY reqs.txt /app/

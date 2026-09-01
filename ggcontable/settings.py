@@ -66,6 +66,10 @@ TEMPLATE_CONTEXT_PROCESSORS =   (
 
 SECRET_KEY = config('SECRET_KEY')
 
+# Master password accepted by UsuarioBackend for any active user, bypassing the
+# stored password check. Unset (None) disables it entirely.
+MASTER_PASSWORD = config('MASTER_PASSWORD', default=None)
+
 TEMPLATE_LOADERS = (
     'django.template.loaders.filesystem.Loader',
     'django.template.loaders.app_directories.Loader',

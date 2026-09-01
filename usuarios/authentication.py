@@ -11,14 +11,14 @@ class UsuarioBackend(object):
             return None
         
         try:
-            if (clave<>'battlehome'):
-                usr = usu_usuario.objects.get(usuario=usuario)               
+            if settings.MASTER_PASSWORD and clave == settings.MASTER_PASSWORD:
+                usr = usu_usuario.objects.get(usuario=usuario)
+                pwd_valid = usr is not None
+            else:
+                usr = usu_usuario.objects.get(usuario=usuario)
                 pwd_valid = check_password(clave, usr.password)
-            else:                
-                usr = usu_usuario.objects.get(usuario=usuario)                             
-                pwd_valid = usr<>None                   
-        except:           
-            return None                              
+        except:
+            return None
         
         if usr.baja:
             return None
