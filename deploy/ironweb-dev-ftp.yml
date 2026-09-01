@@ -1,0 +1,34 @@
+services:
+  ftp:
+    image: delfer/alpine-ftp-server
+    container_name: ironweb_dev_ftp
+    restart: unless-stopped
+    environment:
+      USERS: "ironwebdev|75ea0e3da6a28bb74f1254e2|/srv/media|1001|1001 ironwebdevstatic|1093b2b958d8831d8d0c886b|/srv/static|1002|1002"
+      ADDRESS: "72.62.138.200"
+      MIN_PORT: "21100"
+      MAX_PORT: "21110"
+    command:
+      - /bin/sh
+      - -c
+      - "chown -R 1001:1001 /srv/media && chown -R 1002:1002 /srv/static && exec /bin/start_vsftpd.sh"
+    ports:
+      - "2121:21"
+      - "21100-21110:21100-21110"
+    volumes:
+      - ironweb_dev_media:/srv/media
+      - ironweb_dev_static:/srv/static
+    networks:
+      - dokploy-network
+
+networks:
+  dokploy-network:
+    external: true
+
+volumes:
+  ironweb_dev_media:
+    external: true
+    name: ironweb_dev_media
+  ironweb_dev_static:
+    external: true
+    name: ironweb_dev_static
