@@ -52,7 +52,7 @@ EMAIL_USE_TLS = True
 EMAIL_HOST = config('EMAIL_HOST', default='localhost')
 EMAIL_HOST_PASSWORD = config('EMAIL_HOST_PASSWORD', default='')
 EMAIL_HOST_USER = config('EMAIL_HOST_USER', default='')
-EMAIL_PORT = 587
+EMAIL_PORT = config('EMAIL_PORT', default=587, cast=int)
 SERVER_EMAIL = config('SERVER_EMAIL', default='')
 DEFAULT_FROM_EMAIL = config('DEFAULT_FROM_EMAIL', default='')
 

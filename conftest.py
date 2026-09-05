@@ -1,7 +1,13 @@
 # -*- coding: utf-8 -*-
 from __future__ import unicode_literals
 
+import os
+
+import django
 import pytest
+
+os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'ggcontable.settings_test')
+django.setup()
 
 try:
     from unittest.mock import MagicMock

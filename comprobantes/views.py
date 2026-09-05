@@ -1282,7 +1282,7 @@ def mandarEmail(request,id):
         
         html_content = get_template('general/varios/email.html').render({'mensaje': mail_cuerpo,'image_url':image_url})
                 
-        backend = EmailBackend(host=mail_servidor, port=mail_puerto, username=mail_usuario,password=mail_password,fail_silently=False)        
+        backend = EmailBackend(host=mail_servidor, port=mail_puerto, username=mail_usuario,password=mail_password,fail_silently=False,timeout=20)        
         email = EmailMessage( subject=u'%s' % (cpb.get_cpb_tipo),body=html_content,from_email=mail_origen,to=mail_destino,connection=backend)                
         email.attach(u'%s.pdf' %nombre,post_pdf, "application/pdf")
         email.content_subtype = 'html'        

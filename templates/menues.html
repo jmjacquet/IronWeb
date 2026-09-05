@@ -234,20 +234,11 @@
                         <a href="{% url 'prod_stock_listado' %}"><i class="fa fa-cubes"></i>Mantenimiento Stock</a>
                       </li>             
                       {% endif %}
-                      {% if 'prod_precios' in permisos_grupo %}
-                      <li>
-                        <a href="{% url 'prod_reporte' %}"><i class="fa fa-bar-chart"></i>Reporte Productos</a>
-                      </li>
-                      {% endif %}
+
                       <li>                        
                         <a href="#" id="prod_buscar_datos"><i class="fa fa-list-alt"></i>Consulta Productos</a>
                       </li>
-                      {% if 'prod_productos_abm' in permisos_grupo %}
-                        <li class="divider"></li>
-                        <li>
-                        <a href="{% url 'importar_productos' %}"><i class="fa fa-tags"></i>Importar Productos/Servicios</a>
-                        </li>
-                      {% endif %}
+
                                    
                     </ul>
                   </div>  
@@ -345,6 +336,11 @@
                       <li>
                         <a href="{% url 'comisiones_vendedores' %}"><i class="icon-bar-chart"></i>Comisiones x Ventas</a>
                       </li>
+                          {% if 'prod_precios' in permisos_grupo %}
+                          <li>
+                            <a href="{% url 'prod_reporte' %}"><i class="fa fa-bar-chart"></i>Reporte Productos</a>
+                          </li>
+                          {% endif %}
                       {% endif %} 
 
                       {% if permisos_rep_finanzas %}
@@ -421,12 +417,12 @@
                         <a href="{% url 'disponibilidades_listado' %}"><i class="fa fa-list-alt"></i>Cuentas/Disponibilidades</a>
                       </li>
                       {% if 'cpb_compras_abm' in permisos_grupo or 'cpb_ventas_abm' in permisos_grupo %}
-                      <li class="divider"></li>
                       <li>
                         <a href="{% url 'importar_arca' %}"><i class="fa fa-download"></i>Importar Comprobantes</a>
                       </li>
                       {% endif %}
-                      <li>
+                      <li class="divider"></li>
+                        <li>
                         <h3>PRODUCTOS/SERVICIOS</h3>
                       </li>
                       <li>
@@ -438,6 +434,11 @@
                       <li>
                         <a href="{% url 'depositos_listado' %}"><i class="fa fa-cubes"></i>Depósitos/Ubicación</a>
                       </li>
+                        {% if 'prod_productos_abm' in permisos_grupo %}
+                        <li>
+                        <a href="{% url 'importar_productos' %}"><i class="fa fa-download"></i>Importar Productos/Servicios</a>
+                        </li>
+                      {% endif %}
                                
                     </ul>
                   </div>                 

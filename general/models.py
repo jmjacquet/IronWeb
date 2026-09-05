@@ -187,7 +187,7 @@ class gral_empresa(models.Model):
         d= {}
         d['mail_cuerpo']= self.mail_cuerpo or u'Estimado/as les envío por este medio el comprobante solicitado.'
         d['mail_servidor']= self.mail_servidor or settings.EMAIL_HOST
-        d['mail_puerto']= int(self.mail_puerto) or int(settings.EMAIL_PORT)
+        d['mail_puerto']= int(self.mail_puerto or settings.EMAIL_PORT)
         d['mail_usuario']= self.mail_usuario or settings.EMAIL_HOST_USER
         d['mail_password']= self.mail_password or settings.EMAIL_HOST_PASSWORD  
         d['mail_origen']= self.email or d['mail_usuario']+'@ironwebgestion.com.ar'
