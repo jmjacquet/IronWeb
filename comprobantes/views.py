@@ -13,7 +13,8 @@ from .models import *
 import random
 from modal.views import AjaxCreateView,AjaxUpdateView,AjaxDeleteView
 from general.utilidades import *
-from general.models import gral_empresa
+from general.models import gral_empresa, gral_moneda
+from general.cotizacion import aplica_cotizacion
 from general.views import VariablesMixin
 from usuarios.views import tiene_permiso
 from django.forms.models import inlineformset_factory,BaseInlineFormSet,modelformset_factory
@@ -176,6 +177,12 @@ def buscarDatosProd(request):
      idProd = request.GET.get('idp', '')
      idubi = request.GET.get('idubi', None)       
      idlista = request.GET.get('idlista', None)
+     idmoneda = request.GET.get('idmoneda', None)
+     try:
+         ctz = Decimal(request.GET.get('ctz') or 1)
+     except Exception:
+         ctz = Decimal(1)
+     factor = Decimal(1)
      p = None
      coeficiente = 0
      ppedido = 0
@@ -212,15 +219,17 @@ def buscarDatosProd(request):
              except:
                   prod_lista = None
              if prod_lista:
-                  pventa = prod_lista.precio_venta
-                  pcosto = prod_lista.precio_cimp           
+                  if idmoneda and aplica_cotizacion(gral_moneda.objects.filter(id=idmoneda).first(), prod_lista.lista_precios.moneda):
+                      factor = ctz
+                  pventa = prod_lista.precio_venta * factor
+                  pcosto = prod_lista.precio_cimp * factor
                   pitc = prod_lista.precio_itc
                   ptasa = prod_lista.precio_tasa
 
      precio_siva = pventa /(1+coeficiente)
      precio_siva = Decimal(round(precio_siva,2))
      if prod_lista:
-      costo_siva = prod_lista.precio_costo
+      costo_siva = prod_lista.precio_costo * factor
      total_iva = pventa - precio_siva
      total_iva = Decimal(round(total_iva, 2))
      precio_tot = pventa
@@ -1265,8 +1274,11 @@ def mandarEmail(request,id):
         mail_puerto = int(datos['mail_puerto'])
         mail_usuario = datos['mail_usuario']
         mail_password = str(datos['mail_password'])
-        mail_origen = datos['mail_origen']      
-       
+        mail_origen = datos['mail_origen']
+        if mail_servidor in ('', 'localhost'):
+            messages.error(request, u'Configure el servidor de correo en Empresa > Configuración Correo')
+            return HttpResponseRedirect(cpb.get_listado())
+
         if cpb.cpb_tipo.tipo == 4 or cpb.cpb_tipo.tipo == 7:
             post_pdf = imprimirCobranza(request,id,True)              
         elif cpb.cpb_tipo.tipo == 5:
@@ -1282,8 +1294,8 @@ def mandarEmail(request,id):
         
         html_content = get_template('general/varios/email.html').render({'mensaje': mail_cuerpo,'image_url':image_url})
                 
-        backend = EmailBackend(host=mail_servidor, port=mail_puerto, username=mail_usuario,password=mail_password,fail_silently=False,timeout=20)        
-        email = EmailMessage( subject=u'%s' % (cpb.get_cpb_tipo),body=html_content,from_email=mail_origen,to=mail_destino,connection=backend)                
+        backend = EmailBackend(host=mail_servidor, port=mail_puerto, username=mail_usuario,password=mail_password,fail_silently=False,timeout=20,use_ssl=(mail_puerto == 465),use_tls=(mail_puerto != 465))        
+        email = EmailMessage( subject=u'%s' % (cpb.get_cpb_tipo),body=html_content,from_email=mail_origen,to=mail_destino,reply_to=[datos['mail_respuesta']],connection=backend)                
         email.attach(u'%s.pdf' %nombre,post_pdf, "application/pdf")
         email.content_subtype = 'html'        
         email.send()        

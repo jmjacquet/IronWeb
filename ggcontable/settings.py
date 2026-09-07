@@ -132,6 +132,9 @@ EMAIL_PORT = config('EMAIL_PORT', default=587, cast=int)
 SERVER_EMAIL = config('SERVER_EMAIL', default='')
 DEFAULT_FROM_EMAIL = config('DEFAULT_FROM_EMAIL', default='')
 
+LOG_DIR = os.path.join(SITE_ROOT, 'logs')
+LOG_FILE = os.path.join(LOG_DIR if os.path.isdir(LOG_DIR) else SITE_ROOT, 'errores.log')
+
 LOGGING = {
     'version': 1,
     'disable_existing_loggers': False,
@@ -152,7 +155,7 @@ LOGGING = {
     'handlers': {
         'logfile': {
             'class': 'logging.handlers.WatchedFileHandler',
-            'filename': os.path.join(SITE_ROOT, "errores.log"),
+            'filename': LOG_FILE,
             'formatter': 'verbose'
         },
          'mail_admins': {
@@ -168,6 +171,10 @@ LOGGING = {
             'formatter': 'verbose'
         },
     },
+    'root': {
+        'handlers': ['console', 'logfile'],
+        'level': 'ERROR',
+    },
     'loggers': {
         'django.request': {
             'handlers': ['mail_admins'],
@@ -176,7 +183,7 @@ LOGGING = {
         },
         
         'django': {
-            'handlers': ['logfile'],
+            'handlers': ['console', 'logfile'],
             'level': 'ERROR',
             'propagate': False,
         },
@@ -188,17 +195,6 @@ LOGGING = {
         #     'level': 'DEBUG',
         #     'handlers': ['console', ],
         # },
-
-        'general': {
-            'handlers': ['logfile'],
-            'level': 'DEBUG',
-            'propagate': False,
-        },
-        'comprobantes': {
-            'handlers': ['console'],
-            'level': 'ERROR',
-            'propagate': False,
-        },
     }
 }
 ROOT_URL = '/'

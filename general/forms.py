@@ -125,7 +125,7 @@ class EmpresaForm(forms.ModelForm):
 	barra_busq_meses_atras =  forms.IntegerField(label=u'Meses Búsquedas atrás',required = True,initial=2)
 	pto_vta_defecto = forms.ModelChoiceField(label='Pto.Vta. por Defecto',queryset=cpb_pto_vta.objects.filter(baja=False),empty_label=None,required = True)
 	mail_cuerpo = forms.CharField(label=u'Cuerpo Email (envío de Comprobantes)',widget=forms.Textarea(attrs={ 'class':'form-control2','rows': 3}),required = False)				
-	mail_password = forms.CharField(widget=forms.PasswordInput(render_value = True),max_length=20,label=u'Contraseña')
+	mail_password = forms.CharField(widget=forms.PasswordInput(render_value = True),max_length=100,required=False,label=u'Contraseña')
 	codbar_tipo = forms.ChoiceField(label=u'Contenido del QR',required=False,choices=TIPO_CODBAR_QR_CHOICE)
 	qr_size = forms.IntegerField(label=u'Tamaño QR (mm)', required=True, initial=40)
 	etiq_cb_pdf_margin_top = forms.DecimalField(

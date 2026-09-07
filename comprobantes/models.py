@@ -10,6 +10,7 @@ import os
 from django.utils.translation import ugettext_lazy as _
 
 from general.utilidades import *
+from general.cotizacion import MONEDAS_LOCALES
 from productos.models import (prod_productos, gral_tipo_iva, prod_ubicacion,
                               prod_lista_precios, prod_producto_lprecios,
                               )
@@ -435,6 +436,8 @@ class cpb_comprobante(models.Model):
         if self.cotizacion is None or self.cotizacion == 0:
             self.cotizacion = Decimal(1.0)
         cotizacion = Decimal(self.cotizacion)
+        if self.moneda_id and self.moneda.codigo in MONEDAS_LOCALES:
+            cotizacion = Decimal(1)
         for detalle in self.cpb_comprobante_detalle_set.all():
             detalle.importe_unitario_sistema = detalle.importe_unitario * cotizacion if detalle.importe_unitario else None
             detalle.importe_total_sistema = detalle.importe_total * cotizacion if detalle.importe_total else None

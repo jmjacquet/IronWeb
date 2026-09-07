@@ -245,8 +245,9 @@ function recargarProd(i){
     var idlista =  $("#id_lista_precios").val();
     var dcto = $("#id_cliente_descuento").val();
     if (dcto == undefined) {dcto=0;};    
+    if (idp=='') {return;};
     $.ajax({
-            data: {'idp': idp,'idubi':idubi,'idlista':idlista},
+            data: {'idp': idp,'idubi':idubi,'idlista':idlista,'ctz':$("#id_cotizacion").val(),'idmoneda':$("#id_moneda").val()},
             url: '/comprobantes/buscarDatosProd/',
             type: 'get',
             cache: true,          
@@ -261,6 +262,10 @@ function recargarProd(i){
                       $("[name='formDetalle-"+i+"-pventa']").val(data['precio_tot']);                                           
                       $("[name='formDetalle-"+i+"-coef_tasa1']").val(data['pitc']); 
                       $("[name='formDetalle-"+i+"-coef_tasa2']").val(data['ptasa']); 
+                      var unit = ($("#id_letra").val()=='A') ? data['precio_siva'] : data['precio_venta'];
+                      $("[name='formDetalle-"+i+"-importe_unitario']").val(parseFloat(unit).toFixed(2));
+                      calcularProd(i);
+                      calcularTotales();
                     }
             },
             error : function(message) {
@@ -346,7 +351,7 @@ function cargarProd(i){
     if (dcto == undefined) {dcto=0;};
     if (idp!=''){     
           $.ajax({
-                  data: {'idp': idp,'idubi':idubi,'idlista':idlista},
+                  data: {'idp': idp,'idubi':idubi,'idlista':idlista,'ctz':$("#id_cotizacion").val(),'idmoneda':$("#id_moneda").val()},
                   url: '/comprobantes/buscarDatosProd/',
                   type: 'get',
                   cache: true,          
@@ -783,6 +788,12 @@ $("#id_letra").change(function(){
 
      calcularTotales();  
 });  
+
+$("#id_cotizacion, #id_moneda").change(function(){
+     $('.form-detalles tr').each(function(j) {
+        recargarProd(j);
+     });
+});
 
 $("#id_pto_vta").change(function(){
      letra = $("#id_letra").val();

@@ -13,7 +13,7 @@ from django.utils.safestring import mark_safe
 from crispy_forms.helper import FormHelper
 from crispy_forms.layout import Layout, Submit, Div,Button,HTML
 from .models import *
-from general.models import gral_plan_cuentas,gral_empresa
+from general.models import gral_plan_cuentas,gral_empresa,gral_moneda
 from comprobantes.models import cpb_cuenta
 from general.flavor import ARCUITField,ARDNIField,ARPostalCodeField
 from chosen import forms as chosenforms
@@ -208,6 +208,7 @@ class UbicacionForm(forms.ModelForm):
 			exclude = ['id','baja','empresa']
 
 class ListaPreciosForm(forms.ModelForm):
+	moneda = forms.ModelChoiceField(label='Moneda',queryset=gral_moneda.objects.filter(baja=False),required = False,empty_label='---')
 	class Meta:
 			model = prod_lista_precios
 			exclude = ['id','baja','empresa']

@@ -45,6 +45,7 @@ $('.formPrecios').formset({
             $("[name='formPrecios-"+i+"-precio_cimp']").val(0);           
             $("[name='formPrecios-"+i+"-precio_venta']").val(0);           
             $("[name='formPrecios-"+i+"-coef_ganancia']").val(0);           
+            actualizarSimboloFila(row);
             recalcular();
           },
           removed: function (row) {
@@ -83,6 +84,18 @@ $('.formPrecios').formset({
         $("#Guardar").prop("disabled", true);    
         $( "#form-alta" ).submit();         
       });
+
+function actualizarSimboloFila(row){
+    var s = LISTAS_SIMBOLO[$(row).find("select[name$='-lista_precios']").val()] || SIMBOLO_DEFAULT;
+    $(row).find(".input-group > .input-group-addon:first-child").text(s);
+};
+
+$(function(){
+    $('.form-detallesPrecios').on('change', "select[name$='-lista_precios']", function(){
+        actualizarSimboloFila($(this).closest('tr'));
+    });
+    $('.form-detallesPrecios tr').each(function(){ actualizarSimboloFila(this); });
+});
 
 function recalcular(){
   $('.form-detallesPrecios tr').each(function(j) {

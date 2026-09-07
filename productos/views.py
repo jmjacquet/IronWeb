@@ -1,4 +1,5 @@
 # -*- coding: utf-8 -*-
+import json
 from django.template import RequestContext, Context
 from django.shortcuts import *
 from easy_pdf.rendering import render_to_pdf_response
@@ -134,6 +135,11 @@ prod_precios_FormSet = inlineformset_factory(
 )
 
 
+def listas_simbolo_json(request):
+    listas = prod_lista_precios.objects.filter(baja=False, empresa__id__in=empresas_habilitadas(request)).select_related("moneda")
+    return json.dumps({l.id: l.moneda.simbolo for l in listas if l.moneda})
+
+
 class ProductosCreateView(VariablesMixin, CreateView):
     form_class = ProductosForm
     template_name = "productos/producto_form.html"
@@ -156,6 +162,11 @@ class ProductosCreateView(VariablesMixin, CreateView):
         kwargs = super(ProductosCreateView, self).get_form_kwargs()
         kwargs["request"] = self.request
         return kwargs
+
+    def get_context_data(self, **kwargs):
+        context = super(ProductosCreateView, self).get_context_data(**kwargs)
+        context["listas_simbolo_json"] = listas_simbolo_json(self.request)
+        return context
 
     def get(self, request, *args, **kwargs):
         self.object = None
@@ -221,6 +232,11 @@ class ProductosEditView(VariablesMixin, UpdateView):
         kwargs = super(ProductosEditView, self).get_form_kwargs()
         kwargs["request"] = self.request
         return kwargs
+
+    def get_context_data(self, **kwargs):
+        context = super(ProductosEditView, self).get_context_data(**kwargs)
+        context["listas_simbolo_json"] = listas_simbolo_json(self.request)
+        return context
 
     def get_initial(self):
         initial = super(ProductosEditView, self).get_initial()
