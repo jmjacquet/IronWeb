@@ -1,0 +1,121 @@
+{% extends "index.html" %}
+{% load static from staticfiles %}
+{% load i18n %}
+{% block title %}AFIP SDK - Test{% if empresa.nombre_fantasia %} - {{ empresa.nombre_fantasia }}{% else %}{{ empresa.nombre }}{% endif %}{% endblock %}
+
+{% block extra_js %}
+<script src="{% static 'js/scripts/scripts_afip_sdk.js'%}?{% now "Ymd"%}" type="text/javascript"></script>
+{% endblock %}
+
+{% block main %}
+
+<div class="col-md-12 cerca">
+  <div class="portlet box toolbar_blue">
+    <div class="portlet-title">
+      <div class="caption bold">
+        <i class="fa fa-plug"></i> TEST AFIP SDK
+      </div>
+      <div class="tools">
+        <a href="javascript:;" class="collapse"></a>
+      </div>
+    </div>
+    <div class="portlet-body">
+      <p class="text-muted">
+        Herramienta de consulta a la API REST de AFIP SDK (https://app.afipsdk.com).
+        Cada consulta usa como CUIT representada el de la empresa activa:
+        <strong>{{ empresa.cuit|default_if_none:'No configurado' }}</strong>
+      </p>
+    </div>
+  </div>
+
+  <div id="cargando" class="cargando" style="display:none;">
+    <span class="cargando-txt">CARGANDO...</span>
+    <img class="cargando-img" src="{% static 'img/loading-bars.svg' %}">
+  </div>
+
+  <div class="row">
+
+    <div class="col-md-6 cerca">
+      <div class="panel panel-default">
+        <div class="panel-heading">
+          <h4 class="panel-title"><i class="fa fa-search"></i> PADRÓN / CUIT</h4>
+        </div>
+        <div class="panel-body">
+          <p class="text-muted">Datos del contribuyente consultado en el padrón de ARCA (getPersona_v2).</p>
+          <div class="form-inline">
+            <input type="text" id="input_cuit" class="form-control" placeholder="CUIT a consultar" maxlength="13">
+            <button type="button" class="btn btn-sm blue-hoki" onclick="afipSdk.cuitInfo()">
+              <i class="fa fa-search"></i> Consultar
+            </button>
+          </div>
+          <pre id="res_cuit" class="afip-sdk-resultado" data-endpoint="">Sin consulta.</pre>
+        </div>
+      </div>
+
+      <div class="panel panel-default">
+        <div class="panel-heading">
+          <h4 class="panel-title"><i class="fa fa-money"></i> COTIZACIÓN DE MONEDA</h4>
+        </div>
+        <div class="panel-body">
+          <p class="text-muted">Cotización de una moneda en una fecha (FEParamGetCotizacion). Fecha en formato aaaammdd.</p>
+          <div class="form-inline">
+            <input type="text" id="input_moneda" class="form-control" placeholder="Moneda (ej. DOL)" maxlength="3" style="width:140px;">
+            <input type="text" id="input_fecha" class="form-control" placeholder="aaaammdd (ej. 20250221)" maxlength="8" style="width:180px;">
+            <button type="button" class="btn btn-sm blue-hoki" onclick="afipSdk.cotizacion()">
+              <i class="fa fa-search"></i> Consultar
+            </button>
+          </div>
+          <pre id="res_cotizacion" class="afip-sdk-resultado" data-endpoint="">Sin consulta.</pre>
+        </div>
+      </div>
+
+      <div class="panel panel-default">
+        <div class="panel-heading">
+          <h4 class="panel-title"><i class="fa fa-file-text-o"></i> ÚLTIMO COMPROBANTE AUTORIZADO</h4>
+        </div>
+        <div class="panel-body">
+          <p class="text-muted">Número del último comprobante autorizado (FECompUltimoAutorizado).</p>
+          <div class="form-inline">
+            <input type="text" id="input_pto_vta" class="form-control" placeholder="Pto. de Venta (ej. 1)" maxlength="4" style="width:140px;">
+            <input type="text" id="input_cbte_tipo" class="form-control" placeholder="Tipo (ej. 6 = Factura B)" maxlength="3" style="width:180px;">
+            <button type="button" class="btn btn-sm blue-hoki" onclick="afipSdk.ultimoComprobante()">
+              <i class="fa fa-search"></i> Consultar
+            </button>
+          </div>
+          <pre id="res_ultimo_cpb" class="afip-sdk-resultado" data-endpoint="">Sin consulta.</pre>
+        </div>
+      </div>
+    </div>
+
+    <div class="col-md-6 cerca">
+      <div class="panel panel-default">
+        <div class="panel-heading">
+          <h4 class="panel-title"><i class="fa fa-cogs"></i> PARÁMETROS WSFE</h4>
+        </div>
+        <div class="panel-body">
+          <p class="text-muted">Tablas paramétricas del web service de facturación electrónica.</p>
+          <div class="row">
+            <div class="col-sm-6">
+              <button type="button" class="btn btn-sm btn-block blue-hoki" onclick="afipSdk.parametro('monedas')"><i class="fa fa-money"></i> Monedas</button>
+              <button type="button" class="btn btn-sm btn-block blue-hoki" onclick="afipSdk.parametro('tipos_comprobante')"><i class="fa fa-file-text-o"></i> Tipos de Comprobante</button>
+              <button type="button" class="btn btn-sm btn-block blue-hoki" onclick="afipSdk.parametro('tipos_documento')"><i class="fa fa-credit-card"></i> Tipos de Documento</button>
+              <button type="button" class="btn btn-sm btn-block blue-hoki" onclick="afipSdk.parametro('tipos_iva')"><i class="fa fa-percent"></i> Alicuotas IVA</button>
+              <button type="button" class="btn btn-sm btn-block blue-hoki" onclick="afipSdk.parametro('tipos_tributos')"><i class="fa fa-money"></i> Tipos de Tributos</button>
+            </div>
+            <div class="col-sm-6">
+              <button type="button" class="btn btn-sm btn-block blue-hoki" onclick="afipSdk.parametro('condicion_iva_receptor')"><i class="fa fa-user"></i> Condición IVA Receptor</button>
+              <button type="button" class="btn btn-sm btn-block blue-hoki" onclick="afipSdk.parametro('tipos_concepto')"><i class="fa fa-tag"></i> Tipos de Concepto</button>
+              <button type="button" class="btn btn-sm btn-block blue-hoki" onclick="afipSdk.parametro('tipos_opcionales')"><i class="fa fa-list-ul"></i> Tipos Opcionales</button>
+              <button type="button" class="btn btn-sm btn-block blue-hoki" onclick="afipSdk.parametro('puntos_venta')"><i class="fa fa-asterisk"></i> Puntos de Venta</button>
+              <button type="button" class="btn btn-sm btn-block red" onclick="afipSdk.parametro('estado_servidor')"><i class="fa fa-heartbeat"></i> Estado del Servidor</button>
+            </div>
+          </div>
+          <pre id="res_parametros" class="afip-sdk-resultado" data-endpoint="">Sin consulta.</pre>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+{% endblock main %}
