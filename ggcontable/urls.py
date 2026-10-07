@@ -10,6 +10,7 @@ from .views import login, logout, volverHome, alive, tenant_map
 urlpatterns = [
     url(r'^', include('general.urls')),    
     url(r'^felectronica/', include('felectronica.urls')),
+    url(r'^afip_sdk/', include('afip_sdk.urls')),
     url(r'^usuarios/', include('usuarios.urls')),
     url(r'^entidades/', include('entidades.urls')),  
     url(r'^comprobantes/', include('comprobantes.urls')), 

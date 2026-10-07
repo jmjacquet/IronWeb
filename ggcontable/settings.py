@@ -117,6 +117,7 @@ INSTALLED_APPS = (
     'trabajos',
     'reportes',
     'felectronica',
+    'afip_sdk',
     'djangosecure',
 )
 
@@ -215,6 +216,9 @@ SESSION_COOKIE_SECURE = True  # You're on HTTPS
 
 #Dir de Cetificados de Facturacion Electronica
 CERTIFICADOS_PATH = os.path.join(MEDIA_ROOT,'certificados',)
+
+# AFIP SDK REST API (https://app.afipsdk.com)
+AFIP_SDK_API_KEY = config('AFIP_SDK_API_KEY', default='')
 #Traigo si la empresa figura en Modo homologacion(Prueba)
 
 
