@@ -23,7 +23,7 @@ from django.utils.functional import curry
 from usuarios.views import tiene_permiso
 from django.utils.functional import curry
 from django.db.models.expressions import RawSQL
-from comprobantes.models import actualizar_stock_multiple, actualizar_stock
+from comprobantes.models import actualizar_stock_multiple, actualizar_stock, cpb_comprobante_detalle
 from django.core.serializers.json import DjangoJSONEncoder
 
 import logging
@@ -380,7 +380,9 @@ class CategoriasView(VariablesMixin, ListView):
 
     def get_queryset(self):
         try:
-            queryset = prod_categoria.objects.filter(empresa__id__in=empresas_habilitadas(self.request))
+            queryset = prod_categoria.objects.filter(
+                empresa__id__in=empresas_habilitadas(self.request)
+            ).select_related('empresa')
         except:
             queryset = prod_categoria.objects.none()
         return queryset
@@ -969,12 +971,29 @@ class ProdStockView(VariablesMixin, ListView):
                 productos = productos.filter(producto__categoria=categoria)
             if ubicacion:
                 productos = productos.filter(ubicacion=ubicacion)
+            
+            productos = list(productos)
+            if productos:
+                from comprobantes.models import cpb_comprobante_detalle
+                from django.db.models import Sum, F, DecimalField
+                
+                detalles = cpb_comprobante_detalle.objects.filter(
+                    cpb_comprobante__estado__in=[1, 2],
+                    cpb_comprobante__cpb_tipo__usa_stock=True,
+                    cpb_comprobante__empresa__id__in=empresas_habilitadas(self.request)
+                ).values('producto_id', 'origen_destino_id').annotate(
+                    total=Sum(F('cantidad') * F('cpb_comprobante__cpb_tipo__signo_stock'), output_field=DecimalField())
+                )
+                
+                stock_dict = {(d['producto_id'], d['origen_destino_id']): d['total'] for d in detalles}
+                for p in productos:
+                    p._stock_cache = stock_dict.get((p.producto_id, p.ubicacion_id), 0)
+
             if stock_pp > 0:
                 if stock_pp == 1:
-                    ids = [p.id for p in productos if p.get_reposicion()]
+                    productos = [p for p in productos if p.get_reposicion()]
                 else:
-                    ids = [p.id for p in productos if not p.get_reposicion()]
-                productos = productos.filter(id__in=ids)
+                    productos = [p for p in productos if not p.get_reposicion()]
 
         context["form"] = form
         context["productos"] = productos

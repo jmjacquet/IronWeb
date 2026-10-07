@@ -131,11 +131,18 @@ class VariablesMixin(ContextMixin):
             context['habilitado_contador'] = False
 
         from general.models import gral_moneda
+        from productos.models import prod_lista_precios
         try:
             monedas = gral_moneda.objects.filter(baja=False)
             context['monedas_json'] = json.dumps({m.id: m.simbolo for m in monedas})
         except:
             context['monedas_json'] = '{}'
+            
+        try:
+            listas = prod_lista_precios.objects.filter(baja=False).select_related('moneda')
+            context['listas_monedas_json'] = json.dumps({l.id: l.moneda.id for l in listas if l.moneda})
+        except:
+            context['listas_monedas_json'] = '{}'
 
         permisos_grupo = ver_permisos(request)
         context['permisos_grupo'] = permisos_grupo

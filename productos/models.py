@@ -172,6 +172,8 @@ class prod_producto_ubicac(models.Model):
         return u'%s (%s) [%s]' % (self.producto.nombre,self.ubicacion,TIPO_UNIDAD[self.producto.unidad])          
 
     def get_stock_(self):             
+        if hasattr(self, '_stock_cache'):
+            return self._stock_cache
         try:
             qs = cpb_comprobante_detalle.objects.filter(cpb_comprobante__estado__in=[1,2],cpb_comprobante__cpb_tipo__usa_stock=True,producto__id=self.producto.id,origen_destino__id=self.ubicacion.id).distinct()
             total_stock = qs.aggregate(total=Sum(F('cantidad') *F('cpb_comprobante__cpb_tipo__signo_stock'),output_field=DecimalField()))['total'] or 0        

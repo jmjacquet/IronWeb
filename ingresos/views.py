@@ -43,7 +43,7 @@ class CPBSVentasList(VariablesMixin, ListView):
         ).filter(Q(pto_vta__in=pto_vta_habilitados_list(self.request)) | Q(cpb_tipo__tipo=14))
 
         comprobantes = comprobantes.annotate(cobranzas=Count("cpb_cobranza_factura")).select_related(
-            "estado", "cpb_tipo", "entidad", "vendedor", "id_cpb_padre"
+            "estado", "cpb_tipo", "entidad", "vendedor", "id_cpb_padre", "moneda"
         )
 
         if form.is_valid():
@@ -1327,7 +1327,7 @@ class CPBRemitoViewList(VariablesMixin, ListView):
             estado__in=[1, 2],
             pto_vta__in=pto_vta_habilitados_list(self.request),
             empresa=empresa,
-        ).select_related("estado", "cpb_tipo", "entidad")
+        ).select_related("estado", "cpb_tipo", "entidad", "moneda")
         if form.is_valid():
             entidad = form.cleaned_data["entidad"]
             fdesde = form.cleaned_data["fdesde"]
@@ -1339,7 +1339,7 @@ class CPBRemitoViewList(VariablesMixin, ListView):
             if int(estado) == 1:
                 comprobantes = cpb_comprobante.objects.filter(
                     cpb_tipo__tipo=5, cpb_tipo__compra_venta="V", estado__in=[1, 2, 3], empresa=empresa
-                ).select_related("estado", "cpb_tipo", "entidad")
+                ).select_related("estado", "cpb_tipo", "entidad", "moneda")
             if fdesde:
                 comprobantes = comprobantes.filter(Q(fecha_cpb__gte=fdesde))
             if fhasta:
@@ -1695,7 +1695,7 @@ class CPBPresupViewList(VariablesMixin, ListView):
 
         context["form"] = form
         context["comprobantes"] = comprobantes.select_related(
-            "estado", "presup_aprobacion", "cpb_tipo", "entidad"
+            "estado", "presup_aprobacion", "cpb_tipo", "entidad", "moneda"
         )
         return context
 
@@ -1960,7 +1960,7 @@ class CPBRecCobranzaViewList(VariablesMixin, ListView):
                 pto_vta__in=pto_vta_habilitados_list(self.request),
             )
             .annotate(cobranzas=Sum("cpb_cobranza_cpb__importe_total"))
-            .select_related("estado", "cpb_tipo", "entidad", "vendedor")
+            .select_related("estado", "cpb_tipo", "entidad", "vendedor", "moneda")
         )
         if form.is_valid():
             entidad = form.cleaned_data["entidad"]
@@ -1990,10 +1990,10 @@ class CPBRecCobranzaViewList(VariablesMixin, ListView):
             if pto_vta:
                 comprobantes = comprobantes.filter(Q(pto_vta=pto_vta))
 
-            comprobantes = comprobantes.select_related("estado", "cpb_tipo", "entidad", "vendedor")
+            comprobantes = comprobantes.select_related("estado", "cpb_tipo", "entidad", "vendedor", "moneda")
         else:
             cpbs = comprobantes.filter(fecha_cpb__gte=inicioMesAnt(), fecha_cpb__lte=finMes()).select_related(
-                "estado", "cpb_tipo", "entidad", "vendedor"
+                "estado", "cpb_tipo", "entidad", "vendedor", "moneda"
             )
             if len(cpbs) == 0:
                 cpbs = comprobantes[:20]

@@ -12,11 +12,18 @@
     <script src="{% static 'js/jquery.formset.js' %}" type="text/javascript"></script>
     <script type="text/javascript">
         var MONEDAS = {{ monedas_json|safe }};
+        var LISTAS_MONEDAS = {{ listas_monedas_json|default:"{}"|safe }};
         function actualizarSimboloMoneda(){
             var s = MONEDAS[$("#id_moneda").val()] || '$';
             $("#form-alta .input-group > .input-group-addon:first-child").text(s);
         }
         $(function(){
+            $("#id_lista_precios").change(function(){
+                var moneda_id = LISTAS_MONEDAS[$(this).val()];
+                if(moneda_id) {
+                    $("#id_moneda").val(moneda_id).trigger("change");
+                }
+            });
             $("#id_moneda").change(actualizarSimboloMoneda);
             actualizarSimboloMoneda();
         });

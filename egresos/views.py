@@ -72,7 +72,7 @@ class CPBCompraViewList(VariablesMixin, ListView):
             cpb_tipo__tipo__in=[1, 2, 3, 9, 21, 22, 23],
             cpb_tipo__compra_venta="C",
             empresa=empresa,
-        ).select_related("estado", "cpb_tipo", "entidad", "vendedor")
+        ).select_related("estado", "cpb_tipo", "entidad", "vendedor", "moneda")
 
         if form.is_valid():
             entidad = form.cleaned_data["entidad"]
@@ -628,7 +628,7 @@ class CPBPagosViewList(VariablesMixin, ListView):
             )
             .order_by("-fecha_cpb", "-id")
             .annotate(cobranzas=Sum("cpb_cobranza_cpb__importe_total"))
-            .select_related("estado", "cpb_tipo", "entidad", "vendedor")
+            .select_related("estado", "cpb_tipo", "entidad", "vendedor", "moneda")
         )
         if form.is_valid():
             entidad = form.cleaned_data["entidad"]
@@ -660,12 +660,12 @@ class CPBPagosViewList(VariablesMixin, ListView):
                 comprobantes = comprobantes.filter(Q(pto_vta=pto_vta))
 
             comprobantes = comprobantes.select_related(
-                "estado", "cpb_tipo", "entidad", "vendedor"
+                "estado", "cpb_tipo", "entidad", "vendedor", "moneda"
             )
         else:
             cpbs = comprobantes.filter(
                 fecha_cpb__gte=inicioMesAnt(), fecha_cpb__lte=finMes()
-            ).select_related("estado", "cpb_tipo", "entidad", "vendedor")
+            ).select_related("estado", "cpb_tipo", "entidad", "vendedor", "moneda")
             if not cpbs.exists():
                 cpbs = comprobantes[:20]
             comprobantes = cpbs
@@ -1266,7 +1266,7 @@ class CPBRemitoCViewList(VariablesMixin, ListView):
                 empresa=empresa,
             )
             .order_by("-fecha_cpb", "-id")
-            .select_related("estado", "cpb_tipo", "entidad")
+            .select_related("estado", "cpb_tipo", "entidad", "moneda")
         )
         if form.is_valid():
             entidad = form.cleaned_data["entidad"]
@@ -1285,7 +1285,7 @@ class CPBRemitoCViewList(VariablesMixin, ListView):
                         empresa=empresa,
                     )
                     .order_by("-fecha_cpb", "-id")
-                    .select_related("estado", "cpb_tipo", "entidad")
+                    .select_related("estado", "cpb_tipo", "entidad", "moneda")
                 )
 
             if fdesde:
