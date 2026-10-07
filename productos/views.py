@@ -551,7 +551,9 @@ class LPreciosView(VariablesMixin, ListView):
 
     def get_queryset(self):
         try:
-            queryset = prod_lista_precios.objects.filter(empresa__id__in=empresas_habilitadas(self.request))
+            queryset = prod_lista_precios.objects.filter(
+                empresa__id__in=empresas_habilitadas(self.request)
+            ).select_related('empresa', 'moneda')
         except:
             queryset = prod_lista_precios.objects.none()
         return queryset
@@ -1291,106 +1293,137 @@ def importar_productos(request):
             decoded_file = csv_file.read().decode("latin1").replace(",", "").replace("'", "")
             io_string = io.StringIO(decoded_file)
             reader = unicode_csv_reader(io_string)
-            # codigo;Producto;Categoria;Stock;PC;PC+IVA;C.Gan;Precio de Venta
+            # codigo;Producto;Categoria;Stock;PC;PC+IVA;C.Gan;Precio de Venta;Descripcion
             cant = 0
+            errores = []
             next(reader)  # Omito el Encabezado
             for index, line in enumerate(reader):
-                campos = line[0].split(";")
-                cant_campos = len(campos)
-                if cant_campos != 8:
-                    raise Exception(
-                        u'La cantidad de campos para el registro es incorrecta!(verifique que no existan ";" ni ")'
-                    )
-
-                codigo = campos[0].strip()
-                if codigo == "":
-                    codigo = "{0:0{width}}".format((ultimoNroId(prod_productos) + 1), width=4)
-
-                nombre = campos[1].strip().upper()
-                if nombre == "":
-                    continue  # Salta al siguiente
-
-                codbar = str(ultimoNroId(prod_productos) + 1).zfill(15)
-                codbar += str(digVerificador(codbar))
-
-                categ = campos[2].strip().upper()
+                codigo_log = "Desconocido"
+                nombre_log = "Desconocido"
                 try:
-                    categoria = prod_categoria.objects.get_or_create(nombre=categ, empresa=empresa)[0]
-                except:
-                    categoria = None
-                try:
-                    stock = int(campos[3].strip())
-                except:
-                    stock = 0
-                try:
-                    pcosto = Decimal(campos[4].strip())
-                except:
-                    pcosto = Decimal(0)
-                try:
-                    piva = Decimal(campos[5].strip())
-                except:
-                    piva = Decimal(0)
-                try:
-                    coef_ganancia = Decimal(campos[6].strip())
-                except:
-                    coef_ganancia = Decimal(1)
-                try:
-                    pventa = Decimal(campos[7].strip())
-                except:
-                    pventa = Decimal(piva * coef_ganancia)
+                    campos = line[0].split(";")
+                    cant_campos = len(campos)
+                    if cant_campos >= 2:
+                        codigo_log = campos[0].strip() or "Generado"
+                        nombre_log = campos[1].strip().upper() or "Vacío"
+                        
+                    if cant_campos < 8:
+                        raise Exception(
+                            u'La cantidad de campos para el registro es incorrecta! (minimo 8 campos requeridos)'
+                        )
 
-                pimp = Decimal(pcosto + piva)
+                    codigo = campos[0].strip()
+                    if codigo == "":
+                        codigo = "{0:0{width}}".format((ultimoNroId(prod_productos) + 1), width=4)
 
-                try:
-                    tasa_iva = gral_tipo_iva.objects.get(id=5)
-                except:
-                    tasa_iva = None
+                    nombre = campos[1].strip().upper()
+                    if nombre == "":
+                        continue  # Salta al siguiente
 
-                try:
-                    prod = prod_productos.objects.get_or_create(
-                        codigo=codigo,
-                        categoria=categoria,
-                        empresa=empresa,
-                        nombre=nombre,
-                        defaults={
-                            "codigo_barras": codbar,
-                            "tipo_producto": 1,
-                            "mostrar_en": 3,
-                            "unidad": 0,
-                            "llevar_stock": False,
-                            "stock_negativo": True,
-                            "tasa_iva": tasa_iva,
-                        },
-                    )[0]
-                except prod_productos.MultipleObjectsReturned:
-                    prod = prod_productos.objects.filter(
-                        codigo=codigo, categoria=categoria, empresa=empresa, nombre=nombre
-                    ).first()
+                    codbar = str(ultimoNroId(prod_productos) + 1).zfill(15)
+                    codbar += str(digVerificador(codbar))
 
-                if prod:
-                    prod_producto_lprecios.objects.update_or_create(
-                        producto=prod,
-                        coef_ganancia=coef_ganancia,
-                        lista_precios=lista_precios,
-                        defaults={
-                            "precio_costo": pcosto,
-                            "precio_cimp": pimp,
-                            "precio_venta": pventa,
-                        },
-                    )
-                    ubi = prod_ubicacion.objects.filter(default=True).first()
-                    prod_producto_ubicac.objects.update_or_create(
-                        producto=prod, ubicacion=ubi, defaults={"punto_pedido": 0.00}
-                    )
-                    actualizar_stock(request, prod, ubi, 21, stock)
-                cant += 1
-            messages.success(
-                request, u"Se importó el archivo con éxito! ({} Productos creados/actualizados)".format(cant)
-            )
+                    categ = campos[2].strip().upper()
+                    try:
+                        categoria = prod_categoria.objects.get_or_create(nombre=categ, empresa=empresa)[0]
+                    except:
+                        categoria = None
+                    try:
+                        stock = int(campos[3].strip())
+                    except:
+                        stock = 0
+                    try:
+                        pcosto = Decimal(campos[4].strip())
+                    except:
+                        pcosto = Decimal(0)
+                    try:
+                        piva = Decimal(campos[5].strip())
+                    except:
+                        piva = Decimal(0)
+                    try:
+                        coef_ganancia = Decimal(campos[6].strip())
+                    except:
+                        coef_ganancia = Decimal(1)
+                    try:
+                        pventa = Decimal(campos[7].strip())
+                    except:
+                        pventa = Decimal(piva * coef_ganancia)
+
+                    pimp = Decimal(pcosto + piva)
+                    
+                    descripcion = ""
+                    if cant_campos >= 9:
+                        descripcion = campos[8].strip()
+
+                    try:
+                        tasa_iva = gral_tipo_iva.objects.get(id=5)
+                    except:
+                        tasa_iva = None
+
+                    try:
+                        prod = prod_productos.objects.get_or_create(
+                            codigo=codigo,
+                            categoria=categoria,
+                            empresa=empresa,
+                            nombre=nombre,
+                            defaults={
+                                "codigo_barras": codbar,
+                                "tipo_producto": 1,
+                                "mostrar_en": 3,
+                                "unidad": 0,
+                                "llevar_stock": False,
+                                "stock_negativo": True,
+                                "tasa_iva": tasa_iva,
+                                "descripcion": descripcion,
+                            },
+                        )[0]
+                    except prod_productos.MultipleObjectsReturned:
+                        prod = prod_productos.objects.filter(
+                            codigo=codigo, categoria=categoria, empresa=empresa, nombre=nombre
+                        ).first()
+
+                    if prod:
+                        # Si el producto ya existe o recién se creó, actualizamos la descripción si viene en el csv y no está vacía
+                        if descripcion:
+                            prod.descripcion = descripcion
+                            prod.save()
+                        
+                        prod_producto_lprecios.objects.update_or_create(
+                            producto=prod,
+                            coef_ganancia=coef_ganancia,
+                            lista_precios=lista_precios,
+                            defaults={
+                                "precio_costo": pcosto,
+                                "precio_cimp": pimp,
+                                "precio_venta": pventa,
+                            },
+                        )
+                        ubi = prod_ubicacion.objects.filter(default=True).first()
+                        prod_producto_ubicac.objects.update_or_create(
+                            producto=prod, ubicacion=ubi, defaults={"punto_pedido": 0.00}
+                        )
+                        actualizar_stock(request, prod, ubi, 21, stock)
+                    cant += 1
+                except Exception as e:
+                    errores.append(u"Línea {} (Cód: {}, Nombre: {}): {}".format(index + 2, codigo_log, nombre_log, str(e)))
+            
+            if cant > 0 and len(errores) == 0:
+                messages.success(
+                    request, u"Se importó el archivo con éxito! ({} Productos creados/actualizados)".format(cant)
+                )
+            elif cant > 0 and len(errores) > 0:
+                messages.warning(
+                    request, u"Se importaron {} Productos, pero hubo {} errores.".format(cant, len(errores))
+                )
+            elif cant == 0 and len(errores) > 0:
+                messages.error(
+                    request, u"No se importó ningún producto. Hubo {} errores.".format(len(errores))
+                )
 
     else:
         form = ImportarProductosForm(None, None, request=request)
     context["form"] = form
+    context["errores"] = errores if "errores" in locals() else []
     return render(request, "productos/importar_productos.html", context)
 
 

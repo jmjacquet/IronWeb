@@ -85,4 +85,19 @@
       </div>
     </div>
   </div>
+  <script type="text/javascript">
+    $(document).ready(function() {
+      var $modalDialog = $('#modal-modal .modal-dialog');
+      var originalWidth = $modalDialog[0].style.width;
+      
+      // Ampliamos el modal para que entren cómodamente las tablas
+      $modalDialog.css({'width': '90%', 'max-width': '1200px'});
+      
+      // Al cerrar el modal, restauramos el ancho original para no afectar a otros
+      $('#modal-modal').one('hidden.bs.modal', function () {
+        $modalDialog.css('width', originalWidth);
+        $modalDialog.css('max-width', '');
+      });
+    });
+  </script>
 {% endblock main %}

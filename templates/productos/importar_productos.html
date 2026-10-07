@@ -54,6 +54,20 @@
 				<div class="col-sm-2"><button class="btn pull-right btn-primary" id="Procesar" type="button"><i class="fa fa-check"></i> Importar</button></div>
 			</div>
 		</div>
+		{% if errores %}
+		<div class="row">
+			<div class="col-xs-12 ">
+				<div class="col-sm-10">
+					<div class="alert alert-danger" role="alert">
+						<strong><i class="fa fa-exclamation-triangle"></i> Errores del procesamiento:</strong>
+						<ul class="lista-errores" style="max-height:250px;overflow:auto;margin-top:8px;">
+							{% for error in errores %}<li>{{ error|escape }}</li>{% endfor %}
+						</ul>
+					</div>
+				</div>
+			</div>
+		</div>
+		{% endif %}
 		</form>
 	</fieldset>
  </div>
