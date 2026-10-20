@@ -46,16 +46,6 @@ TENANT_MAP = {
         'ENTIDAD_DB': 'ironweb_sma',
         'ENTIDAD_DIR': 'sma',
     },
-    'development.ironwebgestion.com.ar': {
-        'ENTIDAD_ID': '1',
-        'ENTIDAD_DB': 'ironweb_prueba',
-        'ENTIDAD_DIR': 'prueba',
-    },
-    'www.development.ironwebgestion.com.ar': {
-        'ENTIDAD_ID': '1',
-        'ENTIDAD_DB': 'ironweb_prueba',
-        'ENTIDAD_DIR': 'prueba',
-    },
     # 'digra.ironwebgestion.com.ar': {
     #     'ENTIDAD_ID': '3',
     #     'ENTIDAD_DB': 'ironweb_digra',
