@@ -1,5 +1,6 @@
 # -*- coding: utf-8 -*-
 from __future__ import unicode_literals
+from email.utils import formataddr
 from django.core.urlresolvers import reverse
 from django.db import models
 # from .utilidades import ESTADO,TIPO_CANCHA,TIPOUSR,ESTADO_CUOTA,TRIBUTO_CUOTA,TIPO_LOGIN
@@ -190,7 +191,13 @@ class gral_empresa(models.Model):
         d['mail_puerto']= int(self.mail_puerto or settings.EMAIL_PORT)
         d['mail_usuario']= self.mail_usuario or settings.EMAIL_HOST_USER
         d['mail_password']= self.mail_password or settings.EMAIL_HOST_PASSWORD  
-        d['mail_origen']= self.email or d['mail_usuario']+'@ironwebgestion.com.ar'
+        d['mail_respuesta']= self.email
+        if self.mail_servidor:
+            # Relay propio: el From debe ser el usuario autenticado (si no, el servidor lo rechaza con 553)
+            origen = d['mail_usuario'] or self.email
+        else:
+            origen = settings.DEFAULT_FROM_EMAIL or self.email
+        d['mail_origen']= formataddr((self.nombre, origen)) if origen else (self.email or d['mail_usuario']+'@ironwebgestion.com.ar')
             
         return d
 
