@@ -16,36 +16,36 @@ _last_tenant = threading.local()
 # Tenant configuration map (fallback if env vars not set)
 # Maps subdomain to tenant database and settings
 TENANT_MAP = {
-    'prueba.ironwebgestion.com.ar': {
-        'ENTIDAD_ID': '1',
-        'ENTIDAD_DB': 'ironweb_prueba',
-        'ENTIDAD_DIR': 'prueba',
-    },
-    'www.prueba.ironwebgestion.com.ar': {
-        'ENTIDAD_ID': '1',
-        'ENTIDAD_DB': 'ironweb_prueba',
-        'ENTIDAD_DIR': 'prueba',
-    },
-    'mullertma.ironwebgestion.com.ar': {
-        'ENTIDAD_ID': '10',
-        'ENTIDAD_DB': 'ironweb_mullertma',
-        'ENTIDAD_DIR': 'mullertma',
-    },
-    'www.mullertma.ironwebgestion.com.ar': {
-        'ENTIDAD_ID': '10',
-        'ENTIDAD_DB': 'ironweb_mullertma',
-        'ENTIDAD_DIR': 'mullertma',
-    },
-    'sma.ironwebgestion.com.ar': {
-        'ENTIDAD_ID': '11',
-        'ENTIDAD_DB': 'ironweb_sma',
-        'ENTIDAD_DIR': 'sma',
-    },
-    'www.sma.ironwebgestion.com.ar': {
-        'ENTIDAD_ID': '11',
-        'ENTIDAD_DB': 'ironweb_sma',
-        'ENTIDAD_DIR': 'sma',
-    },
+    # 'prueba.ironwebgestion.com.ar': {
+    #     'ENTIDAD_ID': '1',
+    #     'ENTIDAD_DB': 'ironweb_prueba',
+    #     'ENTIDAD_DIR': 'prueba',
+    # },
+    # 'www.prueba.ironwebgestion.com.ar': {
+    #     'ENTIDAD_ID': '1',
+    #     'ENTIDAD_DB': 'ironweb_prueba',
+    #     'ENTIDAD_DIR': 'prueba',
+    # },
+    # 'mullertma.ironwebgestion.com.ar': {
+    #     'ENTIDAD_ID': '10',
+    #     'ENTIDAD_DB': 'ironweb_mullertma',
+    #     'ENTIDAD_DIR': 'mullertma',
+    # },
+    # 'www.mullertma.ironwebgestion.com.ar': {
+    #     'ENTIDAD_ID': '10',
+    #     'ENTIDAD_DB': 'ironweb_mullertma',
+    #     'ENTIDAD_DIR': 'mullertma',
+    # },
+    # 'sma.ironwebgestion.com.ar': {
+    #     'ENTIDAD_ID': '11',
+    #     'ENTIDAD_DB': 'ironweb_sma',
+    #     'ENTIDAD_DIR': 'sma',
+    # },
+    # 'www.sma.ironwebgestion.com.ar': {
+    #     'ENTIDAD_ID': '11',
+    #     'ENTIDAD_DB': 'ironweb_sma',
+    #     'ENTIDAD_DIR': 'sma',
+    # },
     'development.ironwebgestion.com.ar': {
         'ENTIDAD_ID': '1',
         'ENTIDAD_DB': 'ironweb_prueba',
