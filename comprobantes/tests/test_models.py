@@ -28,6 +28,10 @@ def _make_estado(pk, color='green'):
     return estado
 
 
+def _assign_related(obj, field_name, value):
+    obj.__dict__['_%s_cache' % field_name] = value
+
+
 def _make_cpb(**kwargs):
     from comprobantes.models import cpb_comprobante
     cpb = cpb_comprobante.__new__(cpb_comprobante)
@@ -43,8 +47,8 @@ def _make_cpb(**kwargs):
     cpb.importe_perc_imp = kwargs.get('importe_perc_imp', Decimal('0'))
     cpb.saldo = kwargs.get('saldo', Decimal('0'))
     cpb.cae = kwargs.get('cae', None)
-    cpb.cpb_tipo = kwargs.get('cpb_tipo', _make_cpb_tipo())
-    cpb.estado = kwargs.get('estado', _make_estado(1))
+    _assign_related(cpb, 'cpb_tipo', kwargs.get('cpb_tipo', _make_cpb_tipo()))
+    _assign_related(cpb, 'estado', kwargs.get('estado', _make_estado(1)))
     return cpb
 
 
@@ -231,6 +235,37 @@ def test_get_importe_perc_imp_none_zero():
     cpb = _make_cpb()
     cpb.importe_perc_imp = None
     assert cpb.get_importe_perc_imp() == 0
+
+
+# ---------------------------------------------------------------------------
+# cpb_comprobante.get_total_exng
+# ---------------------------------------------------------------------------
+
+def test_get_total_exng_sums_importes():
+    cpb = _make_cpb(
+        importe_exento=Decimal('10'),
+        importe_no_gravado=Decimal('20'),
+        importe_perc_imp=Decimal('5'),
+    )
+    assert cpb.get_total_exng() == Decimal('35')
+
+
+def test_get_total_exng_with_none_values():
+    cpb = _make_cpb(
+        importe_exento=None,
+        importe_no_gravado=None,
+        importe_perc_imp=None,
+    )
+    assert cpb.get_total_exng() == 0
+
+
+def test_get_total_exng_with_partial_none_values():
+    cpb = _make_cpb(
+        importe_exento=None,
+        importe_no_gravado=Decimal('20'),
+        importe_perc_imp=Decimal('5'),
+    )
+    assert cpb.get_total_exng() == Decimal('25')
 
 
 # ---------------------------------------------------------------------------

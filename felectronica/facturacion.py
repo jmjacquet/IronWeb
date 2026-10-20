@@ -23,7 +23,10 @@ def validarAFIP(idCpb):
     if ((cpb.letra=='A')and(cpb.entidad.fact_categFiscal==1)and(cpb.entidad.tipo_doc!=80)):
         return u'Las facturas A solo pueden ser emitidas a Responsables Inscriptos, consignando el CUIT válido y registrado (tipo_doc=80)'
 
-    if (cpb.importe_total!= (cpb.importe_no_gravado+cpb.importe_iva+cpb.importe_gravado+cpb.importe_exento+cpb.importe_perc_imp)):
+    suma_importes = ((cpb.importe_no_gravado or 0) + (cpb.importe_iva or 0)
+                     + (cpb.importe_gravado or 0) + (cpb.importe_exento or 0)
+                     + (cpb.importe_perc_imp or 0))
+    if (cpb.importe_total != suma_importes):
         return 'La suma de importes del Comprobante es Incorrecta'        
 
     return ''

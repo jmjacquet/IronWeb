@@ -717,7 +717,7 @@ def imprimirFactura_CB(request,id,pdf=None):
     facturado = (cpb.cae!=None)
 
     cantidad = detalle_comprobante.count() + cantidad
-    total_exng = cpb.importe_exento + cpb.importe_no_gravado + cpb.importe_perc_imp
+    total_exng = cpb.get_total_exng()
     if discrimina_iva:
         total_bruto = cpb.importe_subtotal        
     else:
@@ -816,7 +816,7 @@ def imprimirFacturaQR(request,id,pdf=None):
     facturado = (cpb.cae!=None)
 
     cantidad = detalle_comprobante.count() + cantidad
-    total_exng = cpb.importe_exento + cpb.importe_no_gravado + cpb.importe_perc_imp
+    total_exng = cpb.get_total_exng()
     if discrimina_iva:
         total_bruto = cpb.importe_subtotal        
     else:
@@ -927,7 +927,7 @@ def imprimirFacturaHTML(request,id,pdf=None):
     facturado = (cpb.cae!=None)
 
     cantidad = detalle_comprobante.count() + cantidad
-    total_exng = cpb.importe_exento + cpb.importe_no_gravado
+    total_exng = cpb.get_total_exng()
     if discrimina_iva:
         total_bruto = cpb.importe_subtotal
     else:

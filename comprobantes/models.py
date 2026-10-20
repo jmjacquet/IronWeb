@@ -431,6 +431,11 @@ class cpb_comprobante(models.Model):
         else:
             return self.importe_perc_imp
 
+    def get_total_exng(self):
+        return ((self.importe_exento or 0)
+                + (self.importe_no_gravado or 0)
+                + (self.importe_perc_imp or 0))
+
     def save(self, *args, **kwargs):
         if self.cotizacion is None or self.cotizacion == 0:
             self.cotizacion = Decimal(1.0)
@@ -879,7 +884,7 @@ def recalcular_saldo_cpb(idCpb):  # pragma: no cover
 
         if cpb.empresa.usa_impuestos:
             # Impuestos no gravados suman al No gravado
-            importe_no_gravado = importe_no_gravado + cpb.importe_tasa1 + cpb.importe_tasa2
+            importe_no_gravado = importe_no_gravado + (cpb.importe_tasa1 or 0) + (cpb.importe_tasa2 or 0)
 
         importe_subtotal = importe_gravado + importe_no_gravado + importe_exento
 
