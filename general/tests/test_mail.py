@@ -20,6 +20,12 @@ def test_own_relay_sends_from_its_own_user():
     assert d['mail_respuesta'] == 'x@y.com'
 
 
+def test_own_relay_bare_username_gets_qualified_domain():
+    d = gral_empresa(nombre='Emp', mail_servidor='smtp.x',
+                     mail_usuario='ironweb', email='x@y.com').get_datos_mail()
+    assert parseaddr(d['mail_origen']) == ('Emp', 'ironweb@ironwebgestion.com.ar')
+
+
 @override_settings(DEFAULT_FROM_EMAIL='noreply@ironwebgestion.com.ar')
 def test_shared_relay_sends_from_default_from_email():
     d = gral_empresa(nombre='Emp', mail_servidor='', email='x@y.com').get_datos_mail()

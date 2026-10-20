@@ -195,6 +195,8 @@ class gral_empresa(models.Model):
         if self.mail_servidor:
             # Relay propio: el From debe ser el usuario autenticado (si no, el servidor lo rechaza con 553)
             origen = d['mail_usuario'] or self.email
+            if origen and '@' not in origen:
+                origen = origen + '@ironwebgestion.com.ar'
         else:
             origen = settings.DEFAULT_FROM_EMAIL or self.email
         d['mail_origen']= formataddr((self.nombre, origen)) if origen else (self.email or d['mail_usuario']+'@ironwebgestion.com.ar')
